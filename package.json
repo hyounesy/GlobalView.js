@@ -1,0 +1,48 @@
+{
+  "name": "template-npm-package",
+  "version": "0.1.0",
+  "description": "An AICS template for NPM packages.",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "browser": "dist/template-package.js",
+  "scripts": {
+    "build": "npm run transpile:commonjs && npm run transpile:es && npm run bundle",
+    "bundle": "cross-env BABEL_ENV=es NODE_ENV=production webpack --config webpack.config.js",
+    "clean": "rimraf es lib dist",
+    "lint": "eslint src/",
+    "preversion": "npm run clean && npm run lint && npm run test",
+    "postversion": "git push && git push --tags",
+    "transpile:commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir lib",
+    "transpile:es": "cross-env BABEL_ENV=es babel src --out-dir es",
+    "test": "cross-env BABEL_ENV=test mocha --require babel-polyfill --require babel-register src/**/*.test.js",
+    "test:coverage": "cross-env BABEL_ENV=test nyc --reporter=lcov --reporter=text npm test",
+    "version": "npm run build && git add ."
+  },
+  "files": [
+    "es",
+    "lib",
+    "dist",
+    "README.md",
+    "package.json"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "~6.26",
+    "babel-core": "~6.26",
+    "babel-loader": "~7.1",
+    "babel-plugin-istanbul": "~4.1",
+    "babel-polyfill": "~6.26",
+    "babel-preset-env": "~1.6",
+    "babel-register": "~6.26",
+    "chai": "~4.1",
+    "cross-env": "~5.1",
+    "eslint": "~4.13",
+    "eslint-config-airbnb-base": "~12.1",
+    "eslint-plugin-import": "~2.8",
+    "mocha": "~4.0",
+    "nyc": "~11.4",
+    "rimraf": "~2.6",
+    "webpack": "~3.10"
+  }
+}
