@@ -254,6 +254,8 @@ vec{1} getPos()
 				for (var a = 0; a < attrLen; ++a)
 					inputs.push("p" + i + (attrLen == 1 ? "" : "[" + a + "]"));
 			}
+			//HY:
+			var ND = 4; //todo: should use the globalView.ND
 			for (var d = 0; d < ND; ++d)
 			{
 				inputCode.push(String.prototype.format2.apply(activeInputVectors[d] ? activeInputVectors[d].getValueCode : "0.0", inputs));

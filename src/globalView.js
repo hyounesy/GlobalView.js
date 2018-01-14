@@ -1,3 +1,24 @@
+/* eslint-disabled */
+
+function myAlert(msg) {
+  alert(msg); // eslint-disable-line no-alert, no-undef
+}
+
+export function initCanvas(canvasElement) {
+  // var canvas = document.getElementById("canvas");
+  const gl = canvasElement.getContext('webgl') ||
+    canvasElement.getContext('experimental-webgl');
+
+  // Only continue if WebGL is available and working
+  if (!gl) {
+    myAlert('Unable to initialize WebGL. Your browser or machine may not support it.');
+    return;
+  }
+
+  gl.clearColor(1, 0, 0, 1);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // eslint-disable-line no-bitwise
+}
+
 // >>> Options
 
 var ENABLE_CONTINUOUS_RENDERING = false;
@@ -22,7 +43,7 @@ var OptionDescription;
  * @constructor
  * @export
  */
-function GlobalView(div, startupOptions)
+export function GlobalView(div, startupOptions)
 {
 	var globalView = this;
 	
@@ -880,8 +901,11 @@ function GlobalView(div, startupOptions)
 				(isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true))
 			{
 				console.warn("GlobalView warning: Invalid value for option " + option + ": " + value);
-				if (isString(validationResult))
-					console.warn("                    " + validationResult);
+				if (isString(validationResult)) {
+          //HY:
+            validationResult = optionDefinition.valid(value)
+          console.warn("                    " + validationResult);
+        }
 				continue;
 			}
 			

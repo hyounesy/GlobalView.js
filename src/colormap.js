@@ -25,8 +25,8 @@ function Colormap(gl, globalView)
 	var sdrColormap = new Shader(gl, Shaders.vsTextured, Shaders.fsTextured1D);
 	sdrColormap.matWorldViewProj = sdrColormap.u4x4f("matWorldViewProj");
 	var colormaps = {
-		exhue: LoadTexture(gl, "exhue.png", function() { globalView.invalidate(); }),//function() { setTimeout(function() { globalView.invalidate(); }, 1000); }),
-		rainbow: LoadTexture(gl, "rainbow.png", function() { globalView.invalidate(); }),//function() { setTimeout(function() { globalView.invalidate(); }, 1000); }),
+		exhue: LoadTexture(gl, "/exhue.png", function() { globalView.invalidate(); }),//function() { setTimeout(function() { globalView.invalidate(); }, 1000); }),
+		rainbow: LoadTexture(gl, "/rainbow.png", function() { globalView.invalidate(); }),//function() { setTimeout(function() { globalView.invalidate(); }, 1000); }),
 		2: LoadTextureFromByteArray(gl, new Uint8Array([255, 0, 0, 255, 0, 255, 0, 255]), 2, 1)
 	};
 	this.builtinColormaps = ["exhue", "rainbow"];
