@@ -58,7 +58,9 @@
  * visible.
  */
 
-var WebGLUtils = function() {
+/* eslint-disable */
+
+export var WebGLUtils = function() {
 
     /**
      * Creates the HTLM for a failure message
@@ -156,17 +158,26 @@ var WebGLUtils = function() {
     };
     }();
     
-    /**
-     * Provides requestAnimationFrame in a cross browser way.
-     */
-    window.requestAnimFrame = (function() {
-      return window.requestAnimationFrame ||
-             window.webkitRequestAnimationFrame ||
-             window.mozRequestAnimationFrame ||
-             window.oRequestAnimationFrame ||
-             window.msRequestAnimationFrame ||
-             function(/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
-               window.setTimeout(callback, 1000/60);
-             };
-    })();
-    
+/**
+ * Provides requestAnimationFrame in a cross browser way.
+ */
+const window_requestAnimFrame = (function() {
+  return window.requestAnimationFrame ||
+          window.webkitRequestAnimationFrame ||
+          window.mozRequestAnimationFrame ||
+          window.oRequestAnimationFrame ||
+          window.msRequestAnimationFrame ||
+          function(/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
+            window.setTimeout(callback, 1000/60);
+          };
+})();
+
+
+/**
+ * Provides requestAnimationFrame in a cross browser way.
+ */
+export function requestAnimFrame(callback) {
+  // Initially tried exporting window_requestAnimFrame directly, but got "Illegal Invocation". 
+  // probably related to this: https://stackoverflow.com/questions/10743596/why-are-certain-function-calls-termed-illegal-invocations-in-javascript
+  window_requestAnimFrame(callback);
+}

@@ -1,4 +1,6 @@
-/* eslint-disabled */
+/* eslint-disable */
+
+const webglUtils = require('./webgl-utils.js');
 
 function myAlert(msg) {
   alert(msg); // eslint-disable-line no-alert, no-undef
@@ -225,7 +227,7 @@ export function GlobalView(div, startupOptions)
 		if (invalidating === false && offscreenRendering === null)
 		{
 			invalidating = true;
-			window.requestAnimFrame(render);
+			webglUtils.requestAnimFrame(render);
 		}
 	}
 	var reresizeTimer = null;
@@ -241,7 +243,7 @@ export function GlobalView(div, startupOptions)
 			if (invalidating === false && offscreenRendering === null)
 			{
 				invalidating = true;
-				window.requestAnimFrame(render);
+				webglUtils.requestAnimFrame(render);
 			}
 			
 			// Refire event after 100ms in case another resize handler queued after this on changes the canvas size
