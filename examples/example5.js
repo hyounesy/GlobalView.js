@@ -39,7 +39,7 @@ domready(function () {
 	plot.referencePoints = plot.createPointSet("red", 1);
 	plot.highlightedPoints = plot.createPointSet("red", 1);
 	const csvPath = "datasets/AICS_Cell-feature-analysis_v1.5.csv"; //'http://homepage.univie.ac.at/a0929188/GlobalView/AICS_Cell-feature-analysis_v1.5.csv"
-	const imagesPath = "datasets/images/"; //'http://homepage.univie.ac.at/a0929188/GlobalView/images/"
+	const imagesPath = "datasets/AICS_Cell-feature-analysis_v1.5_images/"; //'http://homepage.univie.ac.at/a0929188/GlobalView/images/"
 	new CsvDataset(csvPath, {
 		hasHeader: true,
 		nameColumn: 1,
