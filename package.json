@@ -19,12 +19,13 @@
     "version": "npm run build && git add .",
     "start": "beefy --open",
     "start2": "beefy examples/example2.js --open",
-    "examples": "npm run example1 && npm run example2 && npm run example3 && npm run example4 && npm run example5",
+    "examples": "npm run example1 && npm run example2 && npm run example3 && npm run example4 && npm run example5 && npm run example6",
     "example1": "browserify examples/example1.js -o examples/example1.min.js",
     "example2": "browserify examples/example2.js -o examples/example2.min.js",
     "example3": "browserify examples/example3.js -o examples/example3.min.js",
     "example4": "browserify examples/example4.js -o examples/example4.min.js",
     "example5": "browserify examples/example5.js -o examples/example5.min.js",
+    "example6": "browserify examples/example6.js -o examples/example6.min.js",
     "TODO_minify": "(TODO): cat bundle.js | uglifyjs -o bundle.js"
   },
   "files": [
