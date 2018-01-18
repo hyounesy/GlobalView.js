@@ -122,7 +122,7 @@ function Thumbnail(globalView)
  * @param {Object} gl // {WebGLRenderingContext}
  * @param {Object} globalView // {GlobalView}
  */
-function ImageViewer(gl, globalView)
+export function ImageViewer(gl, globalView)
 {
 	var sdrImage = new Shader(gl, Shaders.vsTextured, Shaders.fsTextured);
 	sdrImage.matWorldViewProj = sdrImage.u4x4f("matWorldViewProj");

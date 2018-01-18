@@ -1,15 +1,136 @@
-'use strict';
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else if(typeof exports === 'object')
+		exports["globalView"] = factory();
+	else
+		root["globalView"] = factory();
+})(typeof self !== 'undefined' ? self : this, function() {
+return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.initCanvas = initCanvas;
-exports.GlobalView = GlobalView;
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__stats__ = __webpack_require__(1);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "mean", function() { return __WEBPACK_IMPORTED_MODULE_0__stats__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "range", function() { return __WEBPACK_IMPORTED_MODULE_0__stats__["b"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__globalView__ = __webpack_require__(2);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "initCanvas", function() { return __WEBPACK_IMPORTED_MODULE_1__globalView__["b"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "GlobalView", function() { return __WEBPACK_IMPORTED_MODULE_1__globalView__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__dataset__ = __webpack_require__(6);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "DataVector", function() { return __WEBPACK_IMPORTED_MODULE_2__dataset__["b"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Dataset", function() { return __WEBPACK_IMPORTED_MODULE_2__dataset__["c"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "RandomDataset", function() { return __WEBPACK_IMPORTED_MODULE_2__dataset__["d"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CsvDataset", function() { return __WEBPACK_IMPORTED_MODULE_2__dataset__["a"]; });
+
+
+
+
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = mean;
+/* harmony export (immutable) */ __webpack_exports__["b"] = range;
+function mean() {
+  for (var _len = arguments.length, numbers = Array(_len), _key = 0; _key < _len; _key++) {
+    numbers[_key] = arguments[_key];
+  }
+
+  return numbers.reduce(function (accum, next) {
+    return accum + next;
+  }) / numbers.length;
+}
+
+function range() {
+  var largest = Math.max.apply(Math, arguments);
+  var smallest = Math.min.apply(Math, arguments);
+  return largest - smallest;
+}
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["b"] = initCanvas;
+/* harmony export (immutable) */ __webpack_exports__["a"] = GlobalView;
 /* eslint-disable */
 
-var webglUtils = require('./webgl-utils.js');
-var libUtility = require('./utility.js');
-var libTextRenderContext = require('./textRenderContext.js');
+var webglUtils = __webpack_require__(3);
+var libUtility = __webpack_require__(4);
+var libTextRenderContext = __webpack_require__(5);
 
 function myAlert(msg) {
 	alert(msg); // eslint-disable-line no-alert, no-undef
@@ -2211,3 +2332,2122 @@ var Viewer = function Viewer() {};
 /** @type  {function(Object, boolean)} */Viewer.prototype.onOptionsChanged;
 /** @type  {function(Array<number>, Array<number>, Object)} */Viewer.prototype.onInputChanged;
 /** @type  {function(Object)} */Viewer.prototype.onPlotBoundsChanged;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "WebGLUtils", function() { return WebGLUtils; });
+/* harmony export (immutable) */ __webpack_exports__["requestAnimFrame"] = requestAnimFrame;
+/**
+ * @license
+ * Copyright 2010, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/**
+ * @fileoverview This file contains functions every webgl program will need
+ * a version of one way or another.
+ *
+ * Instead of setting up a context manually it is recommended to
+ * use. This will check for success or failure. On failure it
+ * will attempt to present an approriate message to the user.
+ *
+ *       gl = WebGLUtils.setupWebGL(canvas);
+ *
+ * For animated WebGL apps use of setTimeout or setInterval are
+ * discouraged. It is recommended you structure your rendering
+ * loop like this.
+ *
+ *       function render() {
+ *         window.requestAnimFrame(render, canvas);
+ *
+ *         // do rendering
+ *         ...
+ *       }
+ *       render();
+ *
+ * This will call your rendering function up to the refresh rate
+ * of your display but will stop rendering if your app is not
+ * visible.
+ */
+
+/* eslint-disable */
+
+var WebGLUtils = function () {
+
+  /**
+   * Creates the HTLM for a failure message
+   * @param {string} msg
+   * @return {string} The html.
+   */
+  var makeFailHTML = function makeFailHTML(msg) {
+    return '' + '<table style="background-color: #8CE; width: 100%; height: 100%;"><tr>' + '<td align="center">' + '<div style="display: table-cell; vertical-align: middle;">' + '<div style="">' + msg + '</div>' + '</div>' + '</td></tr></table>';
+  };
+
+  /**
+   * Message for getting a webgl browser
+   * @type {string}
+   */
+  var GET_A_WEBGL_BROWSER = '' + 'This page requires a browser that supports WebGL.<br/>' + '<a href="http://get.webgl.org">Click here to upgrade your browser.</a>';
+
+  /**
+   * Mesasge for need better hardware
+   * @type {string}
+   */
+  var OTHER_PROBLEM = '' + "It doesn't appear your computer can support WebGL.<br/>" + '<a href="http://get.webgl.org/troubleshooting/">Click here for more information.</a>';
+
+  /**
+   * Creates a webgl context. If creation fails it will
+   * change the contents of the container of the <canvas>
+   * tag to an error message with the correct links for WebGL.
+   * @param {HTMLCanvasElement} canvas The canvas element to create a context from.
+   * @param {*=} opt_attribs Any creation attributes you want to pass in.
+   * @param {function(string)=} opt_onError A function to call if there is an error during creation.
+   * @return {WebGLRenderingContext} The created context.
+   */
+  var setupWebGL = function setupWebGL(canvas, opt_attribs, opt_onError) {
+    function handleCreationError(msg) {
+      var container = canvas.parentNode;
+      if (container) {
+        var str = window.WebGLRenderingContext ? OTHER_PROBLEM : GET_A_WEBGL_BROWSER;
+        if (msg) {
+          str += "<br/><br/>Status: " + msg;
+        }
+        container.innerHTML = makeFailHTML(str);
+      }
+    };
+
+    opt_onError = opt_onError || handleCreationError;
+
+    if (canvas.addEventListener) {
+      canvas.addEventListener("webglcontextcreationerror", function (event) {
+        opt_onError(event.statusMessage);
+      }, false);
+    }
+    var context = create3DContext(canvas, opt_attribs);
+    if (!context) {
+      if (!window.WebGLRenderingContext) {
+        opt_onError("");
+      }
+    }
+    return context;
+  };
+
+  /**
+   * Creates a webgl context.
+   * @param {!HTMLCanvasElement} canvas The canvas tag to get context
+   *     from. If one is not passed in one will be created.
+   * @return {WebGLRenderingContext|null} The created context.
+   */
+  var create3DContext = function create3DContext(canvas, opt_attribs) {
+    var names = ["webgl", "experimental-webgl", "webkit-3d", "moz-webgl"];
+    var context = null;
+    for (var ii = 0; ii < names.length; ++ii) {
+      try {
+        context = /** @type {WebGLRenderingContext} */canvas.getContext(names[ii], opt_attribs);
+      } catch (e) {}
+      if (context) {
+        break;
+      }
+    }
+    return context;
+  };
+
+  return {
+    create3DContext: create3DContext,
+    setupWebGL: setupWebGL
+  };
+}();
+
+/**
+ * Provides requestAnimationFrame in a cross browser way.
+ */
+var window_requestAnimFrame = function () {
+  return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function ( /* function FrameRequestCallback */callback, /* DOMElement Element */element) {
+    window.setTimeout(callback, 1000 / 60);
+  };
+}();
+
+/**
+ * Provides requestAnimationFrame in a cross browser way.
+ */
+function requestAnimFrame(callback) {
+  // Initially tried exporting window_requestAnimFrame directly, but got "Illegal Invocation". 
+  // probably related to this: https://stackoverflow.com/questions/10743596/why-are-certain-function-calls-termed-illegal-invocations-in-javascript
+  window_requestAnimFrame(callback);
+}
+
+/***/ }),
+/* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (immutable) */ __webpack_exports__["rgbStringToFloatArray"] = rgbStringToFloatArray;
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+function linspace(first, second, last) {
+	var offset = second - first;
+	var halfOffset = 0.5 * offset;
+	var values = [first],
+	    i = 0;
+	while (values[i] + halfOffset < last) {
+		values.push(first + ++i * offset);
+	}values[i] = last;
+	console.log(values);
+	return new Float32Array(values);
+}
+//linspace(1, 1.1, 10);
+
+function isUndefined(x) {
+	return typeof x === 'undefined';
+}
+
+function isFunction(x) {
+	return typeof x === 'function';
+}
+
+function isArray(x) {
+	return Object.prototype.toString.call(x) === "[object Array]";
+}
+
+function isString(x) {
+	return typeof x === 'string';
+}
+
+function isNumber(x) {
+	return typeof x === 'number';
+}
+
+function isObject(x) {
+	var t = typeof x === 'undefined' ? 'undefined' : _typeof(x);
+	return t !== 'undefined' && t !== 'function' && t !== 'string' && t !== 'number' && Object.prototype.toString.call(x) !== "[object Array]";
+}
+function isCloneable(x) {
+	return !(isFunction(x) || x instanceof WebGLTexture); //TODO: Add more
+}
+
+Array.create = function (n, func) {
+	var array = new Array(n);
+	if (isFunction(func)) for (var i = 0; i < n; ++i) {
+		array[i] = func(i);
+	} else array.fill(func);
+	return array;
+};
+Array.prototype.minIndex = function () {
+	return this.reduce(function (smallestIndex, currentValue, currentIndex, arr) {
+		return currentValue < arr[smallestIndex] ? currentIndex : smallestIndex;
+	}, 0);
+};
+Array.prototype.maxIndex = function () {
+	return this.reduce(function (smallestIndex, currentValue, currentIndex, arr) {
+		return currentValue > arr[smallestIndex] ? currentIndex : smallestIndex;
+	}, 0);
+};
+
+if (!String.prototype.format) {
+	/**
+  * Source: http://stackoverflow.com/a/4673436
+  * @param {...*} var_args
+  */
+	String.prototype.format = function (var_args) {
+		var args = arguments;
+		return this.replace(/{(\d+)}/g, function (match, number) {
+			return typeof args[number] != 'undefined' ? args[number] : match;
+		});
+	};
+}
+/**
+	 * Source: http://stackoverflow.com/a/4673436
+	 * @param {RegExp} pattern
+	 * @param {string} mismatch
+	 * @param {...*} var_args
+	 */
+String.prototype.format2 = function (pattern, mismatch, var_args) {
+	var args = arguments;
+	return this.replace(pattern, function (match, number) {
+		number = Number.parseInt(number, 10) + 2;
+		return typeof args[number] != 'undefined' ? args[number] : mismatch;
+	});
+};
+
+function makeCloneable(obj) {
+	if (!isObject(obj)) // If obj isn't an object
+		return obj; // Return obj as is
+
+	// Check all properties of obj
+	for (var prop in obj) {
+		if (!isCloneable(obj[prop])) // If obj has at least on non-cloneable property
+			{
+				// Create a new object and clone all cloneable properties into that new object
+				var obj_subset = {};
+				for (prop in obj) {
+					if (isCloneable(obj[prop])) obj_subset[prop] = obj[prop];
+				}return obj_subset;
+			}
+	} // If obj doesn't have type functions
+	return obj; // Return obj as is
+};
+
+function getScript(id) {
+	var shaderScript = document.getElementById(id);
+	if (!shaderScript) {
+		return null;
+	}
+
+	var str = "";
+	var k = shaderScript.firstChild;
+	while (k) {
+		if (k.nodeType == 3) {
+			str += k.textContent;
+		}
+		k = k.nextSibling;
+	}
+
+	return str;
+}
+
+function colorNameToHex(color) // Source: https://stackoverflow.com/a/1573141
+{
+	var colors = {
+		"aliceblue": "#f0f8ff", "antiquewhite": "#faebd7", "aqua": "#00ffff", "aquamarine": "#7fffd4", "azure": "#f0ffff",
+		"beige": "#f5f5dc", "bisque": "#ffe4c4", "black": "#000000", "blanchedalmond": "#ffebcd", "blue": "#0000ff", "blueviolet": "#8a2be2",
+		"brown": "#a52a2a", "burlywood": "#deb887", "cadetblue": "#5f9ea0", "chartreuse": "#7fff00", "chocolate": "#d2691e", "coral": "#ff7f50",
+		"cornflowerblue": "#6495ed", "cornsilk": "#fff8dc", "crimson": "#dc143c", "cyan": "#00ffff", "darkblue": "#00008b", "darkcyan": "#008b8b",
+		"darkgoldenrod": "#b8860b", "darkgray": "#a9a9a9", "darkgreen": "#006400", "darkkhaki": "#bdb76b", "darkmagenta": "#8b008b",
+		"darkolivegreen": "#556b2f", "darkorange": "#ff8c00", "darkorchid": "#9932cc", "darkred": "#8b0000", "darksalmon": "#e9967a",
+		"darkseagreen": "#8fbc8f", "darkslateblue": "#483d8b", "darkslategray": "#2f4f4f", "darkturquoise": "#00ced1", "darkviolet": "#9400d3",
+		"deeppink": "#ff1493", "deepskyblue": "#00bfff", "dimgray": "#696969", "dodgerblue": "#1e90ff", "firebrick": "#b22222", "floralwhite": "#fffaf0",
+		"forestgreen": "#228b22", "fuchsia": "#ff00ff", "gainsboro": "#dcdcdc", "ghostwhite": "#f8f8ff", "gold": "#ffd700", "goldenrod": "#daa520",
+		"gray": "#808080", "green": "#008000", "greenyellow": "#adff2f", "honeydew": "#f0fff0", "hotpink": "#ff69b4", "indianred ": "#cd5c5c",
+		"indigo": "#4b0082", "ivory": "#fffff0", "khaki": "#f0e68c", "lavender": "#e6e6fa", "lavenderblush": "#fff0f5", "lawngreen": "#7cfc00",
+		"lemonchiffon": "#fffacd", "lightblue": "#add8e6", "lightcoral": "#f08080", "lightcyan": "#e0ffff", "lightgoldenrodyellow": "#fafad2",
+		"lightgray": "#d3d3d3", "lightgreen": "#90ee90", "lightpink": "#ffb6c1", "lightsalmon": "#ffa07a", "lightseagreen": "#20b2aa",
+		"lightskyblue": "#87cefa", "lightslategray": "#778899", "lightsteelblue": "#b0c4de", "lightyellow": "#ffffe0", "lime": "#00ff00",
+		"limegreen": "#32cd32", "linen": "#faf0e6", "magenta": "#ff00ff", "maroon": "#800000", "mediumaquamarine": "#66cdaa", "mediumblue": "#0000cd",
+		"mediumorchid": "#ba55d3", "mediumpurple": "#9370d8", "mediumseagreen": "#3cb371", "mediumslateblue": "#7b68ee", "mediumspringgreen": "#00fa9a",
+		"mediumturquoise": "#48d1cc", "mediumvioletred": "#c71585", "midnightblue": "#191970", "mintcream": "#f5fffa", "mistyrose": "#ffe4e1",
+		"moccasin": "#ffe4b5", "navajowhite": "#ffdead", "navy": "#000080", "oldlace": "#fdf5e6", "olive": "#808000", "olivedrab": "#6b8e23",
+		"orange": "#ffa500", "orangered": "#ff4500", "orchid": "#da70d6", "palegoldenrod": "#eee8aa", "palegreen": "#98fb98", "paleturquoise": "#afeeee",
+		"palevioletred": "#d87093", "papayawhip": "#ffefd5", "peachpuff": "#ffdab9", "peru": "#cd853f", "pink": "#ffc0cb", "plum": "#dda0dd",
+		"powderblue": "#b0e0e6", "purple": "#800080", "rebeccapurple": "#663399", "red": "#ff0000", "rosybrown": "#bc8f8f", "royalblue": "#4169e1",
+		"saddlebrown": "#8b4513", "salmon": "#fa8072", "sandybrown": "#f4a460", "seagreen": "#2e8b57", "seashell": "#fff5ee", "sienna": "#a0522d",
+		"silver": "#c0c0c0", "skyblue": "#87ceeb", "slateblue": "#6a5acd", "slategray": "#708090", "snow": "#fffafa", "springgreen": "#00ff7f",
+		"steelblue": "#4682b4", "tan": "#d2b48c", "teal": "#008080", "thistle": "#d8bfd8", "tomato": "#ff6347", "turquoise": "#40e0d0", "violet": "#ee82ee",
+		"wheat": "#f5deb3", "white": "#ffffff", "whitesmoke": "#f5f5f5", "yellow": "#ffff00", "yellowgreen": "#9acd32"
+	};
+	return colors[color.toLowerCase()];
+}
+
+function hexToRgb(hex) // Source: https://stackoverflow.com/a/5624139
+{
+	// Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+	var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+	hex = hex.replace(shorthandRegex, function (m, r, g, b) {
+		return r + r + g + g + b + b;
+	});
+
+	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	return result ? {
+		r: parseInt(result[1], 16),
+		g: parseInt(result[2], 16),
+		b: parseInt(result[3], 16)
+	} : null;
+}
+
+function rgbStringToFloatArray(rgbstr) {
+	var rgb = rgbstr.match(/\d+/g);
+	for (var i = 0; i < 4; ++i) {
+		rgb[i] = i < rgb.length ? Math.max(0x00, Math.min(0xFF, rgb[i] / 0xFF)) : 1.0;
+	}return rgb;
+}
+
+function i24ToFloatArray(clr) {
+	return [(clr >> 16 & 0xFF) / 255.0, (clr >> 8 & 0xFF) / 255.0, (clr >> 0 & 0xFF) / 255.0, 1.0];
+}
+
+function F32toI24(floats, bounds) {
+	var bytes = new Uint8Array(4 * floats.length);
+	var i = 0,
+	    voffset = -bounds[0],
+	    vscale = 0xFFFFFE / (bounds[1] - bounds[0]);
+	floats.forEach(function (value) {
+		value += voffset;
+		value *= vscale;
+		value = Math.floor(value);
+		value = Math.max(0, value);
+		value = Math.min(0xFFFFFE, value);
+		++value;
+		bytes[i + 0] = value >> 16 & 0xFF;
+		bytes[i + 1] = value >> 8 & 0xFF;
+		bytes[i + 2] = value >> 0 & 0xFF;
+		bytes[i + 3] = 255;
+		i += 4;
+	});
+	return bytes;
+}
+function F32toI24flipY(floats, bounds, width, height) {
+	var bytes = new Uint8Array(4 * floats.length);
+	var i = 0,
+	    voffset = -bounds[0],
+	    vscale = 0xFFFFFE / (bounds[1] - bounds[0]);
+	for (var y = 0; y < height; ++y) {
+		for (var x = 0; x < width; ++x) {
+			//var value = Math.floor((floats[(height - y - 1) * width + x] - bounds[0]) * vscale) + 1;
+			var value = floats[(height - y - 1) * width + x];
+			value += voffset;
+			value *= vscale;
+			value = Math.floor(value);
+			value = Math.max(0, value);
+			value = Math.min(0xFFFFFE, value);
+			++value;
+			bytes[i + 0] = value >> 16 & 0xFF;
+			bytes[i + 1] = value >> 8 & 0xFF;
+			bytes[i + 2] = value >> 0 & 0xFF;
+			bytes[i + 3] = 255;
+			i += 4;
+		}
+	}return bytes;
+}
+
+function hsv2rgb(hsv) // Source: https://stackoverflow.com/a/6930407
+{
+	if (hsv[1] <= 0.000001) return [hsv[2], hsv[2], hsv[2]];
+	var hh, p, q, t, ff, i, out;
+
+	hh = hsv[0];
+	if (hh >= 1.0) hh = 0.0;
+	hh *= 6.0;
+	i = Math.floor(hh);
+	ff = hh - i;
+	p = hsv[2] * (1.0 - hsv[1]);
+	q = hsv[2] * (1.0 - hsv[1] * ff);
+	t = hsv[2] * (1.0 - hsv[1] * (1.0 - ff));
+
+	switch (i) {
+		case 0:
+			return [hsv[2], t, p];
+		case 1:
+			return [q, hsv[2], p];
+		case 2:
+			return [p, hsv[2], t];
+		case 3:
+			return [p, q, hsv[2]];
+		case 4:
+			return [t, p, hsv[2]];
+		default:
+			return [hsv[2], p, q];
+	}
+}
+
+function urlExists(url, onTrue, onFalse, isAsync) {
+	var request = new XMLHttpRequest();
+	request.onreadystatechange = function () {
+		if (this.readyState == 4 && this.status == 404 && onFalse) onFalse();
+		if (this.readyState == 4 && this.status != 404 && onTrue) onTrue();
+	};
+	request.open('HEAD', url, !(isAsync === false));
+	request.overrideMimeType("text/csv; charset=utf8");
+	request.send();
+	return request.status != 404;
+}
+
+var _downloader;
+function download(filename, contentUrl) {
+	if (!_downloader) document.body.appendChild(_downloader = document.createElement('a'));
+
+	_downloader.href = contentUrl;
+	_downloader.download = filename;
+	_downloader.click();
+}
+
+function imageUrlFromBytes(bytes, width, height) {
+	// Create a temporary 2D canvas to store the result -> tempCanvas
+	var tempCanvas = document.createElement('canvas');
+	tempCanvas.width = width;
+	tempCanvas.height = height;
+
+	// Copy the pixels to the 2D canvas
+	var imageData = tempCanvas.getContext('2d').createImageData(width, height);
+	imageData.data.set(bytes);
+	tempCanvas.getContext('2d').putImageData(imageData, 0, 0);
+	var dataURL = tempCanvas.toDataURL();
+
+	// Free tempCanvas
+	tempCanvas = null;
+
+	return dataURL;
+}
+
+var _seededRandom_seed = 1;
+Math.seededRandom = function () {
+	// Source: https://stackoverflow.com/a/19303725
+	var x = Math.sin(_seededRandom_seed++) * 10000;
+	return x - Math.floor(x);
+};
+
+Math.clamp = function (f, minimum, maximum) {
+	return Math.min(Math.max(f, minimum), maximum);
+};
+
+function createCookie(name, value, days) // Source: http://www.quirksmode.org/js/cookies.html
+{
+	var expires = "";
+	if (days) {
+		var date = new Date();
+		date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+		expires = "; expires=" + date.toUTCString();
+	}
+	document.cookie = name + "=" + value + expires + "; path=/";
+}
+function readCookie(name) // Source: http://www.quirksmode.org/js/cookies.html
+{
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(';');
+	for (var i = 0; i < ca.length; ++i) {
+		var c = ca[i];
+		while (c.charAt(0) == ' ') {
+			c = c.substring(1, c.length);
+		}if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+	}
+	return null;
+}
+function readFloatCookie(name) {
+	var cookie = readCookie(name);
+	cookie = Number.parseFloat(cookie);
+	return isNaN(cookie) ? null : cookie;
+}
+function readIntCookie(name) {
+	var cookie = readCookie(name);
+	cookie = Number.parseInt(cookie, 10);
+	return isNaN(cookie) ? null : cookie;
+}
+function eraseCookie(name) // Source: http://www.quirksmode.org/js/cookies.html
+{
+	createCookie(name, "", -1);
+}
+
+function getParameterByName(name, url) // Source: https://stackoverflow.com/a/901144
+{
+	if (!url) url = window.location.href;
+	name = name.replace(/[\[\]]/g, "\\$&");
+	var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+	    results = regex.exec(url);
+	if (!results) return null;
+	if (!results[2]) return '';
+	return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+function addMouseWheelHandler(onmousewheel) // Source: http://www.javascriptkit.com/javatutors/onmousewheel.shtml
+{
+	var mousewheelevt = /Firefox/i.test(navigator.userAgent) ? "DOMMouseScroll" : "mousewheel";
+	if (document.attachEvent) document.attachEvent("on" + mousewheelevt, onmousewheel);else if (document.addEventListener) document.addEventListener(mousewheelevt, onmousewheel, false);
+}
+function addMouseMoveHandler(onmousemove) {
+	if (document.attachEvent) document.attachEvent("onmousemove", onmousemove);else if (document.addEventListener) document.addEventListener("mousemove", onmousemove, false);
+}
+function addMouseUpHandler(onmouseup) {
+	if (document.attachEvent) document.attachEvent("onmouseup", onmouseup);else if (document.addEventListener) document.addEventListener("mouseup", onmouseup, false);
+}
+function addKeyDownHandler(onkeydown) {
+	if (document.attachEvent) document.attachEvent("onkeydown", onkeydown);else if (document.addEventListener) document.addEventListener("keydown", onkeydown, false);
+}
+function addKeyUpHandler(onkeyup) {
+	if (document.attachEvent) document.attachEvent("onkeyup", onkeyup);else if (document.addEventListener) document.addEventListener("keyup", onkeyup, false);
+}
+
+// Standard forward-list
+/*function ForwardList() {
+	function Node(value) {
+		this.value = value;
+		this.next = null;
+	}
+	this.front = null;
+	this.length = 0;
+	
+	this.pushFront = function(value)
+	{
+		var newnode = new Node(value);
+		newnode.next = this.front;
+		this.front = newnode;
+		++this.length;
+	}
+	this.pushBack = function(value)
+	{
+		if (this.front === null)
+			this.pushFront(value);
+		else
+		{
+			var back = this.front;
+			while (back.next !== null)
+				back = back.next;
+			var newnode = new Node(value);
+			back.next = newnode;
+			++this.length;
+		}
+	}
+	this.sortedPush = function(value)
+	{
+		if (this.front === null || this.front.value >= value)
+			this.pushFront(value);
+		else
+		{
+			var node = this.front;
+			while (node.next !== null && node.next.value < value)
+				node = node.next;
+			var newnode = new Node(value);
+			newnode.next = node.next;
+			node.next = newnode;
+		}
+		++this.length;
+	}
+	this.toArray = function()
+	{
+		var array = [];
+		for (var node = this.front; node; node = node.next)
+			array.push(node.value);
+		return array;
+	}
+	this.print = function()
+	{
+		var array = [];
+		for (var node = this.front; node; node = node.next)
+			array.push(node.value);
+		console.log(array.join(", "));
+	}
+	
+	ForwardList.sortedMerge = function(a, b) // Source: http://www.geeksforgeeks.org/merge-two-sorted-linked-lists/
+	{
+		var mergedList = new ForwardList();
+		mergedList.length = a.length + b.length;
+		
+		a = a.front;
+		b = b.front;
+		var dummy = new Node(null);
+		var tail = dummy;
+		
+		while (a !== null && b!= null) // While neither a nor b run out
+		{
+			if (a.value <= b.value)
+			{
+				var newNode = a;
+				a = newNode.next;
+				newNode.next = tail.next;
+				tail.next = newNode;
+			}
+			else
+			{
+				var newNode = b;
+				b = newNode.next;
+				newNode.next = tail.next;
+				tail.next = newNode;
+			}
+
+			tail = tail.next;
+		}
+		
+		// Concatenate list that didn't run out
+		tail.next = a === null ? b : a;
+		
+		mergedList.front = dummy.next
+		return mergedList;
+	}
+}
+//var a = new ForwardList();
+//a.sortedPush(10);
+//a.sortedPush(15);
+//a.sortedPush(5);
+//var b = new ForwardList();
+//b.sortedPush(2);
+//b.sortedPush(3);
+//b.sortedPush(20);
+//ForwardList.sortedMerge(a, b).print();*/
+
+/**
+ * Simple forward-list
+ * The first node of the list is the list itself
+ * @constructor
+ * @package
+ */
+function ForwardList(value) {
+	this.value = value;
+	this.next = null;
+
+	this.push = function (value) // Pushes to front
+	{
+		var newnode = new ForwardList(this.value);
+		newnode.next = this.next;
+		this.next = newnode;
+		this.value = value;
+	};
+	this.pushBack = function (value) {
+		var back = this;
+		while (back.next !== null) {
+			back = back.next;
+		}var newnode = new ForwardList(value);
+		back.next = newnode;
+	};
+	this.sortedPush = function (value) {
+		if (value <= this.value) this.push(value);else {
+			var node = this;
+			while (node.next !== null && node.next.value < value) {
+				node = node.next;
+			}var newnode = new ForwardList(value);
+			newnode.next = node.next;
+			node.next = newnode;
+		}
+	};
+	this.toArray = function () {
+		var array = [];
+		for (var node = this; node; node = node.next) {
+			array.push(node.value);
+		}return array;
+	};
+	this.print = function () {
+		var array = [];
+		for (var node = this; node; node = node.next) {
+			array.push(node.value);
+		}console.log(array.join(", "));
+	};
+	this.size = function () {
+		var size = 0;
+		for (var node = this; node; node = node.next) {
+			++size;
+		}return size;
+	};
+	this.forEach = function (callback) {
+		for (var node = this; node; node = node.next) {
+			callback(node.value);
+		}
+	};
+	ForwardList.sortedMerge = function (a, b) // Source: http://www.geeksforgeeks.org/merge-two-sorted-linked-lists/
+	{
+		var dummy = new ForwardList(null);
+		var tail = dummy;
+
+		while (a !== null && b != null) // While neither a nor b run out
+		{
+			if (a.value <= b.value) {
+				var newNode = a;
+				a = newNode.next;
+				newNode.next = tail.next;
+				tail.next = newNode;
+			} else {
+				var newNode = b;
+				b = newNode.next;
+				newNode.next = tail.next;
+				tail.next = newNode;
+			}
+
+			tail = tail.next;
+		}
+
+		// Concatenate list that didn't run out
+		tail.next = a === null ? b : a;
+
+		return dummy.next;
+	};
+}
+
+/**
+ * A collection of objects sorted by object[priorityProperty]
+ * @constructor
+ * @package
+ * @param {string} priorityProperty
+ */
+function PriorityQueue(priorityProperty) {
+	var data = [];
+	this.length = 0;
+	this.push = function (element) {
+		++this.length;
+		var i,
+		    p = element[priorityProperty];
+		for (i = 0; i < data.length && data[i][priorityProperty] >= p; i++) {}
+		data.splice(i, 0, element);
+	};
+	this.pop = function () {
+		--this.length;
+		return data.pop();
+	};
+	this.shift = function () {
+		--this.length;
+		return data.shift();
+	};
+}
+/*var queue = new PriorityQueue('p');
+queue.push({str: 'high', p: 9});
+queue.push({str: 'low', p: 1});
+queue.push({str: 'medium-low', p: 3});
+queue.push({str: 'medium', p: 5});
+queue.push({str: 'medium-low-2', p: 3});
+queue.push({str: 'medium-high', p: 7});
+queue.push({str: 'very-high', p: 15});
+while (queue.length)
+	console.log(queue.shift());*/
+
+/**
+ * A set container that raises on-changed events whenever the collection is altered
+ * @constructor
+ * @export
+ */
+function HashSet(onchanged) {
+	/** A dictionary of all values in the hash set @type {!Object<number, boolean>} */var hash = {};
+	/** The number of values in this hash set @type {number} */this.length = 0;
+	/** A callback to be raised whenever values have been added or deleted @public @type {function()} */this.onchanged = isFunction(onchanged) ? onchanged : function () {};
+
+	this['push'] =
+	/**
+  * Add a single value into the hash set
+  * @param  {number} value
+  */
+	this.push = function (value) {
+		if (hash[value] !== true) {
+			hash[value] = true;
+			++this.length;
+			this.onchanged();
+		}
+	};
+
+	this['append'] =
+	/**
+  * Add an iterable list of values into the hash set
+  * @param  {Object} values
+  */
+	this.append = function (values) {
+		//var t = performance.now();
+		var invalidate = false,
+		    self = this;
+		values.forEach(function (value) {
+			if (hash[value] !== true) {
+				hash[value] = true;
+				++self.length;
+				invalidate = true;
+			}
+		});
+		//console.log('append ' + values.length + ': ' + (performance.now() - t));
+		if (invalidate) this.onchanged();
+	};
+
+	this['set'] =
+	/**
+  * Reset the hash set to only contain the given value
+  * @param  {number} value
+  */
+	this.set = function (value) {
+		if (this.length !== 1 || hash[value] !== true) {
+			hash = {};
+			hash[value] = true;
+			this.length = 1;
+			this.onchanged();
+		}
+	};
+
+	this['assign'] =
+	/**
+  * Reset the hash set to only contain the given iterable list of values
+  * @param  {Object} values
+  */
+	this.assign = function (values) {
+		if (values.length === 0) {
+			this.clear();
+			return;
+		}
+
+		//var t = performance.now();
+		var newHash = {},
+		    identical = values.length === this.length;
+		values.forEach(function (value) {
+			if (identical && hash[value] !== true) identical = false;
+			newHash[value] = true;
+		});
+
+		hash = newHash;
+		this.length = values.length;
+		//console.log('assign ' + values.length + ': ' + (performance.now() - t));
+
+		if (identical === false) this.onchanged();
+	};
+
+	this['assignRange'] =
+	/**
+  * Reset the hash set to only contain numbers 0 through n - 1
+  * @param  {number} n The number of values to set
+  */
+	this.assignRange = function (n) {
+		if (n <= 0) return;
+		//var t = performance.now();
+		hash = new Array(n);
+		hash.fill(true);
+		this.length = n;
+		//console.log('assignRange ' + n + ': ' + (performance.now() - t));
+		this.onchanged();
+	};
+
+	this['erase'] =
+	/**
+  * Remove the given value from the hash set
+  * @param  {number} value The value to remove
+  */
+	this.erase = function (value) {
+		if (hash[value] === true) {
+			delete hash[value];
+			--this.length;
+			this.onchanged();
+		}
+	};
+
+	this['remove'] =
+	/**
+  * Remove the given iterable list of values from the hash set
+  * @param  {Object} values The values to remove
+  */
+	this.remove = function (values) {
+		//var t = performance.now();
+		var invalidate = false,
+		    self = this;
+		values.forEach(function (value) {
+			if (hash[value] === true) {
+				delete hash[value];
+				--self.length;
+				invalidate = true;
+			}
+		});
+		//console.log('remove ' + values.length + ': ' + (performance.now() - t));
+		if (invalidate) this.onchanged();
+	};
+
+	this['isempty'] =
+	/**
+  * @return {boolean} True, if the hash set doesn't contain any values
+  */
+	this.isempty = function () {
+		return this.length === 0;
+	};
+
+	this['clear'] =
+	/**
+  * Resets the hash set to an empty set
+  */
+	this.clear = function () {
+		if (this.length !== 0) {
+			hash = {};
+			this.length = 0;
+			this.onchanged();
+		}
+	};
+
+	this['forEach'] =
+	/**
+  * Calls the given function once for each value in the hash set
+  * @param  {function(number)} callback
+  */
+	this.forEach = function (callback) {
+		//var last = Number.MIN_SAFE_INTEGER, badOrder = 0;
+		for (var value in hash) {
+			value = Number.parseInt(value, 10);
+			//if (value < last) ++badOrder; last = value;
+			callback(value);
+		}
+		//if (badOrder !== 0) console.log('bad order: ' + badOrder + ' times');
+	};
+
+	this['get'] =
+	/**
+  * @return  {Uint32Array} A sorted array of all values in the hash set
+  */
+	this.get = function () {
+		return new Uint32Array(Object.keys(hash).map(Number));
+	};
+
+	this['size'] =
+	/**
+  * @return  {number} The number of values in the hash set
+  */
+	this.size = function () {
+		return this.length;
+	};
+
+	this['contains'] =
+	/**
+  * @param  {number} value
+  * @return  {boolean} True, if the given value is part of the hash set
+  */
+	this.contains = function (value) {
+		return hash[value] === true;
+	};
+}
+/*function HashSet(onchanged) // Set-based (slower on Firefox!)
+{
+	var hash = new Set();
+	this.onchanged = isFunction(onchanged) ? onchanged : function() {};
+	
+	this.push = function(value)
+	{
+		if (!hash.has(value))
+		{
+			hash.add(value);
+			this.onchanged();
+		}
+	}
+	this.append = function(values)
+	{
+//var t = performance.now();
+		var sizeBefore = hash.size;
+		hash = new Set([...hash, ...values]);
+		var invalidate = hash.size !== sizeBefore;
+//console.log('append ' + values.length + ': ' + (performance.now() - t));
+		if (invalidate)
+			this.onchanged();
+	}
+	this.set = function(value)
+	{
+		if (hash.size !== 1 || !hash.has(value))
+		{
+			hash = new Set([value]);
+			this.onchanged();
+		}
+	}
+	this.assign = function(values)
+	{
+		if (values.length === 0)
+		{
+			this.clear();
+			return;
+		}
+		
+//var t = performance.now();
+		var newHash = new Set(), identical = (values.length === hash.size);
+		values.forEach(function(value) {
+			if (identical && !hash.has(value))
+				identical = false;
+			newHash.add(value);
+		});
+		
+		hash = newHash;
+//console.log('assign ' + values.length + ': ' + (performance.now() - t));
+		
+		if (identical === false)
+			this.onchanged();
+	}
+	this.assignRange = function(n)
+	{
+		if (n <= 0)
+			return;
+//var t = performance.now();
+		hash = new Set();
+		for (var i = 0; i < n; ++i)
+			hash.add(i);
+//console.log('assignRange ' + n + ': ' + (performance.now() - t));
+		this.onchanged();
+	}
+	this.erase = function(value)
+	{
+		if (hash.has(value))
+		{
+			hash.delete(value);
+			this.onchanged();
+		}
+	}
+	this.remove = function(values)
+	{
+//var t = performance.now();
+		var invalidate = false, self = this;
+		values.forEach(function(value) {
+			if (hash.has(value))
+			{
+				hash.delete(value);
+				--self.length;
+				invalidate = true;
+			}
+		});
+//console.log('remove ' + values.length + ': ' + (performance.now() - t));
+		if (invalidate)
+			this.onchanged();
+	}
+	this.isempty = function()
+	{
+		return hash.size === 0;
+	}
+	this.clear = function()
+	{
+		if (hash.size !== 0)
+		{
+			hash = new Set();
+			this.onchanged();
+		}
+	}
+	this.forEach = function(callback)
+	{
+//var last = Number.MIN_SAFE_INTEGER, badOrder = 0;
+		for (var value of hash)
+		{
+//if (value < last) ++badOrder; last = value;
+			callback(value);
+		}
+//if (badOrder !== 0) console.log('bad order: ' + badOrder + ' times');
+	}
+	this.get = function()
+	{
+		return new Uint32Array(hash.keys());
+	}
+	this.size = function()
+	{
+		return hash.size;
+	}
+	this.contains = function(value)
+	{
+		return hash.has(value);
+	}
+}*/
+
+/***/ }),
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (immutable) */ __webpack_exports__["TextRenderContext"] = TextRenderContext;
+/**
+ * A helper class that attaches a 2D canvas to the parent div of the given WebGL canvas.
+ * This 2D canvas is used to draw text.
+ * @constructor
+ * @package
+ * @param {Object} gl // {WebGLRenderingContext}
+ * @param {HTMLCanvasElement} canvas
+ */
+function TextRenderContext(gl, canvas) {
+	var textCanvas = document.createElement('canvas');
+	textCanvas.style.backgroundColor = 'transparent';
+	textCanvas.style.pointerEvents = 'none';
+	textCanvas.style.zIndex = canvas.style.zIndex + 1;
+	textCanvas.style.position = "static"; //"absolute";
+	//textCanvas.style.left = textCanvas.style.top = "0px";
+	textCanvas.style.width = textCanvas.style.height = "100%";
+	canvas.parentElement.appendChild(textCanvas);
+	var ctx = textCanvas.getContext("2d");
+	var _font = ctx.font;
+	var fontHeight = ctx.measureText('M').width;
+
+	this.clear = function () {
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.strokeStyle = ctx.fillStyle = gl.foreColorString;
+	};
+
+	gl.drawText = function (str, x, y, anchor, rotation, color) {
+		x = Math.floor(x);
+		y = Math.floor(y);
+
+		if (color) ctx.fillStyle = color;
+
+		var offsetV;
+		switch (anchor) {
+			default:
+				// 'topleft'
+				ctx.textAlign = "left";
+				offsetV = fontHeight;
+				break;
+			case 'topcenter':
+				ctx.textAlign = "center";
+				offsetV = fontHeight;
+				break;
+			case 'topright':
+				ctx.textAlign = "right";
+				offsetV = fontHeight;
+				break;
+			case 'middleleft':
+				ctx.textAlign = "left";
+				offsetV = fontHeight * 0.53;
+				break;
+			case 'middlecenter':
+				ctx.textAlign = "center";
+				offsetV = fontHeight * 0.53;
+				break;
+			case 'middleright':
+				ctx.textAlign = "right";
+				offsetV = fontHeight * 0.53;
+				break;
+			case 'bottomleft':
+				ctx.textAlign = "left";
+				offsetV = 0;
+				break;
+			case 'bottomcenter':
+				ctx.textAlign = "center";
+				offsetV = 0;
+				break;
+			case 'bottomright':
+				ctx.textAlign = "right";
+				offsetV = 0;
+				break;
+		}
+		if (rotation == 0) ctx.fillText(str, x, y + offsetV);else {
+			ctx.save();
+			ctx.translate(x, y);
+			ctx.rotate(rotation);
+			ctx.translate(0, offsetV);
+			ctx.fillText(str, 0, 0);
+			ctx.restore();
+		}
+
+		if (color) ctx.fillStyle = gl.foreColorString;
+	};
+	gl.measureTextWidth = function (str) {
+		return ctx.measureText(str).width;
+	};
+	gl.measureTextHeight = function () {
+		return fontHeight;
+	};
+
+	gl.drawRect = function (x, y, width, height) {
+		if (width < 0) {
+			x += width;
+			width = -width;
+		}
+		if (height < 0) {
+			y += height;
+			height = -height;
+		}
+
+		x = Math.floor(x) + 0.5;
+		y = Math.floor(y) + 0.5;
+		width = Math.floor(width);
+		height = Math.floor(height);
+
+		//ctx.strokeStyle = gl.foreColorString;
+		ctx.strokeRect(x, y, width, height);
+	};
+
+	gl.drawPolygon = function (points, color) {
+		if (points.length < 2) return;
+
+		if (color) ctx.fillStyle = color;
+		ctx.beginPath();
+		ctx.moveTo(points[0][0], points[0][1]);
+		for (var i = 1; i < points.length; ++i) {
+			ctx.lineTo(points[i][0], points[i][1]);
+		}ctx.closePath();
+		ctx.stroke();
+		if (color) ctx.fillStyle = gl.foreColorString;
+	};
+	gl.fillPolygon = function (points, color) {
+		if (points.length < 2) return;
+
+		if (color) ctx.fillStyle = color;
+		ctx.beginPath();
+		ctx.moveTo(points[0][0], points[0][1]);
+		for (var i = 1; i < points.length; ++i) {
+			ctx.lineTo(points[i][0], points[i][1]);
+		}ctx.closePath();
+		ctx.fill();
+		if (color) ctx.fillStyle = gl.foreColorString;
+	};
+
+	this.setFont = function (font) {
+		ctx.font = _font = font;
+
+		// Compute fontHeight (Source: http://stackoverflow.com/a/7462767)
+		var body = document.getElementsByTagName("body")[0];
+		var dummy = document.createElement("div");
+		var dummyText = document.createTextNode("M");
+		dummy.appendChild(dummyText);
+		dummy.style.font = font;
+		body.appendChild(dummy);
+		fontHeight = dummy.offsetHeight * 0.62;
+		body.removeChild(dummy);
+	};
+
+	this.onResize = function () {
+		/*var canvasBounds = canvas.getBoundingClientRect();
+  textCanvas.style.left = canvasBounds.left;
+  textCanvas.style.top = canvasBounds.top;
+  textCanvas.style.width = textCanvas.width = canvasBounds.width;
+  textCanvas.style.height = textCanvas.height = canvasBounds.height;*/
+
+		if (offscreenRendering !== null) {
+			textCanvas.width = offscreenRendering.width;
+			textCanvas.height = offscreenRendering.height;
+		} else {
+			var rect = textCanvas.getBoundingClientRect();
+			textCanvas.style.marginTop = -(rect.bottom - rect.top) + "px";
+			textCanvas.width = rect.right - rect.left;
+			textCanvas.height = rect.bottom - rect.top;
+		}
+		this.setFont(_font); // Reset canvas font
+	};
+
+	var offscreenRendering = null;
+	this.enableOffscreenRendering = function (width, height) {
+		if (offscreenRendering !== null) return;
+		offscreenRendering = {};
+
+		offscreenRendering.width = width;
+		offscreenRendering.height = height;
+		offscreenRendering.oldCanvas = textCanvas;
+		offscreenRendering.oldContext = ctx;
+		textCanvas = document.createElement('canvas');
+		ctx = textCanvas.getContext("2d");
+		this.onResize();
+	};
+	this.disableOffscreenRendering = function () {
+		if (offscreenRendering === null) return;
+
+		textCanvas = offscreenRendering.oldCanvas;
+		ctx = offscreenRendering.oldContext;
+		offscreenRendering = null;
+		//this.onResize();
+	};
+	this.getCanvas = function () {
+		return textCanvas;
+	};
+
+	this.onResize();
+}
+
+/***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["b"] = DataVector;
+/* harmony export (immutable) */ __webpack_exports__["c"] = Dataset;
+/* harmony export (immutable) */ __webpack_exports__["d"] = RandomDataset;
+/* harmony export (immutable) */ __webpack_exports__["a"] = CsvDataset;
+/* eslint-disable */
+
+// const $ = require("jquery");
+
+/**
+ * A vector of data values inside the dataset.
+ * The source of a data vector can be either a column in the dataset's data table or a formula.
+ * The length of the vector is fixed by the dataset.
+ * The DataVector class doesn't store actual values, it only defines functions to read from the dataset.
+ * @constructor
+ * @export
+ * @param {Dataset} dataset The underlying dataset
+ * @param {number|string} source Either a column index into the dataset, or a formula
+ */
+function DataVector(dataset, source) {
+	var nc = dataset.numColumns;
+
+	if (isNumber(source)) {
+		var c = Math.round(source);
+		this['getValue'] = this.getValue = function (i) {
+			//return Math.log(dataset.fdata[i * nc + c]);
+			return dataset.fdata[i * nc + c];
+		};
+
+		//this.getValueCode = "log(c{0})".format(c);
+		this.getValueCode = "c" + c; //"{" + c + "}";
+
+		var column = dataset.columns[c];
+		this['minimum'] = this.minimum = column.minimum;
+		this['maximum'] = this.maximum = column.maximum;
+		this.offset = -column.minimum * (this.scale = 1 / (column.maximum - column.minimum));
+		this['values'] = this.values = column.values;
+		this['label'] = this.label = column.label;
+	} else {
+		var stack = new Array(16);
+		var globalTypes = {
+			'n': FormulaCompiler.types.float,
+			'PI': FormulaCompiler.types.float,
+			'i': FormulaCompiler.types.float
+		};
+		for (var c = 0; c < nc; ++c) {
+			globalTypes['c' + c] = FormulaCompiler.types.float;
+		}var globals = {
+			'n': dataset.length,
+			'PI': Math.PI
+		};
+
+		var code = FormulaCompiler.compile(source + ";", globalTypes);
+		if (isString(code)) {
+			console.error("GlobalView error: Error while parsing data vector formula '{0}'".format(source));
+			console.error("                  " + code);
+			return;
+		}
+		var formula = source;
+		this.getValueCode = formula;
+
+		this['getValue'] = this.getValue = function (i) {
+			globals['i'] = i;
+			for (var c = 0; c < nc; ++c) {
+				globals['c' + c] = dataset.fdata[i * nc + c];
+			}return FormulaCompiler.run(code, stack, globals);
+		};
+
+		this.minimum = Number.MAX_VALUE;
+		this.maximum = Number.MIN_VALUE;
+		for (var i = 0, n = dataset.length; i < n; ++i) {
+			var value = this.getValue(i);
+			this.minimum = Math.min(this.minimum, value);
+			this.maximum = Math.max(this.maximum, value);
+		}
+		this['minimum'] = this.minimum;
+		this['maximum'] = this.maximum;
+		//console.log([this.minimum, this.maximum]);
+		this.scale = this.maximum - this.minimum;
+		if (this.scale > -1e-5 && this.scale < 1e-5) this.offset = 0.5 - 0.5 * (this.minimum + this.maximum) * (this.scale = 0.5);else this.offset = -this.minimum * (this.scale = 1 / this.scale);
+		this['values'] = this.values = null;
+		this['label'] = this.label = formula;
+	}
+}
+
+/**
+ * A dataset template for the GlobalView scatter plot framework
+ * @abstract
+ * @constructor
+ * @export
+ */
+function Dataset() {
+	/**
+  * @summary Number of columns in the {@link Dataset#data} table
+  * @type {number}
+  */
+	this.numColumns = this['numColumns'] = 0;
+	/**
+  * Note: Each dataVector has exactly 'length' elements
+  * @summary Number of rows in the {@link Dataset#data} table
+  * @type {number}
+  */
+	this.length = this['length'] = 0;
+	/**
+  * @summary Metadata about one column of data in the {@link Dataset#data} table
+  * @type {Object}
+  * @deprecated Use {@link Dataset#dataVectors} for access to metadata instead
+  */
+	this.columns = this['columns'] = [];
+	/**
+  * An input dimension to the plot.
+  * A data vector doesn't physically contain data.
+  * Instead it holds meta data and a transfer function that produces data based on zero or more columns from the {@link Dataset#fdata} table
+  * @summary A logical vector of data
+  * @type {Array<DataVector>}
+  */
+	this.dataVectors = this['dataVectors'] = [];
+	/**
+  * The data matrix isn't limited to numeric data.
+  * Categorical columns are stored as strings.
+  * {@link Dataset#dataVectors} access the numeric version of this matrix ({@link Dataset#fdata}).
+  * It is of size {@link Dataset#numColumns} by {@link Dataset#length}.
+  * @summary A matrix of data
+  * @type {Float32Array|Array}
+  */
+	this.data = this['data'] = [];
+	/**
+  * This matrix is the numeric version of {@link Dataset#data}.
+  * Categorical columns are stored as 0-based indices.
+  * @summary A matrix of numeric data for the {@link Dataset#dataVectors}
+  * @type {Float32Array}
+  */
+	this.fdata = this['fdata'] = new Float32Array(0);
+	/**
+  * This vector is of length {@link Dataset#length}.
+  * @summary A vector of data point names
+  * @type {Array<string>}
+  */
+	this.names = this['names'] = null;
+	/**
+  * This vector is of length {@link Dataset#length}.
+  * @summary A vector of data point image URLs.
+  * @type {Array<string>}
+  */
+	this.imageFilenames = this['imageFilenames'] = null;
+
+	/**
+  * @type {Array<Array<Object>>}
+  */
+	var _densityMaps = [];
+	/**
+  * @type {Array<Array<Object>>}
+ */
+	var _clusterMaps = [];
+
+	this['isDensityMapReady'] =
+	/**
+  * Checks if a density map on dimensions d0 and d1 is available.
+  * Hint: d0 and d1 can't be identical. The order of d0 and d1 is ignored.
+  * @param  {number!} d0
+  * @param  {number!} d1
+  * @return {boolean!} True, if a densitymap for dimensions d0, d1 has been computed
+  */
+	this.isDensityMapReady = function (d0, d1) {
+		// Validate inputs
+		if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) return false;
+
+		// Assure d0 < d1
+		if (d0 === d1) return false;
+		if (d1 < d0) {
+			// Swap d0 <-> d1
+			var temp = d0;
+			d0 = d1;
+			d1 = temp;
+		}
+
+		return _densityMaps.length > d0 && _densityMaps[d0].length > d1 && _densityMaps[d0][d1] && (isUndefined(_densityMaps[d0][d1].pending) || _densityMaps[d0][d1].old);
+	};
+
+	this['iterateDensityMaps'] =
+	/**
+  * Calls the given function for each computed density map
+  * @param  {function(DensityMap!)!} callback
+  */
+	this.iterateDensityMaps = function (callback) {
+		_densityMaps.forEach(function (_densityMaps) {
+			return _densityMaps.forEach(function (densityMap) {
+				return densityMap && (isUndefined(densityMap.pending) || densityMap.old) ? callback(densityMap.old || densityMap) : null;
+			});
+		});
+	};
+
+	this['requestDensityMap'] =
+	/**
+  * This function returns a density map for the given dimensions. If the density map doesn't exist it is computed.
+  * When a function is passed to ondone, the density map is computed by a background worker, otherwise it is computed on the current thread.
+  * After the worker has finished all ondone events for calls to this function are fired.
+  * Hint: d0 and d1 can't be identical. The order of d0 and d1 is ignored.
+  * @summary Returns a density map for dimensions d0 and d1.
+  * @param  {!number} d0
+  * @param  {!number} d1
+  * @param  {number=} size=1024 The width and height of the density map
+  * @param  {DensityMapOptions=} options
+  * @param  {function(DensityMap)=} ondone A function to be called when the density map is ready
+  * @return {DensityMap}
+  */
+	this.requestDensityMap = function (d0, d1, size, options, ondone) {
+		// Validate inputs
+		if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) {
+			console.warn("GlobalView warning: Requesting density map for dimensions {0}, {1} on a dataset with only {2} data vectors".format(d0, d1, this.dataVectors.length));
+			return null;
+		}
+		var isAsync = isFunction(ondone); //&& !/Firefox/i.test(navigator.userAgent);// Firefox tends to crash with Parallel.js
+
+		// Assure d0 < d1
+		if (d0 === d1) return null;
+		if (d1 < d0) {
+			// Swap d0 <-> d1
+			var temp = d0;
+			d0 = d1;
+			d1 = temp;
+		}
+
+		while (_densityMaps.length <= d0) {
+			_densityMaps.push([]);
+		}while (_densityMaps[d0].length <= d1) {
+			_densityMaps[d0].push(null);
+		}var densityMap = _densityMaps[d0][d1];
+
+		if (!size) size = 1024;
+
+		if (densityMap && options && densityMap.options && !DensityMapOptions.equals(options, densityMap.options)) // If options changed
+			densityMap = null; // Recompute density map
+
+		if (isAsync) // If async
+			{
+				if (!densityMap) // If _densityMaps[d0][d1] isn't computed or being computed yet
+					{
+						// While we compute _densityMaps[d0][d1], replace it with an array of functions to execute when it is ready
+						_densityMaps[d0][d1] = { pending: [ondone], old: _densityMaps[d0][d1] };
+
+						// Compute histogram synchronously
+						var histogram = computeHistogram2D(this, d0, d1, size, size);
+
+						// Execute an asynchronous worker that computes _densityMaps[d0][d1]
+						var p = new Parallel([makeCloneable(histogram), new DensityMapOptions(options)], { evalPath: 'eval.js' });
+						p.require(DensityMap);
+						p.require(computeDensityMap);
+						p.spawn(function (params) {
+							return computeDensityMap.apply(null, params);
+						}).then(function (densityMap) {
+							densityMap = new DensityMap(densityMap);
+							// Free histogram
+							histogram = null;
+
+							// Set _densityMaps[d0][d1]
+							_densityMaps[d0][d1].old = null;
+							var pending = _densityMaps[d0][d1].pending;
+							_densityMaps[d0][d1] = densityMap;
+
+							if (_clusterMaps.length > d0 && _clusterMaps[d0].length > d1 && _clusterMaps[d0][d1] && isUndefined(_clusterMaps[d0][d1].pending)) _clusterMaps[d0][d1] = null;
+
+							// Execute queued 'ondone' functions
+							pending.forEach(function (ondone) {
+								ondone(densityMap);
+							});
+						});
+					} else if (!isUndefined(densityMap.pending)) // If _densityMaps[d0][d1] is currently being computed asynchronously
+					{
+						if (densityMap.old && (!options || DensityMapOptions.equals(densityMap.old.options, options))) // If the deprecated densityMap satisfies our requested options
+							ondone( /** @type {DensityMap} */densityMap.old);else densityMap.pending.push(ondone);
+					} else // If _densityMaps[d0][d1] is available
+					ondone( /** @type {DensityMap} */densityMap);
+				return null;
+			} else {
+			if (!densityMap) // If _densityMaps[d0][d1] isn't computed or being computed yet
+				{
+					//var tStart = performance.now();
+					var histogram = computeHistogram2D(this, d0, d1, size, size);
+					_densityMaps[d0][d1] = densityMap = new DensityMap(computeDensityMap(histogram, new DensityMapOptions(options)));
+					histogram = null; // Free histogram
+					//console.log(performance.now() - tStart + "ms");
+				} else if (densityMap.old && (!options || DensityMapOptions.equals(densityMap.old.options, options))) // If the deprecated densityMap satisfies our requested options
+				densityMap = densityMap.old;else while (!isUndefined(_densityMaps[d0][d1].pending)) {} // Wait while _densityMaps[d0][d1] is being computed asynchronously
+
+			if (isFunction(ondone)) ondone( /** @type {DensityMap} */densityMap);
+			return (/** @type {DensityMap} */densityMap
+			);
+		}
+	};
+
+	this['isClusterMapReady'] = this.isClusterMapReady = function (d0, d1) {
+		// Validate inputs
+		if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) return false;
+
+		// Assure d0 < d1
+		if (d0 === d1) return false;
+		if (d1 < d0) {
+			// Swap d0 <-> d1
+			var temp = d0;
+			d0 = d1;
+			d1 = temp;
+		}
+
+		return _clusterMaps.length > d0 && _clusterMaps[d0].length > d1 && _clusterMaps[d0][d1] && (isUndefined(_clusterMaps[d0][d1].pending) || _clusterMaps[d0][d1].old);
+	};
+	this['requestClusterMap'] = this.requestClusterMap = function (d0, d1, options, ondone) {
+		// Validate inputs
+		if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) {
+			console.warn("GlobalView warning: Requesting cluster map for dimensions {0}, {1} on a dataset with only {2} data vectors".format(d0, d1, this.dataVectors.length));
+			return null;
+		}
+		var isAsync = isFunction(ondone); //&& !/Firefox/i.test(navigator.userAgent);// Firefox tends to crash with Parallel.js
+
+		// Assure d0 < d1
+		if (d0 === d1) return;
+		if (d1 < d0) {
+			// Swap d0 <-> d1
+			var temp = d0;
+			d0 = d1;
+			d1 = temp;
+		}
+
+		while (_clusterMaps.length <= d0) {
+			_clusterMaps.push([]);
+		}while (_clusterMaps[d0].length <= d1) {
+			_clusterMaps[d0].push(null);
+		}var clusterMap = _clusterMaps[d0][d1];
+
+		if (clusterMap && options && clusterMap.options && !ClusterMapOptions.equals(options, clusterMap.options)) // If options changed
+			clusterMap = null; // Recompute density map
+
+		if (isAsync) // If async
+			{
+				if (!clusterMap) // If _clusterMaps[d0][d1] isn't computed or being computed yet
+					{
+						// While we compute _clusterMaps[d0][d1], replace it with an array of functions to execute when it is ready
+						_clusterMaps[d0][d1] = { pending: [ondone] };
+
+						this.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
+							// Execute an asynchronous worker that computes _clusterMaps[d0][d1]
+							var p = new Parallel([makeCloneable(densityMap), d0, d1, new ClusterMapOptions(options)], { evalPath: 'eval.js' });
+							p.require(computeClusterMap_method3);
+							p.require(ForwardList);
+							p.require(PriorityQueue);
+							p.spawn(function (params) {
+								return computeClusterMap_method3.apply(null, params);
+							}).then(function (clusterMap) {
+								clusterMap = new ClusterMap(clusterMap);
+								// Set _clusterMaps[d0][d1]
+								var pending = _clusterMaps[d0][d1].pending;
+								_clusterMaps[d0][d1] = clusterMap;
+
+								// Execute queued 'ondone' functions
+								pending.forEach(function (ondone) {
+									ondone(clusterMap);
+								});
+							});
+						});
+					} else if (!isUndefined(clusterMap.pending)) // If _clusterMaps[d0][d1] is currently being computed asynchronously
+					{
+						if (clusterMap.old && (!options || ClusterMapOptions.equals(clusterMap.old.options, options))) // If the deprecated clusterMap satisfies our requested options
+							ondone( /** @type {ClusterMap} */clusterMap.old);else clusterMap.pending.push(ondone);
+					} else // If _clusterMaps[d0][d1] is available
+					ondone(clusterMap);
+			} else {
+			if (!clusterMap) // If _clusterMaps[d0][d1] isn't computed or being computed yet
+				{
+					var densityMap = this.requestDensityMap(d0, d1, undefined, undefined);
+					if (densityMap) {
+						//var tStart = performance.now();
+						_clusterMaps[d0][d1] = clusterMap = new ClusterMap(computeClusterMap_method3(densityMap, d0, d1, new ClusterMapOptions(options)));
+						//console.log(performance.now() - tStart + "ms");
+					} else _clusterMaps[d0][d1] = clusterMap = null;
+				} else if (clusterMap.old && (!options || ClusterMapOptions.equals(clusterMap.old.options, options))) // If the deprecated clusterMap satisfies our requested options
+				clusterMap = clusterMap.old;else while (!isUndefined(clusterMap.pending)) {} // Wait while _clusterMaps[d0][d1] is being computed asynchronously
+
+			if (isFunction(ondone)) ondone(clusterMap);
+			return clusterMap;
+		}
+	};
+
+	this['inflate'] = this.inflate = function (factor, densityMapChain) {
+		var n = this.length,
+		    n_inflated = Math.floor(factor * n),
+		    nc = this.numColumns;
+		if (isNaN(n_inflated) || n_inflated <= n) return;
+		var fdata = this.fdata,
+		    fdata_inflated = new Float32Array(n_inflated * nc);
+		var data = this.data,
+		    data_inflated = new Array(n_inflated * nc);
+
+		for (var i = 0, len = n * nc; i < len; ++i) {
+			fdata_inflated[i] = fdata[i];
+		}for (var i = 0, len = n * nc; i < len; ++i) {
+			data_inflated[i] = data[i];
+		}var column,
+		    samples,
+		    sample,
+		    sampleScale = 1 / densityMapChain[0].size;
+		for (var i, i_inflated = n, len = n * nc; i_inflated < n_inflated; ++i_inflated) {
+			i = i_inflated % n;
+
+			samples = sampleDensityMapChain(densityMapChain);
+			for (var c = 0; c < nc; ++c) {
+				column = this.columns[c];
+				sample = column.minimum + (column.maximum - column.minimum) * samples[c] * sampleScale;
+
+				if (column.values) // If column is qualitative
+					{
+						fdata_inflated[i_inflated * nc + c] = sample = Math.max(0, Math.min(column.values.length - 1, Math.round(sample)));
+						data_inflated[i_inflated * nc + c] = column.values[sample];
+					} else // If column is numeric
+					{
+						fdata_inflated[i_inflated * nc + c] = sample;
+						data_inflated[i_inflated * nc + c] = sample;
+					}
+			}
+		}
+		this['fdata'] = this.fdata = fdata_inflated;
+		this['data'] = this.data = data_inflated;
+
+		if (this.names !== null) {
+			var names = /** @type {Array<string>} */this.names,
+			    names_inflated = new Array(n_inflated);
+			for (var i = 0, len = n; i < len; ++i) {
+				names_inflated[i] = names[i];
+			}for (var index = 0, i_inflated = n, len = n * nc; i_inflated < n_inflated; ++i_inflated) {
+				names_inflated[i_inflated] = "generated datapoint " + ++index;
+			}this['names'] = this.names = names_inflated;
+		}
+
+		if (this.imageFilenames !== null) {
+			var imageFilenames = /** @type {Array<string>} */this.imageFilenames,
+			    imageFilenames_inflated = new Array(n_inflated);
+			for (var i = 0, len = n; i < len; ++i) {
+				imageFilenames_inflated[i] = imageFilenames[i];
+			}for (var i_inflated = n, len = n * nc; i_inflated < n_inflated; ++i_inflated) {
+				imageFilenames_inflated[i_inflated] = imageFilenames[i_inflated % n];
+			}this['imageFilenames'] = this.imageFilenames = imageFilenames_inflated;
+		}
+
+		this['length'] = this.length = n_inflated;
+	};
+
+	this['save'] = this.save = function (filename, nameColumn, nameColumnLabel) {
+		var nc = this.numColumns,
+		    csv_nc;
+		if (this.names && !isUndefined(nameColumn) && !isUndefined(nameColumnLabel)) csv_nc = nc + 1;else {
+			nameColumn = -1;
+			csv_nc = nc;
+		}
+
+		var csv = new Array(this.length + 1); // +1 ... Header row
+
+		// Create csv header array
+		var header = new Array(csv_nc);
+		for (var c = 0, ci = 0; c < csv_nc; ++c, ++ci) {
+			if (c === nameColumn) {
+				header[c] = nameColumnLabel;
+				--ci;
+			} else header[c] = this.columns[ci].label;
+		}
+		csv[0] = header;
+
+		// Create csv body arrays
+		for (var i = 0; i < this.length; ++i) {
+			var row = new Array(csv_nc);
+			for (var c = 0, ci = 0; c < csv_nc; ++c, ++ci) {
+				if (c === nameColumn) {
+					row[c] = this.names[i];
+					--ci;
+				} else row[c] = this.data[i * nc + ci];
+			}
+			csv[i + 1] = row; // +1 ... Header row
+		}
+
+		download(filename, "data:text/csv;charset=utf-8," + encodeURIComponent($.csv.fromArrays(csv)));
+	};
+}
+
+// >>> Random dataset
+
+/**
+ * A randomly generated dataset
+ * @extends {Dataset}
+ * @constructor
+ * @export
+ * @param {number} n Number of rows (points) of the dataset
+ * @param {number} nc Number of columns (dimensions) of the dataset
+ * @param {function(Dataset)} onload Event handler, called after the dataset was created
+ */
+function RandomDataset(n, nc, onload) {
+	Dataset.call(this);
+
+	this['numColumns'] = this.numColumns = nc;
+	this['length'] = this.length = n;
+	for (var i = 0; i < nc; ++i) {
+		this.columns.push({ minimum: 0, maximum: 1, label: generateColumnName(i, nc) });
+		this.dataVectors.push(new DataVector(this, i));
+	}
+
+	var nnc = n * nc;
+	this['fdata'] = this.fdata = new Float32Array(nnc);
+	for (var i = 0; i < nnc; ++i) {
+		this.fdata[i] = Math.random();
+	}this['data'] = this.data = this.fdata;
+
+	if (onload) onload(this);
+}
+
+// >>> CSV dataset
+
+/**
+ * A map of valid options for CSV datasets with option descriptions and validation functions
+ * @const
+ * @enum {{
+ * description: string,
+ * default: *,
+ * valid: Array
+ * }}
+*/
+var CSV_DATASET_OPTIONS = {
+	/** When true, tries to infer other options based on the structure of the dataset (slow). */
+	'autoDetect': {
+		description: "When true, tries to infer other options based on the structure of the dataset (slow).",
+		default: false,
+		valid: [true, false]
+	},
+
+	/** When true, interprets the first row of the dataset as column labels. */
+	'hasHeader': {
+		description: "When true, interprets the first row of the dataset as column labels.",
+		default: false,
+		valid: [true, false]
+	},
+
+	/** Index of a column of the dataset that contains data point names. */
+	'nameColumn': {
+		description: "Index of a column of the dataset that contains data point names.",
+		default: null,
+		valid: null
+	},
+
+	/** An array of column labels, or a function that takes the column index as input and returns the column label. */
+	'columnLabels': {
+		description: "An array of column labels, or a function that takes the column index as input and returns the column label.",
+		default: null,
+		valid: null
+	},
+
+	/** An array of image URLs, or a function that takes a row of data and the row index as input and returns a URL to an image of the data point. */
+	'imageFilenames': {
+		description: "An array of image URLs, or a function that takes a row of data and the row index as input and returns a URL to an image of the data point.",
+		default: null,
+		valid: null
+	}
+};
+
+/**
+ * A dataset constructed from a CSV table
+ * @extends {Dataset}
+ * @constructor
+ * @export
+ * @param {string|Blob} file File or URL of file, containing the CSV-formatted dataset
+ * @param {Object} options
+ * @param {function(Dataset)} onload Event handler, called after the dataset was created
+ */
+function CsvDataset(file, options, onload) {
+	Dataset.call(this);
+
+	// Validate options
+	for (var option in options) {
+		if (!options.hasOwnProperty(option)) continue;
+
+		// Validate option
+		if (!CSV_DATASET_OPTIONS.hasOwnProperty(option)) {
+			console.warn("CsvDataset warning: Unsupported option: " + option);
+			continue;
+		}
+		var optionDefinition = CSV_DATASET_OPTIONS[option];
+
+		// Validate value
+		var value = options[option];
+		if (optionDefinition.valid && optionDefinition.valid.indexOf(value) === -1 || optionDefinition.validRange && (value < optionDefinition.validRange[0] || value > optionDefinition.validRange[1])) {
+			console.warn("CsvDataset warning: Invalid value for option " + option + ": " + value);
+			delete options[option];
+			continue;
+		}
+	}
+
+	// Load csv file
+	var dataset = this;
+	var parseCsv = function parseCsv(csv) {
+		var data = $.csv.toArrays(csv);
+
+		if (options['autoDetect']) {
+			if (isUndefined(options['hasHeader'])) {
+				// Assume no-header by default
+				options['hasHeader'] = false;
+
+				var firstRowOnlyStrings = data[0].every(function (value) {
+					return isNaN(parseData(value));
+				});
+				var secondRowHasNumbers = data[1].some(function (value) {
+					return !isNaN(parseData(value));
+				});
+
+				// If the first row consists of only string values, but the second row has at least one numeric value, we can assume the first row is a header
+				if (firstRowOnlyStrings && secondRowHasNumbers) options['hasHeader'] = true;
+				console.log("Assuming hasHeader = " + options['hasHeader']);
+			}
+			if (isUndefined(options['nameColumn'])) {
+				// Assume no name column by default
+				options['nameColumn'] = null;
+
+				// If any row consists of only unique strings, we can assume it contains data point names
+				for (var c = 0; c < data[0].length; ++c) {
+					var valueMap = {};
+					if (data.every(function (row) {
+						return row.length > c && isNaN(parseData(row[c])) && !(row[c] in valueMap) ? valueMap[row[c]] = true : false;
+					})) {
+						options['nameColumn'] = c;
+						break;
+					}
+				}
+				console.log("Assuming nameColumn = " + options['nameColumn']);
+			}
+		}
+
+		var n = data.length,
+		    nc = data[0].length - (options['nameColumn'] ? 1 : 0),
+		    firstRow = options['hasHeader'] ? 1 : 0;
+		dataset['numColumns'] = dataset.numColumns = nc;
+
+		// Generate column labels
+		var columnLabels;
+		if (isFunction(options['columnLabels'])) {
+			columnLabels = new Array(n);
+			for (var c = 0, ci = 0; c < data[0].length; ++c, ++ci) {
+				if (c == options['nameColumn']) {
+					--ci;
+					continue;
+				}
+
+				columnLabels[ci] = options['columnLabels'](c);
+			}
+		} else if (isArray(options['columnLabels'])) {
+			if (options['columnLabels'].length !== nc) {
+				console.warn("CsvDataset warning: Number of provided column labels (" + options['columnLabels'].length + ") differs from number of data columns in the dataset (" + nc + ")");
+				columnLabels = null;
+			} else columnLabels = options['columnLabels'];
+		} else columnLabels = null;
+
+		dataset['data'] = dataset.data = new Array(nc * n);
+		dataset['fdata'] = dataset.fdata = new Float32Array(nc * n);
+		var i, di;
+		for (var c = 0, ci = 0; c < data[0].length; ++c, ++ci) {
+			if (c == options['nameColumn']) {
+				--ci;
+				continue;
+			}
+
+			// Loop through all values of column c -> value, fvalue, min, max
+			var min = Number.MAX_VALUE,
+			    max = Number.MIN_VALUE,
+			    isNumeric = true;
+			for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
+				// Skip blank lines
+				if (data[i].length === 1 && data[i][0] === "") {
+					--di;
+					continue;
+				}
+
+				var value = data[i][c];
+				var fvalue = parseData(value);
+				if (isNaN(fvalue)) {
+					isNumeric = false;
+					break;
+				}
+
+				dataset.data[di * nc + ci] = value;
+				dataset.fdata[di * nc + ci] = fvalue;
+				min = Math.min(min, fvalue);
+				max = Math.max(max, fvalue);
+			}
+
+			var valueList = null;
+			if (!isNumeric) {
+				// Loop through all values of column c again, generating a value map -> value, fvalue, min, max
+				valueList = [];
+				var valueMap = {},
+				    valueIdx = 0;
+				for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
+					// Skip blank lines
+					if (data[i].length === 1 && data[i][0] === "") {
+						--di;
+						continue;
+					}
+
+					var value = data[i][c];
+					var cls = valueMap[value];
+					var fvalue;
+					if (typeof cls === 'undefined') {
+						valueList.push(value);
+						fvalue = valueMap[value] = valueIdx++;
+					} else fvalue = cls;
+
+					fvalue += 0.5;
+
+					dataset.data[di * nc + ci] = value;
+					dataset.fdata[di * nc + ci] = fvalue;
+				}
+				min = 0;
+				max = valueList.length;
+			}
+
+			// Save column meta data
+			dataset.columns.push({ minimum: min, maximum: max, label: columnLabels ? columnLabels[ci] : options['hasHeader'] ? data[0][c] : generateColumnName(ci, nc), values: valueList });
+			dataset.dataVectors.push(new DataVector(dataset, ci));
+		}
+
+		if (di !== n) // If some line were blank
+			{
+				di = n - di; // Set di to the number of skipped lines
+				n -= di; // Shrink n
+				di *= nc; // Set di to the number of skipped values
+
+				// Shrink dataset.data and dataset.fdata
+				dataset.data.splice(-di);
+				if (Float32Array.prototype.splice)
+					/** @type {{splice: Function}} */dataset.fdata.splice(-di);else if (Float32Array.prototype.slice) dataset['fdata'] = dataset.fdata = dataset.fdata.slice(0, -di);else {
+					var trimedFdata = new Float32Array(nc * n);
+					var len;
+					for (i = 0, len = trimedFdata.length; i < len; ++i) {
+						trimedFdata[i] = dataset.fdata[i];
+					}dataset['fdata'] = dataset.fdata = trimedFdata;
+				}
+			}
+
+		// Set number of data points
+		dataset['length'] = dataset.length = n;
+
+		// Extract data point names
+		if (options['nameColumn']) {
+			var names = dataset['names'] = dataset.names = new Array(n);
+			var nameColumn = options['nameColumn'];
+			for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
+				// Skip blank lines
+				if (data[i].length === 1 && data[i][0] === "") {
+					--di;
+					continue;
+				}
+
+				names[di] = data[i][nameColumn];
+			}
+		} else dataset['names'] = dataset.names = null;
+
+		// Generate image filenames
+		if (isFunction(options['imageFilenames'])) {
+			dataset['imageFilenames'] = dataset.imageFilenames = new Array(n);
+			for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
+				// Skip blank lines
+				if (data[i].length === 1 && data[i][0] === "") {
+					--di;
+					continue;
+				}
+
+				dataset.imageFilenames[di] = options['imageFilenames'](data[i], i);
+			}
+		} else if (isArray(options['imageFilenames'])) {
+			if (options['imageFilenames'].length !== n) {
+				console.warn("CsvDataset warning: Number of provided image filenames (" + options['imageFilenames'].length + ") differs from number of data points (" + n + ")");
+				dataset['imageFilenames'] = dataset.imageFilenames = null;
+			} else dataset['imageFilenames'] = dataset.imageFilenames = options['imageFilenames'];
+		} else dataset['imageFilenames'] = dataset.imageFilenames = null;
+
+		// Notify success
+		if (onload) onload(dataset);
+	};
+
+	if (isString(file))
+		//$.get(file, parseCsv, "text");
+		{
+			var request = new XMLHttpRequest();
+			request.onreadystatechange = function () {
+				if (this.readyState == 4 && this.status == 200) parseCsv(this.responseText);
+			};
+			request.open("GET", /** @type {string} */file, true);
+			request.overrideMimeType("text/csv; charset=utf8");
+			request.send();
+		} else {
+		var reader = new FileReader();
+		reader.onload = function (event) {
+			return parseCsv(reader.result);
+		};
+		reader.readAsText( /** @type {!Blob} */file);
+	}
+}
+
+// >>> Helper functions
+
+var generateColumnName = function generateColumnName(i, nc) {
+	var XYZW = ['x', 'y', 'z', 'w'];
+	if (nc <= XYZW.length) return XYZW[i]; // x, y, z, w
+	else if (nc <= 26) return String.fromCharCode(65 + i); // A, B, C, ...
+		else return 'c' + (i + 1); // c1, c2, c3, ...
+};
+
+function parseData(input) {
+	return parseFloat(input);
+}
+
+/***/ })
+/******/ ]);
+});

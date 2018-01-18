@@ -6,7 +6,7 @@
  * @param {Object} gl // {WebGLRenderingContext}
  * @param {HTMLCanvasElement} canvas
  */
-function TextRenderContext(gl, canvas)
+export function TextRenderContext(gl, canvas)
 {
 	var textCanvas = document.createElement('canvas');
 	textCanvas.style.backgroundColor = 'transparent';

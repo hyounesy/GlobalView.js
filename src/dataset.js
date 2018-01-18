@@ -1,3 +1,7 @@
+/* eslint-disable */
+
+// const $ = require("jquery");
+
 /**
  * A vector of data values inside the dataset.
  * The source of a data vector can be either a column in the dataset's data table or a formula.
@@ -8,7 +12,7 @@
  * @param {Dataset} dataset The underlying dataset
  * @param {number|string} source Either a column index into the dataset, or a formula
  */
-function DataVector(dataset, source)
+export function DataVector(dataset, source)
 {
 	var nc = dataset.numColumns;
 	
@@ -91,7 +95,7 @@ function DataVector(dataset, source)
  * @constructor
  * @export
  */
-function Dataset()
+export function Dataset()
 {
 	/**
 	 * @summary Number of columns in the {@link Dataset#data} table
@@ -540,7 +544,7 @@ function Dataset()
  * @param {number} nc Number of columns (dimensions) of the dataset
  * @param {function(Dataset)} onload Event handler, called after the dataset was created
  */
-function RandomDataset(n, nc, onload)
+export function RandomDataset(n, nc, onload)
 {
 	Dataset.call(this);
 	
@@ -619,7 +623,7 @@ var CSV_DATASET_OPTIONS = {
  * @param {Object} options
  * @param {function(Dataset)} onload Event handler, called after the dataset was created
  */
-function CsvDataset(file, options, onload)
+export function CsvDataset(file, options, onload)
 {
 	Dataset.call(this);
 	

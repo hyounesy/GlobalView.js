@@ -3,8 +3,8 @@ const path = require('path');
 module.exports = {
   entry: './src/index.js',
   output: {
-    filename: 'template-package.js',
-    library: 'TemplatePackageName',
+    filename: 'global-view.js',
+    library: 'globalView',
     libraryTarget: 'umd',
     path: path.resolve(__dirname, 'dist'),
   },

@@ -1,6 +1,8 @@
 /* eslint-disable */
 
 const webglUtils = require('./webgl-utils.js');
+const libUtility = require('./utility.js')
+const libTextRenderContext = require('./textRenderContext.js')
 
 function myAlert(msg) {
   alert(msg); // eslint-disable-line no-alert, no-undef
@@ -84,8 +86,8 @@ export function GlobalView(div, startupOptions)
 		console.warn("GlobalView warning: Unsupported WebGL extension: ANGLE_instanced_arrays");
 	
 	var divStyle = window.getComputedStyle(div);
-	gl.backColor = divStyle.backgroundColor == 'transparent' ? [0, 0, 0, 0] : rgbStringToFloatArray(divStyle.backgroundColor);
-	gl.foreColor = rgbStringToFloatArray(gl.foreColorString = divStyle.color);
+	gl.backColor = divStyle.backgroundColor == 'transparent' ? [0, 0, 0, 0] : libUtility.rgbStringToFloatArray(divStyle.backgroundColor);
+	gl.foreColor = libUtility.rgbStringToFloatArray(gl.foreColorString = divStyle.color);
 	this['updateColorSchema'] =
 	/**
 	 * Call this method after updating the parent div's color or background-color styles in order for the changes to be applied to the rendering pipeline.
@@ -93,8 +95,8 @@ export function GlobalView(div, startupOptions)
 	 */
 	this.updateColorSchema = function() {
 		var divStyle = window.getComputedStyle(div);
-		gl.backColor = divStyle.backgroundColor == 'transparent' ? [0, 0, 0, 0] : rgbStringToFloatArray(divStyle.backgroundColor);
-		gl.foreColor = rgbStringToFloatArray(gl.foreColorString = divStyle.color);
+		gl.backColor = divStyle.backgroundColor == 'transparent' ? [0, 0, 0, 0] : libUtility.rgbStringToFloatArray(divStyle.backgroundColor);
+		gl.foreColor = libUtility.rgbStringToFloatArray(gl.foreColorString = divStyle.color);
 		gl.clearColor.apply(gl, gl.backColor);
 		//histogramViewer.updateColorSchema();
 		coordSys.updateColorSchema();
@@ -102,7 +104,7 @@ export function GlobalView(div, startupOptions)
 		this.invalidate();
 	}
 	
-	var trc = new TextRenderContext(gl, canvas);
+	var trc = new libTextRenderContext.TextRenderContext(gl, canvas);
 	//trc.setFont("10px monospace");
 	trc.setFont(divStyle.fontSize + ' ' + divStyle.fontFamily);
 	this['updateFont'] =
@@ -118,12 +120,12 @@ export function GlobalView(div, startupOptions)
 	
 	var t = performance.now(), dt = 0.1, fps = null, fpsStart = t, frameCounter = 0;
 	
-	var pointViewer = new PointViewer(gl, this);
-	var imageViewer = new ImageViewer(gl, this);
-	var densityViewer = new DensityViewer(gl, this);
-	var histogramViewer = new HistogramViewer(gl, this);
-	var coordSys = new CoordinateSystem(gl, this);
-	var colormap = new Colormap(gl, this);
+	var pointViewer = new libPointViewer.PointViewer(gl, this);
+	var imageViewer = new libImageViewer.ImageViewer(gl, this);
+	var densityViewer = new libDensityViewer.DensityViewer(gl, this);
+	var histogramViewer = new libHistogramViewer.HistogramViewer(gl, this);
+	var coordSys = new libCoordinateSystem.CoordinateSystem(gl, this);
+	var colormap = new libColormap.Colormap(gl, this);
 	/** @type  {Array<Viewer>} */ var viewers = [pointViewer, imageViewer, densityViewer, histogramViewer, coordSys, colormap];
 	
 	var dataset = null;

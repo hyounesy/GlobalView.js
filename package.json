@@ -4,7 +4,7 @@
   "description": "GlobalView NPM package.",
   "main": "lib/index.js",
   "module": "es/index.js",
-  "browser": "dist/template-package.js",
+  "browser": "dist/global-view.js",
   "scripts": {
     "build": "npm run transpile:commonjs && npm run transpile:es && npm run bundle",
     "bundle": "cross-env BABEL_ENV=es NODE_ENV=production webpack --config webpack.config.js",
@@ -28,6 +28,7 @@
     "example6": "browserify examples/example6.js -o examples/example6.min.js",
     "example7": "browserify examples/example7.js -o examples/example7.min.js",
     "example8": "browserify examples/example8.js -o examples/example8.min.js",
+    "test5": "npm run build && npm run example5 && npm start",
     "TODO_minify": "(TODO): cat bundle.js | uglifyjs -o bundle.js"
   },
   "files": [
@@ -74,6 +75,7 @@
   "dependencies": {
     "domready": "^1.0.8",
     "gl-matrix": "^2.4.0",
+    "jquery": "^3.2.1",
     "jquery-csv": "^0.8.3",
     "jszip": "^3.1.5",
     "parallel": "^1.2.0"

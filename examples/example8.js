@@ -2,6 +2,7 @@
 
 const libGlobalView = require('../lib/globalView.js');
 const domready = require("domready");
+const libDataset = require('../lib/dataset.js');
 
 // Global variables
 //var gl;
@@ -17,15 +18,15 @@ domready(function() {
 	cbColumnS = document.getElementById("cbColumnS");
 	
 	const DATASETS = [
-		{name: "10 random points", create: () => new RandomDataset(10, 3, dataset_onLoad)},
-		{name: "100 random points", create: () => new RandomDataset(100, 3, dataset_onLoad)},
-		{name: "1.000 random points", create: () => new RandomDataset(1000, 3, dataset_onLoad)},
-		{name: "10.000 random points", create: () => new RandomDataset(10000, 3, dataset_onLoad)},
-		{name: "100.000 random points", create: () => new RandomDataset(100000, 3, dataset_onLoad)},
-		{name: "1.000.000 random points", create: () => new RandomDataset(1000000, 3, dataset_onLoad)},
-		{name: "10.000.000 random points", create: () => new RandomDataset(10000000, 3, dataset_onLoad)},
-		{name: "iris", url: "datasets/iris.data", create: () => new CsvDataset("datasets/iris.data", {columnLabels: ["Sepal Length [cm]", "Sepal Width [cm]", "Petal Length [cm]", "Petal Width [cm]", "Class"]}, dataset_onLoad)},
-		{name: "allencell", url: "datasets/AICS_Cell-feature-analysis_v1.5.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
+		{name: "10 random points", create: () => new libDataset.RandomDataset(10, 3, dataset_onLoad)},
+		{name: "100 random points", create: () => new libDataset.RandomDataset(100, 3, dataset_onLoad)},
+		{name: "1.000 random points", create: () => new libDataset.RandomDataset(1000, 3, dataset_onLoad)},
+		{name: "10.000 random points", create: () => new libDataset.RandomDataset(10000, 3, dataset_onLoad)},
+		{name: "100.000 random points", create: () => new libDataset.RandomDataset(100000, 3, dataset_onLoad)},
+		{name: "1.000.000 random points", create: () => new libDataset.RandomDataset(1000000, 3, dataset_onLoad)},
+		{name: "10.000.000 random points", create: () => new libDataset.RandomDataset(10000000, 3, dataset_onLoad)},
+		{name: "iris", url: "datasets/iris.data", create: () => new libDataset.CsvDataset("datasets/iris.data", {columnLabels: ["Sepal Length [cm]", "Sepal Width [cm]", "Petal Length [cm]", "Petal Width [cm]", "Class"]}, dataset_onLoad)},
+		{name: "allencell", url: "datasets/AICS_Cell-feature-analysis_v1.5.csv", create: () => new libDataset.CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
 //		{name: "allencell x2", url: "datasets/AICS_Cell-feature-analysis_v1.5_x2.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x2.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
 //		{name: "allencell x10", url: "datasets/AICS_Cell-feature-analysis_v1.5_x10.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x10.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
 //		{name: "allencell x100", url: "datasets/AICS_Cell-feature-analysis_v1.5_x100.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x100.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
@@ -214,7 +215,7 @@ function dataset_onLoad(_dataset)
 	}
 if (dataset.numColumns > 3)
 {
-	dataset.dataVectors.push(new DataVector(dataset, "0.0"/*"0.5 * c1 + 0.5 * c3"*/));//"i"));
+	dataset.dataVectors.push(new libDataset.DataVector(dataset, "0.0"/*"0.5 * c1 + 0.5 * c3"*/));//"i"));
 	var option = document.createElement("option");
 	option.text = 'formula';
 	cbColumnX.add(option);

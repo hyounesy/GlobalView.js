@@ -2,6 +2,7 @@
 
 const globalView = require('../lib/globalView.js');
 const domready = require("domready");
+const libDataset = require('../lib/dataset.js');
 
 var plot;
 
@@ -20,7 +21,7 @@ domready(function () {
 		//pointColor: "violet"
 	});
 	
-	new CsvDataset("datasets/iris.data", {
+	new libDataset.CsvDataset("datasets/iris.data", {
 		columnLabels: ["Sepal Length [cm]", "Sepal Width [cm]", "Petal Length [cm]", "Petal Width [cm]", "Class"]
 	}, function(dataset) {
 		plot.load(dataset, 0, 1, 4, 1);

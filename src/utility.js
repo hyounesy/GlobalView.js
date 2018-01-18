@@ -177,7 +177,7 @@ function hexToRgb(hex) // Source: https://stackoverflow.com/a/5624139
 	} : null;
 }
 
-function rgbStringToFloatArray(rgbstr)
+export function rgbStringToFloatArray(rgbstr)
 {
 	var rgb = rgbstr.match(/\d+/g);
 	for (var i = 0; i < 4; ++i)

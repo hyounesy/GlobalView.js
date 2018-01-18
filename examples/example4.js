@@ -2,6 +2,7 @@
 
 const globalView = require('../lib/globalView.js');
 const domready = require("domready");
+const libDataset = require('../lib/dataset.js');
 
 domready(function () {
 	var preResults = document.getElementById('preResults'), measureTime = function(phase, iterations) {
@@ -26,7 +27,7 @@ domready(function () {
 	});
 	measureTime("Initialization", 1);
 	
-	new RandomDataset(1e6, 2, function(dataset) { plot.load(dataset, 0, 1, 1, 1); });
+	new libDataset.RandomDataset(1e6, 2, function(dataset) { plot.load(dataset, 0, 1, 1, 1); });
 	measureTime("Random dataset generation", 1);
 	
 	for (var frames = 0; performance.now() - tStart < 1000; ++frames)

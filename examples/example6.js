@@ -2,6 +2,7 @@
 
 const globalView = require('../lib/globalView.js');
 const domready = require("domready");
+const libDataset = require('../lib/dataset.js');
 
 function EmptyDataset(n)
 {
@@ -15,8 +16,8 @@ domready(function () {
 	pointColor: "white"
 	});
 	var dataset = new EmptyDataset(10000);
-	dataset.dataVectors.push(new DataVector(dataset, "i"));
-	dataset.dataVectors.push(new DataVector(dataset, "sin(i * 8.0 * PI / n)"));
-	dataset.dataVectors.push(new DataVector(dataset, "0.0"));
+	dataset.dataVectors.push(new libDataset.DataVector(dataset, "i"));
+	dataset.dataVectors.push(new libDataset.DataVector(dataset, "sin(i * 8.0 * PI / n)"));
+	dataset.dataVectors.push(new libDataset.DataVector(dataset, "0.0"));
 	plot.load(dataset, 0, 1, 2, 2);
 });

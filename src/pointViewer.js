@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 /**
  * A viewer that renders point sets to the global view.
  * @constructor
@@ -6,7 +8,7 @@
  * @param {Object} gl // {WebGLRenderingContext}
  * @param {Object} globalView // {GlobalView}
  */
-function PointViewer(gl, globalView)
+export function PointViewer(gl, globalView)
 {
 	var _dataset;
 	var meshDataPoints = null;
