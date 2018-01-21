@@ -3,6 +3,7 @@
 const libGraphics = require('./graphics.js');
 const libShaders = require('./shaders.js');
 const libAlgorithm = require('./algorithm.js');
+const libColormap = require('./colormap.js');
 const libGlMatrix = require('gl-matrix');
 
 //const LABEL_HEIGHT = 12, LABEL_WIDTH = 16.5;
@@ -364,9 +365,9 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
 	{
 		options = _options;
 		defaultImageBorderWidth = options['thumbnailBorderWidth'];
-		defaultImageBorderColor = options['thumbnailBorderColor'] ? new Float32Array(parseColor(options['thumbnailBorderColor'])).map(c => c / 255.0) : gl.foreColor;
-		defaultImageLineColor = options['thumbnailLineColor'] ? new Float32Array(parseColor(options['thumbnailLineColor'])).map(c => c / 255.0) : gl.foreColor;
-		defaultImageLabelColor = options['thumbnailLabelColor'] ? new Float32Array(parseColor(options['thumbnailLabelColor'])).map(c => c / 255.0) : gl.backColor;
+		defaultImageBorderColor = options['thumbnailBorderColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailBorderColor'])).map(c => c / 255.0) : gl.foreColor;
+		defaultImageLineColor = options['thumbnailLineColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailLineColor'])).map(c => c / 255.0) : gl.foreColor;
+		defaultImageLabelColor = options['thumbnailLabelColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailLabelColor'])).map(c => c / 255.0) : gl.backColor;
 	}
 	this.onPlotBoundsChanged = function(plotBounds) {}
 	

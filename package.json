@@ -28,7 +28,7 @@
     "example6": "browserify examples/example6.js -o examples/example6.min.js",
     "example7": "browserify examples/example7.js -o examples/example7.min.js",
     "example8": "browserify examples/example8.js -o examples/example8.min.js",
-    "test5": "npm run build && npm run example5 && npm start",
+    "testall": "npm run build && npm run examples && npm start",
     "TODO_minify": "(TODO): cat bundle.js | uglifyjs -o bundle.js"
   },
   "files": [

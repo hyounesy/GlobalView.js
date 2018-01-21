@@ -1,8 +1,7 @@
 /* eslint-disable */
 
-const globalView = require('../lib/globalView.js');
+const globalView = require('../dist/global-view.js');
 const domready = require("domready");
-const libDataset = require('../lib/dataset.js');
 
 var plot, taOptions = document.getElementById('taOptions'), preStatus = document.getElementById('preStatus');
 		
@@ -12,13 +11,15 @@ domready(function () {
 		pointShape: "Cross"
 	});
 	
-	new libDataset.RandomDataset(1000, 2, function(dataset) {
+	new globalView.RandomDataset(1000, 2, function(dataset) {
 		plot.load(dataset, 0, 1, 1, 1);
 	});
 	
 	plot.showData2D();
 	
 	taOptions.value = JSON.stringify(plot.getOptions(), null, 4);
+
+	document.getElementById('taOptions').addEventListener('input', function() {tOptions_onChange(document.getElementById('taOptions'))});
 });
 
 function tOptions_onChange(sender)

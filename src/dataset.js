@@ -1,6 +1,7 @@
 /* eslint-disable */
 const libUtility = require('./utility.js')
 const libAlgorithm = require('./algorithm.js');
+const libFormulaCompiler = require('./formulaCompiler.js')
 //import * as Parallel from '../src_lib/parallel.js';
 //import * as Parallel from '../node_modules/paralleljs/lib/parallel';
 const Parallel = require('paralleljs');
@@ -55,17 +56,17 @@ export function DataVector(dataset, source)
 	{
 		var stack = new Array(16);
 		var globalTypes = {
-			'n': FormulaCompiler.types.float,
-			'PI': FormulaCompiler.types.float,
-			'i': FormulaCompiler.types.float
+			'n': libFormulaCompiler.FormulaCompiler.types.float,
+			'PI': libFormulaCompiler.FormulaCompiler.types.float,
+			'i': libFormulaCompiler.FormulaCompiler.types.float
 		};
-		for (var c = 0; c < nc; ++c) globalTypes['c' + c] = FormulaCompiler.types.float;
+		for (var c = 0; c < nc; ++c) globalTypes['c' + c] = libFormulaCompiler.FormulaCompiler.types.float;
 		var globals = {
 			'n': dataset.length,
 			'PI': Math.PI
 		};
 		
-		var code = FormulaCompiler.compile(source + ";", globalTypes);
+		var code = libFormulaCompiler.FormulaCompiler.compile(source + ";", globalTypes);
 		if (libUtility.isString(code))
 		{
 			console.error("GlobalView error: Error while parsing data vector formula '{0}'".format(source));
@@ -81,7 +82,7 @@ export function DataVector(dataset, source)
 			for (var c = 0; c < nc; ++c)
 				globals['c' + c] = dataset.fdata[i * nc + c];
 			
-			return FormulaCompiler.run(code, stack, globals);
+			return libFormulaCompiler.FormulaCompiler.run(code, stack, globals);
 		}
 		
 		this.minimum = Number.MAX_VALUE;
@@ -928,4 +929,6 @@ var generateColumnName = function(i, nc) {
 		return 'c' + (i + 1); // c1, c2, c3, ...
 };
 
-function parseData(input) { return parseFloat(input); }
+function parseData(input) { 
+	return parseFloat(input); 
+}

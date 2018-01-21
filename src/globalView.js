@@ -786,7 +786,7 @@ export function GlobalView(div, startupOptions)
 			description: "Controls the color of thumbnail borders in the scatterplot. Valid values are an array of bytes in RGBA order, a color name or 'null'. " + 
 				"If set to 'null', the CSS foreground color will be used.",
 			default: null,
-			valid: value => { return value === null || validateColor(value); },
+			valid: value => { return value === null || libColormap.validateColor(value); },
 			requireRedraw: true,
 			requireRecompile: false
 		},
@@ -796,7 +796,7 @@ export function GlobalView(div, startupOptions)
 			description: "Controls the color of thumbnail line in the scatterplot. Valid values are an array of bytes in RGBA order, a color name or 'null'. " + 
 				"If set to 'null', the CSS foreground color will be used.",
 			default: null,
-			valid: value => { return value === null || validateColor(value); },
+			valid: value => { return value === null || libColormap.validateColor(value); },
 			requireRedraw: true,
 			requireRecompile: false
 		},
@@ -806,7 +806,7 @@ export function GlobalView(div, startupOptions)
 			description: "Controls the color of thumbnail labels in the scatterplot. Valid values are an array of bytes in RGBA order, a color name or 'null'. " + 
 				"If set to 'null', the CSS foreground color will be used.",
 			default: null,
-			valid: value => { return value === null || validateColor(value); },
+			valid: value => { return value === null || libColormap.validateColor(value); },
 			requireRedraw: true,
 			requireRecompile: false
 		},

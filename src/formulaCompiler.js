@@ -1,6 +1,7 @@
+/* eslint-disable */
 const libUtility = require('./utility.js')
 
-var FormulaCompiler = {
+export var FormulaCompiler = {
 	compile: function(formula, symbolTypes) {
 		/*// Parse case-insensitive
 		formula = formula.toLowerCase();*/

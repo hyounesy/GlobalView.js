@@ -5,7 +5,7 @@ const libGraphics = require('./graphics.js');
 const libShaders = require('./shaders.js');
 const libGlMatrix = require('gl-matrix');
 
-const COLORMAP_WIDTH = 10; // [pixel]
+export const COLORMAP_WIDTH = 10; // [pixel]
 
 /**
  * A class holding the active colormap for the global view.
@@ -237,7 +237,7 @@ else
 	}
 }
 
-function validateColor(color)
+export function validateColor(color)
 {
 	if (libUtility.isString(color))
 	{
@@ -261,7 +261,8 @@ function validateColor(color)
 	
 	return "Unknown color " + color;
 }
-function parseColor(color)
+
+export function parseColor(color)
 {
 	if (libUtility.isString(color))
 	{
@@ -307,6 +308,7 @@ if (colormap === null) return true;
 	
 	return "Unknown colormap " + colormap;
 }
+
 export function parseColormap(colormap)
 {
 	if (libUtility.isString(colormap))

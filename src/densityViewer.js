@@ -4,7 +4,7 @@ const libGraphics = require('./graphics.js');
 const libShaders = require('./shaders.js');
 const libAlgorithm = require('./algorithm.js');
 const libGlMatrix = require('gl-matrix');
-//const libUtility = require('./utility.js');
+const libUtility = require('./utility.js');
 
 /**
  * A viewer that renders point density to the global view.

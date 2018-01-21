@@ -7,7 +7,7 @@
 		exports["globalView"] = factory(require("child_process"));
 	else
 		root["globalView"] = factory(root["child_process"]);
-})(typeof self !== 'undefined' ? self : this, function(__WEBPACK_EXTERNAL_MODULE_29__) {
+})(typeof self !== 'undefined' ? self : this, function(__WEBPACK_EXTERNAL_MODULE_30__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -75,84 +75,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ARRAY_TYPE", function() { return ARRAY_TYPE; });
-/* harmony export (immutable) */ __webpack_exports__["setMatrixArrayType"] = setMatrixArrayType;
-/* harmony export (immutable) */ __webpack_exports__["toRadian"] = toRadian;
-/* harmony export (immutable) */ __webpack_exports__["equals"] = equals;
-/* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE. */
-
-/**
- * Common utilities
- * @module glMatrix
- */
-
-// Configuration Constants
-const EPSILON = 0.000001;
-/* harmony export (immutable) */ __webpack_exports__["EPSILON"] = EPSILON;
-
-let ARRAY_TYPE = (typeof Float32Array !== 'undefined') ? Float32Array : Array;
-const RANDOM = Math.random;
-/* harmony export (immutable) */ __webpack_exports__["RANDOM"] = RANDOM;
-
-
-/**
- * Sets the type of array used when creating new vectors and matrices
- *
- * @param {Type} type Array type, such as Float32Array or Array
- */
-function setMatrixArrayType(type) {
-  ARRAY_TYPE = type;
-}
-
-const degree = Math.PI / 180;
-
-/**
- * Convert Degree To Radian
- *
- * @param {Number} a Angle in Degrees
- */
-function toRadian(a) {
-  return a * degree;
-}
-
-/**
- * Tests whether or not the arguments have approximately the same value, within an absolute
- * or relative tolerance of glMatrix.EPSILON (an absolute tolerance is used for values less
- * than or equal to 1.0, and a relative tolerance is used for larger values)
- *
- * @param {Number} a The first number to test.
- * @param {Number} b The second number to test.
- * @returns {Boolean} True if the numbers are approximately equal, false otherwise.
- */
-function equals(a, b) {
-  return Math.abs(a - b) <= EPSILON*Math.max(1.0, Math.abs(a), Math.abs(b));
-}
-
-
-/***/ }),
-/* 1 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1109,6 +1031,84 @@ function HashSet(onchanged) {
 }*/
 
 /***/ }),
+/* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ARRAY_TYPE", function() { return ARRAY_TYPE; });
+/* harmony export (immutable) */ __webpack_exports__["setMatrixArrayType"] = setMatrixArrayType;
+/* harmony export (immutable) */ __webpack_exports__["toRadian"] = toRadian;
+/* harmony export (immutable) */ __webpack_exports__["equals"] = equals;
+/* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE. */
+
+/**
+ * Common utilities
+ * @module glMatrix
+ */
+
+// Configuration Constants
+const EPSILON = 0.000001;
+/* harmony export (immutable) */ __webpack_exports__["EPSILON"] = EPSILON;
+
+let ARRAY_TYPE = (typeof Float32Array !== 'undefined') ? Float32Array : Array;
+const RANDOM = Math.random;
+/* harmony export (immutable) */ __webpack_exports__["RANDOM"] = RANDOM;
+
+
+/**
+ * Sets the type of array used when creating new vectors and matrices
+ *
+ * @param {Type} type Array type, such as Float32Array or Array
+ */
+function setMatrixArrayType(type) {
+  ARRAY_TYPE = type;
+}
+
+const degree = Math.PI / 180;
+
+/**
+ * Convert Degree To Radian
+ *
+ * @param {Number} a Angle in Degrees
+ */
+function toRadian(a) {
+  return a * degree;
+}
+
+/**
+ * Tests whether or not the arguments have approximately the same value, within an absolute
+ * or relative tolerance of glMatrix.EPSILON (an absolute tolerance is used for values less
+ * than or equal to 1.0, and a relative tolerance is used for larger values)
+ *
+ * @param {Number} a The first number to test.
+ * @param {Number} b The second number to test.
+ * @returns {Boolean} True if the numbers are approximately equal, false otherwise.
+ */
+function equals(a, b) {
+  return Math.abs(a - b) <= EPSILON*Math.max(1.0, Math.abs(a), Math.abs(b));
+}
+
+
+/***/ }),
 /* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -1121,7 +1121,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["LoadTextureFromImage"] = LoadTextureFromImage;
 /* harmony export (immutable) */ __webpack_exports__["LoadTextureFromByteArray"] = LoadTextureFromByteArray;
 /* harmony export (immutable) */ __webpack_exports__["LoadTextureFromFloatArray"] = LoadTextureFromFloatArray;
-var libUtility = __webpack_require__(1);
+var libUtility = __webpack_require__(0);
 
 var currentShader = null;
 /**
@@ -1548,7 +1548,7 @@ function LoadTextureFromFloatArray(gl, array, width, height) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gl_matrix_common__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gl_matrix_common__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gl_matrix_mat2__ = __webpack_require__(16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gl_matrix_mat2d__ = __webpack_require__(17);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__gl_matrix_mat3__ = __webpack_require__(7);
@@ -1650,6 +1650,7 @@ Shaders.fsBlurDensityMap = "precision highp float;\nvarying vec2 uv;\nuniform sa
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (immutable) */ __webpack_exports__["addTransformFunctions"] = addTransformFunctions;
 /* harmony export (immutable) */ __webpack_exports__["DensityMap"] = DensityMap;
 /* harmony export (immutable) */ __webpack_exports__["DensityMapOptions"] = DensityMapOptions;
 /* harmony export (immutable) */ __webpack_exports__["ClusterMap"] = ClusterMap;
@@ -1664,6 +1665,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["findRepresentativePointsND2"] = findRepresentativePointsND2;
 /* harmony export (immutable) */ __webpack_exports__["findClosePointOfLowDensity"] = findClosePointOfLowDensity;
 /* harmony export (immutable) */ __webpack_exports__["markPointsInStencilMap"] = markPointsInStencilMap;
+/* harmony export (immutable) */ __webpack_exports__["downloadStencilMap"] = downloadStencilMap;
 /* harmony export (immutable) */ __webpack_exports__["findClosePointOfLowDensity_descend"] = findClosePointOfLowDensity_descend;
 /* harmony export (immutable) */ __webpack_exports__["findClosePointOfLowDensityND_descend"] = findClosePointOfLowDensityND_descend;
 /* harmony export (immutable) */ __webpack_exports__["sampleDensityMap"] = sampleDensityMap;
@@ -1678,7 +1680,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["linesIntersect"] = linesIntersect;
 /* harmony export (immutable) */ __webpack_exports__["pointInsidePolygon"] = pointInsidePolygon;
 /* eslint-disable */
-var libUtility = __webpack_require__(1);
+var libUtility = __webpack_require__(0);
 
 function addTransformFunctions(cls) {
 	cls.transformX = function (x) {
@@ -2258,35 +2260,6 @@ function computeDensityMapND(dataset, width, height, options) {
 	return densityMap;
 }
 
-/*function computePointDensityIndex(dataset, d0, d1, densityMap)
-{
-	var data = dataset.fdata;
-	var n = dataset.length;
-	var nc = dataset.numColumns;
-	var s0 = 1 / (dataset.columns[d0].maximum - dataset.columns[d0].minimum);
-	var o0 = -dataset.columns[d0].minimum * s0;
-	var s1 = 1 / (dataset.columns[d1].maximum - dataset.columns[d1].minimum);
-	var o1 = -dataset.columns[d1].minimum * s1;
-	var densities = densityMap.data, size = densityMap.size;
-	
-	// Compute density at each datapoint
-	var pointDensities = new Float32Array(n);
-	for (var i = 0; i < n; ++i)
-	{
-		var p0 = data[i * nc + d0] * s0 + o0;
-		var p1 = data[i * nc + d1] * s1 + o1;
-		
-		var idx = Math.min(Math.floor(p1 * size), size - 1) * size + Math.min(Math.floor(p0 * size), size - 1);
-		pointDensities[i] = densities[idx];
-	}
-	
-	// Create indices sorted by density
-	var indices = Array.from(pointDensities.keys());
-	indices.sort(function(idxA, idxB) { return pointDensities[idxA] - pointDensities[idxB]; });
-	
-	return indices;
-}*/
-
 /**
  * This function computes point densities for each point in the dataset.
  * It returns the first `Math.floor(k * (1 - targetRatio))` lowest density points (outliers) and
@@ -2724,45 +2697,8 @@ function findClosePointOfLowDensity_descend(dataset, d0, d1, p, densityMap, minD
 			return Math.pow(densityOffset + densities[state.y * width + state.x] * densityScale, 2);
 		}
 	};
-	//var tStart = performance.now();
-	//BreadthFirstSearch(searchProblem);
-	//DepthFirstSearch(searchProblem);
 	SimpleUniformCostSearch(searchProblem);
-	//SimpleAStarSearch(searchProblem);
-	//SimpleGreedySearch(searchProblem);
-	//var tEnd = performance.now();
-	//console.log((tEnd - tStart) / 1000.0);
 	var closestPoint = [bestState.x, bestState.y];
-	/*var x = Math.floor(p0), y = Math.floor(p1);
- var cX, cY, currentPenalty, lastPenalty, lowestPenalty = Number.MAX_VALUE;
- do
- {
- 	lastPenalty = lowestPenalty;
- 	[[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]].forEach(function(offset) {
- 		cX = x + offset[0];
- 		cY = y + offset[1];
- 		if (cX >= xMin && cX < xMax && cY >= yMin && cY < yMax)
- 		{
- 			currentPenalty = computePenalty(cX, cY);
- 			if (currentPenalty < lowestPenalty)
- 			{
- 				lowestPenalty = currentPenalty;
- 				x = cX;
- 				y = cY;
- 			}
- 		}
- 	});
- }
- while (lowestPenalty !== lastPenalty);
- closestPoint = [x, y];*/
-	//console.log(closestPoint);
-
-
-	/*var xMin = Math.max(0, closestPoint[0] - 2 * minDistX), xMax = Math.min(width, closestPoint[0] + 2 * minDistX);
- var yMin = Math.max(0, closestPoint[1] - 2 * minDistY), yMax = Math.min(height, closestPoint[1] + 2 * minDistY);
- for (var y = yMin; y < yMax; ++y)
- 	for (var x = xMin; x < xMax; ++x)
- 		densities[y * width + x] = 1e20;*/
 
 	// Transform closestPoint back from density map space to data space
 	closestPoint[0] = (closestPoint[0] / width - o0) / s0;
@@ -3237,6 +3173,9 @@ function computeClusterMap_method2(dataset, d0, d1, densityMap) {
 	return clustermap;
 }
 
+var ForwardList = libUtility.ForwardList;
+var PriorityQueue = libUtility.PriorityQueue;
+
 /**
  * This function can be computed by an asynchronous worker.
  * It inputs and outputs plain JavaScript objects, because data passed between the main thread and an asynchronous worker has to be primitive
@@ -3275,12 +3214,12 @@ function computeClusterMap_method3(densityMap, d0, d1, options) {
 						// Link clusters
 						var leftCluster = clusters[leftClusterId - 1];
 						var topCluster = clusters[topClusterId - 1];
-						clusters[leftClusterId - 1] = libUtility.ForwardList.sortedMerge(leftCluster, topCluster);
+						clusters[leftClusterId - 1] = ForwardList.sortedMerge(leftCluster, topCluster);
 						clusters[topClusterId - 1] = clusters[leftClusterId - 1];
 						topClusterId = leftClusterId;
 					}
 					clustermap[y * width + x] = leftClusterId;
-				} else if (y !== 0 && (topClusterId = clustermap[(y - 1) * width + x]) !== 0) clustermap[y * width + x] = leftClusterId = topClusterId;else clusters.push(new libUtility.ForwardList(clustermap[y * width + x] = leftClusterId = clusters.length + 1));
+				} else if (y !== 0 && (topClusterId = clustermap[(y - 1) * width + x]) !== 0) clustermap[y * width + x] = leftClusterId = topClusterId;else clusters.push(new ForwardList(clustermap[y * width + x] = leftClusterId = clusters.length + 1));
 			} else
 				//clustermap[y * width + x] = leftClusterId = 0; // For languages that don't initialize arrays
 				leftClusterId = 0;
@@ -3290,7 +3229,7 @@ function computeClusterMap_method3(densityMap, d0, d1, options) {
 	// Combine lists of merged cluster IDs to cluster IDs -> clusters
 	var clusterId = 1;
 	for (var i = 0; i < clusters.length; ++i) {
-		if (clusters[i] === null) clusters[i] = 0;else if (clusters[i] instanceof libUtility.ForwardList) {
+		if (clusters[i] === null) clusters[i] = 0;else if (clusters[i] instanceof ForwardList) {
 			clusters[i].forEach(function (id) {
 				clusters[id - 1] = clusterId;
 			});
@@ -3311,7 +3250,7 @@ function computeClusterMap_method3(densityMap, d0, d1, options) {
 	if (false) {
 		// Extend clusters to fill entire density != 0 area
 
-		var neighborQueue = new libUtility.PriorityQueue('d'); // Queue of all neighbors of clusters (candidates ro be included in the cluster)
+		var neighborQueue = new PriorityQueue('d'); // Queue of all neighbors of clusters (candidates ro be included in the cluster)
 
 		for (var y = 0; y < height; ++y) {
 			for (var x = 0; x < width; ++x) {
@@ -3506,12 +3445,15 @@ function pointInsidePolygon(P, V) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "COLORMAP_WIDTH", function() { return COLORMAP_WIDTH; });
 /* harmony export (immutable) */ __webpack_exports__["Colormap"] = Colormap;
+/* harmony export (immutable) */ __webpack_exports__["validateColor"] = validateColor;
+/* harmony export (immutable) */ __webpack_exports__["parseColor"] = parseColor;
 /* harmony export (immutable) */ __webpack_exports__["validateColormap"] = validateColormap;
 /* harmony export (immutable) */ __webpack_exports__["parseColormap"] = parseColormap;
 /* eslint-disable */
 
-var libUtility = __webpack_require__(1);
+var libUtility = __webpack_require__(0);
 var libGraphics = __webpack_require__(2);
 var libShaders = __webpack_require__(4);
 var libGlMatrix = __webpack_require__(3);
@@ -3726,6 +3668,7 @@ function validateColor(color) {
 
 	return "Unknown color " + color;
 }
+
 function parseColor(color) {
 	if (libUtility.isString(color)) {
 		var hex = libUtility.colorNameToHex(color);
@@ -3759,6 +3702,7 @@ function validateColormap(colormap) {
 
 	return "Unknown colormap " + colormap;
 }
+
 function parseColormap(colormap) {
 	if (libUtility.isString(colormap)) return parseColor(colormap);
 
@@ -3812,7 +3756,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["multiplyScalarAndAdd"] = multiplyScalarAndAdd;
 /* harmony export (immutable) */ __webpack_exports__["exactEquals"] = exactEquals;
 /* harmony export (immutable) */ __webpack_exports__["equals"] = equals;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common__ = __webpack_require__(1);
 /* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -4629,7 +4573,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["str"] = str;
 /* harmony export (immutable) */ __webpack_exports__["exactEquals"] = exactEquals;
 /* harmony export (immutable) */ __webpack_exports__["equals"] = equals;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common__ = __webpack_require__(1);
 /* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -5461,7 +5405,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["str"] = str;
 /* harmony export (immutable) */ __webpack_exports__["exactEquals"] = exactEquals;
 /* harmony export (immutable) */ __webpack_exports__["equals"] = equals;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common__ = __webpack_require__(1);
 /* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -6103,8 +6047,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Dataset", function() { return __WEBPACK_IMPORTED_MODULE_2__dataset__["c"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "RandomDataset", function() { return __WEBPACK_IMPORTED_MODULE_2__dataset__["d"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CsvDataset", function() { return __WEBPACK_IMPORTED_MODULE_2__dataset__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__utility__ = __webpack_require__(1);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "HashSet", function() { return __WEBPACK_IMPORTED_MODULE_3__utility__["HashSet"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__algorithm__ = __webpack_require__(5);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "DensityMapOptions", function() { return __WEBPACK_IMPORTED_MODULE_3__algorithm__["DensityMapOptions"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "downloadStencilMap", function() { return __WEBPACK_IMPORTED_MODULE_3__algorithm__["downloadStencilMap"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "downloadDensityMap", function() { return __WEBPACK_IMPORTED_MODULE_3__algorithm__["downloadDensityMap"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__utility__ = __webpack_require__(0);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "HashSet", function() { return __WEBPACK_IMPORTED_MODULE_4__utility__["HashSet"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "readIntCookie", function() { return __WEBPACK_IMPORTED_MODULE_4__utility__["readIntCookie"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "urlExists", function() { return __WEBPACK_IMPORTED_MODULE_4__utility__["urlExists"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createCookie", function() { return __WEBPACK_IMPORTED_MODULE_4__utility__["createCookie"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "download", function() { return __WEBPACK_IMPORTED_MODULE_4__utility__["download"]; });
+
+
 
 
 
@@ -6148,7 +6102,7 @@ function range() {
 /* eslint-disable */
 
 var webglUtils = __webpack_require__(13);
-var libUtility = __webpack_require__(1);
+var libUtility = __webpack_require__(0);
 var libTextRenderContext = __webpack_require__(14);
 var libPointViewer = __webpack_require__(15);
 var libImageViewer = __webpack_require__(21);
@@ -6881,7 +6835,7 @@ function GlobalView(div, startupOptions) {
 			description: "Controls the color of thumbnail borders in the scatterplot. Valid values are an array of bytes in RGBA order, a color name or 'null'. " + "If set to 'null', the CSS foreground color will be used.",
 			default: null,
 			valid: function valid(value) {
-				return value === null || validateColor(value);
+				return value === null || libColormap.validateColor(value);
 			},
 			requireRedraw: true,
 			requireRecompile: false
@@ -6892,7 +6846,7 @@ function GlobalView(div, startupOptions) {
 			description: "Controls the color of thumbnail line in the scatterplot. Valid values are an array of bytes in RGBA order, a color name or 'null'. " + "If set to 'null', the CSS foreground color will be used.",
 			default: null,
 			valid: function valid(value) {
-				return value === null || validateColor(value);
+				return value === null || libColormap.validateColor(value);
 			},
 			requireRedraw: true,
 			requireRecompile: false
@@ -6903,7 +6857,7 @@ function GlobalView(div, startupOptions) {
 			description: "Controls the color of thumbnail labels in the scatterplot. Valid values are an array of bytes in RGBA order, a color name or 'null'. " + "If set to 'null', the CSS foreground color will be used.",
 			default: null,
 			valid: function valid(value) {
-				return value === null || validateColor(value);
+				return value === null || libColormap.validateColor(value);
 			},
 			requireRedraw: true,
 			requireRecompile: false
@@ -8745,7 +8699,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["PointViewer"] = PointViewer;
 /* eslint-disable */
 
-var libUtility = __webpack_require__(1);
+var libUtility = __webpack_require__(0);
 var libGraphics = __webpack_require__(2);
 var libShaders = __webpack_require__(4);
 var libColormap = __webpack_require__(6);
@@ -9202,7 +9156,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["equals"] = equals;
 /* harmony export (immutable) */ __webpack_exports__["multiplyScalar"] = multiplyScalar;
 /* harmony export (immutable) */ __webpack_exports__["multiplyScalarAndAdd"] = multiplyScalarAndAdd;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common__ = __webpack_require__(1);
 /* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -9671,7 +9625,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["multiplyScalarAndAdd"] = multiplyScalarAndAdd;
 /* harmony export (immutable) */ __webpack_exports__["exactEquals"] = exactEquals;
 /* harmony export (immutable) */ __webpack_exports__["equals"] = equals;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common__ = __webpack_require__(1);
 /* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -10194,7 +10148,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["multiplyScalarAndAdd"] = multiplyScalarAndAdd;
 /* harmony export (immutable) */ __webpack_exports__["exactEquals"] = exactEquals;
 /* harmony export (immutable) */ __webpack_exports__["equals"] = equals;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common__ = __webpack_require__(1);
 /* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -11903,7 +11857,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["fromMat3"] = fromMat3;
 /* harmony export (immutable) */ __webpack_exports__["fromEuler"] = fromEuler;
 /* harmony export (immutable) */ __webpack_exports__["str"] = str;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mat3__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vec3__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__vec4__ = __webpack_require__(9);
@@ -12613,7 +12567,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["str"] = str;
 /* harmony export (immutable) */ __webpack_exports__["exactEquals"] = exactEquals;
 /* harmony export (immutable) */ __webpack_exports__["equals"] = equals;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common__ = __webpack_require__(1);
 /* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -13230,6 +13184,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 var libGraphics = __webpack_require__(2);
 var libShaders = __webpack_require__(4);
 var libAlgorithm = __webpack_require__(5);
+var libColormap = __webpack_require__(6);
 var libGlMatrix = __webpack_require__(3);
 
 //const LABEL_HEIGHT = 12, LABEL_WIDTH = 16.5;
@@ -13549,13 +13504,13 @@ function ImageViewer(gl, globalView) {
 	this.onOptionsChanged = function (_options) {
 		options = _options;
 		defaultImageBorderWidth = options['thumbnailBorderWidth'];
-		defaultImageBorderColor = options['thumbnailBorderColor'] ? new Float32Array(parseColor(options['thumbnailBorderColor'])).map(function (c) {
+		defaultImageBorderColor = options['thumbnailBorderColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailBorderColor'])).map(function (c) {
 			return c / 255.0;
 		}) : gl.foreColor;
-		defaultImageLineColor = options['thumbnailLineColor'] ? new Float32Array(parseColor(options['thumbnailLineColor'])).map(function (c) {
+		defaultImageLineColor = options['thumbnailLineColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailLineColor'])).map(function (c) {
 			return c / 255.0;
 		}) : gl.foreColor;
-		defaultImageLabelColor = options['thumbnailLabelColor'] ? new Float32Array(parseColor(options['thumbnailLabelColor'])).map(function (c) {
+		defaultImageLabelColor = options['thumbnailLabelColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailLabelColor'])).map(function (c) {
 			return c / 255.0;
 		}) : gl.backColor;
 	};
@@ -13704,7 +13659,7 @@ var libGraphics = __webpack_require__(2);
 var libShaders = __webpack_require__(4);
 var libAlgorithm = __webpack_require__(5);
 var libGlMatrix = __webpack_require__(3);
-//const libUtility = require('./utility.js');
+var libUtility = __webpack_require__(0);
 
 /**
  * A viewer that renders point density to the global view.
@@ -14019,6 +13974,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 var libGraphics = __webpack_require__(2);
 var libShaders = __webpack_require__(4);
 var libAlgorithm = __webpack_require__(5);
+var libColormap = __webpack_require__(6);
 var libGlMatrix = __webpack_require__(3);
 
 /**
@@ -14139,7 +14095,7 @@ function HistogramViewer(gl, globalView) {
 			meshLine.bind(sdrLine, null);
 			libGlMatrix.mat4.identity(mattrans);
 			if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-			libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + plotBounds.width + COLORMAP_WIDTH + 0.5 + 64) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
+			libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + plotBounds.width + libColormap.COLORMAP_WIDTH + 0.5 + 64) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
 			libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
 			libGlMatrix.mat4.scale(mattrans, mattrans, [2 * plotBounds.height / gl.height, 1, 1]);
 			sdrLine.matWorldViewProj(mattrans);
@@ -14147,7 +14103,7 @@ function HistogramViewer(gl, globalView) {
 
 			libGlMatrix.mat4.identity(mattrans);
 			if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-			libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + plotBounds.width + COLORMAP_WIDTH + 0.5) / gl.width - 1, pos[2] + 0.5 * 2 / gl.height, 0.0]); // 0.5 ... center inside pixel
+			libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + plotBounds.width + libColormap.COLORMAP_WIDTH + 0.5) / gl.width - 1, pos[2] + 0.5 * 2 / gl.height, 0.0]); // 0.5 ... center inside pixel
 			libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
 			libGlMatrix.mat4.scale(mattrans, mattrans, [scl[2], -64 * 2 / gl.width, 1.0]);
 
@@ -14195,7 +14151,7 @@ function HistogramViewer(gl, globalView) {
 		if (axis.histogram && axis.histogram.width === numBins && axis.d === d) return; // Requested histogram already exists
 
 		axis.histogram = libAlgorithm.computeHistogram(dataset, axis.d = d, numBins);
-		addTransformFunctions(axis.histogram);
+		libAlgorithm.addTransformFunctions(axis.histogram);
 		//console.log(axis.histogram);
 
 		var positions = new Float32Array(6 * numBins * 3);
@@ -14504,16 +14460,17 @@ function CoordinateSystem(gl, globalView) {
 /* harmony export (immutable) */ __webpack_exports__["d"] = RandomDataset;
 /* harmony export (immutable) */ __webpack_exports__["a"] = CsvDataset;
 /* eslint-disable */
-var libUtility = __webpack_require__(1);
+var libUtility = __webpack_require__(0);
 var libAlgorithm = __webpack_require__(5);
+var libFormulaCompiler = __webpack_require__(26);
 //import * as Parallel from '../src_lib/parallel.js';
 //import * as Parallel from '../node_modules/paralleljs/lib/parallel';
-var Parallel = __webpack_require__(26);
+var Parallel = __webpack_require__(27);
 //const Parallel = require('../node_modules/paralleljs/lib/parallel'); // doesn't work: Module not found: Error: Can't resolve 'child_process' in Worker.js
 
-var $ = __webpack_require__(31); // alternative: a
+var $ = __webpack_require__(32); // alternative: a
 window.jQuery = $;
-__webpack_require__(32);
+__webpack_require__(33);
 /* alternative: add the following to webpack.config.js (https://github.com/fronteed/icheck/issues/322):
 plugins: [
   new webpack.ProvidePlugin({
@@ -14555,18 +14512,18 @@ function DataVector(dataset, source) {
 	} else {
 		var stack = new Array(16);
 		var globalTypes = {
-			'n': FormulaCompiler.types.float,
-			'PI': FormulaCompiler.types.float,
-			'i': FormulaCompiler.types.float
+			'n': libFormulaCompiler.FormulaCompiler.types.float,
+			'PI': libFormulaCompiler.FormulaCompiler.types.float,
+			'i': libFormulaCompiler.FormulaCompiler.types.float
 		};
 		for (var c = 0; c < nc; ++c) {
-			globalTypes['c' + c] = FormulaCompiler.types.float;
+			globalTypes['c' + c] = libFormulaCompiler.FormulaCompiler.types.float;
 		}var globals = {
 			'n': dataset.length,
 			'PI': Math.PI
 		};
 
-		var code = FormulaCompiler.compile(source + ";", globalTypes);
+		var code = libFormulaCompiler.FormulaCompiler.compile(source + ";", globalTypes);
 		if (libUtility.isString(code)) {
 			console.error("GlobalView error: Error while parsing data vector formula '{0}'".format(source));
 			console.error("                  " + code);
@@ -14579,7 +14536,7 @@ function DataVector(dataset, source) {
 			globals['i'] = i;
 			for (var c = 0; c < nc; ++c) {
 				globals['c' + c] = dataset.fdata[i * nc + c];
-			}return FormulaCompiler.run(code, stack, globals);
+			}return libFormulaCompiler.FormulaCompiler.run(code, stack, globals);
 		};
 
 		this.minimum = Number.MAX_VALUE;
@@ -15331,6 +15288,748 @@ function parseData(input) {
 
 /***/ }),
 /* 26 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FormulaCompiler", function() { return FormulaCompiler; });
+/* eslint-disable */
+var libUtility = __webpack_require__(0);
+
+var FormulaCompiler = {
+	compile: function compile(formula, symbolTypes) {
+		/*// Parse case-insensitive
+  formula = formula.toLowerCase();*/
+
+		// Error handler
+		var err = null;
+		function error(msg) {
+			err = msg;
+			return null;
+		}
+
+		// >>> Types
+
+		FormulaCompiler.types.vec3.memberTypes = {
+			x: FormulaCompiler.types.float,
+			y: FormulaCompiler.types.float,
+			z: FormulaCompiler.types.float
+			/**
+    * An enum, mapping function signatures to return types
+    * @enum {Object}
+    */
+		};var functionsReturnTypes = {
+			'float = float': FormulaCompiler.types.float,
+			'float += float': FormulaCompiler.types.float,
+			'float -= float': FormulaCompiler.types.float,
+			'float *= float': FormulaCompiler.types.float,
+			'float /= float': FormulaCompiler.types.float,
+			'float + float': FormulaCompiler.types.float,
+			'float - float': FormulaCompiler.types.float,
+			'float * float': FormulaCompiler.types.float,
+			'float / float': FormulaCompiler.types.float,
+
+			'vec3(float, float, float)': FormulaCompiler.types.vec3,
+			'vec3 = vec3': FormulaCompiler.types.vec3,
+			'vec3 + vec3': FormulaCompiler.types.vec3,
+			'vec3 * float': FormulaCompiler.types.vec3,
+
+			'sin(float)': FormulaCompiler.types.float,
+			'cos(float)': FormulaCompiler.types.float,
+			'tan(float)': FormulaCompiler.types.float,
+			'asin(float)': FormulaCompiler.types.float,
+			'acos(float)': FormulaCompiler.types.float,
+			'atan(float)': FormulaCompiler.types.float,
+			/*'pow': FormulaCompiler.types.float,
+   'exp': FormulaCompiler.types.float,
+   'log': FormulaCompiler.types.float,
+   'exp2': FormulaCompiler.types.float,
+   'log2': FormulaCompiler.types.float,
+   'sqrt': FormulaCompiler.types.float,
+   'inversesqrt': FormulaCompiler.types.float,
+   'abs': FormulaCompiler.types.float,
+   'sign': FormulaCompiler.types.float,
+   'floor': FormulaCompiler.types.float,
+   'ceil': FormulaCompiler.types.float,
+   'fract': FormulaCompiler.types.float,
+   'mod': FormulaCompiler.types.float,*/
+			'min(float, float)': FormulaCompiler.types.float,
+			'max(float, float)': FormulaCompiler.types.float
+			/*'clamp': FormulaCompiler.types.float,
+   'mix': FormulaCompiler.types.float,
+   'step': FormulaCompiler.types.float,
+   'smoothstep': FormulaCompiler.types.float,
+   'length': FormulaCompiler.types.float,
+   'distance': FormulaCompiler.types.float,
+   'dot': FormulaCompiler.types.float,
+   'cross': FormulaCompiler.types.float,
+   'normalize': FormulaCompiler.types.float,*/
+
+
+			// >>> Tokenizer
+
+		};var chrPos = 0,
+		    chr = formula.charAt(0),
+		    curTok = null,
+		    curVal;
+		function getch() {
+			return chr = formula.charAt(++chrPos);
+		}
+		function getTok() {
+			var sign = 1,
+			    repeat = false;
+			do {
+				repeat = false;
+				switch (chr) {
+					case '':
+						curTok = null; // End
+						return true;
+					case '+':
+						switch (getch()) {
+							case '+':
+								getch();curTok = '++';return true;
+							case '=':
+								getch();curTok = '+=';return true;
+							default:
+								curTok = '+';return true;
+						}
+					case '-':
+						switch (getch()) {
+							case '-':
+								getch();curTok = '--';return true;
+							case '=':
+								getch();curTok = '-=';return true;
+							default:
+								if (chr >= '0' && chr <= '9') {
+									sign = -1;break;
+								} else {
+									curTok = '-';return true;
+								}
+						}
+					case '*':
+						switch (getch()) {
+							case '=':
+								getch();curTok = '*=';return true;
+							default:
+								curTok = '*';return true;
+						}
+					case '/':
+						switch (getch()) {
+							case '=':
+								getch();curTok = '/=';return true;
+							default:
+								curTok = '/';return true;
+						}
+					case '(':case ')':case ',':case '=':case ';':case '.':
+						// Misc. recognized characters
+						curTok = chr;
+						getch();
+						return true;
+					case ' ':case '\t':case '\r':case '\n':
+						// Ignored characters
+						getch();
+						repeat = true;
+				}
+			} while (repeat);
+
+			if (chr >= '0' && chr <= '9') {
+				var numberString = chr,
+				    hasDot = false;
+				while (getch() !== '') {
+					if (chr >= '0' && chr <= '9') numberString += chr;else if (chr !== '.') break;else if (hasDot) return error("Unexpected character: " + chr); // More than one '.' inside number string
+					else {
+							hasDot = true;
+							numberString += chr;
+						}
+				}
+				if (hasDot) {
+					curTok = 'float';
+					curVal = sign * Number.parseFloat(numberString);
+				} else {
+					curTok = 'int';
+					curVal = sign * Number.parseInt(numberString, 10);
+				}
+				return true;
+			}
+
+			if (chr >= 'a' && chr <= 'z' || chr >= 'A' && chr <= 'Z') {
+				var str = chr;
+				while (getch() !== '') {
+					if (chr >= 'a' && chr <= 'z' || chr >= 'A' && chr <= 'Z' || chr >= '0' && chr <= '9' || chr === '_') str += chr;else break;
+				}
+				curTok = 'identifier';
+				curVal = str;
+				return true;
+			}
+
+			return error("Unexpected character: " + chr);
+		}
+		function getOperatorPrecedence(tok) {
+			switch (tok) {
+				case '=':
+					return 10; // lowest
+				case '+=':
+					return 10;
+				case '-=':
+					return 10;
+				case '*=':
+					return 10;
+				case '/=':
+					return 10;
+				case '?':
+					return 20;
+				case '||':
+					return 30;
+				case '&&':
+					return 40;
+				case '==':
+					return 50;
+				case '<':
+					return 60;
+				case '>':
+					return 60;
+				case '+':
+					return 70;
+				case '-':
+					return 70;
+				case '*':
+					return 80;
+				case '/':
+					return 80;
+				case '%':
+					return 80; // highest.
+				default:
+					return -1; // Not an operator
+			}
+		}
+
+		// >>> Abstract Syntax Tree builder
+
+		function buildAST() {
+			var scope = symbolTypes ? symbolTypes : {};
+
+			function prefixOpAST(op) {
+				if (!libUtility.isString(curTok)) return error("Expected variable after prefix operator '" + op + "'");
+
+				return [op, curTok];
+			}
+			function bineryOpAST(exprPrec, lhs) {
+				// If this is a binop, find its precedence.
+				while (true) {
+					var tokPrec = getOperatorPrecedence(curTok);
+
+					// If this is an operator that binds at least as tightly as the current binop, consume it, otherwise return lhs
+					if (tokPrec < exprPrec) return lhs;
+					// curTok is an operator
+
+					var binOp = curTok;
+					if (!getTok()) return null; // eat binop
+
+					if (binOp == '?') {
+						/*var ifExpr = primaryAST();
+      if (ifExpr == null)
+      	return null;
+      	if (CurTok != ':')
+      	return error("Expected ':'");
+      if (!getTok()) return null;  // eat ':'
+      	var elseExpr = primaryAST();
+      if (elseExpr == null)
+      	return null;
+      	// If '?' binds less tightly with elseExpr than the operator after elseExpr, let the pending operator take elseExpr as its lhs
+      var nextPrec = getOperatorPrecedence(curTok);
+      if (tokPrec < nextPrec)
+      {
+      	elseExpr = bineryOpAST(tokPrec + 1, elseExpr);
+      	if (elseExpr == null)
+      		return null;
+      }
+      	//lhs = new ChoiceExprAST(new MpuSharp.Segment(lhs.source.begin, elseExpr.source.end), lhs, ifExpr, elseExpr);
+      lhs = lhs.concat(ifExpr, elseExpr); lhs.push('?');*/
+					} else {
+						// Parse the expression after the binary operator.
+						var rhs = exprAST(tokPrec);
+						if (rhs == null) return null;
+
+						// If binOp binds less tightly with rhs than the operator after rhs, let the pending operator take rhs as its lhs.
+						var nextPrec = getOperatorPrecedence(curTok);
+						if (tokPrec < nextPrec) {
+							rhs = bineryOpAST(tokPrec + 1, rhs);
+							if (rhs == null) return null;
+						}
+
+						// Create operator function signature from operator name and argument FormulaCompiler.types
+						var funcSignature = lhs.type.name + " " + binOp + " " + rhs.type.name;
+
+						// Lookup operator function and return type
+						var returnType = functionsReturnTypes[funcSignature];
+						if (libUtility.isUndefined(returnType)) return error("Undefined operator " + binOp + " on FormulaCompiler.types " + lhs.type.name + " and " + rhs.type.name);
+
+						// Merge lhs/rhs.
+						if (tokPrec === 10) // If binOp is '=', '+=' or '-='
+							{
+								var lastOp = lhs.code.pop();
+								if (lastOp !== '@' && lastOp !== '@[]') return error("Cannot assign to non-variable");
+
+								// Store as rhs, lhs, funcSignature
+								lhs.type = returnType;
+								lhs.code = rhs.code.concat(lhs.code);
+								lhs.code.push(funcSignature);
+							} else {
+							// Store as lhs, rhs, funcSignature
+							lhs.type = returnType;
+							lhs.code = lhs.code.concat(rhs.code);
+							lhs.code.push(funcSignature);
+						}
+					}
+				}
+			}
+			function identifierAST() {
+				var identifier = curVal;
+				var variable = [identifier];
+				if (!getTok()) return null; // eat identifier
+
+				// Query variable type from scope
+				var type = scope[identifier];
+
+				while (curTok === '.') {
+					if (!getTok()) return null; // eat '.'
+
+					if (libUtility.isUndefined(type)) return error("Undefined variable: " + identifier);
+					var parentType = type;
+					var member = type.members[curVal];
+					if (libUtility.isUndefined(member)) return error(parentType.name + " does not contain a member: " + curVal);
+					type = member.type;
+
+					variable.push('.');
+					variable.push(member.index);
+
+					if (!getTok()) return null; // eat identifier
+				}
+
+				if (curTok === '(') {
+					if (variable.length !== 1) return error('Member functions not suported');
+					return functionAST(identifier); // Function call
+				}
+
+				if (curTok === 'identifier') {
+					if (variable.length !== 1) return error('Hierarchical FormulaCompiler.types not suported');
+					return varDeclAST(variable, identifier); // Variable declaration
+				}
+
+				/*if (curTok === '[') // Array access
+    {
+    	if (!getTok()) return null; // Eat '['
+    	if (curTok === ']') // Array type
+    	{
+    		if (!getTok()) return null; // Eat ']'
+    		//return new VariableExprAST(getLineNumber(), enclosingScopes, true);
+    		variable.IsArray = true;
+    		return variable;
+    	}
+    	
+    	var index = ParseExpression();
+    	if (index != null)
+    	{
+    		if (CurTok != ']')
+    			return Error("Expected ']' after expression");
+    		if (!getTok()) return null; // Eat ']'
+    		return new IndexExprAST(getLineNumber(), variable, index);
+    	}
+    	else
+    		return null;
+    }*/
+
+				if (libUtility.isUndefined(type)) return error("Undefined variable: " + identifier);
+
+				variable.push(type === FormulaCompiler.types.float ? '@' : '@[]');
+				return { code: variable, type: type }; // Variable reference
+			}
+			function identifierAndPostAST() {
+				var identifier = identifierAST();
+				if (!identifier) return null;
+
+				/*switch (curTok)
+    {
+    case '++': case '--':
+    	if (!getTok()) return null;  // Eat '++' or '--'
+    	identifier.push('post' + curTok);
+    }*/
+
+				return identifier;
+			}
+			function numberAST() {
+				var number = curVal;
+				if (!getTok()) return null; // Eat number
+				return { code: [number], type: FormulaCompiler.types.float };
+			}
+			function varDeclAST(type, typeName) {
+				type = FormulaCompiler.types[typeName];
+				if (libUtility.isUndefined(type)) return error("Unsupported type: " + typeName);
+
+				// Update scope
+				var prev = scope[curVal];
+				if (!libUtility.isUndefined(prev)) return error("Redefinition of variable: " + curVal);
+				scope[curVal] = type; // Store variable type in scope
+
+				var variable = [curVal];
+				if (!getTok()) return null; // eat identifier
+
+				/*var decl = [type].concat(variable);
+    decl.push('#');
+    return { code: decl, type: type };*/
+				variable.push(type === FormulaCompiler.types.float ? '@' : '@[]');
+				return { code: variable, type: type };
+			}
+			function functionAST(funcName) {
+				if (!getTok()) return null; // Eat '('
+
+				var args = listAST(')');
+				if (!args) return null;
+				var numArgs = args.type.length;
+
+				// Create function signature from function name and argument FormulaCompiler.types
+				var argTypeNames = args.type.map(function (type) {
+					return type.name;
+				}).join(", ");
+				var funcSignature = funcName + "(" + argTypeNames + ")";
+
+				// Lookup function and return type
+				var returnType = functionsReturnTypes[funcSignature];
+				if (libUtility.isUndefined(returnType)) return error("Undefined function " + funcSignature);
+
+				// Store as args, funcSignature
+				var funcCode = args.code;
+				funcCode.push(funcSignature);
+				return { code: funcCode, type: returnType };
+			}
+			function listAST(termTok) {
+				if (curTok === termTok) {
+					if (!getTok()) return null; // Eat termTok
+					return [0]; // List of length 0
+				}
+
+				var code = [],
+				    typeList = [],
+				    len = 1;
+				while (true) {
+					var expr = exprAST();
+					if (!expr) return null;
+					code = code.concat(expr.code);
+					typeList.push(expr.type);
+
+					if (curTok === termTok) break;else if (curTok !== ',') return error("Expected ',' or '" + termTok + "' after list element");
+					if (!getTok()) return null; // Eat ','
+					++len;
+				}
+				if (!getTok()) return null; // Eat termTok
+				return { code: code, type: typeList };
+			}
+			function primaryAST() {
+				switch (curTok) {
+					case 'identifier':
+						return identifierAndPostAST();
+					case 'float':case 'int':
+						return numberAST();
+					default:
+						return error("unknown token '{0}' when expecting an expression".format(curTok));
+					/*case (int)Lexer.Token.tok_int: return ParseIntExpr();
+     case (int)Lexer.Token.tok_float: return ParseFloatExpr();
+     case (int)Lexer.Token.tok_string: return ParseStringExpr();
+     case (int)Lexer.Token.tok_bool: return ParseBooleanExpr();
+     case '(': return ParseParenExpr();
+     case '[': return ParseArrayExpr('[', ']');
+     case (int)Lexer.Token.tok_return: return ParseReturnExpr();
+     case (int)Lexer.Token.tok_new: return ParseNewExpr();
+     case (int)Lexer.Token.tok_pp:
+     	Position ppBegin = getTokenStartPosition();
+     	if (!getTok()) return null; // eat '++'
+     	VAR = ParseIdentifierExpr();
+     	if (VAR == null) return null;
+     	if (!(VAR is VariableExprAST || VAR is IndexExprAST)) return Error("Expected variable after prefix increment operator");
+     	return new PrefixIncrementExprAST(new Segment(ppBegin, VAR.source.end), VAR);
+     case (int)Lexer.Token.tok_mm:
+     	Position mmBegin = getTokenStartPosition();
+     	if (!getTok()) return null; // eat '--'
+     	VAR = ParseIdentifierExpr();
+     	if (VAR == null) return null;
+     	if (!(VAR is VariableExprAST || VAR is IndexExprAST)) return Error("Expected variable after prefix decrement operator");
+     	return new PrefixDecrementExprAST(new Segment(mmBegin, VAR.source.end), VAR);*/
+				}
+			}
+			/**
+    * @param  {number=} exprPrec=0
+    */
+			function exprAST(exprPrec) {
+				if (libUtility.isUndefined(exprPrec)) exprPrec = 0;
+
+				var lhs = primaryAST();
+				if (!lhs) return null;
+
+				/*if (curTok === '=' || curTok === '+=')
+    {
+    	var op = curTok;
+    	if (!getTok()) return null; // Eat op
+    	var rhs = exprAST();
+    	if (!rhs) return null;
+    	return lhs.concat(rhs, [op]);
+    }*/
+
+				return bineryOpAST(exprPrec, lhs);
+			}
+			function topLevelAST() {
+				var code = [];
+				if (!getTok()) return null; // Get first token
+				while (curTok !== null) {
+					var lhs = primaryAST();
+					if (!lhs) return null;
+
+					var binOp = bineryOpAST(0, lhs);
+					if (!binOp) return null;
+
+					if (curTok !== ';') return error("Missing ';' after expression");
+					if (!getTok()) return null; // Eat ';'
+
+					code = code.concat(binOp.code);
+					code.push(';'); // Clear operation
+				}
+
+				if (code.length !== 0) code.pop(); // Don't clear after last operation. Result of last operation is return value
+
+				return code;
+			}
+
+			var expr = topLevelAST();
+			return expr ? expr : err;
+		}
+
+		return buildAST();
+	},
+	run: function run(code, stack, global) {
+		var IP = -1; // Instruction pointer
+		var SP = 0; // Stack pointer
+		var scope = global;
+
+		var postOpScope;
+		while (++IP < code.length) {
+			postOpScope = global; // By default, reset scope after operation
+			switch (code[IP]) {
+				case 'float = float':
+					scope[stack[--SP]] = stack[SP - 1];break;
+				case 'float += float':
+					scope[stack[--SP]] += stack[--SP];break;
+				case 'float -= float':
+					scope[stack[--SP]] -= stack[--SP];break;
+				case 'float *= float':
+					scope[stack[--SP]] *= stack[--SP];break;
+				case 'float /= float':
+					scope[stack[--SP]] /= stack[--SP];break;
+				case 'float + float':
+					stack[SP - 2] += stack[--SP];break;
+				case 'float * float':
+					stack[SP - 2] *= stack[--SP];break;
+				case 'float / float':
+					stack[SP - 2] /= stack[--SP];break;
+
+				case 'sin(float)':
+					stack[SP - 1] = Math.sin(stack[SP - 1]);break;
+				case 'cos(float)':
+					stack[SP - 1] = Math.cos(stack[SP - 1]);break;
+				case 'tan(float)':
+					stack[SP - 1] = Math.tan(stack[SP - 1]);break;
+				case 'asin(float)':
+					stack[SP - 1] = Math.asin(stack[SP - 1]);break;
+				case 'acos(float)':
+					stack[SP - 1] = Math.acos(stack[SP - 1]);break;
+				case 'atan(float)':
+					stack[SP - 1] = Math.atan(stack[SP - 1]);break;
+				/*case 'pow': FormulaCompiler.types.float,
+    case 'exp': FormulaCompiler.types.float,
+    case 'log': FormulaCompiler.types.float,
+    case 'exp2': FormulaCompiler.types.float,
+    case 'log2': FormulaCompiler.types.float,
+    case 'sqrt': FormulaCompiler.types.float,
+    case 'inversesqrt': FormulaCompiler.types.float,
+    case 'abs': FormulaCompiler.types.float,
+    case 'sign': FormulaCompiler.types.float,
+    case 'floor': FormulaCompiler.types.float,
+    case 'ceil': FormulaCompiler.types.float,
+    case 'fract': FormulaCompiler.types.float,
+    case 'mod': FormulaCompiler.types.float,*/
+				case 'min(float, float)':
+					stack[SP - 2] = Math.min(stack[SP - 2], stack[--SP]);break;
+				case 'max(float, float)':
+					stack[SP - 2] = Math.max(stack[SP - 2], stack[--SP]);break;
+				/*case 'clamp': FormulaCompiler.types.float,
+    case 'mix': FormulaCompiler.types.float,
+    case 'step': FormulaCompiler.types.float,
+    case 'smoothstep': FormulaCompiler.types.float,
+    case 'length': FormulaCompiler.types.float,
+    case 'distance': FormulaCompiler.types.float,
+    case 'dot': FormulaCompiler.types.float,
+    case 'cross': FormulaCompiler.types.float,
+    case 'normalize': FormulaCompiler.types.float,*/
+
+				case 'vec3(float, float, float)':
+					/*Nothing to do*/break;
+				case 'vec3 = vec3':
+					scope[stack[--SP]] = [stack[SP - 3], stack[SP - 2], stack[SP - 1]];break;
+				case 'vec3 + vec3':
+					stack[SP - 6] += stack[SP - 3];stack[SP - 5] += stack[SP - 2];stack[SP - 4] += stack[SP - 1];SP -= 3;break;
+				case 'vec3 * float':
+					var f = stack[--SP];stack[SP - 3] *= f;stack[SP - 2] *= f;stack[SP - 1] *= f;break;
+
+				case '@':
+					stack[SP - 1] = scope[stack[SP - 1]];break; // Load scalar from scope
+				case '@[]':
+					// Load array from scope
+					var variable = scope[stack[--SP]];
+					for (var i = 0; i < variable.length; ++i) {
+						stack[SP++] = variable[i];
+					}break;
+				case '.':
+					scope = scope[stack[--SP]]; // Dereference member
+					postOpScope = scope; // Don't reset scope after operation
+					break;
+				case ';':
+					SP = 0;break;
+
+				default:
+					stack[SP++] = code[IP];
+					postOpScope = scope; // Don't reset scope after operation
+			}
+			scope = postOpScope;
+		}
+		return SP === 0 ? null : SP === 1 ? stack[0] : stack.slice(0, SP);
+	}
+};
+FormulaCompiler.types = {
+	float: { name: "float" },
+	vec3: { name: "vec3" }
+};
+FormulaCompiler.types.vec3.members = {
+	x: { index: 0, type: FormulaCompiler.types.float },
+	y: { index: 1, type: FormulaCompiler.types.float },
+	z: { index: 2, type: FormulaCompiler.types.float }
+};
+
+function verboseTest(formula, symbols, symbolTypes) {
+	var code = FormulaCompiler.compile(formula, symbolTypes ? symbolTypes : {});
+
+	console.log("formula: " + formula);
+	if (libUtility.isString(code)) console.log("err: " + code);else {
+		var globalScope = symbols ? symbols : {};
+		console.log("code: " + code.map(function (c) {
+			return libUtility.isString(c) ? '"' + c + '"' : c;
+		}).join(" "));
+		console.log("result: " + FormulaCompiler.run(code, new Array(16), globalScope));
+		console.log("locals: " + JSON.stringify(globalScope));
+	}
+}
+
+function verify(formula, result) {
+	var code = FormulaCompiler.compile(formula);
+	if (libUtility.isString(code)) console.log("Formula '{0}' failed with error '{1}'".format(formula, code));else {
+		var computedResult = FormulaCompiler.run(code, new Array(16), {});
+
+		var match;
+		if (libUtility.isArray(result) && libUtility.isArray(computedResult) && result.length === computedResult.length) {
+			match = true;
+			for (var i = 0; i < result.length; ++i) {
+				if (computedResult[i] !== result[i]) {
+					match = false;
+					break;
+				}
+			}
+		} else match = computedResult === result;
+
+		if (!match) console.log("Formula '{0}' returned '{1}', instead of '{2}'".format(formula, computedResult, result));
+	}
+	return true;
+}
+
+function benchmark(nIter, javascriptCode, formulaCode, evalCode) {
+	var sum, tStart;
+
+	sum = 0.0;
+	tStart = performance.now();
+	for (var i = 0; i < nIter; ++i) {
+		sum += javascriptCode();
+	}console.log(sum);
+	console.log(performance.now() - tStart + "ms");
+
+	sum = 0.0;
+	tStart = performance.now();
+	var code = FormulaCompiler.compile(formulaCode);
+	var stack = new Array(16);
+	for (var i = 0; i < nIter; ++i) {
+		sum += FormulaCompiler.run(code, stack, {});
+	}console.log(sum);
+	console.log(performance.now() - tStart + "ms");
+
+	sum = 0.0;
+	tStart = performance.now();
+	for (var i = 0; i < nIter; ++i) {
+		sum += eval(evalCode);
+	}console.log(sum);
+	console.log(performance.now() - tStart + "ms");
+}
+
+/*benchmark(1000000, function() {
+	var a = 3;
+	var b = 4;
+	return a * b / 2;
+}, `
+	float a = 3;
+	float b = 4;
+	a * b / 2;
+`, `
+	var a = 3;
+	var b = 4;
+	a * b / 2;
+`);*/
+
+/*benchmark(10000, function() {
+	var v = [4, 5, 6];
+	return v[1];
+}, `
+	vec3 v = vec3(4, 5, 6);
+	v.y;
+`, `
+	var v = [4, 5, 6];
+	v[1];
+`);*/
+
+//verboseTest("vec3 a = vec3(1, 2, 3);");
+
+/*verify("1 + 6 * 2;", 13);
+verify("max(1, 2);", 2);
+verify("max(1 + 6, 2 * 3);", 7);
+verify("float a = 123; a += 5; a;", 128);
+verify("float a = max(3 + 3, 5); a;", 6);
+verify("vec3 a = vec3(1, 2, 3); a.y;", 2);
+verify("vec3 a = vec3(1, 2, 3); a.y *= 3; a;", [1, 6, 3]);
+verify("vec3 a = vec3(1, 2, 3); a = a * 3; a;", [3, 6, 9]);
+verify(`
+	vec3 a = vec3(5, 5, 5);
+	vec3 b = vec3(1, 2, 3);
+	vec3 c = a + b;
+	c;
+`, [6, 7, 8]);
+verify(`
+	vec3 a = vec3(0, 1, 2);
+	a.x = a.y;
+	a;
+`, [1, 1, 2]);
+verify(`
+	float a = 3;
+	float b = 4;
+	a * b / 2;
+`, 6);
+
+verboseTest("i;", {i: 123.5}, {i: FormulaCompiler.types.float});*/
+
+/***/ }),
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, __dirname) {﻿(function () {
@@ -15339,7 +16038,7 @@ function parseData(input) {
 	var setImmediate = setImmediate || function (cb) {
 		setTimeout(cb, 0);
 	};
-	var Worker = isNode ? __webpack_require__(28) : self.Worker;
+	var Worker = isNode ? __webpack_require__(29) : self.Worker;
 	var URL = typeof self !== 'undefined' ? (self.URL ? self.URL : self.webkitURL) : null;
 	var _supports = (isNode || self.Worker) ? true : false; // node always supports parallel
 
@@ -15406,7 +16105,7 @@ function parseData(input) {
 
 	var defaults = {
 		evalPath: isNode ? __dirname + '/eval.js' : null,
-		maxWorkers: isNode ? __webpack_require__(30).cpus().length : 4,
+		maxWorkers: isNode ? __webpack_require__(31).cpus().length : 4,
 		synchronous: true
 	};
 
@@ -15650,10 +16349,10 @@ function parseData(input) {
 		self.Parallel = Parallel;
 	}
 })();
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27), "/"))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(28), "/"))
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports) {
 
 var g;
@@ -15680,10 +16379,10 @@ module.exports = g;
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
-﻿var ps = __webpack_require__(29);
+﻿var ps = __webpack_require__(30);
 
 function Worker(url) {
 	var that = this;
@@ -15714,13 +16413,13 @@ Worker.prototype.terminate = function () {
 module.exports = Worker;
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports) {
 
-module.exports = __WEBPACK_EXTERNAL_MODULE_29__;
+module.exports = __WEBPACK_EXTERNAL_MODULE_30__;
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports) {
 
 exports.endianness = function () { return 'LE' };
@@ -15775,7 +16474,7 @@ exports.homedir = function () {
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -26035,7 +26734,7 @@ return jQuery;
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports) {
 
 /**

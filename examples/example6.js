@@ -1,12 +1,11 @@
 /* eslint-disable */
 
-const globalView = require('../lib/globalView.js');
+const globalView = require('../dist/global-view.js');
 const domready = require("domready");
-const libDataset = require('../lib/dataset.js');
 
 function EmptyDataset(n)
 {
-	Dataset.call(this);
+	globalView.Dataset.call(this);
 	this.length = n;
 }
 
@@ -16,8 +15,8 @@ domready(function () {
 	pointColor: "white"
 	});
 	var dataset = new EmptyDataset(10000);
-	dataset.dataVectors.push(new libDataset.DataVector(dataset, "i"));
-	dataset.dataVectors.push(new libDataset.DataVector(dataset, "sin(i * 8.0 * PI / n)"));
-	dataset.dataVectors.push(new libDataset.DataVector(dataset, "0.0"));
+	dataset.dataVectors.push(new globalView.DataVector(dataset, "i"));
+	dataset.dataVectors.push(new globalView.DataVector(dataset, "sin(i * 8.0 * PI / n)"));
+	dataset.dataVectors.push(new globalView.DataVector(dataset, "0.0"));
 	plot.load(dataset, 0, 1, 2, 2);
 });

@@ -1,8 +1,9 @@
 /* eslint-disable */
 
 const libGraphics = require('./graphics.js');
-const libShaders = require('./shaders.js')
-const libAlgorithm = require('./algorithm.js')
+const libShaders = require('./shaders.js');
+const libAlgorithm = require('./algorithm.js');
+const libColormap = require('./colormap.js');
 const libGlMatrix = require('gl-matrix');
 
 /**
@@ -144,7 +145,7 @@ export function HistogramViewer(gl, globalView)
 			libGlMatrix.mat4.identity(mattrans);
 			if (flipY === true)
 				libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-			libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + plotBounds.width + COLORMAP_WIDTH + 0.5 + 64) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
+			libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + plotBounds.width + libColormap.COLORMAP_WIDTH + 0.5 + 64) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
 			libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
 			libGlMatrix.mat4.scale(mattrans, mattrans, [2 * plotBounds.height / gl.height, 1, 1]);
 			sdrLine.matWorldViewProj(mattrans);
@@ -153,7 +154,7 @@ export function HistogramViewer(gl, globalView)
 			libGlMatrix.mat4.identity(mattrans);
 			if (flipY === true)
 				libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-			libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + plotBounds.width + COLORMAP_WIDTH + 0.5) / gl.width - 1, pos[2] + 0.5 * 2 / gl.height, 0.0]); // 0.5 ... center inside pixel
+			libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + plotBounds.width + libColormap.COLORMAP_WIDTH + 0.5) / gl.width - 1, pos[2] + 0.5 * 2 / gl.height, 0.0]); // 0.5 ... center inside pixel
 			libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
 			libGlMatrix.mat4.scale(mattrans, mattrans, [scl[2], -64 * 2 / gl.width, 1.0]);
 			
@@ -212,7 +213,7 @@ export function HistogramViewer(gl, globalView)
 			return; // Requested histogram already exists
 		
 		axis.histogram = libAlgorithm.computeHistogram(dataset, axis.d = d, numBins);
-		addTransformFunctions(axis.histogram);
+		libAlgorithm.addTransformFunctions(axis.histogram);
 		//console.log(axis.histogram);
 		
 		var positions = new Float32Array((6 * numBins) * 3);

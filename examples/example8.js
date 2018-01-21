@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-const libGlobalView = require('../lib/globalView.js');
+const libGlobalView = require('../dist/global-view.js');
 const domready = require("domready");
 
 // Global variables
@@ -17,15 +17,15 @@ domready(function() {
 	cbColumnS = document.getElementById("cbColumnS");
 	
 	const DATASETS = [
-		{name: "10 random points", create: () => new libGlobalView.libDataset.RandomDataset(10, 3, dataset_onLoad)},
-		{name: "100 random points", create: () => new libGlobalView.libDataset.RandomDataset(100, 3, dataset_onLoad)},
-		{name: "1.000 random points", create: () => new libGlobalView.libDataset.RandomDataset(1000, 3, dataset_onLoad)},
-		{name: "10.000 random points", create: () => new libGlobalView.libDataset.RandomDataset(10000, 3, dataset_onLoad)},
-		{name: "100.000 random points", create: () => new libGlobalView.libDataset.RandomDataset(100000, 3, dataset_onLoad)},
-		{name: "1.000.000 random points", create: () => new libGlobalView.libDataset.RandomDataset(1000000, 3, dataset_onLoad)},
-		{name: "10.000.000 random points", create: () => new libGlobalView.libDataset.RandomDataset(10000000, 3, dataset_onLoad)},
-		{name: "iris", url: "datasets/iris.data", create: () => new libGlobalView.libDataset.CsvDataset("datasets/iris.data", {columnLabels: ["Sepal Length [cm]", "Sepal Width [cm]", "Petal Length [cm]", "Petal Width [cm]", "Class"]}, dataset_onLoad)},
-		{name: "allencell", url: "datasets/AICS_Cell-feature-analysis_v1.5.csv", create: () => new libGlobalView.libDataset.CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
+		{name: "10 random points", create: () => new libGlobalView.RandomDataset(10, 3, dataset_onLoad)},
+		{name: "100 random points", create: () => new libGlobalView.RandomDataset(100, 3, dataset_onLoad)},
+		{name: "1.000 random points", create: () => new libGlobalView.RandomDataset(1000, 3, dataset_onLoad)},
+		{name: "10.000 random points", create: () => new libGlobalView.RandomDataset(10000, 3, dataset_onLoad)},
+		{name: "100.000 random points", create: () => new libGlobalView.RandomDataset(100000, 3, dataset_onLoad)},
+		{name: "1.000.000 random points", create: () => new libGlobalView.RandomDataset(1000000, 3, dataset_onLoad)},
+		{name: "10.000.000 random points", create: () => new libGlobalView.RandomDataset(10000000, 3, dataset_onLoad)},
+		{name: "iris", url: "datasets/iris.data", create: () => new libGlobalView.CsvDataset("datasets/iris.data", {columnLabels: ["Sepal Length [cm]", "Sepal Width [cm]", "Petal Length [cm]", "Petal Width [cm]", "Class"]}, dataset_onLoad)},
+		{name: "allencell", url: "datasets/AICS_Cell-feature-analysis_v1.5.csv", create: () => new libGlobalView.CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
 //		{name: "allencell x2", url: "datasets/AICS_Cell-feature-analysis_v1.5_x2.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x2.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
 //		{name: "allencell x10", url: "datasets/AICS_Cell-feature-analysis_v1.5_x10.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x10.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
 //		{name: "allencell x100", url: "datasets/AICS_Cell-feature-analysis_v1.5_x100.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x100.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
@@ -84,7 +84,7 @@ domready(function() {
 	
 	// Fill cbDataset
 	DATASETS.forEach(function(dataset) {
-		if (isUndefined(dataset.url))
+		if (typeof dataset.url === 'undefined')
 		{
 			var option = document.createElement("option");
 			option.text = dataset.name;
@@ -93,7 +93,7 @@ domready(function() {
 			if (cbDataset.options.length === DATASETS.length)
 			{
 				// Load dataset
-				var datasetIndex = libGlobalView.libUtility.readIntCookie('datasetIndex');
+				var datasetIndex = libGlobalView.readIntCookie('datasetIndex');
 				if (datasetIndex !== null)
 					cbDataset.selectedIndex = datasetIndex;
 				cbDataset_onChange(); // Load even if cookie isn't set
@@ -101,7 +101,7 @@ domready(function() {
 		}
 		else
 		{
-			libGlobalView.libUtility.urlExists(dataset.url, function() {
+			libGlobalView.urlExists(dataset.url, function() {
 				var option = document.createElement("option");
 				option.text = dataset.name;
 				option.createDataset = dataset.create;
@@ -109,7 +109,7 @@ domready(function() {
 				if (cbDataset.options.length === DATASETS.length)
 				{
 					// Load dataset
-					var datasetIndex = libGlobalView.libUtility.readIntCookie('datasetIndex');
+					var datasetIndex = libGlobalView.readIntCookie('datasetIndex');
 					if (datasetIndex !== null)
 						cbDataset.selectedIndex = datasetIndex;
 					cbDataset_onChange(); // Load even if cookie isn't set
@@ -162,7 +162,7 @@ function onResize()
 
 function cbDataset_onChange()
 {
-	libGlobalView.libUtility.createCookie('datasetIndex', cbDataset.selectedIndex);
+	libGlobalView.createCookie('datasetIndex', cbDataset.selectedIndex);
 	if (cbDataset.selectedIndex >= 0 && cbDataset.options[cbDataset.selectedIndex].createDataset)
 		cbDataset.options[cbDataset.selectedIndex].createDataset();
 	/*switch (cbDataset.selectedIndex)
@@ -214,7 +214,7 @@ function dataset_onLoad(_dataset)
 	}
 if (dataset.numColumns > 3)
 {
-	dataset.dataVectors.push(new libGlobalView.libDataset.DataVector(dataset, "0.0"/*"0.5 * c1 + 0.5 * c3"*/));//"i"));
+	dataset.dataVectors.push(new libGlobalView.DataVector(dataset, "0.0"/*"0.5 * c1 + 0.5 * c3"*/));//"i"));
 	var option = document.createElement("option");
 	option.text = 'formula';
 	cbColumnX.add(option);
@@ -228,7 +228,7 @@ if (dataset.numColumns > 3)
 	option.text = 'formula';
 	cbColumnS.add(option);
 }
-	var activeColumnX = libGlobalView.libUtility.readIntCookie('activeColumnX'), activeColumnY = libGlobalView.libUtility.readIntCookie('activeColumnY'), activeColumnC = libGlobalView.libUtility.readIntCookie('activeColumnC'), activeColumnS = libGlobalView.libUtility.readIntCookie('activeColumnS');
+	var activeColumnX = libGlobalView.readIntCookie('activeColumnX'), activeColumnY = libGlobalView.readIntCookie('activeColumnY'), activeColumnC = libGlobalView.readIntCookie('activeColumnC'), activeColumnS = libGlobalView.readIntCookie('activeColumnS');
 	cbColumnX.selectedIndex = Math.max(0, Math.min(dataset.numColumns - 1, activeColumnX !== null && activeColumnX < dataset.numColumns ? activeColumnX : 0));
 	cbColumnY.selectedIndex = Math.max(0, Math.min(dataset.numColumns - 1, activeColumnY !== null && activeColumnY < dataset.numColumns ? activeColumnY : 1));
 	cbColumnC.selectedIndex = Math.max(0, Math.min(dataset.numColumns - 1, activeColumnC !== null && activeColumnC < dataset.numColumns ? activeColumnC : 2));
@@ -239,22 +239,22 @@ if (dataset.numColumns > 3)
 }
 function cbColumnX_onChange()
 {
-	libGlobalView.libUtility.createCookie('activeColumnX', cbColumnX.selectedIndex);
+	libGlobalView.createCookie('activeColumnX', cbColumnX.selectedIndex);
 	globalView.setActiveColumn(0, cbColumnX.selectedIndex);
 }
 function cbColumnY_onChange()
 {
-	libGlobalView.libUtility.createCookie('activeColumnY', cbColumnY.selectedIndex);
+	libGlobalView.createCookie('activeColumnY', cbColumnY.selectedIndex);
 	globalView.setActiveColumn(1, cbColumnY.selectedIndex);
 }
 function cbColumnC_onChange()
 {
-	libGlobalView.libUtility.createCookie('activeColumnC', cbColumnC.selectedIndex);
+	libGlobalView.createCookie('activeColumnC', cbColumnC.selectedIndex);
 	globalView.setActiveColumn(2, cbColumnC.selectedIndex);
 }
 function cbColumnS_onChange()
 {
-	libGlobalView.libUtility.createCookie('activeColumnS', cbColumnS.selectedIndex);
+	libGlobalView.createCookie('activeColumnS', cbColumnS.selectedIndex);
 	globalView.setActiveColumn(3, cbColumnS.selectedIndex);
 }
 
@@ -281,7 +281,7 @@ function rPointSize_onChange(sender)
 	globalView.setOption("pointSize", Number.parseFloat(sender.value));
 }
 
-var densityMapOptions = new libGlobalView.libAlgorithm.DensityMapOptions();
+var densityMapOptions = new libGlobalView.DensityMapOptions();
 //densityMapOptions.logScale = false;
 function cbShowDensity_onChange(sender)
 {
@@ -566,7 +566,7 @@ function handleKeyDown(event)
 	case 36: // HOME key
 		globalView.enableOffscreenRendering(1024, 1024);
 		globalView.renderOffscreenBuffer();
-		libGlobalView.libUtility.download("globalView.png", globalView.saveOffscreenBuffer());
+		libGlobalView.download("globalView.png", globalView.saveOffscreenBuffer());
 		globalView.disableOffscreenRendering();
 	}
 }

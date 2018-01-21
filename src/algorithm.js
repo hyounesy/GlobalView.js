@@ -1,7 +1,7 @@
 /* eslint-disable */
 const libUtility = require('./utility.js');
 
-function addTransformFunctions(cls)
+export function addTransformFunctions(cls)
 {
 	cls.transformX = function(x) { return cls.transform[0] * x + cls.transform[1]; };
 	cls.transformY = function(y) { return cls.transform[2] * y + cls.transform[3]; };
@@ -585,35 +585,6 @@ export function computeDensityMapND(dataset, width, height, options)
 	return densityMap;
 }
 
-/*function computePointDensityIndex(dataset, d0, d1, densityMap)
-{
-	var data = dataset.fdata;
-	var n = dataset.length;
-	var nc = dataset.numColumns;
-	var s0 = 1 / (dataset.columns[d0].maximum - dataset.columns[d0].minimum);
-	var o0 = -dataset.columns[d0].minimum * s0;
-	var s1 = 1 / (dataset.columns[d1].maximum - dataset.columns[d1].minimum);
-	var o1 = -dataset.columns[d1].minimum * s1;
-	var densities = densityMap.data, size = densityMap.size;
-	
-	// Compute density at each datapoint
-	var pointDensities = new Float32Array(n);
-	for (var i = 0; i < n; ++i)
-	{
-		var p0 = data[i * nc + d0] * s0 + o0;
-		var p1 = data[i * nc + d1] * s1 + o1;
-		
-		var idx = Math.min(Math.floor(p1 * size), size - 1) * size + Math.min(Math.floor(p0 * size), size - 1);
-		pointDensities[i] = densities[idx];
-	}
-	
-	// Create indices sorted by density
-	var indices = Array.from(pointDensities.keys());
-	indices.sort(function(idxA, idxB) { return pointDensities[idxA] - pointDensities[idxB]; });
-	
-	return indices;
-}*/
-
 /**
  * This function computes point densities for each point in the dataset.
  * It returns the first `Math.floor(k * (1 - targetRatio))` lowest density points (outliers) and
@@ -954,7 +925,7 @@ export function markPointsInStencilMap(dataset, d0, d1, points, densityMap, sten
  * @param  {Object} stencilMap
  * @param  {string=} fileName=stencilMap.png The file name of the downloaded image.
  */
-function downloadStencilMap(stencilMap, fileName)
+export function downloadStencilMap(stencilMap, fileName)
 {
 	if (!fileName)
 		fileName = "stencilMap.png";
@@ -1045,45 +1016,8 @@ export function findClosePointOfLowDensity_descend(dataset, d0, d1, p, densityMa
 			return Math.pow(densityOffset + densities[state.y * width + state.x] * densityScale, 2);
 		}
 	};
-//var tStart = performance.now();
-	//BreadthFirstSearch(searchProblem);
-	//DepthFirstSearch(searchProblem);
 	SimpleUniformCostSearch(searchProblem);
-	//SimpleAStarSearch(searchProblem);
-	//SimpleGreedySearch(searchProblem);
-//var tEnd = performance.now();
-//console.log((tEnd - tStart) / 1000.0);
 	var closestPoint = [bestState.x, bestState.y];
-	/*var x = Math.floor(p0), y = Math.floor(p1);
-	var cX, cY, currentPenalty, lastPenalty, lowestPenalty = Number.MAX_VALUE;
-	do
-	{
-		lastPenalty = lowestPenalty;
-		[[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]].forEach(function(offset) {
-			cX = x + offset[0];
-			cY = y + offset[1];
-			if (cX >= xMin && cX < xMax && cY >= yMin && cY < yMax)
-			{
-				currentPenalty = computePenalty(cX, cY);
-				if (currentPenalty < lowestPenalty)
-				{
-					lowestPenalty = currentPenalty;
-					x = cX;
-					y = cY;
-				}
-			}
-		});
-	}
-	while (lowestPenalty !== lastPenalty);
-	closestPoint = [x, y];*/
-//console.log(closestPoint);
-	
-	
-/*var xMin = Math.max(0, closestPoint[0] - 2 * minDistX), xMax = Math.min(width, closestPoint[0] + 2 * minDistX);
-var yMin = Math.max(0, closestPoint[1] - 2 * minDistY), yMax = Math.min(height, closestPoint[1] + 2 * minDistY);
-for (var y = yMin; y < yMax; ++y)
-	for (var x = xMin; x < xMax; ++x)
-		densities[y * width + x] = 1e20;*/
 	
 	// Transform closestPoint back from density map space to data space
 	closestPoint[0] = (closestPoint[0] / width - o0) / s0;
@@ -1582,6 +1516,9 @@ export function computeClusterMap_method2(dataset, d0, d1, densityMap)
 	return clustermap;
 }
 
+const ForwardList = libUtility.ForwardList;
+const PriorityQueue = libUtility.PriorityQueue;
+
 /**
  * This function can be computed by an asynchronous worker.
  * It inputs and outputs plain JavaScript objects, because data passed between the main thread and an asynchronous worker has to be primitive
@@ -1623,7 +1560,7 @@ export function computeClusterMap_method3(densityMap, d0, d1, options)
 						// Link clusters
 						var leftCluster = clusters[leftClusterId - 1];
 						var topCluster = clusters[topClusterId - 1];
-						clusters[leftClusterId - 1] = libUtility.ForwardList.sortedMerge(leftCluster, topCluster);
+						clusters[leftClusterId - 1] = ForwardList.sortedMerge(leftCluster, topCluster);
 						clusters[topClusterId - 1] = clusters[leftClusterId - 1];
 						topClusterId = leftClusterId;
 					}
@@ -1632,7 +1569,7 @@ export function computeClusterMap_method3(densityMap, d0, d1, options)
 				else if (y !== 0 && (topClusterId = clustermap[(y - 1) * width + x]) !== 0)
 					clustermap[y * width + x] = leftClusterId = topClusterId;
 				else
-					clusters.push(new libUtility.ForwardList(clustermap[y * width + x] = leftClusterId = clusters.length + 1));
+					clusters.push(new ForwardList(clustermap[y * width + x] = leftClusterId = clusters.length + 1));
 			}
 			else
 				//clustermap[y * width + x] = leftClusterId = 0; // For languages that don't initialize arrays
@@ -1646,7 +1583,7 @@ export function computeClusterMap_method3(densityMap, d0, d1, options)
 	{
 		if (clusters[i] === null)
 			clusters[i] = 0;
-		else if (clusters[i] instanceof libUtility.ForwardList)
+		else if (clusters[i] instanceof ForwardList)
 		{
 			clusters[i].forEach(function(id) {
 				clusters[id - 1] = clusterId;
@@ -1668,12 +1605,11 @@ export function computeClusterMap_method3(densityMap, d0, d1, options)
 	
 	var clusterMinDensities = Array.apply(null, Array(numClusters)).map(Number.prototype.valueOf, densityThreshold);
 	
-	
-	if (false)
+		if (false)
 	{
 		// Extend clusters to fill entire density != 0 area
 		
-		var neighborQueue = new libUtility.PriorityQueue('d'); // Queue of all neighbors of clusters (candidates ro be included in the cluster)
+		var neighborQueue = new PriorityQueue('d'); // Queue of all neighbors of clusters (candidates ro be included in the cluster)
 		
 		for (var y = 0; y < height; ++y)
 			for (var x = 0; x < width; ++x)

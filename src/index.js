@@ -16,5 +16,15 @@ export {
 } from './dataset';
 
 export {
+  DensityMapOptions,
+  downloadStencilMap,
+  downloadDensityMap,
+} from './algorithm';
+
+export {
   HashSet,
+  readIntCookie,
+  urlExists,
+  createCookie,
+  download,
 } from './utility';
