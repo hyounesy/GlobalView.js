@@ -1,5 +1,13 @@
+/* eslint-disable */
+
+const libGraphics = require('./graphics.js');
+const libShaders = require('./shaders.js');
+const libAlgorithm = require('./algorithm.js');
+const libGlMatrix = require('gl-matrix');
+
 //const LABEL_HEIGHT = 12, LABEL_WIDTH = 16.5;
-var LABEL_HEIGHT = 12, LABEL_WIDTH = 16.5;
+export var LABEL_HEIGHT = 12;
+export var LABEL_WIDTH = 16.5;
 const LABEL_TEXT_PADDING = 2;
 
 /**
@@ -124,23 +132,23 @@ function Thumbnail(globalView)
  */
 export function ImageViewer(gl, globalView)
 {
-	var sdrImage = new Shader(gl, Shaders.vsTextured, Shaders.fsTextured);
+	var sdrImage = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured, libShaders.Shaders.fsTextured);
 	sdrImage.matWorldViewProj = sdrImage.u4x4f("matWorldViewProj");
 	
-	var sdrLine = new Shader(gl, Shaders.vsSimple, Shaders.fsLine);
+	var sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
 	sdrLine.color = sdrLine.u4f("color");
 	sdrLine.color.apply(sdrLine, gl.foreColor);
 	sdrLine.matWorldViewProj = sdrLine.u4x4f("matWorldViewProj");
 	
 	// Create a 2D line mesh
-	var meshLine = new Mesh(gl, new Float32Array([
+	var meshLine = new libGraphics.Mesh(gl, new Float32Array([
 		// Positions
 		0, 0, 0,
 		1, 0, 0
 	]), null, null, null, null, null, gl.LINES);
 	
 	// Create a 2D quad mesh
-	var meshQuad = new Mesh(gl, new Float32Array([
+	var meshQuad = new libGraphics.Mesh(gl, new Float32Array([
 		// Positions
 		0, 1, 0,
 		0, 0, 0,
@@ -155,7 +163,7 @@ export function ImageViewer(gl, globalView)
 	]));
 	
 	// Create a 2D line quad mesh
-	var meshLineQuad = new Mesh(gl, new Float32Array([
+	var meshLineQuad = new libGraphics.Mesh(gl, new Float32Array([
 		// Positions
 		0, 0, 0,
 		0, 1, 0,
@@ -166,7 +174,7 @@ export function ImageViewer(gl, globalView)
 	// Create a 2D arrow mesh
 LABEL_HEIGHT = gl.measureTextHeight() + 2 * LABEL_TEXT_PADDING;
 LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
-	var meshLabel = new Mesh(gl, new Float32Array([
+	var meshLabel = new libGraphics.Mesh(gl, new Float32Array([
 		// Positions
 		0.0,  0.0, 0,
 		0.5 * LABEL_HEIGHT,  0.5 * LABEL_HEIGHT, 0,
@@ -176,7 +184,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
 	]), null, null, null, null, null, gl.TRIANGLE_FAN);
 	
 	// Create a 2D line arrow mesh
-	var meshLineLabel = new Mesh(gl, new Float32Array([
+	var meshLineLabel = new libGraphics.Mesh(gl, new Float32Array([
 		// Positions
 		0.0,  0.0, 0,
 		0.5 * LABEL_HEIGHT,  0.5 * LABEL_HEIGHT, 0,
@@ -194,8 +202,8 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
 	{
 		if (images.length === 0)
 			return;
-		var mattrans = mat4.create();
-		var imagePos = vec2.create(), refPos = vec2.create(), imageSize = vec2.create();
+		var mattrans = libGlMatrix.mat4.create();
+		var imagePos = libGlMatrix.vec2.create(), refPos = libGlMatrix.vec2.create(), imageSize = libGlMatrix.vec2.create();
 		
 		//gl.disable(gl.SCISSOR_TEST);
 		
@@ -209,13 +217,13 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
 				tf.transformPos(refPos, image.refPos);
 				
 				sdrLine.bind();
-				mat4.identity(mattrans);
+				libGlMatrix.mat4.identity(mattrans);
 				if (flipY === true)
-					mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+					libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
 				refPos[0] = PixelAlignX(refPos[0]);
 				refPos[1] = PixelAlignY(refPos[1]);
-				mat4.translate(mattrans, mattrans, [refPos[0], refPos[1], 0]);
-				mat4.scale(mattrans, mattrans, [2 / gl.width, 2 / gl.height, 1]);
+				libGlMatrix.mat4.translate(mattrans, mattrans, [refPos[0], refPos[1], 0]);
+				libGlMatrix.mat4.scale(mattrans, mattrans, [2 / gl.width, 2 / gl.height, 1]);
 				sdrLine.matWorldViewProj(mattrans);
 				
 				sdrLine.color.apply(sdrLine, image.highlighted ? [1, 1, 0, 1] : (image.labelColor ? image.labelColor : defaultImageLabelColor));
@@ -241,15 +249,15 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
 			images.forEach(function(image) {
 				if (!image.imagePos || image.imagePos === image.refPos)
 					return;
-				mat4.identity(mattrans);
+				libGlMatrix.mat4.identity(mattrans);
 				if (flipY === true)
-					mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+					libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
 				tf.transformPos(imagePos, image.imagePos);
 				tf.transformPos(refPos, image.refPos);
-				mat4.translate(mattrans, mattrans, [imagePos[0], imagePos[1], 0.0]);
+				libGlMatrix.mat4.translate(mattrans, mattrans, [imagePos[0], imagePos[1], 0.0]);
 				var dx = refPos[0] - imagePos[0], dy = refPos[1] - imagePos[1];
-				mat4.rotateZ(mattrans, mattrans, Math.atan2(dy, dx));
-				mat4.scale(mattrans, mattrans, [Math.sqrt(dx*dx + dy*dy), 1.0, 1.0]);
+				libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.atan2(dy, dx));
+				libGlMatrix.mat4.scale(mattrans, mattrans, [Math.sqrt(dx*dx + dy*dy), 1.0, 1.0]);
 				sdrLine.matWorldViewProj(mattrans);
 				sdrLine.color.apply(sdrLine, image.lineColor ? image.lineColor : defaultImageLineColor);
 				meshLine.draw();
@@ -288,13 +296,13 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
 				scale[1] += 2 * borderWidth / gl.height;
 				
 				meshQuad.bind(sdrLine);
-				mat4.identity(mattrans);
+				libGlMatrix.mat4.identity(mattrans);
 				if (flipY === true)
-					mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+					libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
 				imagePos[0] = PixelAlignX(imagePos[0]);
-				mat4.translate(mattrans, mattrans, [imagePos[0], PixelAlignY(imagePos[1]), 0.0]);
-				mat4.scale(mattrans, mattrans, scale);
-				mat4.translate(mattrans, mattrans, image.imageAnchor); // Move anchor to imageAnchor
+				libGlMatrix.mat4.translate(mattrans, mattrans, [imagePos[0], PixelAlignY(imagePos[1]), 0.0]);
+				libGlMatrix.mat4.scale(mattrans, mattrans, scale);
+				libGlMatrix.mat4.translate(mattrans, mattrans, image.imageAnchor); // Move anchor to imageAnchor
 				sdrLine.matWorldViewProj(mattrans);
 				sdrLine.color.apply(sdrLine, image.borderColor ? image.borderColor : defaultImageBorderColor);
 				meshQuad.draw();
@@ -304,31 +312,31 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
 			}
 			
 			meshQuad.bind(sdrImage, image.tex);
-			mat4.identity(mattrans);
+			libGlMatrix.mat4.identity(mattrans);
 			if (flipY === true)
-				mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+				libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
 			imagePos[0] = PixelAlignX(imagePos[0]);
-			mat4.translate(mattrans, mattrans, [imagePos[0], PixelAlignY(imagePos[1]), 0.0]);
-			mat4.scale(mattrans, mattrans, scale);
-			mat4.translate(mattrans, mattrans, image.imageAnchor); // Move anchor to imageAnchor
+			libGlMatrix.mat4.translate(mattrans, mattrans, [imagePos[0], PixelAlignY(imagePos[1]), 0.0]);
+			libGlMatrix.mat4.scale(mattrans, mattrans, scale);
+			libGlMatrix.mat4.translate(mattrans, mattrans, image.imageAnchor); // Move anchor to imageAnchor
 			sdrImage.matWorldViewProj(mattrans);
 			meshQuad.draw();
 			
 			if (options['labelThumbnails'])
 			{
 				// Draw thumbnail label below thumbnail
-				mat4.identity(mattrans);
+				libGlMatrix.mat4.identity(mattrans);
 				if (flipY === true)
-					mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+					libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
 				imagePos[0] += image.imageAnchor[0] * scale[0]; // Move stripe position depending on image anchor
 				imagePos[1] += image.imageAnchor[1] * scale[1]; // Move stripe position depending on image anchor
 				
-				mat4.translate(mattrans, mattrans, [imagePos[0], PixelAlignY(imagePos[1]), 0.0]);
+				libGlMatrix.mat4.translate(mattrans, mattrans, [imagePos[0], PixelAlignY(imagePos[1]), 0.0]);
 				scale[1] = 2 * LABEL_HEIGHT / gl.height;
 				scale[1] = PixelAlignY(scale[1]);
 				//scale[0] += 2 / gl.width; // Widen by 1 pixel
-				mat4.scale(mattrans, mattrans, scale);
-				mat4.translate(mattrans, mattrans, [-0.0, -1.0, 0.0]); // Move anchor to top of stripe
+				libGlMatrix.mat4.scale(mattrans, mattrans, scale);
+				libGlMatrix.mat4.translate(mattrans, mattrans, [-0.0, -1.0, 0.0]); // Move anchor to top of stripe
 				sdrLine.matWorldViewProj(mattrans);
 				
 				sdrLine.color.apply(sdrLine, image.highlighted ? [1, 1, 0, 1] : (image.labelColor ? image.labelColor : defaultImageLabelColor));
@@ -388,7 +396,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
 		}
 		
 		var newImage = new Thumbnail(globalView);
-		newImage.tex = LoadTexture(gl, imageFilename, function() { globalView.invalidate(); });
+		newImage.tex = libGraphics.LoadTexture(gl, imageFilename, function() { globalView.invalidate(); });
 		newImage.imagePos = imagePos;
 		newImage.refIndex = refIndex;
 		newImage.refPos = refPos;
@@ -411,7 +419,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
 	
 	this.resolveIntersections = function(tf)
 	{
-		var a = vec2.create(), b = vec2.create(), c = vec2.create(), d = vec2.create();
+		var a = libGlMatrix.vec2.create(), b = libGlMatrix.vec2.create(), c = libGlMatrix.vec2.create(), d = libGlMatrix.vec2.create();
 		for (var i = 1; i < images.length; ++i)
 			if (images[i].imagePos)
 			{
@@ -423,7 +431,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
 						tf.transformPos(c, images[j].imagePos);
 						tf.transformPos(d, images[j].refPos);
 						
-						if (vec2.sqrDist(a, b) + vec2.sqrDist(c, d) > vec2.sqrDist(a, d) + vec2.sqrDist(c, b) && !linesIntersect(a, d, c, b))
+						if (libGlMatrix.vec2.sqrDist(a, b) + libGlMatrix.vec2.sqrDist(c, d) > libGlMatrix.vec2.sqrDist(a, d) + libGlMatrix.vec2.sqrDist(c, b) && !libAlgorithm.linesIntersect(a, d, c, b))
 						{
 							//console.log("exchange {0} - {1}".format(i, j));
 							var tmp = images[j].imagePos;
@@ -444,7 +452,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
 						tf.transformPos(c, images[j].imagePos);
 						tf.transformPos(d, images[j].refPos);
 						
-						if (linesIntersect(a, b, c, d))
+						if (libAlgorithm.linesIntersect(a, b, c, d))
 						{
 							//console.log("intersection {0} - {1}".format(i, j));
 							var tmp = images[j].imagePos;
@@ -458,7 +466,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
 	
 	this.imageFromPoint = function(tf, p)
 	{
-		var imagePos = vec2.create(), refPos = vec2.create(), imageSize = vec2.create();
+		var imagePos = libGlMatrix.vec2.create(), refPos = libGlMatrix.vec2.create(), imageSize = libGlMatrix.vec2.create();
 		
 		var selectedImage = null;
 		images.forEach(function(image) {

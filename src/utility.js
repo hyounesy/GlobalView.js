@@ -1,4 +1,6 @@
-function linspace(first, second, last)
+/* eslint-disable */
+
+export function linspace(first, second, last)
 {
 	var offset = second - first;
 	var halfOffset = 0.5 * offset;
@@ -11,37 +13,37 @@ function linspace(first, second, last)
 }
 //linspace(1, 1.1, 10);
 
-function isUndefined(x)
+export function isUndefined(x)
 {
 	return typeof x === 'undefined'
 }
 
-function isFunction(x)
+export function isFunction(x)
 {
 	return typeof x === 'function'
 }
 
-function isArray(x)
+export function isArray(x)
 {
 	return Object.prototype.toString.call(x) === "[object Array]";
 }
 
-function isString(x)
+export function isString(x)
 {
 	return typeof x === 'string'
 }
 
-function isNumber(x)
+export function isNumber(x)
 {
 	return typeof x === 'number'
 }
 
-function isObject(x)
+export function isObject(x)
 {
 	var t = typeof x;
 	return t !== 'undefined' && t !== 'function' && t !== 'string' && t !== 'number' && Object.prototype.toString.call(x) !== "[object Array]"
 }
-function isCloneable(x)
+export function isCloneable(x)
 {
 	return !(isFunction(x) || x instanceof WebGLTexture); //TODO: Add more
 }
@@ -89,7 +91,7 @@ String.prototype.format2 = function(pattern, mismatch, var_args) {
 };
 
 
-function makeCloneable(obj) {
+export function makeCloneable(obj) {
 	if (!isObject(obj)) // If obj isn't an object
 		return obj; // Return obj as is
 	
@@ -129,7 +131,7 @@ function getScript(id)
 	return str;
 }
 
-function colorNameToHex(color) // Source: https://stackoverflow.com/a/1573141
+export function colorNameToHex(color) // Source: https://stackoverflow.com/a/1573141
 {
 	var colors = {
 		"aliceblue":"#f0f8ff","antiquewhite":"#faebd7","aqua":"#00ffff","aquamarine":"#7fffd4","azure":"#f0ffff",
@@ -161,7 +163,7 @@ function colorNameToHex(color) // Source: https://stackoverflow.com/a/1573141
 	return colors[color.toLowerCase()];
 }
 
-function hexToRgb(hex) // Source: https://stackoverflow.com/a/5624139
+export function hexToRgb(hex) // Source: https://stackoverflow.com/a/5624139
 {
 	// Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
 	var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
@@ -185,12 +187,12 @@ export function rgbStringToFloatArray(rgbstr)
 	return rgb;
 }
 
-function i24ToFloatArray(clr)
+export function i24ToFloatArray(clr)
 {
 	return [((clr >> 16) & 0xFF) / 255.0, ((clr >> 8) & 0xFF) / 255.0, ((clr >> 0) & 0xFF) / 255.0, 1.0];
 }
 
-function F32toI24(floats, bounds)
+export function F32toI24(floats, bounds)
 {
 	var bytes = new Uint8Array(4 * floats.length);
 	var i = 0, voffset = -bounds[0], vscale = 0xFFFFFE / (bounds[1] - bounds[0]);
@@ -209,7 +211,7 @@ function F32toI24(floats, bounds)
 	});
 	return bytes;
 }
-function F32toI24flipY(floats, bounds, width, height)
+export function F32toI24flipY(floats, bounds, width, height)
 {
 	var bytes = new Uint8Array(4 * floats.length);
 	var i = 0, voffset = -bounds[0], vscale = 0xFFFFFE / (bounds[1] - bounds[0]);
@@ -233,7 +235,7 @@ function F32toI24flipY(floats, bounds, width, height)
 	return bytes;
 }
 
-function hsv2rgb(hsv) // Source: https://stackoverflow.com/a/6930407
+export function hsv2rgb(hsv) // Source: https://stackoverflow.com/a/6930407
 {
 	if(hsv[1] <= 0.000001)
 		return [hsv[2], hsv[2], hsv[2]];
@@ -259,7 +261,7 @@ function hsv2rgb(hsv) // Source: https://stackoverflow.com/a/6930407
 }
 
 
-function urlExists(url, onTrue, onFalse, isAsync)
+export function urlExists(url, onTrue, onFalse, isAsync)
 {
 	var request = new XMLHttpRequest();
 	request.onreadystatechange = function() {
@@ -276,7 +278,7 @@ function urlExists(url, onTrue, onFalse, isAsync)
 
 
 var _downloader;
-function download(filename, contentUrl)
+export function download(filename, contentUrl)
 {
 	if (!_downloader)
 		document.body.appendChild(_downloader = document.createElement('a'));
@@ -286,7 +288,7 @@ function download(filename, contentUrl)
 	_downloader.click();
 }
 
-function imageUrlFromBytes(bytes, width, height)
+export function imageUrlFromBytes(bytes, width, height)
 {
 	// Create a temporary 2D canvas to store the result -> tempCanvas
 	var tempCanvas = document.createElement('canvas');
@@ -315,7 +317,7 @@ Math.seededRandom = function() { // Source: https://stackoverflow.com/a/19303725
 Math.clamp = function(f, minimum, maximum) { return Math.min(Math.max(f, minimum), maximum); };
 
 
-function createCookie(name, value, days) // Source: http://www.quirksmode.org/js/cookies.html
+export function createCookie(name, value, days) // Source: http://www.quirksmode.org/js/cookies.html
 {
 	var expires = "";
 	if (days)
@@ -326,7 +328,7 @@ function createCookie(name, value, days) // Source: http://www.quirksmode.org/js
 	}
 	document.cookie = name + "=" + value + expires + "; path=/";
 }
-function readCookie(name) // Source: http://www.quirksmode.org/js/cookies.html
+export function readCookie(name) // Source: http://www.quirksmode.org/js/cookies.html
 {
 	var nameEQ = name + "=";
 	var ca = document.cookie.split(';');
@@ -340,24 +342,24 @@ function readCookie(name) // Source: http://www.quirksmode.org/js/cookies.html
 	}
 	return null;
 }
-function readFloatCookie(name)
+export function readFloatCookie(name)
 {
 	var cookie = readCookie(name);
 	cookie = Number.parseFloat(cookie);
 	return isNaN(cookie) ? null : cookie;
 }
-function readIntCookie(name)
+export function readIntCookie(name)
 {
 	var cookie = readCookie(name);
 	cookie = Number.parseInt(cookie, 10);
 	return isNaN(cookie) ? null : cookie;
 }
-function eraseCookie(name) // Source: http://www.quirksmode.org/js/cookies.html
+export function eraseCookie(name) // Source: http://www.quirksmode.org/js/cookies.html
 {
 	createCookie(name,"",-1);
 }
 
-function getParameterByName(name, url) // Source: https://stackoverflow.com/a/901144
+export function getParameterByName(name, url) // Source: https://stackoverflow.com/a/901144
 {
 	if (!url) url = window.location.href;
 	name = name.replace(/[\[\]]/g, "\\$&");
@@ -369,7 +371,7 @@ function getParameterByName(name, url) // Source: https://stackoverflow.com/a/90
 }
 
 
-function addMouseWheelHandler(onmousewheel) // Source: http://www.javascriptkit.com/javatutors/onmousewheel.shtml
+export function addMouseWheelHandler(onmousewheel) // Source: http://www.javascriptkit.com/javatutors/onmousewheel.shtml
 {
 	var mousewheelevt = (/Firefox/i.test(navigator.userAgent)) ? "DOMMouseScroll" : "mousewheel";
 	if (document.attachEvent)
@@ -377,28 +379,28 @@ function addMouseWheelHandler(onmousewheel) // Source: http://www.javascriptkit.
 	else if(document.addEventListener)
 		document.addEventListener(mousewheelevt, onmousewheel, false);
 }
-function addMouseMoveHandler(onmousemove)
+export function addMouseMoveHandler(onmousemove)
 {
 	if (document.attachEvent)
 		document.attachEvent("onmousemove", onmousemove);
 	else if(document.addEventListener)
 		document.addEventListener("mousemove", onmousemove, false);
 }
-function addMouseUpHandler(onmouseup)
+export function addMouseUpHandler(onmouseup)
 {
 	if (document.attachEvent)
 		document.attachEvent("onmouseup", onmouseup);
 	else if(document.addEventListener)
 		document.addEventListener("mouseup", onmouseup, false);
 }
-function addKeyDownHandler(onkeydown)
+export function addKeyDownHandler(onkeydown)
 {
 	if (document.attachEvent)
 		document.attachEvent("onkeydown", onkeydown);
 	else if(document.addEventListener)
 		document.addEventListener("keydown", onkeydown, false);
 }
-function addKeyUpHandler(onkeyup)
+export function addKeyUpHandler(onkeyup)
 {
 	if (document.attachEvent)
 		document.attachEvent("onkeyup", onkeyup);
@@ -521,7 +523,7 @@ function addKeyUpHandler(onkeyup)
  * @constructor
  * @package
  */
-function ForwardList(value) {
+export function ForwardList(value) {
 	this.value = value;
 	this.next = null;
 	
@@ -618,7 +620,7 @@ function ForwardList(value) {
  * @package
  * @param {string} priorityProperty
  */
-function PriorityQueue(priorityProperty)
+export function PriorityQueue(priorityProperty)
 {
 	var data = [];
 	this.length = 0;
@@ -657,7 +659,7 @@ while (queue.length)
  * @constructor
  * @export
  */
-function HashSet(onchanged)
+export function HashSet(onchanged)
 {
 	/** A dictionary of all values in the hash set @type {!Object<number, boolean>} */ var hash = {};
 	/** The number of values in this hash set @type {number} */ this.length = 0;

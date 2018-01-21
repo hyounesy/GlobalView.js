@@ -1,5 +1,11 @@
 /* eslint-disable */
 
+const libUtility = require('./utility.js');
+const libGraphics = require('./graphics.js');
+const libShaders = require('./shaders.js');
+const libColormap = require('./colormap.js');
+const libGlMatrix = require('gl-matrix');
+
 /**
  * A viewer that renders point sets to the global view.
  * @constructor
@@ -14,9 +20,9 @@ export function PointViewer(gl, globalView)
 	var meshDataPoints = null;
 	
 	var _pointOpacity = 1.0;
-	/*var highlightTexture = LoadTextureFromByteArray(gl, new Uint8Array([255, 255, 0, 255]), 1, 1);
-	var selectionTexture = LoadTextureFromByteArray(gl, new Uint8Array([255, 0, 0, 255]), 1, 1);
-	var representativeTexture = LoadTextureFromByteArray(gl, new Uint8Array([0, 255, 0, 255]), 1, 1);*/
+	/*var highlightTexture = libGraphics.LoadTextureFromByteArray(gl, new Uint8Array([255, 255, 0, 255]), 1, 1);
+	var selectionTexture = libGraphics.LoadTextureFromByteArray(gl, new Uint8Array([255, 0, 0, 255]), 1, 1);
+	var representativeTexture = libGraphics.LoadTextureFromByteArray(gl, new Uint8Array([0, 255, 0, 255]), 1, 1);*/
 	
 	/**
 	 * A renderable set of points
@@ -35,7 +41,7 @@ export function PointViewer(gl, globalView)
 			globalView.invalidate();
 		}
 		
-		HashSet.call(this, onchange);
+		libUtility.HashSet.call(this, onchange);
 		var idxbuffer = gl.createBuffer();
 		
 		this.render = function(texture)
@@ -95,16 +101,16 @@ export function PointViewer(gl, globalView)
 		if (color)
 		{
 			var validationResult;
-			if ((validationResult = validateColormap(color)) === true)
+			if ((validationResult = libColormap.validateColormap(color)) === true)
 			{
-				var c = parseColormap(color);
+				var c = libColormap.parseColormap(color);
 				if (c)
-					pointSet.colormap = LoadTextureFromByteArray(gl, c, c.length / 4, 1);
+					pointSet.colormap = libGraphics.LoadTextureFromByteArray(gl, c, c.length / 4, 1);
 			}
 			else
 			{
 				console.warn("GlobalView warning: Invalid value for point set color: " + color);
-				if (isString(validationResult))
+				if (libUtility.isString(validationResult))
 					console.warn("                    " + validationResult);
 			}
 		}
@@ -312,7 +318,7 @@ vec{1} getPos()
 			}
 			
 			// Compile shaders
-			this.sdr = new Shader(gl, [this.getPosCode(false), Shaders.vsDataPoint], ["precision highp float; uniform float pointSize;", opacityMapCoe, Shaders.fsDataPoint]);
+			this.sdr = new libGraphics.Shader(gl, [this.getPosCode(false), libShaders.Shaders.vsDataPoint], ["precision highp float; uniform float pointSize;", opacityMapCoe, libShaders.Shaders.fsDataPoint]);
 			//this.sdr.transform = this.sdr.u1fv("transform");
 			this.sdr.offsets = this.sdr.u3f("offsets");
 			this.sdr.scales = this.sdr.u3f("scales");
@@ -324,7 +330,7 @@ vec{1} getPos()
 			this.sdr.n = this.sdr.u1f("n"); if (this.sdr.n) this.sdr.n(numvertices);
 			this.sdr.posattr = [this.sdr.getAttribLocation("p0"), this.sdr.getAttribLocation("p1"), this.sdr.getAttribLocation("p2"), this.sdr.getAttribLocation("p3")];
 			this.sdr.vidattr = this.sdr.getAttribLocation("i");
-			this.sdrLine = new Shader(gl, [this.getPosCode(true), Shaders.vsDataLine], ["precision highp float; uniform float pointSize;", opacityMapCoe, Shaders.fsDataLine]);
+			this.sdrLine = new libGraphics.Shader(gl, [this.getPosCode(true), libShaders.Shaders.vsDataLine], ["precision highp float; uniform float pointSize;", opacityMapCoe, libShaders.Shaders.fsDataLine]);
 			//this.sdrLine.transform = this.sdrLine.u1fv("transform");
 			this.sdrLine.offsets = this.sdrLine.u4f("offsets");
 			this.sdrLine.scales = this.sdrLine.u4f("scales");
@@ -460,10 +466,10 @@ vec{1} getPos()
 			}
 			
 			// Compute line vertices
-			var lineTransform = mat2.create();
-			mat2.scale(lineTransform, lineTransform, vec2.fromValues(Math.sqrt(line[0]*line[0] + line[1]*line[1]), Math.max(1, options['pointSize'] /*/ 10*/)));
-			mat2.rotate(lineTransform, lineTransform, Math.atan2(line[1], line[0]));
-			mat2.scale(lineTransform, lineTransform, vec2.fromValues(1 / gl.width, 1 / gl.height));
+			var lineTransform = libGlMatrix.mat2.create();
+			libGlMatrix.mat2.scale(lineTransform, lineTransform, libGlMatrix.vec2.fromValues(Math.sqrt(line[0]*line[0] + line[1]*line[1]), Math.max(1, options['pointSize'] /*/ 10*/)));
+			libGlMatrix.mat2.rotate(lineTransform, lineTransform, Math.atan2(line[1], line[0]));
+			libGlMatrix.mat2.scale(lineTransform, lineTransform, libGlMatrix.vec2.fromValues(1 / gl.width, 1 / gl.height));
 			this.sdrLine.lineTransform(lineTransform);
 			
 			gl.bindBuffer(gl.ARRAY_BUFFER, linebuffer);

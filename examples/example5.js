@@ -60,7 +60,7 @@ domready(function () {
 			var protein = dataset.data[i * nc + 0];
 			var proteinPoints = pointsByProtein[protein];
 			if (!proteinPoints)
-				pointsByProtein[protein] = proteinPoints = new HashSet();
+				pointsByProtein[protein] = proteinPoints = new globalView.HashSet();
 			proteinPoints.push(i);
 		}
 		

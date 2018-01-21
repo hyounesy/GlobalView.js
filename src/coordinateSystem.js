@@ -1,3 +1,8 @@
+/* eslint-disable */
+const libGraphics = require('./graphics.js');
+const libShaders = require('./shaders.js');
+const libGlMatrix = require('gl-matrix');
+
 /**
  * A class drawing x- and y axes to the left- and bottom of the scatter plot.
  * @constructor
@@ -6,12 +11,12 @@
  * @param {Object} gl // {WebGLRenderingContext}
  * @param {Object} globalView // {GlobalView}
  */
-function CoordinateSystem(gl, globalView)
+export function CoordinateSystem(gl, globalView)
 {
 	const TICK_LENGTH = 6; // [pixel]
 	const NUM_TICKS = 10;
 	
-	var sdrLine = new Shader(gl, Shaders.vsSimple, Shaders.fsLine);
+	var sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
 	sdrLine.color = sdrLine.u4f("color");
 	sdrLine.color.apply(sdrLine, gl.foreColor);
 	sdrLine.matWorldViewProj = sdrLine.u4x4f("matWorldViewProj");
@@ -20,7 +25,7 @@ function CoordinateSystem(gl, globalView)
 	}
 	
 	// Create a 2D line mesh
-	var meshLine = new Mesh(gl, new Float32Array([
+	var meshLine = new libGraphics.Mesh(gl, new Float32Array([
 		// Positions
 		0, 0, 0,
 		1, 0, 0
@@ -37,7 +42,7 @@ function CoordinateSystem(gl, globalView)
 	this.visible = [true, true];
 	this.render = function(flipY, plotBounds)
 	{
-		var mattrans = mat4.create();
+		var mattrans = libGlMatrix.mat4.create();
 		
 		// >>> Draw axes
 		
@@ -46,23 +51,23 @@ function CoordinateSystem(gl, globalView)
 		// Draw x-axis
 		if (this.visible[0])
 		{
-			mat4.identity(mattrans);
+			libGlMatrix.mat4.identity(mattrans);
 			if (flipY === true)
-				mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-			mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
-			mat4.scale(mattrans, mattrans, [2 * plotBounds.width / gl.width, 1, 1]);
+				libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+			libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
+			libGlMatrix.mat4.scale(mattrans, mattrans, [2 * plotBounds.width / gl.width, 1, 1]);
 			sdrLine.matWorldViewProj(mattrans);
 			meshLine.draw();
 		}
 		// Draw y-axis
 		if (this.visible[1])
 		{
-			mat4.identity(mattrans);
+			libGlMatrix.mat4.identity(mattrans);
 			if (flipY === true)
-				mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-			mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
-			mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
-			mat4.scale(mattrans, mattrans, [2 * plotBounds.height / gl.height, 1, 1]);
+				libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+			libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
+			libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
+			libGlMatrix.mat4.scale(mattrans, mattrans, [2 * plotBounds.height / gl.height, 1, 1]);
 			sdrLine.matWorldViewProj(mattrans);
 			meshLine.draw();
 		}
@@ -74,27 +79,27 @@ function CoordinateSystem(gl, globalView)
 		if (this.visible[0])
 		{
 			var axis = axes[0];
-			mat4.identity(mattrans);
+			libGlMatrix.mat4.identity(mattrans);
 			if (flipY === true)
-				mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-			mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
-			mat4.rotateZ(mattrans, mattrans, -Math.PI / 2.0);
-			mat4.scale(mattrans, mattrans, [2 * axis.tickLength / gl.height, 2 * plotBounds.width / gl.width, 1]);
+				libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+			libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
+			libGlMatrix.mat4.rotateZ(mattrans, mattrans, -Math.PI / 2.0);
+			libGlMatrix.mat4.scale(mattrans, mattrans, [2 * axis.tickLength / gl.height, 2 * plotBounds.width / gl.width, 1]);
 			sdrLine.matWorldViewProj(mattrans);
 			meshLine.draw();
-			mat4.translate(mattrans, mattrans, [0.0, 1.0, 0.0]);
+			libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, 1.0, 0.0]);
 			sdrLine.matWorldViewProj(mattrans);
 			meshLine.draw();
-			mat4.translate(mattrans, mattrans, [0.0, -1.0, 0.0]);
+			libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -1.0, 0.0]);
 			for (var i = 0; i < axis.tickCount; ++i)
 			{
 				var x = axis.tickOffset + i * axis.tickDistance;
 				var tickPos = (x - axis.minimum) / (axis.maximum - axis.minimum);
 				
-				mat4.translate(mattrans, mattrans, [0.0, tickPos, 0.0]);
+				libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, tickPos, 0.0]);
 				sdrLine.matWorldViewProj(mattrans);
 				meshLine.draw();
-				mat4.translate(mattrans, mattrans, [0.0, -tickPos, 0.0]);
+				libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -tickPos, 0.0]);
 				
 				var tickLabel = axis.values ? axis.values[x] : x.toPrecision(6) / 1;
 				gl.drawText(tickLabel, plotBounds.x + plotBounds.width * tickPos, gl.height - plotBounds.y + axis.tickLength + 2, 'topcenter');
@@ -106,26 +111,26 @@ function CoordinateSystem(gl, globalView)
 		if (this.visible[1])
 		{
 			var axis = axes[1];
-			mat4.identity(mattrans);
+			libGlMatrix.mat4.identity(mattrans);
 			if (flipY === true)
-				mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-			mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
-			mat4.scale(mattrans, mattrans, [-2 * axis.tickLength / gl.width, 2 * plotBounds.height / gl.height, 1]);
+				libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+			libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
+			libGlMatrix.mat4.scale(mattrans, mattrans, [-2 * axis.tickLength / gl.width, 2 * plotBounds.height / gl.height, 1]);
 			sdrLine.matWorldViewProj(mattrans);
 			meshLine.draw();
-			mat4.translate(mattrans, mattrans, [0.0, 1.0, 0.0]);
+			libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, 1.0, 0.0]);
 			sdrLine.matWorldViewProj(mattrans);
 			meshLine.draw();
-			mat4.translate(mattrans, mattrans, [0.0, -1.0, 0.0]);
+			libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -1.0, 0.0]);
 			for (var i = 0; i < axis.tickCount; ++i)
 			{
 				var y = axis.tickOffset + i * axis.tickDistance;
 				var tickPos = (y - axis.minimum) / (axis.maximum - axis.minimum);
 				
-				mat4.translate(mattrans, mattrans, [0.0, tickPos, 0.0]);
+				libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, tickPos, 0.0]);
 				sdrLine.matWorldViewProj(mattrans);
 				meshLine.draw();
-				mat4.translate(mattrans, mattrans, [0.0, -tickPos, 0.0]);
+				libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -tickPos, 0.0]);
 				
 				var tickLabel = axis.values ? axis.values[y] : y.toPrecision(6) / 1;
 				yTickLabel_left = Math.max(yTickLabel_left, gl.measureTextWidth(tickLabel));

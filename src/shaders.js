@@ -1,12 +1,16 @@
 /**
- * Blocks of GLSL shader code. Blocks starting with vs... are vertex shaders, blocks starting with fs... are fragment shaders
+ * Blocks of GLSL shader code. Blocks starting with vs... are vertex shaders, 
+ * blocks starting with fs... are fragment shaders
  * @summary Vertex- and fragment shader code
  * @package
  * @namespace
 */
-var Shaders = {};
+const Shaders = {};
+module.exports = {
+  Shaders,
+};
 
-/** 
+/**
  * @summary A simple vertex shader for meshes with positions and texture coordinates.
  * @static
  * @readonly

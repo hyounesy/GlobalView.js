@@ -1,8 +1,18 @@
 /* eslint-disable */
 
 const webglUtils = require('./webgl-utils.js');
-const libUtility = require('./utility.js')
-const libTextRenderContext = require('./textRenderContext.js')
+export const libUtility = require('./utility.js');
+const libTextRenderContext = require('./textRenderContext.js');
+const libPointViewer = require('./pointViewer.js');
+const libImageViewer = require('./imageViewer');
+const libDensityViewer = require('./densityViewer.js');
+const libHistogramViewer = require('./histogramViewer.js');
+const libCoordinateSystem = require('./coordinateSystem.js');
+const libColormap = require('./colormap.js');
+export const libAlgorithm = require('./algorithm.js');
+const libGraphics = require('./graphics.js');
+const libGlMatrix = require('gl-matrix');
+
 
 function myAlert(msg) {
   alert(msg); // eslint-disable-line no-alert, no-undef
@@ -119,7 +129,7 @@ export function GlobalView(div, startupOptions)
 	}
 	
 	var t = performance.now(), dt = 0.1, fps = null, fpsStart = t, frameCounter = 0;
-	
+
 	var pointViewer = new libPointViewer.PointViewer(gl, this);
 	var imageViewer = new libImageViewer.ImageViewer(gl, this);
 	var densityViewer = new libDensityViewer.DensityViewer(gl, this);
@@ -522,13 +532,13 @@ export function GlobalView(div, startupOptions)
 	function setPlotBounds(padding)
 	{
 		var computedPadding;
-		if (isArray(padding) && padding.length === 4)
-			computedPadding = padding.map((v, i) => Math.floor(isString(v) ?
+		if (libUtility.isArray(padding) && padding.length === 4)
+			computedPadding = padding.map((v, i) => Math.floor(libUtility.isString(v) ?
 					Number.parseFloat(v) * (v.endsWith('%') ? (i % 2 === 0 ? canvas.width : canvas.height) / 100 : 1) :
 					padding[i])
 				);
-		else if(isNumber(padding) || isString(padding))
-			computedPadding = Array.create(4, i => Math.floor(isString(padding) ?
+		else if(libUtility.isNumber(padding) || libUtility.isString(padding))
+			computedPadding = Array.create(4, i => Math.floor(libUtility.isString(padding) ?
 					Number.parseFloat(padding) * (padding.endsWith('%') ? (i % 2 === 0 ? canvas.width : canvas.height) / 100 : 1) :
 					padding)
 				);
@@ -599,7 +609,7 @@ export function GlobalView(div, startupOptions)
 		'padding': {
 			description: "The space around the drawing area in the form [top, right, bottom, left]. X-axis, y-axis and colormap are drawn within padding space.",
 			default: [50, 60, 50, 50],
-			valid: value => isNumber(value) || isString(value) || (isArray(value) && value.length === 4),
+			valid: value => libUtility.isNumber(value) || libUtility.isString(value) || (libUtility.isArray(value) && value.length === 4),
 			requireRedraw: true,
 			requireRecompile: false
 		},
@@ -663,7 +673,7 @@ export function GlobalView(div, startupOptions)
 		},
 		'pointClusterThreshold': {
 			description: "Controls the realtive threshold between clusters and outliers when showing clusters (see 'showPointClusters')",
-			default: (new ClusterMapOptions()).threshold,
+			default: (new libAlgorithm.ClusterMapOptions()).threshold,
 			valid: value => { return value > 0; },
 			requireRedraw: false, // Requests redraw internally
 			requireRecompile: false
@@ -724,7 +734,7 @@ export function GlobalView(div, startupOptions)
 		'customPointShape': {
 			description: "When 'pointShape' is set to 'Custom', this defines a GLSL function given vec2 p, that returns opacity in the range [0.0 ... 1.0] at location p.",
 			default: "{ return 1.0; }",
-			valid: value => { return validateGLSL(gl, "float opacityMap(in vec2 p) " + value); },
+			valid: value => { return libGraphics.validateGLSL(gl, "float opacityMap(in vec2 p) " + value); },
 			requireRedraw: true,
 			requireRecompile: true
 		},
@@ -748,7 +758,7 @@ export function GlobalView(div, startupOptions)
 		'pointColor': {
 			description: "Controls the color of data points in the scatterplot. Valid values are an array of bytes in RGBA order or a colormap name.",
 			default: "exhue",
-			valid: value => { return validateColormap(value); },
+			valid: value => { return libColormap.validateColormap(value); },
 			requireRedraw: true,
 			requireRecompile: false
 		},
@@ -864,11 +874,11 @@ export function GlobalView(div, startupOptions)
 		
 		// Validate value
 		var validationResult;
-		if ((isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1) ||
-			(isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true))
+		if ((libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1) ||
+			(libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true))
 		{
 			console.warn("GlobalView warning: Invalid value for option " + option + ": " + value);
-			if (isString(validationResult))
+			if (libUtility.isString(validationResult))
 				console.warn("                    " + validationResult);
 			return;
 		}
@@ -901,11 +911,11 @@ export function GlobalView(div, startupOptions)
 			
 			// Validate value
 			var value = newOptions[option], validationResult;
-			if ((isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1) ||
-				(isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true))
+			if ((libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1) ||
+				(libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true))
 			{
 				console.warn("GlobalView warning: Invalid value for option " + option + ": " + value);
-				if (isString(validationResult)) {
+				if (libUtility.isString(validationResult)) {
           //HY:
             validationResult = optionDefinition.valid(value)
           console.warn("                    " + validationResult);
@@ -967,9 +977,9 @@ export function GlobalView(div, startupOptions)
 		
 		// Validate value
 		var validationResult;
-		if ((isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1) ||
-			(isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true))
-			return "Invalid value for option " + option + ": " + value + (isString(validationResult) ? "\n    " + validationResult : "");
+		if ((libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1) ||
+			(libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true))
+			return "Invalid value for option " + option + ": " + value + (libUtility.isString(validationResult) ? "\n    " + validationResult : "");
 		
 		return true;
 	}
@@ -997,10 +1007,10 @@ export function GlobalView(div, startupOptions)
 			
 			// Validate value
 			var value = newOptions[option], validationResult;
-			if ((isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1) ||
-				(isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true))
+			if ((libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1) ||
+				(libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true))
 			{
-				errors.push("Invalid value for option " + option + ": " + value + (isString(validationResult) ? "\n    " + validationResult : ""));
+				errors.push("Invalid value for option " + option + ": " + value + (libUtility.isString(validationResult) ? "\n    " + validationResult : ""));
 				continue;
 			}
 		}
@@ -1183,7 +1193,7 @@ export function GlobalView(div, startupOptions)
 				d1 = temp;
 			}
 			
-			var characteristicPoints = findRepresentativePoints2(dataset, d0, d1, densityMap, n, densityRatio);
+			var characteristicPoints = libAlgorithm.findRepresentativePoints2(dataset, d0, d1, densityMap, n, densityRatio);
 			ondone(characteristicPoints);
 		});
 	}
@@ -1225,14 +1235,14 @@ export function GlobalView(div, startupOptions)
 			if (!densityMap.stencilMap) densityMap.stencilMap = {};
 			
 			//downloadDensityMap(densityMap);
-			pointViewer.representativePoints.assign(findRepresentativePoints2(dataset, d0, d1, densityMap, 16, 0.3));
+			pointViewer.representativePoints.assign(libAlgorithm.findRepresentativePoints2(dataset, d0, d1, densityMap, 16, 0.3));
 			if (dataset.imageFilenames)
 				pointViewer.representativePoints.forEach(function(r) {
 					if (dataset.imageFilenames[r])
 					{
 						var dataPos = dataset.dataVectors.map(v => v.getValue(r));
 						var imagePos = dataPos.slice(0);
-						var p = findClosePointOfLowDensity(dataset, d0, d1, r, densityMap, densityMap.stencilMap, 0.6 * options['thumbnailSize'] / gl.width, 0.6 * (options['thumbnailSize'] + LABEL_HEIGHT) / gl.height); //EDIT: Factor 0.6: WHY?
+						var p = libAlgorithm.findClosePointOfLowDensity(dataset, d0, d1, r, densityMap, densityMap.stencilMap, 0.6 * options['thumbnailSize'] / gl.width, 0.6 * (options['thumbnailSize'] + libImageViewer.LABEL_HEIGHT) / gl.height); //EDIT: Factor 0.6: WHY?
 						imagePos[d0] = p[0];
 						imagePos[d1] = p[1];
 						var imageSize = dataset.dataVectors.map(v => options['thumbnailSize'] * (v.maximum - v.minimum));
@@ -1257,7 +1267,7 @@ export function GlobalView(div, startupOptions)
 			//dataset.requestDensityMap(d0, d1, undefined, undefined, function(densityMap) { console.log(densityMap); });
 			
 			dataset.requestDensityMap(d0, d1, undefined, undefined, function(densityMap) {
-				var imageWidth = 0.6 * options['thumbnailSize'] / gl.width, imageHeight = (0.6 * options['thumbnailSize'] + LABEL_HEIGHT) / gl.height; //EDIT: Factor 0.6: WHY?
+				var imageWidth = 0.6 * options['thumbnailSize'] / gl.width, imageHeight = (0.6 * options['thumbnailSize'] + libImageViewer.LABEL_HEIGHT) / gl.height; //EDIT: Factor 0.6: WHY?
 				if (d1 < d0)
 				{
 					// Swap d0 <-> d1
@@ -1273,14 +1283,14 @@ export function GlobalView(div, startupOptions)
 				
 				var dataPos = dataset.dataVectors.map(v => v.getValue(index));
 				var imagePos;
-				if (isUndefined(densityMap.data)) // If densityMap is nD
-					imagePos = findClosePointOfLowDensityND_descend(dataset, index, densityMap, 0.6 * options['thumbnailSize'] / Math.min(gl.width, gl.height)); //EDIT: Factor 0.6: WHY?
+				if (libUtility.isUndefined(densityMap.data)) // If densityMap is nD
+					imagePos = libAlgorithm.findClosePointOfLowDensityND_descend(dataset, index, densityMap, 0.6 * options['thumbnailSize'] / Math.min(gl.width, gl.height)); //EDIT: Factor 0.6: WHY?
 				else
 				{
 					imagePos = dataPos.slice(0);
 					
 					if (!densityMap.stencilMap) densityMap.stencilMap = {};
-					var p = findClosePointOfLowDensity(dataset, d0, d1, index, densityMap, densityMap.stencilMap, imageWidth, imageHeight);
+					var p = libAlgorithm.findClosePointOfLowDensity(dataset, d0, d1, index, densityMap, densityMap.stencilMap, imageWidth, imageHeight);
 					if (p)
 					{
 						imagePos[d0] = p[0];
@@ -1310,7 +1320,7 @@ export function GlobalView(div, startupOptions)
 		{
 			var d0 = activeInputs[0], d1 = activeInputs[1];
 			dataset.requestDensityMap(d0, d1, undefined, undefined, function(densityMap) {
-				var imageWidth = 0.6 * options['thumbnailSize'] / gl.width, imageHeight = (0.6 * options['thumbnailSize'] + LABEL_HEIGHT) / gl.height; //EDIT: Factor 0.6: WHY?
+				var imageWidth = 0.6 * options['thumbnailSize'] / gl.width, imageHeight = (0.6 * options['thumbnailSize'] + libImageViewer.LABEL_HEIGHT) / gl.height; //EDIT: Factor 0.6: WHY?
 				if (d1 < d0)
 				{
 					// Swap d0 <-> d1
@@ -1324,7 +1334,7 @@ export function GlobalView(div, startupOptions)
 					imageHeight = temp;
 				}
 				if (!densityMap.stencilMap) densityMap.stencilMap = {};
-				markPointsInStencilMap(dataset, d0, d1, points, densityMap, densityMap.stencilMap, imageWidth, imageHeight);
+				libAlgorithm.markPointsInStencilMap(dataset, d0, d1, points, densityMap, densityMap.stencilMap, imageWidth, imageHeight);
 			});
 		}
 		points.forEach(i => globalView.showImage_lowDensity(i));
@@ -1425,8 +1435,8 @@ export function GlobalView(div, startupOptions)
 		
 		// Define corners of AABB
 		var imageSize = dataset.dataVectors.map(v => options['thumbnailSize'] * (v.maximum - v.minimum));
-		const labelHeightOffset = 1.0 + LABEL_HEIGHT / options['thumbnailSize'];
-		const labelWidthOffset = 1.0 + (LABEL_HEIGHT + 2 * LABEL_WIDTH) / options['thumbnailSize'];
+		const labelHeightOffset = 1.0 + libImageViewer.LABEL_HEIGHT / options['thumbnailSize'];
+		const labelWidthOffset = 1.0 + (libImageViewer.LABEL_HEIGHT + 2 * libImageViewer.LABEL_WIDTH) / options['thumbnailSize'];
 		var bl = [tf.getMinimum(0) - imageSize[d0] * 0.6 / plotBounds.width, tf.getMinimum(1) - imageSize[d1] * 0.6 / plotBounds.height];
 		var tl = [tf.getMinimum(0) - imageSize[d0] * 0.6 / plotBounds.width, tf.getMaximum(1) + imageSize[d1] * labelHeightOffset * 0.8 / plotBounds.height];
 		var tr = [tf.getMaximum(0) + imageSize[d0] * labelWidthOffset * 0.6 / plotBounds.width, tf.getMaximum(1) + imageSize[d1] * labelHeightOffset * 0.8 / plotBounds.height];
@@ -1473,17 +1483,17 @@ export function GlobalView(div, startupOptions)
 			var src = [v0.getValue(p), v1.getValue(p)];
 			tf.datasetCoordToDeviceCoord(src, src); // Same as src = [v0.getValue(p) * scales[0] + offsets[0], v1.getValue(p) * scales[1] + offsets[1]];
 			
-			if (vec2.dot([src[0] - offsets[0] - E[0], src[1] - offsets[1] - E[1]], eigenvec) > 0.0) // If src is above E in direction eigenvec
+			if (libGlMatrix.vec2.dot([src[0] - offsets[0] - E[0], src[1] - offsets[1] - E[1]], eigenvec) > 0.0) // If src is above E in direction eigenvec
 			{
-				dest = vectorLineIntersection2D(src, eigenvec, bl, tl); // Project src in direction eigenvec onto line from bl, to tl
+				dest = libAlgorithm.vectorLineIntersection2D(src, eigenvec, bl, tl); // Project src in direction eigenvec onto line from bl, to tl
 				if (!dest)
-					dest = vectorLineIntersection2D(src, eigenvec, tl, tr); // Project src in direction eigenvec onto line from tl, to tr
+					dest = libAlgorithm.vectorLineIntersection2D(src, eigenvec, tl, tr); // Project src in direction eigenvec onto line from tl, to tr
 			}
 			else // If src is below E in direction eigenvec
 			{
-				dest = vectorLineIntersection2D(src, eigenvec, bl, br); // Project src in direction -eigenvec onto line from bl, to br
+				dest = libAlgorithm.vectorLineIntersection2D(src, eigenvec, bl, br); // Project src in direction -eigenvec onto line from bl, to br
 				if (!dest)
-					dest = vectorLineIntersection2D(src, eigenvec, br, tr); // Project src in direction -eigenvec onto line from br, to tr
+					dest = libAlgorithm.vectorLineIntersection2D(src, eigenvec, br, tr); // Project src in direction -eigenvec onto line from br, to tr
 			}
 			if (!dest)
 				return; // This should never happen!
@@ -1612,7 +1622,7 @@ export function GlobalView(div, startupOptions)
 	this.highlightImage = function(image)
 	{
 		var images = imageViewer.getImages();
-		if (isNumber(image))
+		if (libUtility.isNumber(image))
 			for (var i = 0; i < images.length; ++i)
 				images[i].highlighted = i === image;
 		else
@@ -1751,13 +1761,13 @@ export function GlobalView(div, startupOptions)
 	this['onThumbnailSelectionChanged'] = null;
 	var ctrlPressed = false, shiftPressed = false;
 	const CTRL = navigator.appVersion.indexOf("Mac") == -1 ? 17 : 224;
-	addKeyDownHandler(function(event) {
+	libUtility.addKeyDownHandler(function(event) {
 		if(event.keyCode === CTRL)
 			ctrlPressed = true;
 		else if(event.keyCode === 16)
 			shiftPressed = true;
 	});
-	addKeyUpHandler(function(event) {
+	libUtility.addKeyUpHandler(function(event) {
 		if(event.which === CTRL)
 			ctrlPressed = false;
 		else if(event.keyCode === 16)
@@ -1875,7 +1885,7 @@ export function GlobalView(div, startupOptions)
 		}
 	}.bind(this);
 	var onmousemove;
-	addMouseMoveHandler(onmousemove = function(event) {
+	libUtility.addMouseMoveHandler(onmousemove = function(event) {
 		if (tf === null || offscreenRendering !== null ||
 			(event.target !== canvas && pointDragDownPos === null && viewDragStartPos === null && imageDragStartPos === null && mouseRect === null && mousePolygon === null))
 			return;
@@ -1933,8 +1943,8 @@ export function GlobalView(div, startupOptions)
 		if (viewDragStartPos)
 		{
 			var d2 = activeInputs[2];
-			var viewDelta = vec3.create();
-			tf.deviceDistToDatasetDist(viewDelta, vec3.subtract(viewDelta, p, viewDragStartPos));
+			var viewDelta = libGlMatrix.vec3.create();
+			tf.deviceDistToDatasetDist(viewDelta, libGlMatrix.vec3.subtract(viewDelta, p, viewDragStartPos));
 			
 			if (viewDragX)
 				tf.translate(d0, viewDelta[0]);
@@ -1948,8 +1958,8 @@ export function GlobalView(div, startupOptions)
 		
 		if (imageDragStartPos)
 		{
-			var imageDelta = vec2.create();
-			tf.deviceDistToDatasetDist(imageDelta, vec2.subtract(imageDelta, p, imageDragStartPos));
+			var imageDelta = libGlMatrix.vec2.create();
+			tf.deviceDistToDatasetDist(imageDelta, libGlMatrix.vec2.subtract(imageDelta, p, imageDragStartPos));
 			imageDragImages.forEach(function(image) {
 				image.imagePos[activeInputs[0]] += imageDelta[0];
 				image.imagePos[activeInputs[1]] += imageDelta[1];
@@ -2025,7 +2035,7 @@ export function GlobalView(div, startupOptions)
 			}
 		}
 	}.bind(this));
-	addMouseUpHandler(function(event) {
+	libUtility.addMouseUpHandler(function(event) {
 		if (tf === null || offscreenRendering !== null || (event.target !== canvas && pointDragDownPos === null && viewDragStartPos === null && mouseRect === null))
 			return;
 		
@@ -2066,7 +2076,7 @@ export function GlobalView(div, startupOptions)
 					px = v0.getValue(i);
 					py = v1.getValue(i);
 					;
-					if (pointInsidePolygon([px, py], mousePolygon))
+					if (libAlgorithm.pointInsidePolygon([px, py], mousePolygon))
 						selection.push(i);
 				});
 				this['onLassoSelection'](dataset, selection, mousePolygon);
@@ -2141,7 +2151,7 @@ export function GlobalView(div, startupOptions)
 		if (this['onMouseOverDatapoint'] !== null && mouseOverDatapoint !== -1)
 			this['onMouseOverDatapoint'](dataset, mouseOverDatapoint = -1);
 	}.bind(this);
-	addMouseWheelHandler(function(event) {
+	libUtility.addMouseWheelHandler(function(event) {
 		if (event.target !== canvas || !options['enableScrolling'])
 			return;
 		var deltaZ = event.wheelDelta == null ? event.detail : -event.wheelDelta / 20.0;
@@ -2176,7 +2186,7 @@ export function GlobalView(div, startupOptions)
 		
 		// Zoom towards mouse position
 		var zoom = 1.0 - deltaZ / 50.0;
-		vec3.scaleAndAdd(p, p, p, -zoom); // Offset is difference between p in current zoom level and p after zooming
+		libGlMatrix.vec3.scaleAndAdd(p, p, p, -zoom); // Offset is difference between p in current zoom level and p after zooming
 		if (scrollX)
 		{
 			tf.translate(d0, p[0]);

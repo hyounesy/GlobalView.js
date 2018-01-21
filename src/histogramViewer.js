@@ -1,3 +1,10 @@
+/* eslint-disable */
+
+const libGraphics = require('./graphics.js');
+const libShaders = require('./shaders.js')
+const libAlgorithm = require('./algorithm.js')
+const libGlMatrix = require('gl-matrix');
+
 /**
  * A class drawing histograms for x-, y- and color axes to the left-, bottom- and right of the scatter plot.
  * @constructor
@@ -6,9 +13,9 @@
  * @param {Object} gl // {WebGLRenderingContext}
  * @param {Object} globalView // {GlobalView}
  */
-function HistogramViewer(gl, globalView)
+export function HistogramViewer(gl, globalView)
 {
-	var sdrLine = new Shader(gl, Shaders.vsSimple, Shaders.fsLine);
+	var sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
 	sdrLine.color = sdrLine.u4f("color");
 	sdrLine.color.apply(sdrLine, gl.foreColor);
 	sdrLine.matWorldViewProj = sdrLine.u4x4f("matWorldViewProj");
@@ -18,7 +25,7 @@ function HistogramViewer(gl, globalView)
 	}*/
 	
 	// Create a 2D line mesh
-	var meshLine = new Mesh(gl, new Float32Array([
+	var meshLine = new libGraphics.Mesh(gl, new Float32Array([
 		// Positions
 		0, 0, 0,
 		1, 0, 0
@@ -26,16 +33,16 @@ function HistogramViewer(gl, globalView)
 	
 	var dataset = null, activeInputs = null, options = {};
 	var axes = [
-		{histogram: null, d: -1, meshHistogram: new Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.TRIANGLES), meshLineHistogram: new Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP)},
-		{histogram: null, d: -1, meshHistogram: new Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.TRIANGLES), meshLineHistogram: new Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP)},
-		{histogram: null, d: -1, meshHistogram: new Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.TRIANGLES), meshLineHistogram: new Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP)}
+		{histogram: null, d: -1, meshHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.TRIANGLES), meshLineHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP)},
+		{histogram: null, d: -1, meshHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.TRIANGLES), meshLineHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP)},
+		{histogram: null, d: -1, meshHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.TRIANGLES), meshLineHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP)}
 	];
 	
 	this.render = function(flipY, tf, plotBounds)
 	{
-		var mattrans = mat4.create();
+		var mattrans = libGlMatrix.mat4.create();
 		
-		var pos = vec3.create(), scl = vec3.create();
+		var pos = libGlMatrix.vec3.create(), scl = libGlMatrix.vec3.create();
 		tf.datasetCoordToDeviceCoord(pos, [
 			axes[0].histogram ? axes[0].histogram.invTransformX(0) : 0.0,
 			axes[1].histogram ? axes[1].histogram.invTransformX(0) : 0.0,
@@ -60,19 +67,19 @@ function HistogramViewer(gl, globalView)
 			
 			sdrLine.bind();
 			meshLine.bind(sdrLine, null);
-			mat4.identity(mattrans);
+			libGlMatrix.mat4.identity(mattrans);
 			if (flipY === true)
-				mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-			mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5) / gl.width - 1, 2 * (plotBounds.y + 0.5 - 64) / gl.height - 1, 0]); // 0.5 ... center inside pixel
-			mat4.scale(mattrans, mattrans, [2 * plotBounds.width / gl.width, 1, 1]);
+				libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+			libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5) / gl.width - 1, 2 * (plotBounds.y + 0.5 - 64) / gl.height - 1, 0]); // 0.5 ... center inside pixel
+			libGlMatrix.mat4.scale(mattrans, mattrans, [2 * plotBounds.width / gl.width, 1, 1]);
 			sdrLine.matWorldViewProj(mattrans);
 			meshLine.draw();
 			
-			mat4.identity(mattrans);
+			libGlMatrix.mat4.identity(mattrans);
 			if (flipY === true)
-				mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-			mat4.translate(mattrans, mattrans, [pos[0] + 0.5 * 2 / gl.width, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0.0]); // 0.5 ... center inside pixel
-			mat4.scale(mattrans, mattrans, [scl[0], -64 * 2 / gl.height, 1.0]);
+				libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+			libGlMatrix.mat4.translate(mattrans, mattrans, [pos[0] + 0.5 * 2 / gl.width, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0.0]); // 0.5 ... center inside pixel
+			libGlMatrix.mat4.scale(mattrans, mattrans, [scl[0], -64 * 2 / gl.height, 1.0]);
 			
 			sdrLine.bind();
 			sdrLine.matWorldViewProj(mattrans);
@@ -96,21 +103,21 @@ function HistogramViewer(gl, globalView)
 			
 			sdrLine.bind();
 			meshLine.bind(sdrLine, null);
-			mat4.identity(mattrans);
+			libGlMatrix.mat4.identity(mattrans);
 			if (flipY === true)
-				mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-			mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5 - 64) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
-			mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
-			mat4.scale(mattrans, mattrans, [2 * plotBounds.height / gl.height, 1, 1]);
+				libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+			libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5 - 64) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
+			libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
+			libGlMatrix.mat4.scale(mattrans, mattrans, [2 * plotBounds.height / gl.height, 1, 1]);
 			sdrLine.matWorldViewProj(mattrans);
 			meshLine.draw();
 			
-			mat4.identity(mattrans);
+			libGlMatrix.mat4.identity(mattrans);
 			if (flipY === true)
-				mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-			mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5) / gl.width - 1, pos[1] + 0.5 * 2 / gl.height, 0.0]); // 0.5 ... center inside pixel
-			mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
-			mat4.scale(mattrans, mattrans, [scl[1], 64 * 2 / gl.width, 1.0]);
+				libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+			libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5) / gl.width - 1, pos[1] + 0.5 * 2 / gl.height, 0.0]); // 0.5 ... center inside pixel
+			libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
+			libGlMatrix.mat4.scale(mattrans, mattrans, [scl[1], 64 * 2 / gl.width, 1.0]);
 			
 			sdrLine.bind();
 			sdrLine.matWorldViewProj(mattrans);
@@ -134,21 +141,21 @@ function HistogramViewer(gl, globalView)
 			
 			sdrLine.bind();
 			meshLine.bind(sdrLine, null);
-			mat4.identity(mattrans);
+			libGlMatrix.mat4.identity(mattrans);
 			if (flipY === true)
-				mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-			mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + plotBounds.width + COLORMAP_WIDTH + 0.5 + 64) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
-			mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
-			mat4.scale(mattrans, mattrans, [2 * plotBounds.height / gl.height, 1, 1]);
+				libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+			libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + plotBounds.width + COLORMAP_WIDTH + 0.5 + 64) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
+			libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
+			libGlMatrix.mat4.scale(mattrans, mattrans, [2 * plotBounds.height / gl.height, 1, 1]);
 			sdrLine.matWorldViewProj(mattrans);
 			meshLine.draw();
 			
-			mat4.identity(mattrans);
+			libGlMatrix.mat4.identity(mattrans);
 			if (flipY === true)
-				mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-			mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + plotBounds.width + COLORMAP_WIDTH + 0.5) / gl.width - 1, pos[2] + 0.5 * 2 / gl.height, 0.0]); // 0.5 ... center inside pixel
-			mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
-			mat4.scale(mattrans, mattrans, [scl[2], -64 * 2 / gl.width, 1.0]);
+				libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+			libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + plotBounds.width + COLORMAP_WIDTH + 0.5) / gl.width - 1, pos[2] + 0.5 * 2 / gl.height, 0.0]); // 0.5 ... center inside pixel
+			libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
+			libGlMatrix.mat4.scale(mattrans, mattrans, [scl[2], -64 * 2 / gl.width, 1.0]);
 			
 			sdrLine.bind();
 			sdrLine.matWorldViewProj(mattrans);
@@ -204,7 +211,7 @@ function HistogramViewer(gl, globalView)
 		if (axis.histogram && axis.histogram.width === numBins && axis.d === d)
 			return; // Requested histogram already exists
 		
-		axis.histogram = computeHistogram(dataset, axis.d = d, numBins);
+		axis.histogram = libAlgorithm.computeHistogram(dataset, axis.d = d, numBins);
 		addTransformFunctions(axis.histogram);
 		//console.log(axis.histogram);
 		

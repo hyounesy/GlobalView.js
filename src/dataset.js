@@ -1,6 +1,22 @@
 /* eslint-disable */
+const libUtility = require('./utility.js')
+const libAlgorithm = require('./algorithm.js');
+//import * as Parallel from '../src_lib/parallel.js';
+//import * as Parallel from '../node_modules/paralleljs/lib/parallel';
+const Parallel = require('paralleljs');
+//const Parallel = require('../node_modules/paralleljs/lib/parallel'); // doesn't work: Module not found: Error: Can't resolve 'child_process' in Worker.js
 
-// const $ = require("jquery");
+const $ = require('jquery'); // alternative: a
+window.jQuery = $;
+require('jquery-csv');
+/* alternative: add the following to webpack.config.js (https://github.com/fronteed/icheck/issues/322):
+plugins: [
+  new webpack.ProvidePlugin({
+		$: "jquery",
+		jQuery: "jquery"
+	})
+]
+*/
 
 /**
  * A vector of data values inside the dataset.
@@ -16,7 +32,7 @@ export function DataVector(dataset, source)
 {
 	var nc = dataset.numColumns;
 	
-	if (isNumber(source))
+	if (libUtility.isNumber(source))
 	{
 		var c = Math.round(source);
 		this['getValue'] = this.getValue = function(i)
@@ -50,7 +66,7 @@ export function DataVector(dataset, source)
 		};
 		
 		var code = FormulaCompiler.compile(source + ";", globalTypes);
-		if (isString(code))
+		if (libUtility.isString(code))
 		{
 			console.error("GlobalView error: Error while parsing data vector formula '{0}'".format(source));
 			console.error("                  " + code);
@@ -186,7 +202,7 @@ export function Dataset()
 		}
 		
 		return _densityMaps.length > d0 && _densityMaps[d0].length > d1 && _densityMaps[d0][d1] &&
-			(isUndefined(_densityMaps[d0][d1].pending) || _densityMaps[d0][d1].old);
+			(libUtility.isUndefined(_densityMaps[d0][d1].pending) || _densityMaps[d0][d1].old);
 	}
 	
 	this['iterateDensityMaps'] =
@@ -196,7 +212,7 @@ export function Dataset()
 	 */
 	this.iterateDensityMaps = function(callback)
 	{
-		_densityMaps.forEach(_densityMaps => _densityMaps.forEach(densityMap => densityMap && (isUndefined(densityMap.pending) || densityMap.old) ? callback(densityMap.old || densityMap) : null));
+		_densityMaps.forEach(_densityMaps => _densityMaps.forEach(densityMap => densityMap && (libUtility.isUndefined(densityMap.pending) || densityMap.old) ? callback(densityMap.old || densityMap) : null));
 	}
 	
 	this['requestDensityMap'] = 
@@ -221,7 +237,7 @@ export function Dataset()
 			console.warn("GlobalView warning: Requesting density map for dimensions {0}, {1} on a dataset with only {2} data vectors".format(d0, d1, this.dataVectors.length));
 			return null;
 		}
-		var isAsync = isFunction(ondone) ;//&& !/Firefox/i.test(navigator.userAgent);// Firefox tends to crash with Parallel.js
+		var isAsync = libUtility.isFunction(ondone) ;//&& !/Firefox/i.test(navigator.userAgent);// Firefox tends to crash with Parallel.js
 		
 		// Assure d0 < d1
 		if (d0 === d1)
@@ -242,7 +258,7 @@ export function Dataset()
 		
 		if (!size) size = 1024;
 		
-		if (densityMap && options && densityMap.options && !DensityMapOptions.equals(options, densityMap.options)) // If options changed
+		if (densityMap && options && densityMap.options && !libAlgorithm.DensityMapOptions.equals(options, densityMap.options)) // If options changed
 			densityMap = null; // Recompute density map
 		
 		if (isAsync) // If async
@@ -253,16 +269,17 @@ export function Dataset()
 				_densityMaps[d0][d1] = {pending: [ondone], old: _densityMaps[d0][d1]};
 				
 				// Compute histogram synchronously
-				var histogram = computeHistogram2D(this, d0, d1, size, size);
+				var histogram = libAlgorithm.computeHistogram2D(this, d0, d1, size, size);
 				
 				// Execute an asynchronous worker that computes _densityMaps[d0][d1]
-				const p = new Parallel([makeCloneable(histogram), new DensityMapOptions(options)], { evalPath: 'eval.js' });
-				p.require(DensityMap);
-				p.require(computeDensityMap);
+				const p = new Parallel([libUtility.makeCloneable(histogram), new libAlgorithm.DensityMapOptions(options)], { evalPath: 'eval.js' });
+				p.require(libAlgorithm.DensityMap);
+				p.require(libAlgorithm.computeDensityMap);
 				p.spawn(params => {
+					// the following code will be evaled from a blob in Parallel. so no need for libAlgorithm. 
 					return computeDensityMap.apply(null, params);
 				}).then(densityMap => {
-					densityMap = new DensityMap(densityMap);
+					densityMap = new libAlgorithm.DensityMap(densityMap);
 					// Free histogram
 					histogram = null;
 					
@@ -271,16 +288,16 @@ export function Dataset()
 					var pending = _densityMaps[d0][d1].pending;
 					_densityMaps[d0][d1] = densityMap;
 					
-					if (_clusterMaps.length > d0 && _clusterMaps[d0].length > d1 && _clusterMaps[d0][d1] && isUndefined(_clusterMaps[d0][d1].pending))
+					if (_clusterMaps.length > d0 && _clusterMaps[d0].length > d1 && _clusterMaps[d0][d1] && libUtility.isUndefined(_clusterMaps[d0][d1].pending))
 						_clusterMaps[d0][d1] = null;
 					
 					// Execute queued 'ondone' functions
 					pending.forEach(ondone => { ondone(densityMap); });
 				});
 			}
-			else if (!isUndefined(densityMap.pending)) // If _densityMaps[d0][d1] is currently being computed asynchronously
+			else if (!libUtility.isUndefined(densityMap.pending)) // If _densityMaps[d0][d1] is currently being computed asynchronously
 			{
-				if (densityMap.old && (!options || DensityMapOptions.equals(densityMap.old.options, options))) // If the deprecated densityMap satisfies our requested options
+				if (densityMap.old && (!options || libAlgorithm.DensityMapOptions.equals(densityMap.old.options, options))) // If the deprecated densityMap satisfies our requested options
 					ondone(/** @type {DensityMap} */(densityMap.old));
 				else
 					densityMap.pending.push(ondone);
@@ -294,17 +311,17 @@ export function Dataset()
 			if (!densityMap) // If _densityMaps[d0][d1] isn't computed or being computed yet
 			{
 				//var tStart = performance.now();
-				var histogram = computeHistogram2D(this, d0, d1, size, size);
-				_densityMaps[d0][d1] = densityMap = new DensityMap(computeDensityMap(histogram, new DensityMapOptions(options)));
+				var histogram = libAlgorithm.computeHistogram2D(this, d0, d1, size, size);
+				_densityMaps[d0][d1] = densityMap = new libAlgorithm.DensityMap(libAlgorithm.computeDensityMap(histogram, new libAlgorithm.DensityMapOptions(options)));
 				histogram = null; // Free histogram
 				//console.log(performance.now() - tStart + "ms");
 			}
-			else if (densityMap.old && (!options || DensityMapOptions.equals(densityMap.old.options, options))) // If the deprecated densityMap satisfies our requested options
+			else if (densityMap.old && (!options || libAlgorithm.DensityMapOptions.equals(densityMap.old.options, options))) // If the deprecated densityMap satisfies our requested options
 				densityMap = densityMap.old;
 			else
-				while (!isUndefined(_densityMaps[d0][d1].pending)) {} // Wait while _densityMaps[d0][d1] is being computed asynchronously
+				while (!libUtility.isUndefined(_densityMaps[d0][d1].pending)) {} // Wait while _densityMaps[d0][d1] is being computed asynchronously
 			
-			if (isFunction(ondone))
+			if (libUtility.isFunction(ondone))
 				ondone(/** @type {DensityMap} */(densityMap));
 			return /** @type {DensityMap} */(densityMap);
 		}
@@ -329,7 +346,7 @@ export function Dataset()
 		}
 		
 		return _clusterMaps.length > d0 && _clusterMaps[d0].length > d1 && _clusterMaps[d0][d1] &&
-			(isUndefined(_clusterMaps[d0][d1].pending) || _clusterMaps[d0][d1].old);
+			(libUtility.isUndefined(_clusterMaps[d0][d1].pending) || _clusterMaps[d0][d1].old);
 	}
 	this['requestClusterMap'] = this.requestClusterMap = function(d0, d1, options, ondone)
 	{
@@ -339,7 +356,7 @@ export function Dataset()
 			console.warn("GlobalView warning: Requesting cluster map for dimensions {0}, {1} on a dataset with only {2} data vectors".format(d0, d1, this.dataVectors.length));
 			return null;
 		}
-		var isAsync = isFunction(ondone) ;//&& !/Firefox/i.test(navigator.userAgent);// Firefox tends to crash with Parallel.js
+		var isAsync = libUtility.isFunction(ondone) ;//&& !/Firefox/i.test(navigator.userAgent);// Firefox tends to crash with Parallel.js
 		
 		// Assure d0 < d1
 		if (d0 === d1)
@@ -358,7 +375,7 @@ export function Dataset()
 			_clusterMaps[d0].push(null);
 		var clusterMap = _clusterMaps[d0][d1];
 		
-		if (clusterMap && options && clusterMap.options && !ClusterMapOptions.equals(options, clusterMap.options)) // If options changed
+		if (clusterMap && options && clusterMap.options && !libAlgorithm.ClusterMapOptions.equals(options, clusterMap.options)) // If options changed
 			clusterMap = null; // Recompute density map
 		
 		if (isAsync) // If async
@@ -370,14 +387,15 @@ export function Dataset()
 				
 				this.requestDensityMap(d0, d1, undefined, undefined, function(densityMap) {
 					// Execute an asynchronous worker that computes _clusterMaps[d0][d1]
-					const p = new Parallel([makeCloneable(densityMap), d0, d1, new ClusterMapOptions(options)], { evalPath: 'eval.js' });
-					p.require(computeClusterMap_method3);
-					p.require(ForwardList);
-					p.require(PriorityQueue);
+					const p = new Parallel([libUtility.makeCloneable(densityMap), d0, d1, new libAlgorithm.ClusterMapOptions(options)], { evalPath: 'eval.js' });
+					p.require(libAlgorithm.computeClusterMap_method3);
+					p.require(libUtility.ForwardList);
+					p.require(libUtility.PriorityQueue);
 					p.spawn(params => {
+						// the following code will be evaled from a blob in Parallel. so no need for libAlgorithm. 
 						return computeClusterMap_method3.apply(null, params);
 					}).then(clusterMap => {
-						clusterMap = new ClusterMap(clusterMap);
+						clusterMap = new libAlgorithm.ClusterMap(clusterMap);
 						// Set _clusterMaps[d0][d1]
 						var pending = _clusterMaps[d0][d1].pending;
 						_clusterMaps[d0][d1] = clusterMap;
@@ -387,9 +405,9 @@ export function Dataset()
 					});
 				});
 			}
-			else if (!isUndefined(clusterMap.pending)) // If _clusterMaps[d0][d1] is currently being computed asynchronously
+			else if (!libUtility.isUndefined(clusterMap.pending)) // If _clusterMaps[d0][d1] is currently being computed asynchronously
 			{
-				if (clusterMap.old && (!options || ClusterMapOptions.equals(clusterMap.old.options, options))) // If the deprecated clusterMap satisfies our requested options
+				if (clusterMap.old && (!options || libAlgorithm.ClusterMapOptions.equals(clusterMap.old.options, options))) // If the deprecated clusterMap satisfies our requested options
 					ondone(/** @type {ClusterMap} */(clusterMap.old));
 				else
 					clusterMap.pending.push(ondone);
@@ -405,18 +423,18 @@ export function Dataset()
 				if (densityMap)
 				{
 					//var tStart = performance.now();
-					_clusterMaps[d0][d1] = clusterMap = new ClusterMap(computeClusterMap_method3(densityMap, d0, d1, new ClusterMapOptions(options)));
+					_clusterMaps[d0][d1] = clusterMap = new libAlgorithm.ClusterMap(libAlgorithm.computeClusterMap_method3(densityMap, d0, d1, new libAlgorithm.ClusterMapOptions(options)));
 					//console.log(performance.now() - tStart + "ms");
 				}
 				else
 					_clusterMaps[d0][d1] = clusterMap = null;
 			}
-			else if (clusterMap.old && (!options || ClusterMapOptions.equals(clusterMap.old.options, options))) // If the deprecated clusterMap satisfies our requested options
+			else if (clusterMap.old && (!options || libAlgorithm.ClusterMapOptions.equals(clusterMap.old.options, options))) // If the deprecated clusterMap satisfies our requested options
 				clusterMap = clusterMap.old;
 			else
-				while (!isUndefined(clusterMap.pending)) {} // Wait while _clusterMaps[d0][d1] is being computed asynchronously
+				while (!libUtility.isUndefined(clusterMap.pending)) {} // Wait while _clusterMaps[d0][d1] is being computed asynchronously
 			
-			if (isFunction(ondone))
+			if (libUtility.isFunction(ondone))
 				ondone(clusterMap);
 			return clusterMap;
 		}
@@ -440,7 +458,7 @@ export function Dataset()
 		{
 			i = i_inflated % n;
 			
-			samples = sampleDensityMapChain(densityMapChain);
+			samples = libAlgorithm.sampleDensityMapChain(densityMapChain);
 			for (var c = 0; c < nc; ++c)
 			{
 				column = this.columns[c];
@@ -487,7 +505,7 @@ export function Dataset()
 	this['save'] = this.save = function(filename, nameColumn, nameColumnLabel)
 	{
 		var nc = this.numColumns, csv_nc;
-		if (this.names && !isUndefined(nameColumn) && !isUndefined(nameColumnLabel))
+		if (this.names && !libUtility.isUndefined(nameColumn) && !libUtility.isUndefined(nameColumnLabel))
 			csv_nc = nc + 1;
 		else
 		{
@@ -528,7 +546,7 @@ export function Dataset()
 			csv[i + 1] = row; // +1 ... Header row
 		}
 		
-		download(filename, "data:text/csv;charset=utf-8," + encodeURIComponent($.csv.fromArrays(csv)));
+		libUtility.download(filename, "data:text/csv;charset=utf-8," + encodeURIComponent($.csv.fromArrays(csv)));
 	}
 }
 
@@ -660,7 +678,7 @@ export function CsvDataset(file, options, onload)
 		
 		if (options['autoDetect'])
 		{
-			if (isUndefined(options['hasHeader']))
+			if (libUtility.isUndefined(options['hasHeader']))
 			{
 				// Assume no-header by default
 				options['hasHeader'] = false;
@@ -673,7 +691,7 @@ export function CsvDataset(file, options, onload)
 					options['hasHeader'] = true;
 				console.log("Assuming hasHeader = " + options['hasHeader']);
 			}
-			if (isUndefined(options['nameColumn']))
+			if (libUtility.isUndefined(options['nameColumn']))
 			{
 				// Assume no name column by default
 				options['nameColumn'] = null;
@@ -698,7 +716,7 @@ export function CsvDataset(file, options, onload)
 		
 		// Generate column labels
 		var columnLabels;
-		if (isFunction(options['columnLabels']))
+		if (libUtility.isFunction(options['columnLabels']))
 		{
 			columnLabels = new Array(n);
 			for (var c = 0, ci = 0; c < data[0].length; ++c, ++ci)
@@ -712,7 +730,7 @@ export function CsvDataset(file, options, onload)
 				columnLabels[ci] = options['columnLabels'](c);
 			}
 		}
-		else if (isArray(options['columnLabels']))
+		else if (libUtility.isArray(options['columnLabels']))
 		{
 			if (options['columnLabels'].length !== nc)
 			{
@@ -847,7 +865,7 @@ export function CsvDataset(file, options, onload)
 			dataset['names'] = dataset.names = null;
 		
 		// Generate image filenames
-		if (isFunction(options['imageFilenames']))
+		if (libUtility.isFunction(options['imageFilenames']))
 		{
 			dataset['imageFilenames'] = dataset.imageFilenames = new Array(n);
 			for (i = firstRow, di = 0; i < data.length; ++i, ++di)
@@ -862,7 +880,7 @@ export function CsvDataset(file, options, onload)
 				dataset.imageFilenames[di] = options['imageFilenames'](data[i], i);
 			}
 		}
-		else if (isArray(options['imageFilenames']))
+		else if (libUtility.isArray(options['imageFilenames']))
 		{
 			if (options['imageFilenames'].length !== n)
 			{
@@ -881,7 +899,7 @@ export function CsvDataset(file, options, onload)
 	};
 	
 	
-	if (isString(file))
+	if (libUtility.isString(file))
 		//$.get(file, parseCsv, "text");
 	{
 		var request = new XMLHttpRequest();

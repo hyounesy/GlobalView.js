@@ -8,6 +8,11 @@ module.exports = {
     libraryTarget: 'umd',
     path: path.resolve(__dirname, 'dist'),
   },
+  resolve: {
+    alias: {
+      'node_modules': path.join(__dirname, 'node_modules'),
+    },
+  },
   module: {
     rules: [
       {
@@ -19,4 +24,10 @@ module.exports = {
       },
     ],
   },
+  externals: [
+    // to resolve webpack error:
+    // ERROR in ./node_modules/paralleljs/lib/Worker.js Module not found:
+    // Error: Can't resolve 'child_process' in './node_modules/paralleljs/lib'
+    'child_process',
+  ],
 };

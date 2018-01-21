@@ -15,3 +15,6 @@ export {
   CsvDataset,
 } from './dataset';
 
+export {
+  HashSet,
+} from './utility';

@@ -1,3 +1,5 @@
+const libUtility = require('./utility.js')
+
 var currentShader = null;
 /**
  * A WebGL shader
@@ -8,11 +10,11 @@ var currentShader = null;
  * @param {string|Array<string>} fs
  * @param {boolean=} debug = false
  */
-function Shader(gl, vs, fs, debug)
+export function Shader(gl, vs, fs, debug)
 {
-	if (isArray(vs))
+	if (libUtility.isArray(vs))
 		vs = vs.join('\n');
-	if (isArray(fs))
+	if (libUtility.isArray(fs))
 		fs = fs.join('\n');
 	if (debug === true)
 	{
@@ -229,7 +231,7 @@ this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
 	}
 }
 
-function validateGLSL(gl, code)
+export function validateGLSL(gl, code)
 {
 	var vertexShader = gl.createShader(gl.VERTEX_SHADER);
 	gl.shaderSource(vertexShader, "void main() {} " + code);
@@ -260,7 +262,7 @@ function validateGLSL(gl, code)
  * @param {number=} _primitivetype = gl.TRIANGLE_STRIP
  * @param {number=} _ndim = 3
  */
-function Mesh(_gl, positions, normals, tangents, binormals, texcoords, indices, _primitivetype, _ndim)
+export function Mesh(_gl, positions, normals, tangents, binormals, texcoords, indices, _primitivetype, _ndim)
 {
 	var gl = _gl;
 	var posbuffer, nmlbuffer, tgtbuffer, bnmbuffer, texcoordbuffer, idxbuffer;
@@ -378,7 +380,7 @@ function Mesh(_gl, positions, normals, tangents, binormals, texcoords, indices, 
 		}
 		if(texture)
 		{
-			if(isArray(texture))
+			if(libUtility.isArray(texture))
 			{
 				if(sdr.samplerArrayUniform)
 				{
@@ -470,7 +472,7 @@ function handleLoadedTexture(gl, texture, onload)
 	if(typeof(onload) == 'function')
 		onload(texture);
 }
-function LoadTexture(gl, filename, onload)
+export function LoadTexture(gl, filename, onload)
 {
 	var texture = gl.createTexture();
 	texture.image = new Image();
@@ -478,14 +480,14 @@ function LoadTexture(gl, filename, onload)
 	texture.image.src = filename;
 	return texture;
 }
-function LoadTextureFromImage(gl, image)
+export function LoadTextureFromImage(gl, image)
 {
 	var texture = gl.createTexture();
 	texture.image = image;
 	handleLoadedTexture(gl, texture, null);
 	return texture;
 }
-function LoadTextureFromByteArray(gl, array, width, height)
+export function LoadTextureFromByteArray(gl, array, width, height)
 {
 	var texture = gl.createTexture();
 	texture.byteArray = array;
@@ -499,7 +501,7 @@ function LoadTextureFromByteArray(gl, array, width, height)
 	gl.bindTexture(gl.TEXTURE_2D, null);
 	return texture;
 }
-function LoadTextureFromFloatArray(gl, array, width, height)
+export function LoadTextureFromFloatArray(gl, array, width, height)
 {
 	if (gl.getExtension('OES_texture_float') === null)
 	{

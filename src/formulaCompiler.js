@@ -1,3 +1,5 @@
+const libUtility = require('./utility.js')
+
 var FormulaCompiler = {
 	compile: function(formula, symbolTypes) {
 		/*// Parse case-insensitive
@@ -203,7 +205,7 @@ var FormulaCompiler = {
 			
 			function prefixOpAST(op)
 			{
-				if (!isString(curTok))
+				if (!libUtility.isString(curTok))
 					return error("Expected variable after prefix operator '" + op + "'");
 				
 				return [op, curTok];
@@ -270,7 +272,7 @@ var FormulaCompiler = {
 						
 						// Lookup operator function and return type
 						var returnType = functionsReturnTypes[funcSignature];
-						if (isUndefined(returnType))
+						if (libUtility.isUndefined(returnType))
 							return error("Undefined operator " + binOp + " on FormulaCompiler.types " + lhs.type.name + " and " + rhs.type.name);
 						
 						// Merge lhs/rhs.
@@ -308,11 +310,11 @@ var FormulaCompiler = {
 				{
 					if (!getTok()) return null; // eat '.'
 					
-					if (isUndefined(type))
+					if (libUtility.isUndefined(type))
 						return error("Undefined variable: " + identifier);
 					var parentType = type;
 					var member = type.members[curVal];
-					if (isUndefined(member))
+					if (libUtility.isUndefined(member))
 						return error(parentType.name + " does not contain a member: " + curVal);
 					type = member.type;
 					
@@ -359,7 +361,7 @@ var FormulaCompiler = {
 						return null;
 				}*/
 				
-				if (isUndefined(type))
+				if (libUtility.isUndefined(type))
 					return error("Undefined variable: " + identifier);
 				
 				variable.push(type === FormulaCompiler.types.float ? '@' : '@[]');
@@ -388,12 +390,12 @@ var FormulaCompiler = {
 			function varDeclAST(type, typeName)
 			{
 				type = FormulaCompiler.types[typeName];
-				if (isUndefined(type))
+				if (libUtility.isUndefined(type))
 					return error("Unsupported type: " + typeName);
 				
 				// Update scope
 				var prev = scope[curVal];
-				if (!isUndefined(prev))
+				if (!libUtility.isUndefined(prev))
 					return error("Redefinition of variable: " + curVal);
 				scope[curVal] = type; // Store variable type in scope
 				
@@ -420,7 +422,7 @@ var FormulaCompiler = {
 				
 				// Lookup function and return type
 				var returnType = functionsReturnTypes[funcSignature];
-				if (isUndefined(returnType))
+				if (libUtility.isUndefined(returnType))
 					return error("Undefined function " + funcSignature);
 				
 				// Store as args, funcSignature
@@ -490,7 +492,7 @@ var FormulaCompiler = {
 			 */
 			function exprAST(exprPrec)
 			{
-				if (isUndefined(exprPrec)) exprPrec = 0;
+				if (libUtility.isUndefined(exprPrec)) exprPrec = 0;
 				
 				var lhs = primaryAST();
 				if (!lhs) return null;
@@ -630,12 +632,12 @@ function verboseTest(formula, symbols, symbolTypes)
 	var code = FormulaCompiler.compile(formula, symbolTypes ? symbolTypes : {});
 	
 	console.log("formula: " + formula);
-	if (isString(code))
+	if (libUtility.isString(code))
 		console.log("err: " + code);
 	else
 	{
 		var globalScope = symbols ? symbols : {};
-		console.log("code: " + code.map(c => isString(c) ? '"' + c + '"' : c).join(" "));
+		console.log("code: " + code.map(c => libUtility.isString(c) ? '"' + c + '"' : c).join(" "));
 		console.log("result: " + FormulaCompiler.run(code, new Array(16), globalScope));
 		console.log("locals: " + JSON.stringify(globalScope));
 	}
@@ -644,14 +646,14 @@ function verboseTest(formula, symbols, symbolTypes)
 function verify(formula, result)
 {
 	var code = FormulaCompiler.compile(formula);
-	if (isString(code))
+	if (libUtility.isString(code))
 		console.log("Formula '{0}' failed with error '{1}'".format(formula, code));
 	else
 	{
 		var computedResult = FormulaCompiler.run(code, new Array(16), {});
 		
 		var match;
-		if (isArray(result) && isArray(computedResult) && result.length === computedResult.length)
+		if (libUtility.isArray(result) && libUtility.isArray(computedResult) && result.length === computedResult.length)
 		{
 			match = true;
 			for (var i = 0; i < result.length; ++i)
