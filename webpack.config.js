@@ -24,10 +24,7 @@ module.exports = {
       },
     ],
   },
-  externals: [
-    // to resolve webpack error:
-    // ERROR in ./node_modules/paralleljs/lib/Worker.js Module not found:
-    // Error: Can't resolve 'child_process' in './node_modules/paralleljs/lib'
-    'child_process',
-  ],
+  node: {
+    child_process: 'empty',
+  },
 };

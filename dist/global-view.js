@@ -1,13 +1,13 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("child_process"));
+		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
-		define(["child_process"], factory);
+		define([], factory);
 	else if(typeof exports === 'object')
-		exports["globalView"] = factory(require("child_process"));
+		exports["globalView"] = factory();
 	else
-		root["globalView"] = factory(root["child_process"]);
-})(typeof self !== 'undefined' ? self : this, function(__WEBPACK_EXTERNAL_MODULE_30__) {
+		root["globalView"] = factory();
+})(typeof self !== 'undefined' ? self : this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -16416,7 +16416,7 @@ module.exports = Worker;
 /* 30 */
 /***/ (function(module, exports) {
 
-module.exports = __WEBPACK_EXTERNAL_MODULE_30__;
+
 
 /***/ }),
 /* 31 */
