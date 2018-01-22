@@ -58,10 +58,10 @@ function BenchmarkDialog() {
 
 
   /*var benchmarkOptions = {
-		enableTransparency: [true, false],
-		pointShape: ['Rectangle'],
-		N: [1e5, 1e6, 1e7]
-	};*/
+    enableTransparency: [true, false],
+    pointShape: ['Rectangle'],
+    N: [1e5, 1e6, 1e7]
+  };*/
   const benchmarkOptions = {
     //pointSize: [1, 5, 10, 25, 50, 100],//[1, 10],//[1, 10, 100],
     //pointShape: ['Rectangle'],
@@ -199,7 +199,7 @@ function BenchmarkDialog() {
   }
 
   function cancelBenchmark() {
-    //		globalView.disableOffscreenRendering();
+    // globalView.disableOffscreenRendering();
     globalView.popOptions();
     //globalView.popDataset();
     cbDataset_onChange(); // Reload dataset
