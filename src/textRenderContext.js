@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 /**
  * A helper class that attaches a 2D canvas to the parent div of the given WebGL canvas.
  * This 2D canvas is used to draw text.

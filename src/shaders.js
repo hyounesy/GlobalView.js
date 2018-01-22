@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 /**
  * Blocks of GLSL shader code. Blocks starting with vs... are vertex shaders, 
  * blocks starting with fs... are fragment shaders

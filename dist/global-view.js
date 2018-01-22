@@ -1121,6 +1121,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["LoadTextureFromImage"] = LoadTextureFromImage;
 /* harmony export (immutable) */ __webpack_exports__["LoadTextureFromByteArray"] = LoadTextureFromByteArray;
 /* harmony export (immutable) */ __webpack_exports__["LoadTextureFromFloatArray"] = LoadTextureFromFloatArray;
+/* eslint-disable */
+
 var libUtility = __webpack_require__(0);
 
 var currentShader = null;
@@ -1609,6 +1611,8 @@ THE SOFTWARE. */
 /***/ }),
 /* 4 */
 /***/ (function(module, exports) {
+
+/* eslint-disable */
 
 /**
  * Blocks of GLSL shader code. Blocks starting with vs... are vertex shaders, 
@@ -8495,6 +8499,8 @@ function requestAnimFrame(callback) {
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["TextRenderContext"] = TextRenderContext;
+/* eslint-disable */
+
 /**
  * A helper class that attaches a 2D canvas to the parent div of the given WebGL canvas.
  * This 2D canvas is used to draw text.

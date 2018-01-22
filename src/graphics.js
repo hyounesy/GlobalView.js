@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 const libUtility = require('./utility.js')
 
 var currentShader = null;

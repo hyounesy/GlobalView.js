@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 function DepthFirstSearch(problem)
 {
 	var fringe = [];

@@ -1,8 +1,11 @@
+/* eslint-disable */
+
 /**
  * @preserve
  * @fileoverview GlobalView - Fast client-side scatter plot rendering using WebGL
  * @author Sebastian Klaassen
- * @version 0.1.0
+ * @author Hamid Younesy (NPM package)
+ * @version 0.2.0
  */
 
 /**
