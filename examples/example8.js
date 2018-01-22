@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 const libGlobalView = require('../dist/global-view.js');
 const domready = require("domready");
 
@@ -9,7 +7,7 @@ var globalView, dataset;
 
 var cbDataset, cbColumnX, cbColumnY, cbColumnC, cbColumnS;
 
-domready(function() {
+domready(function () {
 	cbDataset = document.getElementById("cbDataset");
 	cbColumnX = document.getElementById("cbColumnX");
 	cbColumnY = document.getElementById("cbColumnY");
@@ -25,7 +23,7 @@ domready(function() {
 		{name: "1.000.000 random points", create: () => new libGlobalView.RandomDataset(1000000, 3, dataset_onLoad)},
 		{name: "10.000.000 random points", create: () => new libGlobalView.RandomDataset(10000000, 3, dataset_onLoad)},
 		{name: "iris", url: "datasets/iris.data", create: () => new libGlobalView.CsvDataset("datasets/iris.data", {columnLabels: ["Sepal Length [cm]", "Sepal Width [cm]", "Petal Length [cm]", "Petal Width [cm]", "Class"]}, dataset_onLoad)},
-		{name: "allencell", url: "datasets/AICS_Cell-feature-analysis_v1.5.csv", create: () => new libGlobalView.CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
+		{name: "allencell", url: "datasets/AICS_Cell-feature-analysis_v1.5.csv", create: () => new libGlobalView.CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function (data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
 //		{name: "allencell x2", url: "datasets/AICS_Cell-feature-analysis_v1.5_x2.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x2.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
 //		{name: "allencell x10", url: "datasets/AICS_Cell-feature-analysis_v1.5_x10.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x10.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
 //		{name: "allencell x100", url: "datasets/AICS_Cell-feature-analysis_v1.5_x100.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x100.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
@@ -39,7 +37,7 @@ domready(function() {
 		//pointColor: "white"//"#AAF"
 		padding: [50, 80, 50, 50]
 	});
-	globalView.onMouseDown = function(event) {
+	globalView.onMouseDown = function (event) {
 		switch (event.button)
 		{
 			// On left mouse button: Enable point selection and dragging events.
@@ -83,7 +81,7 @@ domready(function() {
 	document.onkeyup = handleKeyUp;
 	
 	// Fill cbDataset
-	DATASETS.forEach(function(dataset) {
+	DATASETS.forEach(function (dataset) {
 		if (typeof dataset.url === 'undefined')
 		{
 			var option = document.createElement("option");
@@ -101,7 +99,7 @@ domready(function() {
 		}
 		else
 		{
-			libGlobalView.urlExists(dataset.url, function() {
+			libGlobalView.urlExists(dataset.url, function () {
 				var option = document.createElement("option");
 				option.text = dataset.name;
 				option.createDataset = dataset.create;
@@ -124,27 +122,27 @@ addAllEventListeners();
 function addAllEventListeners() {
 	window.addEventListener('resize', onResize);
 	
-	document.getElementById("cbDataset").addEventListener("change", function() {cbDataset_onChange()});
-	document.getElementById("cbColumnX").addEventListener("change", function() {cbColumnX_onChange()});
-	document.getElementById("cbColumnY").addEventListener("change", function() {cbColumnY_onChange()});
-	document.getElementById("cbColumnC").addEventListener("change", function() {cbColumnC_onChange()});
-	document.getElementById("cbColumnS").addEventListener("change", function() {cbColumnS_onChange()});
-	document.getElementById("cbRenderStyle").addEventListener("change", function() {cbRenderStyle_onChange(document.getElementById("cbRenderStyle"))});
-	document.getElementById("cbTransparency").addEventListener("change", function() {cbTransparency_onChange(document.getElementById("cbTransparency"))});
-	document.getElementById("cbPointShape").addEventListener("change", function() {cbPointShape_onChange(document.getElementById("cbPointShape"))});
-	document.getElementById("rPointSize").addEventListener("input", function() {rPointSize_onChange(document.getElementById("rPointSize"))});
-	document.getElementById("rPointOpacity").addEventListener("input", function() {rPointOpacity_onChange(document.getElementById("rPointOpacity"))});
-	document.getElementById("cbShowDensity").addEventListener("change", function() {cbShowDensity_onChange(document.getElementById("cbShowDensity"))});
-	document.getElementById("cbShowClusters").addEventListener("change", function() {cbShowClusters_onChange(document.getElementById("cbShowClusters"))});
-	document.getElementById("cbShowHistograms").addEventListener("change", function() {cbShowHistograms_onChange(document.getElementById("cbShowHistograms"))});
-	document.getElementById("rVariance").addEventListener("input", function() {rVariance_onChange(document.getElementById("rVariance"))});
-	document.getElementById("rNumBins").addEventListener("input", function() {rNumBins_onChange(document.getElementById("rNumBins"))});
-	document.getElementById("cmdRunBenchmark").addEventListener("click", function() {cmdRunBenchmark_onClick(document.getElementById("cmdRunBenchmark"))});
+	document.getElementById("cbDataset").addEventListener("change", function () {cbDataset_onChange()});
+	document.getElementById("cbColumnX").addEventListener("change", function () {cbColumnX_onChange()});
+	document.getElementById("cbColumnY").addEventListener("change", function () {cbColumnY_onChange()});
+	document.getElementById("cbColumnC").addEventListener("change", function () {cbColumnC_onChange()});
+	document.getElementById("cbColumnS").addEventListener("change", function () {cbColumnS_onChange()});
+	document.getElementById("cbRenderStyle").addEventListener("change", function () {cbRenderStyle_onChange(document.getElementById("cbRenderStyle"))});
+	document.getElementById("cbTransparency").addEventListener("change", function () {cbTransparency_onChange(document.getElementById("cbTransparency"))});
+	document.getElementById("cbPointShape").addEventListener("change", function () {cbPointShape_onChange(document.getElementById("cbPointShape"))});
+	document.getElementById("rPointSize").addEventListener("input", function () {rPointSize_onChange(document.getElementById("rPointSize"))});
+	document.getElementById("rPointOpacity").addEventListener("input", function () {rPointOpacity_onChange(document.getElementById("rPointOpacity"))});
+	document.getElementById("cbShowDensity").addEventListener("change", function () {cbShowDensity_onChange(document.getElementById("cbShowDensity"))});
+	document.getElementById("cbShowClusters").addEventListener("change", function () {cbShowClusters_onChange(document.getElementById("cbShowClusters"))});
+	document.getElementById("cbShowHistograms").addEventListener("change", function () {cbShowHistograms_onChange(document.getElementById("cbShowHistograms"))});
+	document.getElementById("rVariance").addEventListener("input", function () {rVariance_onChange(document.getElementById("rVariance"))});
+	document.getElementById("rNumBins").addEventListener("input", function () {rNumBins_onChange(document.getElementById("rNumBins"))});
+	document.getElementById("cmdRunBenchmark").addEventListener("click", function () {cmdRunBenchmark_onClick(document.getElementById("cmdRunBenchmark"))});
 	// document.getElementById("cbThumbnailPositioning") // ???
-	document.getElementById("rNumThumbnails").addEventListener("input", function() {rNumThumbnails_onChange(document.getElementById("rNumThumbnails"))});
-	document.getElementById("rDensityRatio").addEventListener("input", function() {rDensityRatio_onChange(document.getElementById("rDensityRatio"))});
-	document.getElementById("cmdShowData2D").addEventListener("click", function() {cmdShowData2D_onClick(document.getElementById("cmdShowData2D"))});
-	document.getElementById("cbLabelThumbnails").addEventListener("change", function() {cbLabelThumbnails_onChange(document.getElementById("cbLabelThumbnails"))});
+	document.getElementById("rNumThumbnails").addEventListener("input", function () {rNumThumbnails_onChange(document.getElementById("rNumThumbnails"))});
+	document.getElementById("rDensityRatio").addEventListener("input", function () {rDensityRatio_onChange(document.getElementById("rDensityRatio"))});
+	document.getElementById("cmdShowData2D").addEventListener("click", function () {cmdShowData2D_onClick(document.getElementById("cmdShowData2D"))});
+	document.getElementById("cbLabelThumbnails").addEventListener("change", function () {cbLabelThumbnails_onChange(document.getElementById("cbLabelThumbnails"))});
 }
 
 function onResize()
@@ -333,7 +331,7 @@ function requestVariance(variance, fast)
 	}
 	
 	densityMapOptions.gaussScale = variance;
-	dataset.requestDensityMap(globalView.getActiveColumn(0), globalView.getActiveColumn(1), fast ? 64 : null, densityMapOptions, function(densityMap) {
+	dataset.requestDensityMap(globalView.getActiveColumn(0), globalView.getActiveColumn(1), fast ? 64 : null, densityMapOptions, function (densityMap) {
 		if (densityMapOptions.gaussScale === variance)
 		{
 			globalView.invalidate();
@@ -354,7 +352,7 @@ function requestVariance(variance, fast)
 	});
 }
 
-String.prototype.replaceAll = function(oldstr, newstr) // Source: http://stackoverflow.com/a/1144788
+String.prototype.replaceAll = function (oldstr, newstr) // Source: http://stackoverflow.com/a/1144788
 {
 	return this.split(oldstr).join(newstr);
 }
@@ -393,7 +391,7 @@ function cmdShowData2D_onClick(sender)
 	globalView.clearThumbnails();
 	//if globalView.selectedPoints.isempty())
 	{
-		globalView.getCharacteristicPoints(numThumbnails, densityRatio, function(characteristicPoints) {
+		globalView.getCharacteristicPoints(numThumbnails, densityRatio, function (characteristicPoints) {
 			globalView.selectedPoints.assign(characteristicPoints);
 			globalView.showImages(globalView.selectedPoints, cbThumbnailPositioning.value);
 		});

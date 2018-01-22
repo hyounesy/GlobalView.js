@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 function DepthFirstSearch(problem)
 {
 	var fringe = [];
@@ -15,7 +13,7 @@ function DepthFirstSearch(problem)
 	
 	while (true)
 	{
-		problem.forEachSuccessor(node.state, function(successor) {
+		problem.forEachSuccessor(node.state, function (successor) {
 			// Test for goal state (before-push)
 			if (problem.isGoalState(successor))
 			{
@@ -57,7 +55,7 @@ function BreadthFirstSearch(problem)
 	
 	while (true)
 	{
-		problem.forEachSuccessor(node.state, function(successor) {
+		problem.forEachSuccessor(node.state, function (successor) {
 			var successor_hash = problem.computeHash(successor);
 			if (libUtility.isUndefined(closed[successor_hash]))
 			{
@@ -90,7 +88,7 @@ function UniformCostSearch(problem)
 
 	while (true)
 	{
-		problem.forEachSuccessor(node.state, function(successor, successor_cost) {
+		problem.forEachSuccessor(node.state, function (successor, successor_cost) {
 			var successor_hash = problem.computeHash(successor), _successor;
 			if (libUtility.isUndefined(_successor = closed[successor_hash]) || node.cost + successor_cost < _successor.prevCost)
 			{
@@ -122,7 +120,7 @@ function SimpleUniformCostSearch(problem)
 
 	while (true)
 	{
-		problem.forEachSuccessor(node.state, function(successor, successor_cost) {
+		problem.forEachSuccessor(node.state, function (successor, successor_cost) {
 			var successor_hash = problem.computeHash(successor);
 			if (libUtility.isUndefined(closed[successor_hash]))
 			{
@@ -157,7 +155,7 @@ function SimpleAStarSearch(problem, heuristic)
 
 	while (true)
 	{
-		problem.forEachSuccessor(node.state, function(successor, successor_cost) {
+		problem.forEachSuccessor(node.state, function (successor, successor_cost) {
 			var h = problem.heuristic(successor);
 			var g = successor_cost;
 			if (CHECK_CONSISTENCY && g + h < node.f)
@@ -192,7 +190,7 @@ function SimpleGreedySearch(problem)
 	while (true)
 	{
 		cheapestSuccessor = null;
-		problem.forEachSuccessor(state, function(successor, successor_cost) {
+		problem.forEachSuccessor(state, function (successor, successor_cost) {
 			if (successor_cost < cheapestCost)
 			{
 				cheapestCost = successor_cost;

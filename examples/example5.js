@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 //const globalView = require('../lib/globalView.js');
 const domready = require("domready");
 //const libDataset = require("../lib/dataset.js");
@@ -48,9 +46,9 @@ domready(function () {
 		nameColumn: 1,
 		columnLabels: COLUMN_NAMES,
 		imageFilenames: data => imagesPath + data[1] + ".png"
-	}, function(dataset) {
+	}, function (dataset) {
 		plot.load(dataset, 2, 4, 0, 3);
-		plot.getCharacteristicPoints(8, 1, function(characteristicPoints) {
+		plot.getCharacteristicPoints(8, 1, function (characteristicPoints) {
 			plot.referencePoints.assign(characteristicPoints);
 			plot.showImages(plot.referencePoints, 'lowDensity');
 		});
@@ -71,20 +69,20 @@ domready(function () {
 });
 
 function addAllEventListeners() {
-	document.getElementById("cmdSelectAll").addEventListener("click", function() {cmdSelectAll_onClick(document.getElementById("cmdSelectAll"))});
-	document.getElementById("cmdDeselectAll").addEventListener("click", function() {cmdDeselectAll_onClick(document.getElementById("cmdDeselectAll"))});
- 	document.getElementById("Tom20").addEventListener("change", function() {cbProtein_onChange(document.getElementById("Tom20"))});
-	document.getElementById("Alpha tubulin").addEventListener("change", function() {cbProtein_onChange(document.getElementById("Alpha tubulin"))});
-	document.getElementById("Sec61 beta").addEventListener("change", function() {cbProtein_onChange(document.getElementById("Sec61 beta"))});
-	document.getElementById("Alpha actinin").addEventListener("change", function() {cbProtein_onChange(document.getElementById("Alpha actinin"))});
-	document.getElementById("Desmoplakin").addEventListener("change", function() {cbProtein_onChange(document.getElementById("Desmoplakin"))});
-	document.getElementById("Lamin B1").addEventListener("change", function() {cbProtein_onChange(document.getElementById("Lamin B1"))});
-	document.getElementById("Fibrillarin").addEventListener("change", function() {cbProtein_onChange(document.getElementById("Fibrillarin"))});
-	document.getElementById("Beta actin").addEventListener("change", function() {cbProtein_onChange(document.getElementById("Beta actin"))});
-	document.getElementById("ZO1").addEventListener("change", function() {cbProtein_onChange(document.getElementById("ZO1"))});
-	document.getElementById("Myosin IIB").addEventListener("change", function() {cbProtein_onChange(document.getElementById("Myosin IIB"))});
-	document.getElementById("cbXAxis").addEventListener("change", function() {cbXAxis_onChange(document.getElementById("cbXAxis"))});
-	document.getElementById("cbYAxis").addEventListener("change", function() {cbYAxis_onChange(document.getElementById("cbYAxis"))});
+	document.getElementById("cmdSelectAll").addEventListener("click", function () {cmdSelectAll_onClick(document.getElementById("cmdSelectAll"))});
+	document.getElementById("cmdDeselectAll").addEventListener("click", function () {cmdDeselectAll_onClick(document.getElementById("cmdDeselectAll"))});
+ 	document.getElementById("Tom20").addEventListener("change", function () {cbProtein_onChange(document.getElementById("Tom20"))});
+	document.getElementById("Alpha tubulin").addEventListener("change", function () {cbProtein_onChange(document.getElementById("Alpha tubulin"))});
+	document.getElementById("Sec61 beta").addEventListener("change", function () {cbProtein_onChange(document.getElementById("Sec61 beta"))});
+	document.getElementById("Alpha actinin").addEventListener("change", function () {cbProtein_onChange(document.getElementById("Alpha actinin"))});
+	document.getElementById("Desmoplakin").addEventListener("change", function () {cbProtein_onChange(document.getElementById("Desmoplakin"))});
+	document.getElementById("Lamin B1").addEventListener("change", function () {cbProtein_onChange(document.getElementById("Lamin B1"))});
+	document.getElementById("Fibrillarin").addEventListener("change", function () {cbProtein_onChange(document.getElementById("Fibrillarin"))});
+	document.getElementById("Beta actin").addEventListener("change", function () {cbProtein_onChange(document.getElementById("Beta actin"))});
+	document.getElementById("ZO1").addEventListener("change", function () {cbProtein_onChange(document.getElementById("ZO1"))});
+	document.getElementById("Myosin IIB").addEventListener("change", function () {cbProtein_onChange(document.getElementById("Myosin IIB"))});
+	document.getElementById("cbXAxis").addEventListener("change", function () {cbXAxis_onChange(document.getElementById("cbXAxis"))});
+	document.getElementById("cbYAxis").addEventListener("change", function () {cbYAxis_onChange(document.getElementById("cbYAxis"))});
 }
 
 function cmdSelectAll_onClick(sender)

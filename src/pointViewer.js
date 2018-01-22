@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 const libUtility = require('./utility.js');
 const libGraphics = require('./graphics.js');
 const libShaders = require('./shaders.js');
@@ -44,14 +42,14 @@ export function PointViewer(gl, globalView)
 		libUtility.HashSet.call(this, onchange);
 		var idxbuffer = gl.createBuffer();
 		
-		this.render = function(texture)
+		this.render = function (texture)
 		{
 			if (this.size() === _dataset.length)
 				meshDataPoints.draw(texture, 0, _dataset.length);
 			else if (this.size() !== 0)
 				meshDataPoints.drawIndexed(texture, idxbuffer, this.size());
 		}
-		this.renderLines = function(texture, pointDrag)
+		this.renderLines = function (texture, pointDrag)
 		{
 			if (this.size() === _dataset.length)
 				meshDataPoints.drawLines(texture, pointDrag, 0, _dataset.length);
@@ -60,7 +58,7 @@ export function PointViewer(gl, globalView)
 				// drawLines doesn't support index buffers
 				// Therefore, draw point group as continuous index sequences
 				var startIndex = 0, lastIndex = -1, count = 0;
-				this.forEach(function(index) {
+				this.forEach(function (index) {
 					if (index === lastIndex + 1)
 						++count;
 					else
@@ -77,7 +75,7 @@ export function PointViewer(gl, globalView)
 			}
 		}
 		
-		this.free = function()
+		this.free = function ()
 		{
 			if (idxbuffer !== -1)
 			{
@@ -95,7 +93,7 @@ export function PointViewer(gl, globalView)
 	 * @param  {number=} opacity
 	 * @return {HashSet}
 	 */
-	this.createPointSet = function(color, opacity)
+	this.createPointSet = function (color, opacity)
 	{
 		var pointSet = new PointGroup();
 		if (color)
@@ -123,14 +121,14 @@ export function PointViewer(gl, globalView)
 	 * (This does not remove any of the points)
 	 * @param  {HashSet} pointSet
 	 */
-	this.removePointSet = function(pointSet)
+	this.removePointSet = function (pointSet)
 	{
 		var index = pointSets.indexOf(pointSet);
 		if (index !== -1)
 			pointSets.splice(index, 1);
 	}
 	
-	this.render = function(flipY, tf, colormapTexture, pointDrag)
+	this.render = function (flipY, tf, colormapTexture, pointDrag)
 	{
 		if (meshDataPoints === null)
 			return;
@@ -140,7 +138,7 @@ export function PointViewer(gl, globalView)
 		meshDataPoints.sdr.scales.apply(meshDataPoints.sdr, tf.getScales());
 		meshDataPoints.sdr.animatedScales.apply(meshDataPoints.sdr, tf.getAnimatedScales());
 		meshDataPoints.sdr.flipY(flipY ? 1 : 0);
-		pointSets.forEach(function(pointSet) {
+		pointSets.forEach(function (pointSet) {
 			meshDataPoints.sdr.pointOpacity(pointSet.opacity ? pointSet.opacity : _pointOpacity);
 			pointSet.render(pointSet.colormap ? pointSet.colormap : colormapTexture);
 		});
@@ -152,14 +150,14 @@ export function PointViewer(gl, globalView)
 			meshDataPoints.sdrLine.scales.apply(meshDataPoints.sdrLine, tf.getScales());
 			meshDataPoints.sdrLine.animatedScales.apply(meshDataPoints.sdrLine, tf.getAnimatedScales());
 			meshDataPoints.sdrLine.flipY(flipY ? 1 : 0);
-			pointSets.forEach(function(pointSet) {
+			pointSets.forEach(function (pointSet) {
 				meshDataPoints.sdrLine.pointOpacity(pointSet.opacity ? pointSet.opacity : Math.max(0.1, _pointOpacity / 2.0));
 				pointSet.renderLines(pointSet.colormap ? pointSet.colormap : colormapTexture, pointDrag);
 			});
 		}
 	}
 	
-	this.setDataset = function(dataset, options)
+	this.setDataset = function (dataset, options)
 	{
 		// Remove old mesh
 		if (meshDataPoints != null)
@@ -193,7 +191,7 @@ export function PointViewer(gl, globalView)
 		this.points.assignRange(dataset.length);
 	}
 	
-	this.onOptionsChanged = function(options, recompileShader)
+	this.onOptionsChanged = function (options, recompileShader)
 	{
 		_pointOpacity = options['pointOpacity'];
 		if (meshDataPoints)
@@ -206,7 +204,7 @@ export function PointViewer(gl, globalView)
 	}
 	
 	var activeInputVectors = null, animatedInputVectors = null;
-	this.onInputChanged = function(activeInputs, animatedInputs, options)
+	this.onInputChanged = function (activeInputs, animatedInputs, options)
 	{
 		activeInputVectors = activeInputs.map(i => _dataset.dataVectors[i]);
 		animatedInputVectors = animatedInputs.map(animatedInput => _dataset.dataVectors[animatedInput.origin]);
@@ -214,7 +212,7 @@ export function PointViewer(gl, globalView)
 			meshDataPoints.recompileShader(options);
 	}
 	
-	this.onPlotBoundsChanged = function(plotBounds) {}
+	this.onPlotBoundsChanged = function (plotBounds) {}
 	
 	/**
 	 * A renderable WebGL mesh of ndim-dimensional points
@@ -241,7 +239,7 @@ export function PointViewer(gl, globalView)
 		gl.bindBuffer(gl.ARRAY_BUFFER, vidbuffer);
 		gl.bufferData(gl.ARRAY_BUFFER, vertexIds, gl.STATIC_DRAW);
 		
-		this.getPosCode = function(forLineSdr)
+		this.getPosCode = function (forLineSdr)
 		{
 			// Create shader code for getPos() function -> getPosCode
 			var getPosCode = `
@@ -283,7 +281,7 @@ vec{1} getPos()
 		var posattr, lineattr;
 		this.sdr = null;
 		this.sdrLine = null;
-		this.recompileShader = function(options)
+		this.recompileShader = function (options)
 		{
 			// Free shaders
 			if (this.sdr !== null)
@@ -348,7 +346,7 @@ vec{1} getPos()
 		if (activeInputVectors && animatedInputVectors)
 			this.recompileShader(options);
 		
-		this.draw = function(texture, offset, count)
+		this.draw = function (texture, offset, count)
 		{
 			// Default values
 			if (typeof offset === 'undefined') offset = 0;
@@ -388,7 +386,7 @@ vec{1} getPos()
 			
 			gl.drawArrays(gl.POINTS, 0, Math.min(count, numvertices - offset));
 		}
-		this.drawIndexed = function(texture, idxbuffer, count)
+		this.drawIndexed = function (texture, idxbuffer, count)
 		{
 			for(var i = 0; i < 16; i++)
 			{
@@ -426,7 +424,7 @@ vec{1} getPos()
 			gl.drawElements(gl.POINTS, count, gl.UNSIGNED_INT, 0);
 		}
 		
-		this.drawLines = function(texture, line, offset, count)
+		this.drawLines = function (texture, line, offset, count)
 		{
 			// Default values
 			if (typeof offset === 'undefined') offset = 0;
@@ -480,7 +478,7 @@ vec{1} getPos()
 			gl.ext.drawArraysInstancedANGLE(gl.TRIANGLE_FAN, 0, 4, Math.min(count, numvertices - offset));
 		}
 		
-		this.free = function()
+		this.free = function ()
 		{
 			gl.bindBuffer(gl.ARRAY_BUFFER, null);
 			

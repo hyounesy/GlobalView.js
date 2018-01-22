@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 /**
  * A helper class that attaches a 2D canvas to the parent div of the given WebGL canvas.
  * This 2D canvas is used to draw text.
@@ -23,13 +21,13 @@ export function TextRenderContext(gl, canvas)
 	var fontHeight = ctx.measureText('M').width;
 	
 	
-	this.clear = function()
+	this.clear = function ()
 	{
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		ctx.strokeStyle = ctx.fillStyle = gl.foreColorString;
 	}
 	
-	gl.drawText = function(str, x, y, anchor, rotation, color)
+	gl.drawText = function (str, x, y, anchor, rotation, color)
 	{
 		x = Math.floor(x);
 		y = Math.floor(y);
@@ -92,16 +90,16 @@ export function TextRenderContext(gl, canvas)
 		if (color)
 			ctx.fillStyle = gl.foreColorString;
 	}
-	gl.measureTextWidth = function(str)
+	gl.measureTextWidth = function (str)
 	{
 		return ctx.measureText(str).width;
 	}
-	gl.measureTextHeight = function()
+	gl.measureTextHeight = function ()
 	{
 		return fontHeight;
 	}
 	
-	gl.drawRect = function(x, y, width, height)
+	gl.drawRect = function (x, y, width, height)
 	{
 		if (width < 0)
 		{
@@ -123,7 +121,7 @@ export function TextRenderContext(gl, canvas)
 		ctx.strokeRect(x, y, width, height);
 	}
 	
-	gl.drawPolygon = function(points, color)
+	gl.drawPolygon = function (points, color)
 	{
 		if (points.length < 2)
 			return;
@@ -139,7 +137,7 @@ export function TextRenderContext(gl, canvas)
 		if (color)
 			ctx.fillStyle = gl.foreColorString;
 	}
-	gl.fillPolygon = function(points, color)
+	gl.fillPolygon = function (points, color)
 	{
 		if (points.length < 2)
 			return;
@@ -156,7 +154,7 @@ export function TextRenderContext(gl, canvas)
 			ctx.fillStyle = gl.foreColorString;
 	}
 	
-	this.setFont = function(font)
+	this.setFont = function (font)
 	{
 		ctx.font = _font = font;
 		
@@ -171,7 +169,7 @@ export function TextRenderContext(gl, canvas)
 		body.removeChild(dummy);
 	}
 	
-	this.onResize = function()
+	this.onResize = function ()
 	{
 		/*var canvasBounds = canvas.getBoundingClientRect();
 		textCanvas.style.left = canvasBounds.left;
@@ -195,7 +193,7 @@ export function TextRenderContext(gl, canvas)
 	}
 	
 	var offscreenRendering = null;
-	this.enableOffscreenRendering = function(width, height)
+	this.enableOffscreenRendering = function (width, height)
 	{
 		if (offscreenRendering !== null)
 			return;
@@ -209,7 +207,7 @@ export function TextRenderContext(gl, canvas)
 		ctx = textCanvas.getContext("2d");
 		this.onResize();
 	}
-	this.disableOffscreenRendering = function()
+	this.disableOffscreenRendering = function ()
 	{
 		if (offscreenRendering === null)
 			return;
@@ -219,7 +217,7 @@ export function TextRenderContext(gl, canvas)
 		offscreenRendering = null;
 		//this.onResize();
 	}
-	this.getCanvas = function()
+	this.getCanvas = function ()
 	{
 		return textCanvas;
 	}

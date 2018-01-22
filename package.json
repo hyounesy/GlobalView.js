@@ -28,7 +28,6 @@
     "version": "npm run build && git add .",
     "start": "webpack-dev-server --config ./examples/webpack.examples.config.js",
     "examples": "webpack --config ./examples/webpack.examples.config.js && npm start",
-
     "start.beefy": "beefy --open",
     "examples.b": "npm run example1.b && npm run example2.b && npm run example3.b && npm run example4.b && npm run example5.b && npm run example6.b && npm run example7.b && npm run example8.b",
     "example1.b": "browserify examples/example1.js -o examples/example1.min.js",
@@ -40,9 +39,9 @@
     "example7.b": "browserify examples/example7.js -o examples/example7.min.js",
     "example8.b": "browserify examples/example8.js -o examples/example8.min.js",
     "testall.b": "npm run build && npm run examples.b && npm start.beefy",
-    "TODO_minify": "(TODO): cat bundle.js | uglifyjs -o bundle.js"
+    "TODO_minify": "(TODO): cat bundle.js | uglifyjs -o bundle.js",
+    "nibble": "eslint-nibble src/ examples/"
   },
-  
   "files": [
     "es",
     "lib",
@@ -87,6 +86,8 @@
   },
   "dependencies": {
     "domready": "^1.0.8",
+    "eslint-nibble": "^4.2.1",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
     "gl-matrix": "^2.4.0",
     "jquery": "^3.2.1",
     "jquery-csv": "^0.8.3",

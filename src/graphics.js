@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 const libUtility = require('./utility.js')
 
 var currentShader = null;
@@ -72,7 +70,7 @@ this.VertexTexCoordAttribute = gl.getAttribLocation(sdr, "vtexcoord");
 this.samplerUniform = gl.getUniformLocation(sdr, "uSampler");
 this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
 	
-	this.bind = function()
+	this.bind = function ()
 	{
 		if (currentShader !== this)
 		{
@@ -81,12 +79,12 @@ this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
 		}
 	}
 	
-	this.u1i = function(uniformString)
+	this.u1i = function (uniformString)
 	{
 		this.bind();
 		var uniform = gl.getUniformLocation(sdr, uniformString);
 		if (uniform)
-			return function(i) {
+			return function (i) {
 				this.bind();
 				gl.uniform1i(uniform, i);
 				if (debug)
@@ -95,12 +93,12 @@ this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
 		else
 			return debug ? i => console.log("Passing value to unused uniform " + uniformString) : null;
 	}
-	this.u1f = function(uniformString)
+	this.u1f = function (uniformString)
 	{
 		this.bind();
 		var uniform = gl.getUniformLocation(sdr, uniformString);
 		if (uniform)
-			return function(f) {
+			return function (f) {
 				this.bind();
 				gl.uniform1f(uniform, f);
 				if (debug)
@@ -109,12 +107,12 @@ this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
 		else
 			return debug ? f => console.log("Passing value to unused uniform " + uniformString) : null;
 	}
-	this.u2f = function(uniformString)
+	this.u2f = function (uniformString)
 	{
 		this.bind();
 		var uniform = gl.getUniformLocation(sdr, uniformString);
 		if (uniform)
-			return function(x, y) {
+			return function (x, y) {
 				this.bind();
 				gl.uniform2f(uniform, x, y);
 				if (debug)
@@ -123,12 +121,12 @@ this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
 		else
 			return debug ? f => console.log("Passing value to unused uniform " + uniformString) : null;
 	}
-	this.u2x2f = function(uniformString)
+	this.u2x2f = function (uniformString)
 	{
 		this.bind();
 		var uniform = gl.getUniformLocation(sdr, uniformString);
 		if (uniform)
-			return function(m) {
+			return function (m) {
 				this.bind();
 				gl.uniformMatrix2fv(uniform, false, m);
 				if (debug)
@@ -137,12 +135,12 @@ this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
 		else
 			return debug ? f => console.log("Passing value to unused uniform " + uniformString) : null;
 	}
-	this.u3f = function(uniformString)
+	this.u3f = function (uniformString)
 	{
 		this.bind();
 		var uniform = gl.getUniformLocation(sdr, uniformString);
 		if (uniform)
-			return function(x, y, z) {
+			return function (x, y, z) {
 				this.bind();
 				gl.uniform3f(uniform, x, y, z);
 				if (debug)
@@ -151,12 +149,12 @@ this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
 		else
 			return debug ? f => console.log("Passing value to unused uniform " + uniformString) : null;
 	}
-	this.u4f = function(uniformString)
+	this.u4f = function (uniformString)
 	{
 		this.bind();
 		var uniform = gl.getUniformLocation(sdr, uniformString);
 		if (uniform)
-			return function(x, y, z, w) {
+			return function (x, y, z, w) {
 				this.bind();
 				gl.uniform4f(uniform, x, y, z, w);
 				if (debug)
@@ -165,12 +163,12 @@ this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
 		else
 			return debug ? f => console.log("Passing value to unused uniform " + uniformString) : null;
 	}
-	this.u1fv = function(uniformString)
+	this.u1fv = function (uniformString)
 	{
 		this.bind();
 		var uniform = gl.getUniformLocation(sdr, uniformString);
 		if (uniform)
-			return function(v) {
+			return function (v) {
 				this.bind();
 				gl.uniform1fv(uniform, v);
 				if (debug)
@@ -179,12 +177,12 @@ this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
 		else
 			return debug ? f => console.log("Passing value to unused uniform " + uniformString) : null;
 	}
-	this.u4fv = function(uniformString)
+	this.u4fv = function (uniformString)
 	{
 		this.bind();
 		var uniform = gl.getUniformLocation(sdr, uniformString);
 		if (uniform)
-			return function(v) {
+			return function (v) {
 				this.bind();
 				gl.uniform4fv(uniform, v);
 				if (debug)
@@ -193,12 +191,12 @@ this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
 		else
 			return debug ? f => console.log("Passing value to unused uniform " + uniformString) : null;
 	}
-	this.u4x4f = function(uniformString)
+	this.u4x4f = function (uniformString)
 	{
 		this.bind();
 		var uniform = gl.getUniformLocation(sdr, uniformString);
 		if (uniform)
-			return function(m) {
+			return function (m) {
 				this.bind();
 				gl.uniformMatrix4fv(uniform, false, m);
 				if (debug)
@@ -208,9 +206,9 @@ this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
 			return debug ? f => console.log("Passing value to unused uniform " + uniformString) : null;
 	}
 	
-	this.getAttribLocation = function(attributeName) { return gl.getAttribLocation(sdr, attributeName); }
+	this.getAttribLocation = function (attributeName) { return gl.getAttribLocation(sdr, attributeName); }
 	
-	this.free = function()
+	this.free = function ()
 	{
 		if (vertexShader != null || fragmentShader != null || sdr != null)
 			gl.useProgram(null);
@@ -271,7 +269,7 @@ export function Mesh(_gl, positions, normals, tangents, binormals, texcoords, in
 	var primitivetype, numvertices, numindices;
 	var ndim;
 
-	this.reset = function(positions, normals, tangents, binormals, texcoords, indices, _primitivetype, _ndim)
+	this.reset = function (positions, normals, tangents, binormals, texcoords, indices, _primitivetype, _ndim)
 	{
 		ndim = _ndim ? _ndim : 3;
 		primitivetype = _primitivetype;
@@ -339,7 +337,7 @@ export function Mesh(_gl, positions, normals, tangents, binormals, texcoords, in
 	if(positions) // Mesh vertex positions array can't be null
 		this.reset(positions, normals, tangents, binormals, texcoords, indices, _primitivetype, _ndim);
 
-	this.bind = function(sdr, texture)
+	this.bind = function (sdr, texture)
 	{
 		if(!posbuffer) // Mesh without vertex positions can't be rendered
 			return;
@@ -410,7 +408,7 @@ export function Mesh(_gl, positions, normals, tangents, binormals, texcoords, in
 			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxbuffer);
 	}
 
-	this.draw = function()
+	this.draw = function ()
 	{
 		if(!posbuffer) // Mesh without vertex positions can't be rendered
 			return;
@@ -421,7 +419,7 @@ export function Mesh(_gl, positions, normals, tangents, binormals, texcoords, in
 			gl.drawArrays(primitivetype, 0, numvertices);
 	}
 
-	this.free = function()
+	this.free = function ()
 	{
 		if(posbuffer)
 		{
@@ -478,7 +476,7 @@ export function LoadTexture(gl, filename, onload)
 {
 	var texture = gl.createTexture();
 	texture.image = new Image();
-	texture.image.onload = function() {handleLoadedTexture(gl, texture, onload)}
+	texture.image.onload = function () {handleLoadedTexture(gl, texture, onload)}
 	texture.image.src = filename;
 	return texture;
 }

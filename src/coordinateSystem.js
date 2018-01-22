@@ -1,4 +1,3 @@
-/* eslint-disable */
 const libGraphics = require('./graphics.js');
 const libShaders = require('./shaders.js');
 const libGlMatrix = require('gl-matrix');
@@ -20,7 +19,7 @@ export function CoordinateSystem(gl, globalView)
 	sdrLine.color = sdrLine.u4f("color");
 	sdrLine.color.apply(sdrLine, gl.foreColor);
 	sdrLine.matWorldViewProj = sdrLine.u4x4f("matWorldViewProj");
-	this.updateColorSchema = function() {
+	this.updateColorSchema = function () {
 		sdrLine.color.apply(sdrLine, gl.foreColor);
 	}
 	
@@ -40,7 +39,7 @@ export function CoordinateSystem(gl, globalView)
 	/** @type {number} */ var yTickLabel_left = 0;
 	
 	this.visible = [true, true];
-	this.render = function(flipY, plotBounds)
+	this.render = function (flipY, plotBounds)
 	{
 		var mattrans = libGlMatrix.mat4.create();
 		
@@ -185,7 +184,7 @@ export function CoordinateSystem(gl, globalView)
 	 * @param  {number} maximum
 	 * @param  {boolean=} changeTickDistance=true
 	 */
-	this.setNumericRange = function(d, minimum, maximum, changeTickDistance)
+	this.setNumericRange = function (d, minimum, maximum, changeTickDistance)
 	{
 		var axis = axes[d];
 		axis.minimum = minimum;
@@ -221,7 +220,7 @@ export function CoordinateSystem(gl, globalView)
 				break;
 		}
 	}
-	this.setEnumRange = function(d, minimum, maximum, values)
+	this.setEnumRange = function (d, minimum, maximum, values)
 	{
 		var axis = axes[d];
 		axis.minimum = minimum -= 0.5; // 0.5 ... Move to center of value-bin
@@ -232,19 +231,19 @@ export function CoordinateSystem(gl, globalView)
 		axis.tickOffset = Math.max(0, Math.ceil(minimum / axis.tickDistance) * axis.tickDistance);
 		axis.tickCount = Math.min(values.length - axis.tickOffset, Math.floor((maximum - axis.tickOffset + 1) / axis.tickDistance));
 	}
-	this.setLabel = function(d, label)
+	this.setLabel = function (d, label)
 	{
 		axes[d].label = label;
 	}
 	
-	this.setDataset = function(dataset, options) {}
-	this.onInputChanged = function(activeInputs, animatedInputs, options) {}
-	this.onOptionsChanged = function(options)
+	this.setDataset = function (dataset, options) {}
+	this.onInputChanged = function (activeInputs, animatedInputs, options) {}
+	this.onOptionsChanged = function (options)
 	{
 		axes[0].tickLength = TICK_LENGTH + (options['showXAxisHistogram'] ? options['histogramHeight'] : 0);
 		axes[1].tickLength = TICK_LENGTH + (options['showYAxisHistogram'] ? options['histogramHeight'] : 0);
 	}
-	this.onPlotBoundsChanged = function(plotBounds)
+	this.onPlotBoundsChanged = function (plotBounds)
 	{
 		for (var i = 0; i < 2; ++i)
 			axes[i].values === null ?
@@ -252,7 +251,7 @@ export function CoordinateSystem(gl, globalView)
 				this.setEnumRange(i, axes[i].minimum + 0.5, axes[i].maximum + 0.5, axes[i].values);
 	}
 	
-	this.labelFromPoint = function(plotBounds, p)
+	this.labelFromPoint = function (plotBounds, p)
 	{
 		if (this.visible[0])
 		{
@@ -270,7 +269,7 @@ export function CoordinateSystem(gl, globalView)
 		}
 		return null;
 	}
-	this.getLabelBounds = function(plotBounds, d)
+	this.getLabelBounds = function (plotBounds, d)
 	{
 		switch (d)
 		{
@@ -291,7 +290,7 @@ export function CoordinateSystem(gl, globalView)
 		return null;
 	}
 	
-	this.free = function()
+	this.free = function ()
 	{
 		meshLine.free();
 	}

@@ -1,8 +1,7 @@
-/* eslint-disable */
 const libUtility = require('./utility.js')
 
 export var FormulaCompiler = {
-	compile: function(formula, symbolTypes) {
+	compile: function (formula, symbolTypes) {
 		/*// Parse case-insensitive
 		formula = formula.toLowerCase();*/
 		
@@ -542,7 +541,7 @@ export var FormulaCompiler = {
 		
 		return buildAST();
 	},
-	run: function(code, stack, global) {
+	run: function (code, stack, global) {
 		var IP = -1; // Instruction pointer
 		var SP = 0; // Stack pointer
 		var scope = global;

@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 const globalView = require('../dist/global-view.js');
 const domready = require("domready");
 
@@ -22,12 +20,12 @@ domready(function () {
 	
 	new globalView.CsvDataset("datasets/iris.data", {
 		columnLabels: ["Sepal Length [cm]", "Sepal Width [cm]", "Petal Length [cm]", "Petal Width [cm]", "Class"]
-	}, function(dataset) {
+	}, function (dataset) {
 		plot.load(dataset, 0, 1, 4, 1);
 	});
 	
 	const rangeNumLeafs = document.getElementById('rangeNumLeafs')
-	rangeNumLeafs.addEventListener("input", function() {rangeNumLeafs_oninput(rangeNumLeafs);}, false);
+	rangeNumLeafs.addEventListener("input", function () {rangeNumLeafs_oninput(rangeNumLeafs);}, false);
 	rangeNumLeafs_oninput(rangeNumLeafs);
 });
 

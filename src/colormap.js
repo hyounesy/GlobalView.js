@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 const libUtility = require('./utility.js');
 const libGraphics = require('./graphics.js');
 const libShaders = require('./shaders.js');
@@ -25,15 +23,15 @@ export function Colormap(gl, globalView)
 	sdrLine.color = sdrLine.u4f("color");
 	sdrLine.color.apply(sdrLine, gl.foreColor);
 	sdrLine.matWorldViewProj = sdrLine.u4x4f("matWorldViewProj");
-	this.updateColorSchema = function() {
+	this.updateColorSchema = function () {
 		sdrLine.color.apply(sdrLine, gl.foreColor);
 	}
 	
 	var sdrColormap = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured, libShaders.Shaders.fsTextured1D);
 	sdrColormap.matWorldViewProj = sdrColormap.u4x4f("matWorldViewProj");
 	var colormaps = {
-		exhue: libGraphics.LoadTexture(gl, "/exhue.png", function() { globalView.invalidate(); }),//function() { setTimeout(function() { globalView.invalidate(); }, 1000); }),
-		rainbow: libGraphics.LoadTexture(gl, "/rainbow.png", function() { globalView.invalidate(); }),//function() { setTimeout(function() { globalView.invalidate(); }, 1000); }),
+		exhue: libGraphics.LoadTexture(gl, "/exhue.png", function () { globalView.invalidate(); }),//function() { setTimeout(function() { globalView.invalidate(); }, 1000); }),
+		rainbow: libGraphics.LoadTexture(gl, "/rainbow.png", function () { globalView.invalidate(); }),//function() { setTimeout(function() { globalView.invalidate(); }, 1000); }),
 		2: libGraphics.LoadTextureFromByteArray(gl, new Uint8Array([255, 0, 0, 255, 0, 255, 0, 255]), 2, 1)
 	};
 	this.builtinColormaps = ["exhue", "rainbow"];
@@ -73,7 +71,7 @@ var texColormap = colormaps.exhue;
 	var axis = {minimum: 0, maximum: 100, values: null, tickOffset: 0, tickDistance: 10, tickCount: 11, tickLength: TICK_LENGTH};
 	
 	this.visible = true;
-	this.render = function(flipY, plotBounds)
+	this.render = function (flipY, plotBounds)
 	{
 		if (!this.visible)
 			return;
@@ -149,7 +147,7 @@ var texColormap = colormaps.exhue;
 	 * @param  {number} maximum
 	 * @param  {boolean=} changeTickDistance=true
 	 */
-	this.setNumericRange = function(minimum, maximum, changeTickDistance)
+	this.setNumericRange = function (minimum, maximum, changeTickDistance)
 	{
 		axis.minimum = minimum;
 		axis.maximum = maximum;
@@ -184,7 +182,7 @@ var texColormap = colormaps.exhue;
 				break;
 		}
 	}
-	this.setEnumRange = function(minimum, maximum, values)
+	this.setEnumRange = function (minimum, maximum, values)
 	{
 		axis.minimum = minimum -= 0.5; // 0.5 ... Move to center of value-bin
 		axis.maximum = maximum -= 0.5; // 0.5 ... Move to center of value-bin
@@ -194,15 +192,15 @@ var texColormap = colormaps.exhue;
 		axis.tickOffset = Math.max(0, Math.ceil(minimum / axis.tickDistance) * axis.tickDistance);
 		axis.tickCount = Math.min(values.length - axis.tickOffset, Math.floor((maximum - axis.tickOffset + 1) / axis.tickDistance));
 	}
-	this.setLabel = function(label)
+	this.setLabel = function (label)
 	{
 		axis.label = label;
 	}
 	
 	var pointColor = null;
-	this.setDataset = function(dataset, options) {}
-	this.onInputChanged = function(activeInputs, animatedInputs, options) {}
-	this.onOptionsChanged = function(options)
+	this.setDataset = function (dataset, options) {}
+	this.onInputChanged = function (activeInputs, animatedInputs, options) {}
+	this.onOptionsChanged = function (options)
 	{
 		axis.tickLength = TICK_LENGTH + (options['showColormapHistogram'] ? options['histogramHeight'] : 0);
 		if (options['pointColor'] !== pointColor)
@@ -219,19 +217,19 @@ else
 }
 		}
 	}
-	this.onPlotBoundsChanged = function(plotBounds)
+	this.onPlotBoundsChanged = function (plotBounds)
 	{
 		axis.values === null ?
 			this.setNumericRange(axis.minimum, axis.maximum, true) :
 			this.setEnumRange(axis.minimum + 0.5, axis.maximum + 0.5, axis.values);
 	}
 	
-	this.getTexture = function()
+	this.getTexture = function ()
 	{
 		return texColormap;
 	}
 	
-	this.free = function()
+	this.free = function ()
 	{
 		meshLine.free();
 	}

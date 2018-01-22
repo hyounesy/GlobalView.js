@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 const globalView = require('../dist/global-view.js');
 const domready = require("domready");
 

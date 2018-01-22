@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 const globalView = require('../dist/global-view.js');
 const domready = require("domready");
 
@@ -45,10 +43,10 @@ domready(function () {
 		nameColumn: 1,
 		columnLabels: COLUMN_NAMES,
 		imageFilenames: data => imagesPath + data[1] + ".png"
-	}, function(dataset) {
+	}, function (dataset) {
 		const ndim = Math.min(2, dataset.dataVectors.length - 1); // -1 ... Adjust number of dataVectors, since we don't plot dataVectors[0] (tagged protein)
 		var subPlotWidth = PLOT_SIZE / ndim, subPlotHeight = subPlotWidth;
-		plots = Array.create(ndim * ndim, function(d) {
+		plots = Array.create(ndim * ndim, function (d) {
 			var x = d % ndim, y = Math.floor(d / ndim);
 			
 			OPTIONS.padding = [y * subPlotHeight, (ndim - x - 1) * subPlotWidth, (ndim - y - 1) * subPlotHeight, x * subPlotWidth];
@@ -71,7 +69,7 @@ domready(function () {
 			});
 			plot.selectedPoints = plot.createPointSet("red", 1);
 			
-			plot.getCharacteristicPoints(NUM_THUMBNAILS, DENSITY_RATIO, function(characteristicPoints) {
+			plot.getCharacteristicPoints(NUM_THUMBNAILS, DENSITY_RATIO, function (characteristicPoints) {
 				plot.selectedPoints.assign(characteristicPoints);
 				plot.showImages_lowDensity(plot.selectedPoints);
 			});

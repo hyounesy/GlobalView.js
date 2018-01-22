@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 export function linspace(first, second, last)
 {
 	var offset = second - first;
@@ -48,7 +46,7 @@ export function isCloneable(x)
 	return !(isFunction(x) || x instanceof WebGLTexture); //TODO: Add more
 }
 
-Array.create = function(n, func) {
+Array.create = function (n, func) {
 	var array = new Array(n);
 	if (isFunction(func))
 		for (var i = 0; i < n; ++i)
@@ -57,10 +55,10 @@ Array.create = function(n, func) {
 		array.fill(func);
 	return array;
 };
-Array.prototype.minIndex = function() {
+Array.prototype.minIndex = function () {
 	return this.reduce((smallestIndex, currentValue, currentIndex, arr) => currentValue < arr[smallestIndex] ? currentIndex : smallestIndex, 0);
 };
-Array.prototype.maxIndex = function() {
+Array.prototype.maxIndex = function () {
 	return this.reduce((smallestIndex, currentValue, currentIndex, arr) => currentValue > arr[smallestIndex] ? currentIndex : smallestIndex, 0);
 };
 
@@ -69,9 +67,9 @@ if (!String.prototype.format) {
 	 * Source: http://stackoverflow.com/a/4673436
 	 * @param {...*} var_args
 	 */
-	String.prototype.format = function(var_args) {
+	String.prototype.format = function (var_args) {
 		var args = arguments;
-		return this.replace(/{(\d+)}/g, function(match, number) {
+		return this.replace(/{(\d+)}/g, function (match, number) {
 			return typeof args[number] != 'undefined' ? args[number] : match;
 		});
 	};
@@ -82,9 +80,9 @@ if (!String.prototype.format) {
 	 * @param {string} mismatch
 	 * @param {...*} var_args
 	 */
-String.prototype.format2 = function(pattern, mismatch, var_args) {
+String.prototype.format2 = function (pattern, mismatch, var_args) {
 	var args = arguments;
-	return this.replace(pattern, function(match, number) {
+	return this.replace(pattern, function (match, number) {
 		number = Number.parseInt(number, 10) + 2;
 		return typeof args[number] != 'undefined' ? args[number] : mismatch;
 	});
@@ -167,7 +165,7 @@ export function hexToRgb(hex) // Source: https://stackoverflow.com/a/5624139
 {
 	// Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
 	var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-	hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+	hex = hex.replace(shorthandRegex, function (m, r, g, b) {
 		return r + r + g + g + b + b;
 	});
 
@@ -196,7 +194,7 @@ export function F32toI24(floats, bounds)
 {
 	var bytes = new Uint8Array(4 * floats.length);
 	var i = 0, voffset = -bounds[0], vscale = 0xFFFFFE / (bounds[1] - bounds[0]);
-	floats.forEach(function(value) {
+	floats.forEach(function (value) {
 		value += voffset;
 		value *= vscale;
 		value = Math.floor(value);
@@ -264,7 +262,7 @@ export function hsv2rgb(hsv) // Source: https://stackoverflow.com/a/6930407
 export function urlExists(url, onTrue, onFalse, isAsync)
 {
 	var request = new XMLHttpRequest();
-	request.onreadystatechange = function() {
+	request.onreadystatechange = function () {
 		if (this.readyState == 4 && this.status == 404 && onFalse)
 			onFalse();
 		if (this.readyState == 4 && this.status != 404 && onTrue)
@@ -309,12 +307,12 @@ export function imageUrlFromBytes(bytes, width, height)
 
 
 var _seededRandom_seed = 1;
-Math.seededRandom = function() { // Source: https://stackoverflow.com/a/19303725
+Math.seededRandom = function () { // Source: https://stackoverflow.com/a/19303725
 	var x = Math.sin(_seededRandom_seed++) * 10000;
 	return x - Math.floor(x);
 }
 
-Math.clamp = function(f, minimum, maximum) { return Math.min(Math.max(f, minimum), maximum); };
+Math.clamp = function (f, minimum, maximum) { return Math.min(Math.max(f, minimum), maximum); };
 
 
 export function createCookie(name, value, days) // Source: http://www.quirksmode.org/js/cookies.html
@@ -527,14 +525,14 @@ export function ForwardList(value) {
 	this.value = value;
 	this.next = null;
 	
-	this.push = function(value) // Pushes to front
+	this.push = function (value) // Pushes to front
 	{
 		var newnode = new ForwardList(this.value);
 		newnode.next = this.next;
 		this.next = newnode;
 		this.value = value;
 	}
-	this.pushBack = function(value)
+	this.pushBack = function (value)
 	{
 		var back = this;
 		while (back.next !== null)
@@ -542,7 +540,7 @@ export function ForwardList(value) {
 		var newnode = new ForwardList(value);
 		back.next = newnode;
 	}
-	this.sortedPush = function(value)
+	this.sortedPush = function (value)
 	{
 		if (value <= this.value)
 			this.push(value);
@@ -556,32 +554,32 @@ export function ForwardList(value) {
 			node.next = newnode;
 		}
 	}
-	this.toArray = function()
+	this.toArray = function ()
 	{
 		var array = [];
 		for (var node = this; node; node = node.next)
 			array.push(node.value);
 		return array;
 	}
-	this.print = function()
+	this.print = function ()
 	{
 		var array = [];
 		for (var node = this; node; node = node.next)
 			array.push(node.value);
 		console.log(array.join(", "));
 	}
-	this.size = function()
+	this.size = function ()
 	{
 		var size = 0;
 		for (var node = this; node; node = node.next)
 			++size;
 		return size;
 	}
-	this.forEach = function(callback) {
+	this.forEach = function (callback) {
 		for (var node = this; node; node = node.next)
 			callback(node.value);
 	}
-	ForwardList.sortedMerge = function(a, b) // Source: http://www.geeksforgeeks.org/merge-two-sorted-linked-lists/
+	ForwardList.sortedMerge = function (a, b) // Source: http://www.geeksforgeeks.org/merge-two-sorted-linked-lists/
 	{
 		var dummy = new ForwardList(null);
 		var tail = dummy;
@@ -624,19 +622,19 @@ export function PriorityQueue(priorityProperty)
 {
 	var data = [];
 	this.length = 0;
-	this.push = function(element)
+	this.push = function (element)
 	{
 		++this.length;
 		var i, p = element[priorityProperty];
 		for (i = 0; i < data.length && data[i][priorityProperty] >= p; i++) {}
 		data.splice(i, 0, element);
 	}
-	this.pop = function()
+	this.pop = function ()
 	{
 		--this.length;
 		return data.pop();
 	}
-	this.shift = function()
+	this.shift = function ()
 	{
 		--this.length;
 		return data.shift();
@@ -663,14 +661,14 @@ export function HashSet(onchanged)
 {
 	/** A dictionary of all values in the hash set @type {!Object<number, boolean>} */ var hash = {};
 	/** The number of values in this hash set @type {number} */ this.length = 0;
-	/** A callback to be raised whenever values have been added or deleted @public @type {function()} */ this.onchanged = isFunction(onchanged) ? onchanged : function() {};
+	/** A callback to be raised whenever values have been added or deleted @public @type {function()} */ this.onchanged = isFunction(onchanged) ? onchanged : function () {};
 	
 	this['push'] =
 	/**
 	 * Add a single value into the hash set
 	 * @param  {number} value
 	 */
-	this.push = function(value)
+	this.push = function (value)
 	{
 		if (hash[value] !== true)
 		{
@@ -685,11 +683,11 @@ export function HashSet(onchanged)
 	 * Add an iterable list of values into the hash set
 	 * @param  {Object} values
 	 */
-	this.append = function(values)
+	this.append = function (values)
 	{
 //var t = performance.now();
 		var invalidate = false, self = this;
-		values.forEach(function(value) {
+		values.forEach(function (value) {
 			if (hash[value] !== true)
 			{
 				hash[value] = true;
@@ -707,7 +705,7 @@ export function HashSet(onchanged)
 	 * Reset the hash set to only contain the given value
 	 * @param  {number} value
 	 */
-	this.set = function(value)
+	this.set = function (value)
 	{
 		if (this.length !== 1 || hash[value] !== true)
 		{
@@ -723,7 +721,7 @@ export function HashSet(onchanged)
 	 * Reset the hash set to only contain the given iterable list of values
 	 * @param  {Object} values
 	 */
-	this.assign = function(values)
+	this.assign = function (values)
 	{
 		if (values.length === 0)
 		{
@@ -733,7 +731,7 @@ export function HashSet(onchanged)
 		
 //var t = performance.now();
 		var newHash = {}, identical = (values.length === this.length);
-		values.forEach(function(value) {
+		values.forEach(function (value) {
 			if (identical && hash[value] !== true)
 				identical = false;
 			newHash[value] = true;
@@ -752,7 +750,7 @@ export function HashSet(onchanged)
 	 * Reset the hash set to only contain numbers 0 through n - 1
 	 * @param  {number} n The number of values to set
 	 */
-	this.assignRange = function(n)
+	this.assignRange = function (n)
 	{
 		if (n <= 0)
 			return;
@@ -769,7 +767,7 @@ export function HashSet(onchanged)
 	 * Remove the given value from the hash set
 	 * @param  {number} value The value to remove
 	 */
-	this.erase = function(value)
+	this.erase = function (value)
 	{
 		if (hash[value] === true)
 		{
@@ -784,11 +782,11 @@ export function HashSet(onchanged)
 	 * Remove the given iterable list of values from the hash set
 	 * @param  {Object} values The values to remove
 	 */
-	this.remove = function(values)
+	this.remove = function (values)
 	{
 //var t = performance.now();
 		var invalidate = false, self = this;
-		values.forEach(function(value) {
+		values.forEach(function (value) {
 			if (hash[value] === true)
 			{
 				delete hash[value];
@@ -805,7 +803,7 @@ export function HashSet(onchanged)
 	/**
 	 * @return {boolean} True, if the hash set doesn't contain any values
 	 */
-	this.isempty = function()
+	this.isempty = function ()
 	{
 		return this.length === 0;
 	}
@@ -814,7 +812,7 @@ export function HashSet(onchanged)
 	/**
 	 * Resets the hash set to an empty set
 	 */
-	this.clear = function()
+	this.clear = function ()
 	{
 		if (this.length !== 0)
 		{
@@ -829,7 +827,7 @@ export function HashSet(onchanged)
 	 * Calls the given function once for each value in the hash set
 	 * @param  {function(number)} callback
 	 */
-	this.forEach = function(callback)
+	this.forEach = function (callback)
 	{
 //var last = Number.MIN_SAFE_INTEGER, badOrder = 0;
 		for (var value in hash)
@@ -845,7 +843,7 @@ export function HashSet(onchanged)
 	/**
 	 * @return  {Uint32Array} A sorted array of all values in the hash set
 	 */
-	this.get = function()
+	this.get = function ()
 	{
 		return new Uint32Array(Object.keys(hash).map(Number));
 	}
@@ -854,7 +852,7 @@ export function HashSet(onchanged)
 	/**
 	 * @return  {number} The number of values in the hash set
 	 */
-	this.size = function()
+	this.size = function ()
 	{
 		return this.length;
 	}
@@ -864,7 +862,7 @@ export function HashSet(onchanged)
 	 * @param  {number} value
 	 * @return  {boolean} True, if the given value is part of the hash set
 	 */
-	this.contains = function(value)
+	this.contains = function (value)
 	{
 		return hash[value] === true;
 	}

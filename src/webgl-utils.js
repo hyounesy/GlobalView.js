@@ -58,16 +58,14 @@
  * visible.
  */
 
-/* eslint-disable */
-
-export var WebGLUtils = function() {
+export var WebGLUtils = function () {
 
     /**
      * Creates the HTLM for a failure message
      * @param {string} msg
      * @return {string} The html.
      */
-    var makeFailHTML = function(msg) {
+    var makeFailHTML = function (msg) {
       return '' +
         '<table style="background-color: #8CE; width: 100%; height: 100%;"><tr>' +
         '<td align="center">' +
@@ -102,7 +100,7 @@ export var WebGLUtils = function() {
      * @param {function(string)=} opt_onError A function to call if there is an error during creation.
      * @return {WebGLRenderingContext} The created context.
      */
-    var setupWebGL = function(canvas, opt_attribs, opt_onError) {
+    var setupWebGL = function (canvas, opt_attribs, opt_onError) {
       function handleCreationError(msg) {
         var container = canvas.parentNode;
         if (container) {
@@ -119,7 +117,7 @@ export var WebGLUtils = function() {
       opt_onError = opt_onError || handleCreationError;
     
       if (canvas.addEventListener) {
-        canvas.addEventListener("webglcontextcreationerror", function(event) {
+        canvas.addEventListener("webglcontextcreationerror", function (event) {
               opt_onError(event.statusMessage);
             }, false);
       }
@@ -138,7 +136,7 @@ export var WebGLUtils = function() {
      *     from. If one is not passed in one will be created.
      * @return {WebGLRenderingContext|null} The created context.
      */
-    var create3DContext = function(canvas, opt_attribs) {
+    var create3DContext = function (canvas, opt_attribs) {
       var names = ["webgl", "experimental-webgl", "webkit-3d", "moz-webgl"];
       var context = null;
       for (var ii = 0; ii < names.length; ++ii) {
@@ -161,13 +159,13 @@ export var WebGLUtils = function() {
 /**
  * Provides requestAnimationFrame in a cross browser way.
  */
-const window_requestAnimFrame = (function() {
+const window_requestAnimFrame = (function () {
   return window.requestAnimationFrame ||
           window.webkitRequestAnimationFrame ||
           window.mozRequestAnimationFrame ||
           window.oRequestAnimationFrame ||
           window.msRequestAnimationFrame ||
-          function(/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
+          function (/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
             window.setTimeout(callback, 1000/60);
           };
 })();

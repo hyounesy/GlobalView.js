@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 const globalView = require('../dist/global-view.js');
 const domready = require("domready");
 
@@ -11,7 +9,7 @@ domready(function () {
 		pointShape: "Cross"
 	});
 	
-	new globalView.RandomDataset(1000, 2, function(dataset) {
+	new globalView.RandomDataset(1000, 2, function (dataset) {
 		plot.load(dataset, 0, 1, 1, 1);
 	});
 	
@@ -19,7 +17,7 @@ domready(function () {
 	
 	taOptions.value = JSON.stringify(plot.getOptions(), null, 4);
 
-	document.getElementById('taOptions').addEventListener('input', function() {tOptions_onChange(document.getElementById('taOptions'))});
+	document.getElementById('taOptions').addEventListener('input', function () {tOptions_onChange(document.getElementById('taOptions'))});
 });
 
 function tOptions_onChange(sender)

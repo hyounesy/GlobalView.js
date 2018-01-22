@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 const libGraphics = require('./graphics.js');
 const libShaders = require('./shaders.js');
 const libAlgorithm = require('./algorithm.js');
@@ -45,11 +43,11 @@ export function DensityViewer(gl, globalView)
 	var dataset = null;
 	
 	var clusterMapOptions = new libAlgorithm.ClusterMapOptions();
-	this.setClusterMapThreshold = function(threshold) {
+	this.setClusterMapThreshold = function (threshold) {
 		if (this.showDensityMap && clusterMapOptions.threshold !== threshold)
 		{
 			clusterMapOptions.threshold = threshold;
-			dataset.requestClusterMap(globalView.getActiveColumn(0), globalView.getActiveColumn(1), clusterMapOptions, function() { globalView.invalidate(); }); // Request clusterMap and redraw once it's computed
+			dataset.requestClusterMap(globalView.getActiveColumn(0), globalView.getActiveColumn(1), clusterMapOptions, function () { globalView.invalidate(); }); // Request clusterMap and redraw once it's computed
 		}
 		else
 			clusterMapOptions.threshold = threshold;
@@ -58,7 +56,7 @@ export function DensityViewer(gl, globalView)
 	
 	this.showDensityMap = false;
 	this.showClusterMap = false;
-	this.render = function(flipY, tf, d0, d1)
+	this.render = function (flipY, tf, d0, d1)
 	{
 		var pos = libGlMatrix.vec2.create();
 		
@@ -141,7 +139,7 @@ export function DensityViewer(gl, globalView)
 				meshQuad.draw();
 			}
 			else // If clusterMap isn't ready yet
-				dataset.requestClusterMap(d0, d1, clusterMapOptions, function() { globalView.invalidate(); }); // Request clusterMap and redraw once it's computed
+				dataset.requestClusterMap(d0, d1, clusterMapOptions, function () { globalView.invalidate(); }); // Request clusterMap and redraw once it's computed
 		}
 		else if (this.showDensityMap)
 		{
@@ -181,16 +179,16 @@ export function DensityViewer(gl, globalView)
 				meshQuad.draw();
 			}
 			else // If densityMap isn't ready yet
-				dataset.requestDensityMap(d0, d1, undefined, undefined, function() { globalView.invalidate(); }); // Request densityMap and redraw once it's computed
+				dataset.requestDensityMap(d0, d1, undefined, undefined, function () { globalView.invalidate(); }); // Request densityMap and redraw once it's computed
 		}
 	}
 	
-	this.setDataset = function(_dataset, options) { dataset = _dataset; }
-	this.onInputChanged = function(activeInputs, animatedInputs, options) {}
-	this.onOptionsChanged = function(options) {}
-	this.onPlotBoundsChanged = function(plotBounds) {}
+	this.setDataset = function (_dataset, options) { dataset = _dataset; }
+	this.onInputChanged = function (activeInputs, animatedInputs, options) {}
+	this.onOptionsChanged = function (options) {}
+	this.onPlotBoundsChanged = function (plotBounds) {}
 	
-	this.updateImages = function(images, d0, d1)
+	this.updateImages = function (images, d0, d1)
 	{
 		var densityMap = dataset.requestDensityMap(d0, d1, undefined, undefined);
 		if (densityMap.texture === null || d0 === d1)
@@ -201,7 +199,7 @@ export function DensityViewer(gl, globalView)
 		var xMin = 0, xMax = width;
 		var yMin = 0, yMax = height;
 		
-		var bodies = images.map(function(image) {
+		var bodies = images.map(function (image) {
 			var x = densityMap.transformX(image.imagePos[d0]);
 			var y = densityMap.transformY(image.imagePos[d1]);
 			var rx = densityMap.transformX(image.refPos[d0]);
@@ -219,7 +217,7 @@ export function DensityViewer(gl, globalView)
 			body.fy += F * dy;
 		}*/
 		
-		var repellPoint = function(body, point_x, point_y, minDist, minDistMagnitude, maxDist, maxDistMagnitude)
+		var repellPoint = function (body, point_x, point_y, minDist, minDistMagnitude, maxDist, maxDistMagnitude)
 		{
 			var dx = body.x - point_x, dy = body.y - point_y;
 			var dist = Math.sqrt(dx*dx + dy*dy);
@@ -256,7 +254,7 @@ export function DensityViewer(gl, globalView)
 			var sample_x = Math.floor(bodies[i].x), sample_y = Math.floor(bodies[i].y);
 			var density = densityMap[sample_x * width + sample_y];
 			var bestDir = null, lowestDensity = density;
-			[[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]].forEach(function(dir) {
+			[[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]].forEach(function (dir) {
 				var x = sample_x + dir[0];
 				var y = sample_y + dir[1];
 				if (x >= xMin && x < xMax && y >= yMin && y < yMax)

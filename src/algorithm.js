@@ -1,12 +1,11 @@
-/* eslint-disable */
 const libUtility = require('./utility.js');
 
 export function addTransformFunctions(cls)
 {
-	cls.transformX = function(x) { return cls.transform[0] * x + cls.transform[1]; };
-	cls.transformY = function(y) { return cls.transform[2] * y + cls.transform[3]; };
-	cls.invTransformX = function(x) { return (x - cls.transform[1]) / cls.transform[0]; };
-	cls.invTransformY = function(y) { return (y - cls.transform[3]) / cls.transform[2]; };
+	cls.transformX = function (x) { return cls.transform[0] * x + cls.transform[1]; };
+	cls.transformY = function (y) { return cls.transform[2] * y + cls.transform[3]; };
+	cls.invTransformX = function (x) { return (x - cls.transform[1]) / cls.transform[0]; };
+	cls.invTransformY = function (y) { return (y - cls.transform[3]) / cls.transform[2]; };
 }
 
 /**
@@ -24,10 +23,10 @@ export function DensityMap(obj)
 	this.offset = obj.offset;
 	this.transform = obj.transform;
 	this.options = obj.options;
-	this.transformX = function(x) { return this.transform[0] * x + this.transform[1]; };
-	this.transformY = function(y) { return this.transform[2] * y + this.transform[3]; };
-	this.invTransformX = function(x) { return (x - this.transform[1]) / this.transform[0]; };
-	this.invTransformY = function(y) { return (y - this.transform[3]) / this.transform[2]; };
+	this.transformX = function (x) { return this.transform[0] * x + this.transform[1]; };
+	this.transformY = function (y) { return this.transform[2] * y + this.transform[3]; };
+	this.invTransformX = function (x) { return (x - this.transform[1]) / this.transform[0]; };
+	this.invTransformY = function (y) { return (y - this.transform[3]) / this.transform[2]; };
 }
 
 /**
@@ -127,10 +126,10 @@ export function ClusterMap(obj)
 	this.width = obj.width;
 	this.height = obj.height;
 	this.transform = obj.transform;
-	this.transformX = function(x) { return this.transform[0] * x + this.transform[1]; };
-	this.transformY = function(y) { return this.transform[2] * y + this.transform[3]; };
-	this.invTransformX = function(x) { return (x - this.transform[1]) / this.transform[0]; };
-	this.invTransformY = function(y) { return (y - this.transform[3]) / this.transform[2]; };
+	this.transformX = function (x) { return this.transform[0] * x + this.transform[1]; };
+	this.transformY = function (y) { return this.transform[2] * y + this.transform[3]; };
+	this.invTransformX = function (x) { return (x - this.transform[1]) / this.transform[0]; };
+	this.invTransformY = function (y) { return (y - this.transform[3]) / this.transform[2]; };
 }
 
 /**
@@ -257,8 +256,8 @@ export function computeHistogram2D(dataset, d0, d1, width, height)
 export function computeDensityMap(histogram, options)
 {
 	var _tiktok_start;
-	var tik = function() { _tiktok_start = performance.now(); }
-	var tok = function() { return (performance.now() - _tiktok_start) / 1000; }
+	var tik = function () { _tiktok_start = performance.now(); }
+	var tok = function () { return (performance.now() - _tiktok_start) / 1000; }
 	
 	// Get required information from histogram
 	var width = histogram.width, height = histogram.height, transform = histogram.transform.slice(), initialDensities = histogram.data;
@@ -622,7 +621,7 @@ export function findRepresentativePoints(dataset, d0, d1, densityMap, k, dist, t
 	
 	// Create indices sorted by density
 	var indices = Array.from(pointDensities.keys());
-	indices.sort(function(idxA, idxB) { return pointDensities[idxA] - pointDensities[idxB]; });
+	indices.sort(function (idxA, idxB) { return pointDensities[idxA] - pointDensities[idxB]; });
 	
 	/*// If k >= n, all points are representative
 	if (k >= n)
@@ -632,7 +631,7 @@ export function findRepresentativePoints(dataset, d0, d1, densityMap, k, dist, t
 	var sqDist = dist * dist;
 	var d_high = indices.length - 1, d_low = 0;
 	var pointIsHigh, numHighRepresentativePoints = 0, ratio = 0.5; // Initial ratio is "fifty-fifty"
-	var next = function() {
+	var next = function () {
 		if (ratio < targetRatio || (ratio === targetRatio && targetRatio >= 0.5)) // If ratio is too low or ratio is perfect and targetRatio is high
 		{
 			pointIsHigh = 1;
@@ -653,7 +652,7 @@ export function findRepresentativePoints(dataset, d0, d1, densityMap, k, dist, t
 		var di_0 = densityMap.transformX(v0.getValue(di)) / densityMap.width;
 		var di_1 = densityMap.transformY(v1.getValue(di)) / densityMap.height;
 		
-		if (representativePoints.every(function(p) {
+		if (representativePoints.every(function (p) {
 				var p0 = densityMap.transformX(v0.getValue(p)) / densityMap.width;
 				var p1 = densityMap.transformY(v1.getValue(p)) / densityMap.height;
 				return Math.pow(p0 - di_0, 2) + Math.pow(p1 - di_1, 2) > sqDist;
@@ -737,7 +736,7 @@ export function findRepresentativePointsND(dataset, densityMap, k, dist)
 	
 	// Create indices sorted by density
 	var indices = Array.from(pointDensities.keys());
-	indices.sort(function(idxA, idxB) { return pointDensities[idxA] - pointDensities[idxB]; });
+	indices.sort(function (idxA, idxB) { return pointDensities[idxA] - pointDensities[idxB]; });
 	
 	/*// If k >= n, all points are representative
 	if (k >= n)
@@ -753,7 +752,7 @@ export function findRepresentativePointsND(dataset, densityMap, k, dist)
 		for (var c = 0; c < nc; ++c)
 			p[c] = data[di * nc + c] * scales[c];
 		
-		if (representativePoints.every(function(r) {
+		if (representativePoints.every(function (r) {
 				for (var c = 0; c < nc; ++c)
 					dpsq[c] = Math.pow(data[r * nc + c] * scales[c] - p[c], 2);
 				
@@ -908,7 +907,7 @@ export function markPointsInStencilMap(dataset, d0, d1, points, densityMap, sten
 		stencilMap.data = new Uint8Array((stencilMap.width = xmax - xmin) * (stencilMap.height = ymax - ymin));
 	var stencil = stencilMap.data;
 	
-	points.forEach(function(p) {
+	points.forEach(function (p) {
 		var p0 = Math.floor(densityMap.transformX(v0.getValue(p)));
 		var p1 = Math.floor(densityMap.transformY(v1.getValue(p)));
 		var imgxmin = Math.max(xmin, p0 - minDistX), imgxmax = Math.min(xmax, p0 + minDistX);
@@ -979,7 +978,7 @@ export function findClosePointOfLowDensity_descend(dataset, d0, d1, p, densityMa
 	var xMin = minDistX, xMax = width - minDistX;
 	var yMin = minDistY, yMax = height - minDistY;
 	
-	var computePenalty = function(x, y) {
+	var computePenalty = function (x, y) {
 		var sqDensity = Math.pow(densityOffset + densities[y * width + x] * densityScale, 2);
 		var sqDist = Math.pow(x - p0, 2) + Math.pow(y - p1, 2);
 		return 1e5 * sqDensity + sqDist;
@@ -987,17 +986,17 @@ export function findClosePointOfLowDensity_descend(dataset, d0, d1, p, densityMa
 	
 	var bestState = {penalty: Number.MAX_VALUE}, maxIterations = 5000;
 	var searchProblem = {
-		getStartState: function() {
+		getStartState: function () {
 			return {
 				x: Math.max(xMin, Math.min(xMax - 1, Math.floor(p0))),
 				y: Math.max(yMin, Math.min(yMax - 1, Math.floor(p1)))
 			};
 		},
-		isGoalState: function(state) {
+		isGoalState: function (state) {
 			return --maxIterations === 0;
 		},
-		forEachSuccessor: function(state, onSuccessor) {
-			[[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]].forEach(function(action) {
+		forEachSuccessor: function (state, onSuccessor) {
+			[[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]].forEach(function (action) {
 				var x = state.x + action[0];
 				var y = state.y + action[1];
 				if (x >= xMin && x < xMax && y >= yMin && y < yMax)
@@ -1009,10 +1008,10 @@ export function findClosePointOfLowDensity_descend(dataset, d0, d1, p, densityMa
 				}
 			});
 		},
-		computeHash: function(state) {
+		computeHash: function (state) {
 			return state.y * width + state.x;
 		},
-		heuristic: function(state) {
+		heuristic: function (state) {
 			return Math.pow(densityOffset + densities[state.y * width + state.x] * densityScale, 2);
 		}
 	};
@@ -1063,7 +1062,7 @@ export function findClosePointOfLowDensityND_descend(dataset, p, densityMap, min
 		a[c] = -1;
 	do
 	{
-		if (!a.every(function(aa){ return aa === 0; }))
+		if (!a.every(function (aa){ return aa === 0; }))
 			actions.push(a.slice());
 		i = 0;
 		while (i !== a.length && ++a[i] === 2)
@@ -1073,12 +1072,12 @@ export function findClosePointOfLowDensityND_descend(dataset, p, densityMap, min
 		}
 	} while (i !== a.length);
 	
-	var computePenalty = function(p) {
+	var computePenalty = function (p) {
 		var sqDensity = 0.0;
 		for (var d0 = 0; d0 < nc; ++d0)
 			for (var d1 = d0 + 1; d1 < nc; ++d1)
 				sqDensity += Math.pow(densityOffset + densityMap[d0][d1 - d0 - 1].data[p[d1] * size + p[d0]] * densityScale, 2);
-		var sqDist = p.reduce(function(a, p, pi) {
+		var sqDist = p.reduce(function (a, p, pi) {
 			var dp = Math.abs(p - start[pi]);
 			return a + (dp > minDist ? Math.pow(dp - minDist, 2) : Math.pow(minDist - dp, 2));
 		})
@@ -1087,17 +1086,17 @@ export function findClosePointOfLowDensityND_descend(dataset, p, densityMap, min
 	
 	var bestState = {penalty: Number.MAX_VALUE}, maxIterations = 100;//5000;
 	var searchProblem = {
-		getStartState: function() {
+		getStartState: function () {
 			var _start = new Float32Array(nc);
 			for (var c = 0; c < nc; ++c)
 				_start[c] = Math.max(min, Math.min(max - 1, Math.floor(start[c])));
 			return {p: _start};
 		},
-		isGoalState: function(state) {
+		isGoalState: function (state) {
 			return --maxIterations === 0;
 		},
-		forEachSuccessor: function(state, onSuccessor) {
-			actions.forEach(function(action) {
+		forEachSuccessor: function (state, onSuccessor) {
+			actions.forEach(function (action) {
 				var p = new Float32Array(nc);
 				for (var c = 0; c < nc; ++c)
 				{
@@ -1111,7 +1110,7 @@ export function findClosePointOfLowDensityND_descend(dataset, p, densityMap, min
 				onSuccessor(newState, newState.penalty);
 			});
 		},
-		computeHash: function(state) {
+		computeHash: function (state) {
 			var factor = 1.0, hash = 0.0;
 			for (var c = 0; c < nc; ++c)
 			{
@@ -1120,7 +1119,7 @@ export function findClosePointOfLowDensityND_descend(dataset, p, densityMap, min
 			}
 			return hash;
 		},
-		heuristic: function(state) {
+		heuristic: function (state) {
 			var sqDensity = 0.0;
 			for (var d0 = 0; d0 < nc; ++d0)
 				for (var d1 = d0 + 1; d1 < nc; ++d1)
@@ -1291,14 +1290,14 @@ export function computeClusterMap_method1(dataset, d0, d1, densityMap)
 	
 	// Create indices sorted by density
 	var indices = Array.from(pointDensities.keys());
-	indices.sort(function(idxA, idxB) { return pointDensities[idxA] - pointDensities[idxB]; });
+	indices.sort(function (idxA, idxB) { return pointDensities[idxA] - pointDensities[idxB]; });
 	
 	// Allocate cluster map
 	var clustermap = new Uint32Array(width*height);
 	
 	var currentClusterId = 1; // Cluster IDs start at 1. 0 represents empty areas
 	
-	var floodFillRecursive = function(x, y, d) {
+	var floodFillRecursive = function (x, y, d) {
 		clustermap[y * width + x] = currentClusterId;
 
 		--x;
@@ -1418,7 +1417,7 @@ export function computeClusterMap_method2(dataset, d0, d1, densityMap)
 	
 	// Create indices sorted by density
 	var indices = Array.from(pointDensities.keys());
-	indices.sort(function(idxA, idxB) { return pointDensities[idxA] - pointDensities[idxB]; });
+	indices.sort(function (idxA, idxB) { return pointDensities[idxA] - pointDensities[idxB]; });
 	
 	// Allocate cluster map
 	var clustermap = new Uint32Array(width*height);
@@ -1585,7 +1584,7 @@ export function computeClusterMap_method3(densityMap, d0, d1, options)
 			clusters[i] = 0;
 		else if (clusters[i] instanceof ForwardList)
 		{
-			clusters[i].forEach(function(id) {
+			clusters[i].forEach(function (id) {
 				clusters[id - 1] = clusterId;
 			});
 			++clusterId;
@@ -1792,7 +1791,7 @@ export function pointInsidePolygon(P, V)
 {
 	var n = V.length - 1, wn = 0; // wn: The winding number counter
 	
-	var isLeft = function(P0, P1, P2) { return ( (P1[0] - P0[0]) * (P2[1] - P0[1]) - (P2[0] -  P0[0]) * (P1[1] - P0[1]) ); };
+	var isLeft = function (P0, P1, P2) { return ( (P1[0] - P0[0]) * (P2[1] - P0[1]) - (P2[0] -  P0[0]) * (P1[1] - P0[1]) ); };
 
 	// loop through all edges of the polygon
 	for (var i = 0; i < n; i++)

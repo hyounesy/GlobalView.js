@@ -1,4 +1,3 @@
-/* eslint-disable */
 const libUtility = require('./utility.js')
 const libAlgorithm = require('./algorithm.js');
 const libFormulaCompiler = require('./formulaCompiler.js')
@@ -36,7 +35,7 @@ export function DataVector(dataset, source)
 	if (libUtility.isNumber(source))
 	{
 		var c = Math.round(source);
-		this['getValue'] = this.getValue = function(i)
+		this['getValue'] = this.getValue = function (i)
 		{
 			//return Math.log(dataset.fdata[i * nc + c]);
 			return dataset.fdata[i * nc + c];
@@ -76,7 +75,7 @@ export function DataVector(dataset, source)
 		var formula = source;
 		this.getValueCode = formula;
 		
-		this['getValue'] = this.getValue = function(i)
+		this['getValue'] = this.getValue = function (i)
 		{
 			globals['i'] = i;
 			for (var c = 0; c < nc; ++c)
@@ -185,7 +184,7 @@ export function Dataset()
 	 * @param  {number!} d1
 	 * @return {boolean!} True, if a densitymap for dimensions d0, d1 has been computed
 	 */
-	this.isDensityMapReady = function(d0, d1)
+	this.isDensityMapReady = function (d0, d1)
 	{
 		// Validate inputs
 		if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length)
@@ -211,7 +210,7 @@ export function Dataset()
 	 * Calls the given function for each computed density map
 	 * @param  {function(DensityMap!)!} callback
 	 */
-	this.iterateDensityMaps = function(callback)
+	this.iterateDensityMaps = function (callback)
 	{
 		_densityMaps.forEach(_densityMaps => _densityMaps.forEach(densityMap => densityMap && (libUtility.isUndefined(densityMap.pending) || densityMap.old) ? callback(densityMap.old || densityMap) : null));
 	}
@@ -230,7 +229,7 @@ export function Dataset()
 	 * @param  {function(DensityMap)=} ondone A function to be called when the density map is ready
 	 * @return {DensityMap}
 	 */
-	this.requestDensityMap = function(d0, d1, size, options, ondone)
+	this.requestDensityMap = function (d0, d1, size, options, ondone)
 	{
 		// Validate inputs
 		if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length)
@@ -329,7 +328,7 @@ export function Dataset()
 	}
 	
 	this['isClusterMapReady'] =
-	this.isClusterMapReady = function(d0, d1)
+	this.isClusterMapReady = function (d0, d1)
 	{
 		// Validate inputs
 		if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length)
@@ -349,7 +348,7 @@ export function Dataset()
 		return _clusterMaps.length > d0 && _clusterMaps[d0].length > d1 && _clusterMaps[d0][d1] &&
 			(libUtility.isUndefined(_clusterMaps[d0][d1].pending) || _clusterMaps[d0][d1].old);
 	}
-	this['requestClusterMap'] = this.requestClusterMap = function(d0, d1, options, ondone)
+	this['requestClusterMap'] = this.requestClusterMap = function (d0, d1, options, ondone)
 	{
 		// Validate inputs
 		if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length)
@@ -386,7 +385,7 @@ export function Dataset()
 				// While we compute _clusterMaps[d0][d1], replace it with an array of functions to execute when it is ready
 				_clusterMaps[d0][d1] = {pending: [ondone]};
 				
-				this.requestDensityMap(d0, d1, undefined, undefined, function(densityMap) {
+				this.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
 					// Execute an asynchronous worker that computes _clusterMaps[d0][d1]
 					const p = new Parallel([libUtility.makeCloneable(densityMap), d0, d1, new libAlgorithm.ClusterMapOptions(options)], { evalPath: 'eval.js' });
 					p.require(libAlgorithm.computeClusterMap_method3);
@@ -441,7 +440,7 @@ export function Dataset()
 		}
 	}
 	
-	this['inflate'] = this.inflate = function(factor, densityMapChain)
+	this['inflate'] = this.inflate = function (factor, densityMapChain)
 	{
 		var n = this.length, n_inflated = Math.floor(factor * n), nc = this.numColumns;
 		if (isNaN(n_inflated) || n_inflated <= n)
@@ -503,7 +502,7 @@ export function Dataset()
 		this['length'] = this.length = n_inflated;
 	}
 	
-	this['save'] = this.save = function(filename, nameColumn, nameColumnLabel)
+	this['save'] = this.save = function (filename, nameColumn, nameColumnLabel)
 	{
 		var nc = this.numColumns, csv_nc;
 		if (this.names && !libUtility.isUndefined(nameColumn) && !libUtility.isUndefined(nameColumnLabel))
@@ -673,7 +672,7 @@ export function CsvDataset(file, options, onload)
 	
 	// Load csv file
 	var dataset = this;
-	var parseCsv = function(csv) {
+	var parseCsv = function (csv) {
 		var data = $.csv.toArrays(csv);
 		
 		
@@ -904,7 +903,7 @@ export function CsvDataset(file, options, onload)
 		//$.get(file, parseCsv, "text");
 	{
 		var request = new XMLHttpRequest();
-		request.onreadystatechange = function() {if (this.readyState == 4 && this.status == 200) parseCsv(this.responseText)};
+		request.onreadystatechange = function () {if (this.readyState == 4 && this.status == 200) parseCsv(this.responseText)};
 		request.open("GET", /** @type {string} */(file), true);
 		request.overrideMimeType("text/csv; charset=utf8");
 		request.send();
@@ -919,7 +918,7 @@ export function CsvDataset(file, options, onload)
 
 // >>> Helper functions
 
-var generateColumnName = function(i, nc) {
+var generateColumnName = function (i, nc) {
 	var XYZW = ['x', 'y', 'z', 'w'];
 	if (nc <= XYZW.length)
 		return XYZW[i]; // x, y, z, w

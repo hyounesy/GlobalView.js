@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 const libGraphics = require('./graphics.js');
 const libShaders = require('./shaders.js');
 const libAlgorithm = require('./algorithm.js');
@@ -33,7 +31,7 @@ function Thumbnail(globalView)
 	 * @summary Retrieve index of associated datapoint
 	 * @return {number}
 	 */
-	this.getPoint = function()
+	this.getPoint = function ()
 	{
 		return this.refIndex;
 	}
@@ -44,7 +42,7 @@ function Thumbnail(globalView)
 	 * @summary Retrieve width of the image border
 	 * @return {number}
 	 */
-	this.getBorderWidth = function()
+	this.getBorderWidth = function ()
 	{
 		return this.borderWidth ? this.borderWidth.slice() : null;
 	}
@@ -53,7 +51,7 @@ function Thumbnail(globalView)
 	 * @summary Set width of the image border
 	 * @param {number} width
 	 */
-	this.setBorderWidth = function(width)
+	this.setBorderWidth = function (width)
 	{
 		this.borderWidth = width;
 		globalView.invalidate();
@@ -65,7 +63,7 @@ function Thumbnail(globalView)
 	 * @summary Retrieve color of the image border
 	 * @return {Array<number>} Float array [red, green, blue, alpha] or null
 	 */
-	this.getBorderColor = function()
+	this.getBorderColor = function ()
 	{
 		return this.borderColor ? this.borderColor.slice() : null;
 	}
@@ -74,7 +72,7 @@ function Thumbnail(globalView)
 	 * @summary Set color of the image border
 	 * @param {Array<number>} color Float array [red, green, blue, alpha] or null
 	 */
-	this.setBorderColor = function(color)
+	this.setBorderColor = function (color)
 	{
 		this.borderColor = color;
 		globalView.invalidate();
@@ -86,7 +84,7 @@ function Thumbnail(globalView)
 	 * @summary Retrieve color of the image line
 	 * @return {Array<number>} Float array [red, green, blue, alpha] or null
 	 */
-	this.getLineColor = function()
+	this.getLineColor = function ()
 	{
 		return this.lineColor ? this.lineColor.slice() : null;
 	}
@@ -95,7 +93,7 @@ function Thumbnail(globalView)
 	 * @summary Set color of the image line
 	 * @param {Array<number>} color Float array [red, green, blue, alpha] or null
 	 */
-	this.setLineColor = function(color)
+	this.setLineColor = function (color)
 	{
 		this.lineColor = color;
 		globalView.invalidate();
@@ -107,7 +105,7 @@ function Thumbnail(globalView)
 	 * @summary Retrieve color of the image label
 	 * @return {Array<number>} Float array [red, green, blue, alpha] or null
 	 */
-	this.getLabelColor = function()
+	this.getLabelColor = function ()
 	{
 		return this.labelColor ? this.labelColor.slice() : null;
 	}
@@ -116,7 +114,7 @@ function Thumbnail(globalView)
 	 * @summary Set color of the image label
 	 * @param {Array<number>} color Float array [red, green, blue, alpha] or null
 	 */
-	this.setLabelColor = function(color)
+	this.setLabelColor = function (color)
 	{
 		this.labelColor = color;
 		globalView.invalidate();
@@ -199,7 +197,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
 	var PixelAlignX = x => (Math.floor(x * gl.width / 2.0) + 0.5) * 2.0 / gl.width;
 	var PixelAlignY = y => (Math.floor(y * gl.height / 2.0) + 0.5) * 2.0 / gl.height;
 	
-	this.render = function(flipY, tf)
+	this.render = function (flipY, tf)
 	{
 		if (images.length === 0)
 			return;
@@ -212,7 +210,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
 		{
 			// Draw labels at image.refPos
 			var label = 1;
-			images.forEach(function(image) {
+			images.forEach(function (image) {
 				if (image.imagePos === image.refPos)
 					return;
 				tf.transformPos(refPos, image.refPos);
@@ -247,7 +245,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
 			// Draw lines between image.imagePos and image.refPos
 			sdrLine.bind();
 			meshLine.bind(sdrLine, null);
-			images.forEach(function(image) {
+			images.forEach(function (image) {
 				if (!image.imagePos || image.imagePos === image.refPos)
 					return;
 				libGlMatrix.mat4.identity(mattrans);
@@ -269,7 +267,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
 		
 		sdrImage.bind();
 		var label = 1;
-		images.forEach(function(image) {
+		images.forEach(function (image) {
 			if (!image.imagePos)
 				return;
 			
@@ -359,9 +357,9 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
 	}
 	
 	var options = {}, defaultImageBorderWidth = 1, defaultImageBorderColor = gl.foreColor, defaultImageLineColor = gl.foreColor, defaultImageLabelColor = gl.backColor;
-	this.setDataset = function(dataset, options) {}
-	this.onInputChanged = function(activeInputs, animatedInputs, options) {}
-	this.onOptionsChanged = function(_options)
+	this.setDataset = function (dataset, options) {}
+	this.onInputChanged = function (activeInputs, animatedInputs, options) {}
+	this.onOptionsChanged = function (_options)
 	{
 		options = _options;
 		defaultImageBorderWidth = options['thumbnailBorderWidth'];
@@ -369,7 +367,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
 		defaultImageLineColor = options['thumbnailLineColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailLineColor'])).map(c => c / 255.0) : gl.foreColor;
 		defaultImageLabelColor = options['thumbnailLabelColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailLabelColor'])).map(c => c / 255.0) : gl.backColor;
 	}
-	this.onPlotBoundsChanged = function(plotBounds) {}
+	this.onPlotBoundsChanged = function (plotBounds) {}
 	
 	/**
 	 * @param  {string} imageFilename
@@ -379,7 +377,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
 	 * @param  {Array<number>=} imageSize
 	 * @param  {string=} imageAnchor (default: 'middlecenter')
 	 */
-	this.showImage = function(imageFilename, refIndex, refPos, imagePos, imageSize, imageAnchor)
+	this.showImage = function (imageFilename, refIndex, refPos, imagePos, imageSize, imageAnchor)
 	{
 		// Convert imageAnchor from string to vec3
 		var imageAnchorVector;
@@ -397,7 +395,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
 		}
 		
 		var newImage = new Thumbnail(globalView);
-		newImage.tex = libGraphics.LoadTexture(gl, imageFilename, function() { globalView.invalidate(); });
+		newImage.tex = libGraphics.LoadTexture(gl, imageFilename, function () { globalView.invalidate(); });
 		newImage.imagePos = imagePos;
 		newImage.refIndex = refIndex;
 		newImage.refPos = refPos;
@@ -406,19 +404,19 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
 		newImage.borderColor = null;
 		images.push(newImage);
 	}
-	this.clearImages = function()
+	this.clearImages = function ()
 	{
 		images = [];
 	}
 	/**
 	 * @return {Array<Thumbnail>}
 	 */
-	this.getImages = function()
+	this.getImages = function ()
 	{
 		return images;
 	}
 	
-	this.resolveIntersections = function(tf)
+	this.resolveIntersections = function (tf)
 	{
 		var a = libGlMatrix.vec2.create(), b = libGlMatrix.vec2.create(), c = libGlMatrix.vec2.create(), d = libGlMatrix.vec2.create();
 		for (var i = 1; i < images.length; ++i)
@@ -465,12 +463,12 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
 			}
 	}
 	
-	this.imageFromPoint = function(tf, p)
+	this.imageFromPoint = function (tf, p)
 	{
 		var imagePos = libGlMatrix.vec2.create(), refPos = libGlMatrix.vec2.create(), imageSize = libGlMatrix.vec2.create();
 		
 		var selectedImage = null;
-		images.forEach(function(image) {
+		images.forEach(function (image) {
 			if (!image.imagePos)
 				return;
 			

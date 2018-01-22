@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 /**
  * @preserve
  * @fileoverview GlobalView - Fast client-side scatter plot rendering using WebGL

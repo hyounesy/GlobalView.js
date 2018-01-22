@@ -1,4 +1,4 @@
 const globalView = require('../dist/global-view.js');
 
 const plot = new globalView.GlobalView(document.querySelector('#divGlobalView'), null);
-new globalView.RandomDataset(1000, 3, function(dataset) { plot.load(dataset, 0, 1, 2, 2); });
+new globalView.RandomDataset(1000, 3, function (dataset) { plot.load(dataset, 0, 1, 2, 2); });

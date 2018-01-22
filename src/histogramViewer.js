@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 const libGraphics = require('./graphics.js');
 const libShaders = require('./shaders.js');
 const libAlgorithm = require('./algorithm.js');
@@ -39,7 +37,7 @@ export function HistogramViewer(gl, globalView)
 		{histogram: null, d: -1, meshHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.TRIANGLES), meshLineHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP)}
 	];
 	
-	this.render = function(flipY, tf, plotBounds)
+	this.render = function (flipY, tf, plotBounds)
 	{
 		var mattrans = libGlMatrix.mat4.create();
 		
@@ -172,25 +170,25 @@ export function HistogramViewer(gl, globalView)
 		}
 	}
 	
-	this.setDataset = function(_dataset, options)
+	this.setDataset = function (_dataset, options)
 	{
 		dataset = _dataset;
 		recreateHistograms();
 	}
 	
-	this.onOptionsChanged = function(_options, recompileShader)
+	this.onOptionsChanged = function (_options, recompileShader)
 	{
 		options = _options;
 		recreateHistograms();
 	}
 	
-	this.onInputChanged = function(_activeInputs, animatedInputs, options)
+	this.onInputChanged = function (_activeInputs, animatedInputs, options)
 	{
 		activeInputs = _activeInputs;
 		recreateHistograms();
 	}
 	
-	this.onPlotBoundsChanged = function(plotBounds) {}
+	this.onPlotBoundsChanged = function (plotBounds) {}
 	
 	function recreateHistograms()
 	{
@@ -217,7 +215,7 @@ export function HistogramViewer(gl, globalView)
 		//console.log(axis.histogram);
 		
 		var positions = new Float32Array((6 * numBins) * 3);
-		var v3_set = function(i, x, y) { i *= 3; positions[i++] = x; positions[i++] = y; positions[i++] = 0.0; };
+		var v3_set = function (i, x, y) { i *= 3; positions[i++] = x; positions[i++] = y; positions[i++] = 0.0; };
 		for (var b = 0, i = -1, x_scale = 1 / numBins; b < numBins; ++b)
 		{
 			var y = axis.histogram.data[b] / axis.histogram.maximum;
