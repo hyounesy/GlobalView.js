@@ -1791,7 +1791,7 @@ export function pointInsidePolygon(P, V)
 {
 	var n = V.length - 1, wn = 0; // wn: The winding number counter
 	
-	var isLeft = function (P0, P1, P2) { return ( (P1[0] - P0[0]) * (P2[1] - P0[1]) - (P2[0] -  P0[0]) * (P1[1] - P0[1]) ); };
+	var isLeft = function (P0, P1, P2) { return ((P1[0] - P0[0]) * (P2[1] - P0[1]) - (P2[0] -  P0[0]) * (P1[1] - P0[1])); };
 
 	// loop through all edges of the polygon
 	for (var i = 0; i < n; i++)
@@ -1800,13 +1800,13 @@ export function pointInsidePolygon(P, V)
 		if (V[i][1] <= P[1]) // If edge-start is on or below P
 		{
 			if (V[i + 1][1] > P[1]) // If edge is upward crossing
-				if (isLeft( V[i], V[i + 1], P) > 0) // If P is to the left of edge
+				if (isLeft(V[i], V[i + 1], P) > 0) // If P is to the left of edge
 					++wn; // We have a valid up intersect
 		}
 		else // If edge-start is above P
 		{
 			if (V[i + 1][1] <= P[1]) // If edge is downward crossing
-				if (isLeft( V[i], V[i + 1], P) < 0) // If P is to the right of edge
+				if (isLeft(V[i], V[i + 1], P) < 0) // If P is to the right of edge
 					--wn; // We have a valid down intersect
 		}
 	}
