@@ -114,474 +114,472 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["HashSet"] = HashSet;
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/* eslint-disable */
-
 function linspace(first, second, last) {
-	var offset = second - first;
-	var halfOffset = 0.5 * offset;
-	var values = [first],
-	    i = 0;
-	while (values[i] + halfOffset < last) {
-		values.push(first + ++i * offset);
-	}values[i] = last;
-	console.log(values);
-	return new Float32Array(values);
+  var offset = second - first;
+  var halfOffset = 0.5 * offset;
+  var values = [first],
+      i = 0;
+  while (values[i] + halfOffset < last) {
+    values.push(first + ++i * offset);
+  }values[i] = last;
+  console.log(values);
+  return new Float32Array(values);
 }
 //linspace(1, 1.1, 10);
 
 function isUndefined(x) {
-	return typeof x === 'undefined';
+  return typeof x === 'undefined';
 }
 
 function isFunction(x) {
-	return typeof x === 'function';
+  return typeof x === 'function';
 }
 
 function isArray(x) {
-	return Object.prototype.toString.call(x) === "[object Array]";
+  return Object.prototype.toString.call(x) === "[object Array]";
 }
 
 function isString(x) {
-	return typeof x === 'string';
+  return typeof x === 'string';
 }
 
 function isNumber(x) {
-	return typeof x === 'number';
+  return typeof x === 'number';
 }
 
 function isObject(x) {
-	var t = typeof x === 'undefined' ? 'undefined' : _typeof(x);
-	return t !== 'undefined' && t !== 'function' && t !== 'string' && t !== 'number' && Object.prototype.toString.call(x) !== "[object Array]";
+  var t = typeof x === 'undefined' ? 'undefined' : _typeof(x);
+  return t !== 'undefined' && t !== 'function' && t !== 'string' && t !== 'number' && Object.prototype.toString.call(x) !== "[object Array]";
 }
 function isCloneable(x) {
-	return !(isFunction(x) || x instanceof WebGLTexture); //TODO: Add more
+  return !(isFunction(x) || x instanceof WebGLTexture); //TODO: Add more
 }
 
 Array.create = function (n, func) {
-	var array = new Array(n);
-	if (isFunction(func)) for (var i = 0; i < n; ++i) {
-		array[i] = func(i);
-	} else array.fill(func);
-	return array;
+  var array = new Array(n);
+  if (isFunction(func)) for (var i = 0; i < n; ++i) {
+    array[i] = func(i);
+  } else array.fill(func);
+  return array;
 };
 Array.prototype.minIndex = function () {
-	return this.reduce(function (smallestIndex, currentValue, currentIndex, arr) {
-		return currentValue < arr[smallestIndex] ? currentIndex : smallestIndex;
-	}, 0);
+  return this.reduce(function (smallestIndex, currentValue, currentIndex, arr) {
+    return currentValue < arr[smallestIndex] ? currentIndex : smallestIndex;
+  }, 0);
 };
 Array.prototype.maxIndex = function () {
-	return this.reduce(function (smallestIndex, currentValue, currentIndex, arr) {
-		return currentValue > arr[smallestIndex] ? currentIndex : smallestIndex;
-	}, 0);
+  return this.reduce(function (smallestIndex, currentValue, currentIndex, arr) {
+    return currentValue > arr[smallestIndex] ? currentIndex : smallestIndex;
+  }, 0);
 };
 
 if (!String.prototype.format) {
-	/**
-  * Source: http://stackoverflow.com/a/4673436
-  * @param {...*} var_args
-  */
-	String.prototype.format = function (var_args) {
-		var args = arguments;
-		return this.replace(/{(\d+)}/g, function (match, number) {
-			return typeof args[number] != 'undefined' ? args[number] : match;
-		});
-	};
+  /**
+   * Source: http://stackoverflow.com/a/4673436
+   * @param {...*} var_args
+   */
+  String.prototype.format = function (var_args) {
+    var args = arguments;
+    return this.replace(/{(\d+)}/g, function (match, number) {
+      return typeof args[number] != 'undefined' ? args[number] : match;
+    });
+  };
 }
 /**
-	 * Source: http://stackoverflow.com/a/4673436
-	 * @param {RegExp} pattern
-	 * @param {string} mismatch
-	 * @param {...*} var_args
-	 */
+   * Source: http://stackoverflow.com/a/4673436
+   * @param {RegExp} pattern
+   * @param {string} mismatch
+   * @param {...*} var_args
+   */
 String.prototype.format2 = function (pattern, mismatch, var_args) {
-	var args = arguments;
-	return this.replace(pattern, function (match, number) {
-		number = Number.parseInt(number, 10) + 2;
-		return typeof args[number] != 'undefined' ? args[number] : mismatch;
-	});
+  var args = arguments;
+  return this.replace(pattern, function (match, number) {
+    number = Number.parseInt(number, 10) + 2;
+    return typeof args[number] != 'undefined' ? args[number] : mismatch;
+  });
 };
 
 function makeCloneable(obj) {
-	if (!isObject(obj)) // If obj isn't an object
-		return obj; // Return obj as is
+  if (!isObject(obj)) // If obj isn't an object
+    return obj; // Return obj as is
 
-	// Check all properties of obj
-	for (var prop in obj) {
-		if (!isCloneable(obj[prop])) // If obj has at least on non-cloneable property
-			{
-				// Create a new object and clone all cloneable properties into that new object
-				var obj_subset = {};
-				for (prop in obj) {
-					if (isCloneable(obj[prop])) obj_subset[prop] = obj[prop];
-				}return obj_subset;
-			}
-	} // If obj doesn't have type functions
-	return obj; // Return obj as is
+  // Check all properties of obj
+  for (var prop in obj) {
+    if (!isCloneable(obj[prop])) // If obj has at least on non-cloneable property
+      {
+        // Create a new object and clone all cloneable properties into that new object
+        var obj_subset = {};
+        for (prop in obj) {
+          if (isCloneable(obj[prop])) obj_subset[prop] = obj[prop];
+        }return obj_subset;
+      }
+  } // If obj doesn't have type functions
+  return obj; // Return obj as is
 };
 
 function getScript(id) {
-	var shaderScript = document.getElementById(id);
-	if (!shaderScript) {
-		return null;
-	}
+  var shaderScript = document.getElementById(id);
+  if (!shaderScript) {
+    return null;
+  }
 
-	var str = "";
-	var k = shaderScript.firstChild;
-	while (k) {
-		if (k.nodeType == 3) {
-			str += k.textContent;
-		}
-		k = k.nextSibling;
-	}
+  var str = "";
+  var k = shaderScript.firstChild;
+  while (k) {
+    if (k.nodeType == 3) {
+      str += k.textContent;
+    }
+    k = k.nextSibling;
+  }
 
-	return str;
+  return str;
 }
 
 function colorNameToHex(color) // Source: https://stackoverflow.com/a/1573141
 {
-	var colors = {
-		"aliceblue": "#f0f8ff", "antiquewhite": "#faebd7", "aqua": "#00ffff", "aquamarine": "#7fffd4", "azure": "#f0ffff",
-		"beige": "#f5f5dc", "bisque": "#ffe4c4", "black": "#000000", "blanchedalmond": "#ffebcd", "blue": "#0000ff", "blueviolet": "#8a2be2",
-		"brown": "#a52a2a", "burlywood": "#deb887", "cadetblue": "#5f9ea0", "chartreuse": "#7fff00", "chocolate": "#d2691e", "coral": "#ff7f50",
-		"cornflowerblue": "#6495ed", "cornsilk": "#fff8dc", "crimson": "#dc143c", "cyan": "#00ffff", "darkblue": "#00008b", "darkcyan": "#008b8b",
-		"darkgoldenrod": "#b8860b", "darkgray": "#a9a9a9", "darkgreen": "#006400", "darkkhaki": "#bdb76b", "darkmagenta": "#8b008b",
-		"darkolivegreen": "#556b2f", "darkorange": "#ff8c00", "darkorchid": "#9932cc", "darkred": "#8b0000", "darksalmon": "#e9967a",
-		"darkseagreen": "#8fbc8f", "darkslateblue": "#483d8b", "darkslategray": "#2f4f4f", "darkturquoise": "#00ced1", "darkviolet": "#9400d3",
-		"deeppink": "#ff1493", "deepskyblue": "#00bfff", "dimgray": "#696969", "dodgerblue": "#1e90ff", "firebrick": "#b22222", "floralwhite": "#fffaf0",
-		"forestgreen": "#228b22", "fuchsia": "#ff00ff", "gainsboro": "#dcdcdc", "ghostwhite": "#f8f8ff", "gold": "#ffd700", "goldenrod": "#daa520",
-		"gray": "#808080", "green": "#008000", "greenyellow": "#adff2f", "honeydew": "#f0fff0", "hotpink": "#ff69b4", "indianred ": "#cd5c5c",
-		"indigo": "#4b0082", "ivory": "#fffff0", "khaki": "#f0e68c", "lavender": "#e6e6fa", "lavenderblush": "#fff0f5", "lawngreen": "#7cfc00",
-		"lemonchiffon": "#fffacd", "lightblue": "#add8e6", "lightcoral": "#f08080", "lightcyan": "#e0ffff", "lightgoldenrodyellow": "#fafad2",
-		"lightgray": "#d3d3d3", "lightgreen": "#90ee90", "lightpink": "#ffb6c1", "lightsalmon": "#ffa07a", "lightseagreen": "#20b2aa",
-		"lightskyblue": "#87cefa", "lightslategray": "#778899", "lightsteelblue": "#b0c4de", "lightyellow": "#ffffe0", "lime": "#00ff00",
-		"limegreen": "#32cd32", "linen": "#faf0e6", "magenta": "#ff00ff", "maroon": "#800000", "mediumaquamarine": "#66cdaa", "mediumblue": "#0000cd",
-		"mediumorchid": "#ba55d3", "mediumpurple": "#9370d8", "mediumseagreen": "#3cb371", "mediumslateblue": "#7b68ee", "mediumspringgreen": "#00fa9a",
-		"mediumturquoise": "#48d1cc", "mediumvioletred": "#c71585", "midnightblue": "#191970", "mintcream": "#f5fffa", "mistyrose": "#ffe4e1",
-		"moccasin": "#ffe4b5", "navajowhite": "#ffdead", "navy": "#000080", "oldlace": "#fdf5e6", "olive": "#808000", "olivedrab": "#6b8e23",
-		"orange": "#ffa500", "orangered": "#ff4500", "orchid": "#da70d6", "palegoldenrod": "#eee8aa", "palegreen": "#98fb98", "paleturquoise": "#afeeee",
-		"palevioletred": "#d87093", "papayawhip": "#ffefd5", "peachpuff": "#ffdab9", "peru": "#cd853f", "pink": "#ffc0cb", "plum": "#dda0dd",
-		"powderblue": "#b0e0e6", "purple": "#800080", "rebeccapurple": "#663399", "red": "#ff0000", "rosybrown": "#bc8f8f", "royalblue": "#4169e1",
-		"saddlebrown": "#8b4513", "salmon": "#fa8072", "sandybrown": "#f4a460", "seagreen": "#2e8b57", "seashell": "#fff5ee", "sienna": "#a0522d",
-		"silver": "#c0c0c0", "skyblue": "#87ceeb", "slateblue": "#6a5acd", "slategray": "#708090", "snow": "#fffafa", "springgreen": "#00ff7f",
-		"steelblue": "#4682b4", "tan": "#d2b48c", "teal": "#008080", "thistle": "#d8bfd8", "tomato": "#ff6347", "turquoise": "#40e0d0", "violet": "#ee82ee",
-		"wheat": "#f5deb3", "white": "#ffffff", "whitesmoke": "#f5f5f5", "yellow": "#ffff00", "yellowgreen": "#9acd32"
-	};
-	return colors[color.toLowerCase()];
+  var colors = {
+    "aliceblue": "#f0f8ff", "antiquewhite": "#faebd7", "aqua": "#00ffff", "aquamarine": "#7fffd4", "azure": "#f0ffff",
+    "beige": "#f5f5dc", "bisque": "#ffe4c4", "black": "#000000", "blanchedalmond": "#ffebcd", "blue": "#0000ff", "blueviolet": "#8a2be2",
+    "brown": "#a52a2a", "burlywood": "#deb887", "cadetblue": "#5f9ea0", "chartreuse": "#7fff00", "chocolate": "#d2691e", "coral": "#ff7f50",
+    "cornflowerblue": "#6495ed", "cornsilk": "#fff8dc", "crimson": "#dc143c", "cyan": "#00ffff", "darkblue": "#00008b", "darkcyan": "#008b8b",
+    "darkgoldenrod": "#b8860b", "darkgray": "#a9a9a9", "darkgreen": "#006400", "darkkhaki": "#bdb76b", "darkmagenta": "#8b008b",
+    "darkolivegreen": "#556b2f", "darkorange": "#ff8c00", "darkorchid": "#9932cc", "darkred": "#8b0000", "darksalmon": "#e9967a",
+    "darkseagreen": "#8fbc8f", "darkslateblue": "#483d8b", "darkslategray": "#2f4f4f", "darkturquoise": "#00ced1", "darkviolet": "#9400d3",
+    "deeppink": "#ff1493", "deepskyblue": "#00bfff", "dimgray": "#696969", "dodgerblue": "#1e90ff", "firebrick": "#b22222", "floralwhite": "#fffaf0",
+    "forestgreen": "#228b22", "fuchsia": "#ff00ff", "gainsboro": "#dcdcdc", "ghostwhite": "#f8f8ff", "gold": "#ffd700", "goldenrod": "#daa520",
+    "gray": "#808080", "green": "#008000", "greenyellow": "#adff2f", "honeydew": "#f0fff0", "hotpink": "#ff69b4", "indianred ": "#cd5c5c",
+    "indigo": "#4b0082", "ivory": "#fffff0", "khaki": "#f0e68c", "lavender": "#e6e6fa", "lavenderblush": "#fff0f5", "lawngreen": "#7cfc00",
+    "lemonchiffon": "#fffacd", "lightblue": "#add8e6", "lightcoral": "#f08080", "lightcyan": "#e0ffff", "lightgoldenrodyellow": "#fafad2",
+    "lightgray": "#d3d3d3", "lightgreen": "#90ee90", "lightpink": "#ffb6c1", "lightsalmon": "#ffa07a", "lightseagreen": "#20b2aa",
+    "lightskyblue": "#87cefa", "lightslategray": "#778899", "lightsteelblue": "#b0c4de", "lightyellow": "#ffffe0", "lime": "#00ff00",
+    "limegreen": "#32cd32", "linen": "#faf0e6", "magenta": "#ff00ff", "maroon": "#800000", "mediumaquamarine": "#66cdaa", "mediumblue": "#0000cd",
+    "mediumorchid": "#ba55d3", "mediumpurple": "#9370d8", "mediumseagreen": "#3cb371", "mediumslateblue": "#7b68ee", "mediumspringgreen": "#00fa9a",
+    "mediumturquoise": "#48d1cc", "mediumvioletred": "#c71585", "midnightblue": "#191970", "mintcream": "#f5fffa", "mistyrose": "#ffe4e1",
+    "moccasin": "#ffe4b5", "navajowhite": "#ffdead", "navy": "#000080", "oldlace": "#fdf5e6", "olive": "#808000", "olivedrab": "#6b8e23",
+    "orange": "#ffa500", "orangered": "#ff4500", "orchid": "#da70d6", "palegoldenrod": "#eee8aa", "palegreen": "#98fb98", "paleturquoise": "#afeeee",
+    "palevioletred": "#d87093", "papayawhip": "#ffefd5", "peachpuff": "#ffdab9", "peru": "#cd853f", "pink": "#ffc0cb", "plum": "#dda0dd",
+    "powderblue": "#b0e0e6", "purple": "#800080", "rebeccapurple": "#663399", "red": "#ff0000", "rosybrown": "#bc8f8f", "royalblue": "#4169e1",
+    "saddlebrown": "#8b4513", "salmon": "#fa8072", "sandybrown": "#f4a460", "seagreen": "#2e8b57", "seashell": "#fff5ee", "sienna": "#a0522d",
+    "silver": "#c0c0c0", "skyblue": "#87ceeb", "slateblue": "#6a5acd", "slategray": "#708090", "snow": "#fffafa", "springgreen": "#00ff7f",
+    "steelblue": "#4682b4", "tan": "#d2b48c", "teal": "#008080", "thistle": "#d8bfd8", "tomato": "#ff6347", "turquoise": "#40e0d0", "violet": "#ee82ee",
+    "wheat": "#f5deb3", "white": "#ffffff", "whitesmoke": "#f5f5f5", "yellow": "#ffff00", "yellowgreen": "#9acd32"
+  };
+  return colors[color.toLowerCase()];
 }
 
 function hexToRgb(hex) // Source: https://stackoverflow.com/a/5624139
 {
-	// Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
-	var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-	hex = hex.replace(shorthandRegex, function (m, r, g, b) {
-		return r + r + g + g + b + b;
-	});
+  // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+  var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+  hex = hex.replace(shorthandRegex, function (m, r, g, b) {
+    return r + r + g + g + b + b;
+  });
 
-	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-	return result ? {
-		r: parseInt(result[1], 16),
-		g: parseInt(result[2], 16),
-		b: parseInt(result[3], 16)
-	} : null;
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : null;
 }
 
 function rgbStringToFloatArray(rgbstr) {
-	var rgb = rgbstr.match(/\d+/g);
-	for (var i = 0; i < 4; ++i) {
-		rgb[i] = i < rgb.length ? Math.max(0x00, Math.min(0xFF, rgb[i] / 0xFF)) : 1.0;
-	}return rgb;
+  var rgb = rgbstr.match(/\d+/g);
+  for (var i = 0; i < 4; ++i) {
+    rgb[i] = i < rgb.length ? Math.max(0x00, Math.min(0xFF, rgb[i] / 0xFF)) : 1.0;
+  }return rgb;
 }
 
 function i24ToFloatArray(clr) {
-	return [(clr >> 16 & 0xFF) / 255.0, (clr >> 8 & 0xFF) / 255.0, (clr >> 0 & 0xFF) / 255.0, 1.0];
+  return [(clr >> 16 & 0xFF) / 255.0, (clr >> 8 & 0xFF) / 255.0, (clr >> 0 & 0xFF) / 255.0, 1.0];
 }
 
 function F32toI24(floats, bounds) {
-	var bytes = new Uint8Array(4 * floats.length);
-	var i = 0,
-	    voffset = -bounds[0],
-	    vscale = 0xFFFFFE / (bounds[1] - bounds[0]);
-	floats.forEach(function (value) {
-		value += voffset;
-		value *= vscale;
-		value = Math.floor(value);
-		value = Math.max(0, value);
-		value = Math.min(0xFFFFFE, value);
-		++value;
-		bytes[i + 0] = value >> 16 & 0xFF;
-		bytes[i + 1] = value >> 8 & 0xFF;
-		bytes[i + 2] = value >> 0 & 0xFF;
-		bytes[i + 3] = 255;
-		i += 4;
-	});
-	return bytes;
+  var bytes = new Uint8Array(4 * floats.length);
+  var i = 0,
+      voffset = -bounds[0],
+      vscale = 0xFFFFFE / (bounds[1] - bounds[0]);
+  floats.forEach(function (value) {
+    value += voffset;
+    value *= vscale;
+    value = Math.floor(value);
+    value = Math.max(0, value);
+    value = Math.min(0xFFFFFE, value);
+    ++value;
+    bytes[i + 0] = value >> 16 & 0xFF;
+    bytes[i + 1] = value >> 8 & 0xFF;
+    bytes[i + 2] = value >> 0 & 0xFF;
+    bytes[i + 3] = 255;
+    i += 4;
+  });
+  return bytes;
 }
 function F32toI24flipY(floats, bounds, width, height) {
-	var bytes = new Uint8Array(4 * floats.length);
-	var i = 0,
-	    voffset = -bounds[0],
-	    vscale = 0xFFFFFE / (bounds[1] - bounds[0]);
-	for (var y = 0; y < height; ++y) {
-		for (var x = 0; x < width; ++x) {
-			//var value = Math.floor((floats[(height - y - 1) * width + x] - bounds[0]) * vscale) + 1;
-			var value = floats[(height - y - 1) * width + x];
-			value += voffset;
-			value *= vscale;
-			value = Math.floor(value);
-			value = Math.max(0, value);
-			value = Math.min(0xFFFFFE, value);
-			++value;
-			bytes[i + 0] = value >> 16 & 0xFF;
-			bytes[i + 1] = value >> 8 & 0xFF;
-			bytes[i + 2] = value >> 0 & 0xFF;
-			bytes[i + 3] = 255;
-			i += 4;
-		}
-	}return bytes;
+  var bytes = new Uint8Array(4 * floats.length);
+  var i = 0,
+      voffset = -bounds[0],
+      vscale = 0xFFFFFE / (bounds[1] - bounds[0]);
+  for (var y = 0; y < height; ++y) {
+    for (var x = 0; x < width; ++x) {
+      //var value = Math.floor((floats[(height - y - 1) * width + x] - bounds[0]) * vscale) + 1;
+      var value = floats[(height - y - 1) * width + x];
+      value += voffset;
+      value *= vscale;
+      value = Math.floor(value);
+      value = Math.max(0, value);
+      value = Math.min(0xFFFFFE, value);
+      ++value;
+      bytes[i + 0] = value >> 16 & 0xFF;
+      bytes[i + 1] = value >> 8 & 0xFF;
+      bytes[i + 2] = value >> 0 & 0xFF;
+      bytes[i + 3] = 255;
+      i += 4;
+    }
+  }return bytes;
 }
 
 function hsv2rgb(hsv) // Source: https://stackoverflow.com/a/6930407
 {
-	if (hsv[1] <= 0.000001) return [hsv[2], hsv[2], hsv[2]];
-	var hh, p, q, t, ff, i, out;
+  if (hsv[1] <= 0.000001) return [hsv[2], hsv[2], hsv[2]];
+  var hh, p, q, t, ff, i, out;
 
-	hh = hsv[0];
-	if (hh >= 1.0) hh = 0.0;
-	hh *= 6.0;
-	i = Math.floor(hh);
-	ff = hh - i;
-	p = hsv[2] * (1.0 - hsv[1]);
-	q = hsv[2] * (1.0 - hsv[1] * ff);
-	t = hsv[2] * (1.0 - hsv[1] * (1.0 - ff));
+  hh = hsv[0];
+  if (hh >= 1.0) hh = 0.0;
+  hh *= 6.0;
+  i = Math.floor(hh);
+  ff = hh - i;
+  p = hsv[2] * (1.0 - hsv[1]);
+  q = hsv[2] * (1.0 - hsv[1] * ff);
+  t = hsv[2] * (1.0 - hsv[1] * (1.0 - ff));
 
-	switch (i) {
-		case 0:
-			return [hsv[2], t, p];
-		case 1:
-			return [q, hsv[2], p];
-		case 2:
-			return [p, hsv[2], t];
-		case 3:
-			return [p, q, hsv[2]];
-		case 4:
-			return [t, p, hsv[2]];
-		default:
-			return [hsv[2], p, q];
-	}
+  switch (i) {
+    case 0:
+      return [hsv[2], t, p];
+    case 1:
+      return [q, hsv[2], p];
+    case 2:
+      return [p, hsv[2], t];
+    case 3:
+      return [p, q, hsv[2]];
+    case 4:
+      return [t, p, hsv[2]];
+    default:
+      return [hsv[2], p, q];
+  }
 }
 
 function urlExists(url, onTrue, onFalse, isAsync) {
-	var request = new XMLHttpRequest();
-	request.onreadystatechange = function () {
-		if (this.readyState == 4 && this.status == 404 && onFalse) onFalse();
-		if (this.readyState == 4 && this.status != 404 && onTrue) onTrue();
-	};
-	request.open('HEAD', url, !(isAsync === false));
-	request.overrideMimeType("text/csv; charset=utf8");
-	request.send();
-	return request.status != 404;
+  var request = new XMLHttpRequest();
+  request.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 404 && onFalse) onFalse();
+    if (this.readyState == 4 && this.status != 404 && onTrue) onTrue();
+  };
+  request.open('HEAD', url, !(isAsync === false));
+  request.overrideMimeType("text/csv; charset=utf8");
+  request.send();
+  return request.status != 404;
 }
 
 var _downloader;
 function download(filename, contentUrl) {
-	if (!_downloader) document.body.appendChild(_downloader = document.createElement('a'));
+  if (!_downloader) document.body.appendChild(_downloader = document.createElement('a'));
 
-	_downloader.href = contentUrl;
-	_downloader.download = filename;
-	_downloader.click();
+  _downloader.href = contentUrl;
+  _downloader.download = filename;
+  _downloader.click();
 }
 
 function imageUrlFromBytes(bytes, width, height) {
-	// Create a temporary 2D canvas to store the result -> tempCanvas
-	var tempCanvas = document.createElement('canvas');
-	tempCanvas.width = width;
-	tempCanvas.height = height;
+  // Create a temporary 2D canvas to store the result -> tempCanvas
+  var tempCanvas = document.createElement('canvas');
+  tempCanvas.width = width;
+  tempCanvas.height = height;
 
-	// Copy the pixels to the 2D canvas
-	var imageData = tempCanvas.getContext('2d').createImageData(width, height);
-	imageData.data.set(bytes);
-	tempCanvas.getContext('2d').putImageData(imageData, 0, 0);
-	var dataURL = tempCanvas.toDataURL();
+  // Copy the pixels to the 2D canvas
+  var imageData = tempCanvas.getContext('2d').createImageData(width, height);
+  imageData.data.set(bytes);
+  tempCanvas.getContext('2d').putImageData(imageData, 0, 0);
+  var dataURL = tempCanvas.toDataURL();
 
-	// Free tempCanvas
-	tempCanvas = null;
+  // Free tempCanvas
+  tempCanvas = null;
 
-	return dataURL;
+  return dataURL;
 }
 
 var _seededRandom_seed = 1;
 Math.seededRandom = function () {
-	// Source: https://stackoverflow.com/a/19303725
-	var x = Math.sin(_seededRandom_seed++) * 10000;
-	return x - Math.floor(x);
+  // Source: https://stackoverflow.com/a/19303725
+  var x = Math.sin(_seededRandom_seed++) * 10000;
+  return x - Math.floor(x);
 };
 
 Math.clamp = function (f, minimum, maximum) {
-	return Math.min(Math.max(f, minimum), maximum);
+  return Math.min(Math.max(f, minimum), maximum);
 };
 
 function createCookie(name, value, days) // Source: http://www.quirksmode.org/js/cookies.html
 {
-	var expires = "";
-	if (days) {
-		var date = new Date();
-		date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-		expires = "; expires=" + date.toUTCString();
-	}
-	document.cookie = name + "=" + value + expires + "; path=/";
+  var expires = "";
+  if (days) {
+    var date = new Date();
+    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+    expires = "; expires=" + date.toUTCString();
+  }
+  document.cookie = name + "=" + value + expires + "; path=/";
 }
 function readCookie(name) // Source: http://www.quirksmode.org/js/cookies.html
 {
-	var nameEQ = name + "=";
-	var ca = document.cookie.split(';');
-	for (var i = 0; i < ca.length; ++i) {
-		var c = ca[i];
-		while (c.charAt(0) == ' ') {
-			c = c.substring(1, c.length);
-		}if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-	}
-	return null;
+  var nameEQ = name + "=";
+  var ca = document.cookie.split(';');
+  for (var i = 0; i < ca.length; ++i) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1, c.length);
+    }if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+  }
+  return null;
 }
 function readFloatCookie(name) {
-	var cookie = readCookie(name);
-	cookie = Number.parseFloat(cookie);
-	return isNaN(cookie) ? null : cookie;
+  var cookie = readCookie(name);
+  cookie = Number.parseFloat(cookie);
+  return isNaN(cookie) ? null : cookie;
 }
 function readIntCookie(name) {
-	var cookie = readCookie(name);
-	cookie = Number.parseInt(cookie, 10);
-	return isNaN(cookie) ? null : cookie;
+  var cookie = readCookie(name);
+  cookie = Number.parseInt(cookie, 10);
+  return isNaN(cookie) ? null : cookie;
 }
 function eraseCookie(name) // Source: http://www.quirksmode.org/js/cookies.html
 {
-	createCookie(name, "", -1);
+  createCookie(name, "", -1);
 }
 
 function getParameterByName(name, url) // Source: https://stackoverflow.com/a/901144
 {
-	if (!url) url = window.location.href;
-	name = name.replace(/[\[\]]/g, "\\$&");
-	var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-	    results = regex.exec(url);
-	if (!results) return null;
-	if (!results[2]) return '';
-	return decodeURIComponent(results[2].replace(/\+/g, " "));
+  if (!url) url = window.location.href;
+  name = name.replace(/[\[\]]/g, "\\$&");
+  var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+      results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return '';
+  return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
 function addMouseWheelHandler(onmousewheel) // Source: http://www.javascriptkit.com/javatutors/onmousewheel.shtml
 {
-	var mousewheelevt = /Firefox/i.test(navigator.userAgent) ? "DOMMouseScroll" : "mousewheel";
-	if (document.attachEvent) document.attachEvent("on" + mousewheelevt, onmousewheel);else if (document.addEventListener) document.addEventListener(mousewheelevt, onmousewheel, false);
+  var mousewheelevt = /Firefox/i.test(navigator.userAgent) ? "DOMMouseScroll" : "mousewheel";
+  if (document.attachEvent) document.attachEvent("on" + mousewheelevt, onmousewheel);else if (document.addEventListener) document.addEventListener(mousewheelevt, onmousewheel, false);
 }
 function addMouseMoveHandler(onmousemove) {
-	if (document.attachEvent) document.attachEvent("onmousemove", onmousemove);else if (document.addEventListener) document.addEventListener("mousemove", onmousemove, false);
+  if (document.attachEvent) document.attachEvent("onmousemove", onmousemove);else if (document.addEventListener) document.addEventListener("mousemove", onmousemove, false);
 }
 function addMouseUpHandler(onmouseup) {
-	if (document.attachEvent) document.attachEvent("onmouseup", onmouseup);else if (document.addEventListener) document.addEventListener("mouseup", onmouseup, false);
+  if (document.attachEvent) document.attachEvent("onmouseup", onmouseup);else if (document.addEventListener) document.addEventListener("mouseup", onmouseup, false);
 }
 function addKeyDownHandler(onkeydown) {
-	if (document.attachEvent) document.attachEvent("onkeydown", onkeydown);else if (document.addEventListener) document.addEventListener("keydown", onkeydown, false);
+  if (document.attachEvent) document.attachEvent("onkeydown", onkeydown);else if (document.addEventListener) document.addEventListener("keydown", onkeydown, false);
 }
 function addKeyUpHandler(onkeyup) {
-	if (document.attachEvent) document.attachEvent("onkeyup", onkeyup);else if (document.addEventListener) document.addEventListener("keyup", onkeyup, false);
+  if (document.attachEvent) document.attachEvent("onkeyup", onkeyup);else if (document.addEventListener) document.addEventListener("keyup", onkeyup, false);
 }
 
 // Standard forward-list
 /*function ForwardList() {
-	function Node(value) {
-		this.value = value;
-		this.next = null;
-	}
-	this.front = null;
-	this.length = 0;
-	
-	this.pushFront = function(value)
-	{
-		var newnode = new Node(value);
-		newnode.next = this.front;
-		this.front = newnode;
-		++this.length;
-	}
-	this.pushBack = function(value)
-	{
-		if (this.front === null)
-			this.pushFront(value);
-		else
-		{
-			var back = this.front;
-			while (back.next !== null)
-				back = back.next;
-			var newnode = new Node(value);
-			back.next = newnode;
-			++this.length;
-		}
-	}
-	this.sortedPush = function(value)
-	{
-		if (this.front === null || this.front.value >= value)
-			this.pushFront(value);
-		else
-		{
-			var node = this.front;
-			while (node.next !== null && node.next.value < value)
-				node = node.next;
-			var newnode = new Node(value);
-			newnode.next = node.next;
-			node.next = newnode;
-		}
-		++this.length;
-	}
-	this.toArray = function()
-	{
-		var array = [];
-		for (var node = this.front; node; node = node.next)
-			array.push(node.value);
-		return array;
-	}
-	this.print = function()
-	{
-		var array = [];
-		for (var node = this.front; node; node = node.next)
-			array.push(node.value);
-		console.log(array.join(", "));
-	}
-	
-	ForwardList.sortedMerge = function(a, b) // Source: http://www.geeksforgeeks.org/merge-two-sorted-linked-lists/
-	{
-		var mergedList = new ForwardList();
-		mergedList.length = a.length + b.length;
-		
-		a = a.front;
-		b = b.front;
-		var dummy = new Node(null);
-		var tail = dummy;
-		
-		while (a !== null && b!= null) // While neither a nor b run out
-		{
-			if (a.value <= b.value)
-			{
-				var newNode = a;
-				a = newNode.next;
-				newNode.next = tail.next;
-				tail.next = newNode;
-			}
-			else
-			{
-				var newNode = b;
-				b = newNode.next;
-				newNode.next = tail.next;
-				tail.next = newNode;
-			}
+  function Node(value) {
+    this.value = value;
+    this.next = null;
+  }
+  this.front = null;
+  this.length = 0;
+  
+  this.pushFront = function(value)
+  {
+    var newnode = new Node(value);
+    newnode.next = this.front;
+    this.front = newnode;
+    ++this.length;
+  }
+  this.pushBack = function(value)
+  {
+    if (this.front === null)
+      this.pushFront(value);
+    else
+    {
+      var back = this.front;
+      while (back.next !== null)
+        back = back.next;
+      var newnode = new Node(value);
+      back.next = newnode;
+      ++this.length;
+    }
+  }
+  this.sortedPush = function(value)
+  {
+    if (this.front === null || this.front.value >= value)
+      this.pushFront(value);
+    else
+    {
+      var node = this.front;
+      while (node.next !== null && node.next.value < value)
+        node = node.next;
+      var newnode = new Node(value);
+      newnode.next = node.next;
+      node.next = newnode;
+    }
+    ++this.length;
+  }
+  this.toArray = function()
+  {
+    var array = [];
+    for (var node = this.front; node; node = node.next)
+      array.push(node.value);
+    return array;
+  }
+  this.print = function()
+  {
+    var array = [];
+    for (var node = this.front; node; node = node.next)
+      array.push(node.value);
+    console.log(array.join(", "));
+  }
+  
+  ForwardList.sortedMerge = function(a, b) // Source: http://www.geeksforgeeks.org/merge-two-sorted-linked-lists/
+  {
+    var mergedList = new ForwardList();
+    mergedList.length = a.length + b.length;
+    
+    a = a.front;
+    b = b.front;
+    var dummy = new Node(null);
+    var tail = dummy;
+    
+    while (a !== null && b!= null) // While neither a nor b run out
+    {
+      if (a.value <= b.value)
+      {
+        var newNode = a;
+        a = newNode.next;
+        newNode.next = tail.next;
+        tail.next = newNode;
+      }
+      else
+      {
+        var newNode = b;
+        b = newNode.next;
+        newNode.next = tail.next;
+        tail.next = newNode;
+      }
 
-			tail = tail.next;
-		}
-		
-		// Concatenate list that didn't run out
-		tail.next = a === null ? b : a;
-		
-		mergedList.front = dummy.next
-		return mergedList;
-	}
+      tail = tail.next;
+    }
+    
+    // Concatenate list that didn't run out
+    tail.next = a === null ? b : a;
+    
+    mergedList.front = dummy.next
+    return mergedList;
+  }
 }
 //var a = new ForwardList();
 //a.sortedPush(10);
@@ -600,83 +598,83 @@ function addKeyUpHandler(onkeyup) {
  * @package
  */
 function ForwardList(value) {
-	this.value = value;
-	this.next = null;
+  this.value = value;
+  this.next = null;
 
-	this.push = function (value) // Pushes to front
-	{
-		var newnode = new ForwardList(this.value);
-		newnode.next = this.next;
-		this.next = newnode;
-		this.value = value;
-	};
-	this.pushBack = function (value) {
-		var back = this;
-		while (back.next !== null) {
-			back = back.next;
-		}var newnode = new ForwardList(value);
-		back.next = newnode;
-	};
-	this.sortedPush = function (value) {
-		if (value <= this.value) this.push(value);else {
-			var node = this;
-			while (node.next !== null && node.next.value < value) {
-				node = node.next;
-			}var newnode = new ForwardList(value);
-			newnode.next = node.next;
-			node.next = newnode;
-		}
-	};
-	this.toArray = function () {
-		var array = [];
-		for (var node = this; node; node = node.next) {
-			array.push(node.value);
-		}return array;
-	};
-	this.print = function () {
-		var array = [];
-		for (var node = this; node; node = node.next) {
-			array.push(node.value);
-		}console.log(array.join(", "));
-	};
-	this.size = function () {
-		var size = 0;
-		for (var node = this; node; node = node.next) {
-			++size;
-		}return size;
-	};
-	this.forEach = function (callback) {
-		for (var node = this; node; node = node.next) {
-			callback(node.value);
-		}
-	};
-	ForwardList.sortedMerge = function (a, b) // Source: http://www.geeksforgeeks.org/merge-two-sorted-linked-lists/
-	{
-		var dummy = new ForwardList(null);
-		var tail = dummy;
+  this.push = function (value) // Pushes to front
+  {
+    var newnode = new ForwardList(this.value);
+    newnode.next = this.next;
+    this.next = newnode;
+    this.value = value;
+  };
+  this.pushBack = function (value) {
+    var back = this;
+    while (back.next !== null) {
+      back = back.next;
+    }var newnode = new ForwardList(value);
+    back.next = newnode;
+  };
+  this.sortedPush = function (value) {
+    if (value <= this.value) this.push(value);else {
+      var node = this;
+      while (node.next !== null && node.next.value < value) {
+        node = node.next;
+      }var newnode = new ForwardList(value);
+      newnode.next = node.next;
+      node.next = newnode;
+    }
+  };
+  this.toArray = function () {
+    var array = [];
+    for (var node = this; node; node = node.next) {
+      array.push(node.value);
+    }return array;
+  };
+  this.print = function () {
+    var array = [];
+    for (var node = this; node; node = node.next) {
+      array.push(node.value);
+    }console.log(array.join(", "));
+  };
+  this.size = function () {
+    var size = 0;
+    for (var node = this; node; node = node.next) {
+      ++size;
+    }return size;
+  };
+  this.forEach = function (callback) {
+    for (var node = this; node; node = node.next) {
+      callback(node.value);
+    }
+  };
+  ForwardList.sortedMerge = function (a, b) // Source: http://www.geeksforgeeks.org/merge-two-sorted-linked-lists/
+  {
+    var dummy = new ForwardList(null);
+    var tail = dummy;
 
-		while (a !== null && b != null) // While neither a nor b run out
-		{
-			if (a.value <= b.value) {
-				var newNode = a;
-				a = newNode.next;
-				newNode.next = tail.next;
-				tail.next = newNode;
-			} else {
-				var newNode = b;
-				b = newNode.next;
-				newNode.next = tail.next;
-				tail.next = newNode;
-			}
+    while (a !== null && b != null) // While neither a nor b run out
+    {
+      if (a.value <= b.value) {
+        var newNode = a;
+        a = newNode.next;
+        newNode.next = tail.next;
+        tail.next = newNode;
+      } else {
+        var newNode = b;
+        b = newNode.next;
+        newNode.next = tail.next;
+        tail.next = newNode;
+      }
 
-			tail = tail.next;
-		}
+      tail = tail.next;
+    }
 
-		// Concatenate list that didn't run out
-		tail.next = a === null ? b : a;
+    // Concatenate list that didn't run out
+    tail.next = a === null ? b : a;
 
-		return dummy.next;
-	};
+    return dummy.next;
+  };
 }
 
 /**
@@ -686,23 +684,23 @@ function ForwardList(value) {
  * @param {string} priorityProperty
  */
 function PriorityQueue(priorityProperty) {
-	var data = [];
-	this.length = 0;
-	this.push = function (element) {
-		++this.length;
-		var i,
-		    p = element[priorityProperty];
-		for (i = 0; i < data.length && data[i][priorityProperty] >= p; i++) {}
-		data.splice(i, 0, element);
-	};
-	this.pop = function () {
-		--this.length;
-		return data.pop();
-	};
-	this.shift = function () {
-		--this.length;
-		return data.shift();
-	};
+  var data = [];
+  this.length = 0;
+  this.push = function (element) {
+    ++this.length;
+    var i,
+        p = element[priorityProperty];
+    for (i = 0; i < data.length && data[i][priorityProperty] >= p; i++) {}
+    data.splice(i, 0, element);
+  };
+  this.pop = function () {
+    --this.length;
+    return data.pop();
+  };
+  this.shift = function () {
+    --this.length;
+    return data.shift();
+  };
 }
 /*var queue = new PriorityQueue('p');
 queue.push({str: 'high', p: 9});
@@ -713,7 +711,7 @@ queue.push({str: 'medium-low-2', p: 3});
 queue.push({str: 'medium-high', p: 7});
 queue.push({str: 'very-high', p: 15});
 while (queue.length)
-	console.log(queue.shift());*/
+  console.log(queue.shift());*/
 
 /**
  * A set container that raises on-changed events whenever the collection is altered
@@ -721,313 +719,313 @@ while (queue.length)
  * @export
  */
 function HashSet(onchanged) {
-	/** A dictionary of all values in the hash set @type {!Object<number, boolean>} */var hash = {};
-	/** The number of values in this hash set @type {number} */this.length = 0;
-	/** A callback to be raised whenever values have been added or deleted @public @type {function()} */this.onchanged = isFunction(onchanged) ? onchanged : function () {};
+  /** A dictionary of all values in the hash set @type {!Object<number, boolean>} */var hash = {};
+  /** The number of values in this hash set @type {number} */this.length = 0;
+  /** A callback to be raised whenever values have been added or deleted @public @type {function()} */this.onchanged = isFunction(onchanged) ? onchanged : function () {};
 
-	this['push'] =
-	/**
-  * Add a single value into the hash set
-  * @param  {number} value
-  */
-	this.push = function (value) {
-		if (hash[value] !== true) {
-			hash[value] = true;
-			++this.length;
-			this.onchanged();
-		}
-	};
+  this['push'] =
+  /**
+   * Add a single value into the hash set
+   * @param  {number} value
+   */
+  this.push = function (value) {
+    if (hash[value] !== true) {
+      hash[value] = true;
+      ++this.length;
+      this.onchanged();
+    }
+  };
 
-	this['append'] =
-	/**
-  * Add an iterable list of values into the hash set
-  * @param  {Object} values
-  */
-	this.append = function (values) {
-		//var t = performance.now();
-		var invalidate = false,
-		    self = this;
-		values.forEach(function (value) {
-			if (hash[value] !== true) {
-				hash[value] = true;
-				++self.length;
-				invalidate = true;
-			}
-		});
-		//console.log('append ' + values.length + ': ' + (performance.now() - t));
-		if (invalidate) this.onchanged();
-	};
+  this['append'] =
+  /**
+   * Add an iterable list of values into the hash set
+   * @param  {Object} values
+   */
+  this.append = function (values) {
+    //var t = performance.now();
+    var invalidate = false,
+        self = this;
+    values.forEach(function (value) {
+      if (hash[value] !== true) {
+        hash[value] = true;
+        ++self.length;
+        invalidate = true;
+      }
+    });
+    //console.log('append ' + values.length + ': ' + (performance.now() - t));
+    if (invalidate) this.onchanged();
+  };
 
-	this['set'] =
-	/**
-  * Reset the hash set to only contain the given value
-  * @param  {number} value
-  */
-	this.set = function (value) {
-		if (this.length !== 1 || hash[value] !== true) {
-			hash = {};
-			hash[value] = true;
-			this.length = 1;
-			this.onchanged();
-		}
-	};
+  this['set'] =
+  /**
+   * Reset the hash set to only contain the given value
+   * @param  {number} value
+   */
+  this.set = function (value) {
+    if (this.length !== 1 || hash[value] !== true) {
+      hash = {};
+      hash[value] = true;
+      this.length = 1;
+      this.onchanged();
+    }
+  };
 
-	this['assign'] =
-	/**
-  * Reset the hash set to only contain the given iterable list of values
-  * @param  {Object} values
-  */
-	this.assign = function (values) {
-		if (values.length === 0) {
-			this.clear();
-			return;
-		}
+  this['assign'] =
+  /**
+   * Reset the hash set to only contain the given iterable list of values
+   * @param  {Object} values
+   */
+  this.assign = function (values) {
+    if (values.length === 0) {
+      this.clear();
+      return;
+    }
 
-		//var t = performance.now();
-		var newHash = {},
-		    identical = values.length === this.length;
-		values.forEach(function (value) {
-			if (identical && hash[value] !== true) identical = false;
-			newHash[value] = true;
-		});
+    //var t = performance.now();
+    var newHash = {},
+        identical = values.length === this.length;
+    values.forEach(function (value) {
+      if (identical && hash[value] !== true) identical = false;
+      newHash[value] = true;
+    });
 
-		hash = newHash;
-		this.length = values.length;
-		//console.log('assign ' + values.length + ': ' + (performance.now() - t));
+    hash = newHash;
+    this.length = values.length;
+    //console.log('assign ' + values.length + ': ' + (performance.now() - t));
 
-		if (identical === false) this.onchanged();
-	};
+    if (identical === false) this.onchanged();
+  };
 
-	this['assignRange'] =
-	/**
-  * Reset the hash set to only contain numbers 0 through n - 1
-  * @param  {number} n The number of values to set
-  */
-	this.assignRange = function (n) {
-		if (n <= 0) return;
-		//var t = performance.now();
-		hash = new Array(n);
-		hash.fill(true);
-		this.length = n;
-		//console.log('assignRange ' + n + ': ' + (performance.now() - t));
-		this.onchanged();
-	};
+  this['assignRange'] =
+  /**
+   * Reset the hash set to only contain numbers 0 through n - 1
+   * @param  {number} n The number of values to set
+   */
+  this.assignRange = function (n) {
+    if (n <= 0) return;
+    //var t = performance.now();
+    hash = new Array(n);
+    hash.fill(true);
+    this.length = n;
+    //console.log('assignRange ' + n + ': ' + (performance.now() - t));
+    this.onchanged();
+  };
 
-	this['erase'] =
-	/**
-  * Remove the given value from the hash set
-  * @param  {number} value The value to remove
-  */
-	this.erase = function (value) {
-		if (hash[value] === true) {
-			delete hash[value];
-			--this.length;
-			this.onchanged();
-		}
-	};
+  this['erase'] =
+  /**
+   * Remove the given value from the hash set
+   * @param  {number} value The value to remove
+   */
+  this.erase = function (value) {
+    if (hash[value] === true) {
+      delete hash[value];
+      --this.length;
+      this.onchanged();
+    }
+  };
 
-	this['remove'] =
-	/**
-  * Remove the given iterable list of values from the hash set
-  * @param  {Object} values The values to remove
-  */
-	this.remove = function (values) {
-		//var t = performance.now();
-		var invalidate = false,
-		    self = this;
-		values.forEach(function (value) {
-			if (hash[value] === true) {
-				delete hash[value];
-				--self.length;
-				invalidate = true;
-			}
-		});
-		//console.log('remove ' + values.length + ': ' + (performance.now() - t));
-		if (invalidate) this.onchanged();
-	};
+  this['remove'] =
+  /**
+   * Remove the given iterable list of values from the hash set
+   * @param  {Object} values The values to remove
+   */
+  this.remove = function (values) {
+    //var t = performance.now();
+    var invalidate = false,
+        self = this;
+    values.forEach(function (value) {
+      if (hash[value] === true) {
+        delete hash[value];
+        --self.length;
+        invalidate = true;
+      }
+    });
+    //console.log('remove ' + values.length + ': ' + (performance.now() - t));
+    if (invalidate) this.onchanged();
+  };
 
-	this['isempty'] =
-	/**
-  * @return {boolean} True, if the hash set doesn't contain any values
-  */
-	this.isempty = function () {
-		return this.length === 0;
-	};
+  this['isempty'] =
+  /**
+   * @return {boolean} True, if the hash set doesn't contain any values
+   */
+  this.isempty = function () {
+    return this.length === 0;
+  };
 
-	this['clear'] =
-	/**
-  * Resets the hash set to an empty set
-  */
-	this.clear = function () {
-		if (this.length !== 0) {
-			hash = {};
-			this.length = 0;
-			this.onchanged();
-		}
-	};
+  this['clear'] =
+  /**
+   * Resets the hash set to an empty set
+   */
+  this.clear = function () {
+    if (this.length !== 0) {
+      hash = {};
+      this.length = 0;
+      this.onchanged();
+    }
+  };
 
-	this['forEach'] =
-	/**
-  * Calls the given function once for each value in the hash set
-  * @param  {function(number)} callback
-  */
-	this.forEach = function (callback) {
-		//var last = Number.MIN_SAFE_INTEGER, badOrder = 0;
-		for (var value in hash) {
-			value = Number.parseInt(value, 10);
-			//if (value < last) ++badOrder; last = value;
-			callback(value);
-		}
-		//if (badOrder !== 0) console.log('bad order: ' + badOrder + ' times');
-	};
+  this['forEach'] =
+  /**
+   * Calls the given function once for each value in the hash set
+   * @param  {function(number)} callback
+   */
+  this.forEach = function (callback) {
+    //var last = Number.MIN_SAFE_INTEGER, badOrder = 0;
+    for (var value in hash) {
+      value = Number.parseInt(value, 10);
+      //if (value < last) ++badOrder; last = value;
+      callback(value);
+    }
+    //if (badOrder !== 0) console.log('bad order: ' + badOrder + ' times');
+  };
 
-	this['get'] =
-	/**
-  * @return  {Uint32Array} A sorted array of all values in the hash set
-  */
-	this.get = function () {
-		return new Uint32Array(Object.keys(hash).map(Number));
-	};
+  this['get'] =
+  /**
+   * @return  {Uint32Array} A sorted array of all values in the hash set
+   */
+  this.get = function () {
+    return new Uint32Array(Object.keys(hash).map(Number));
+  };
 
-	this['size'] =
-	/**
-  * @return  {number} The number of values in the hash set
-  */
-	this.size = function () {
-		return this.length;
-	};
+  this['size'] =
+  /**
+   * @return  {number} The number of values in the hash set
+   */
+  this.size = function () {
+    return this.length;
+  };
 
-	this['contains'] =
-	/**
-  * @param  {number} value
-  * @return  {boolean} True, if the given value is part of the hash set
-  */
-	this.contains = function (value) {
-		return hash[value] === true;
-	};
+  this['contains'] =
+  /**
+   * @param  {number} value
+   * @return  {boolean} True, if the given value is part of the hash set
+   */
+  this.contains = function (value) {
+    return hash[value] === true;
+  };
 }
 /*function HashSet(onchanged) // Set-based (slower on Firefox!)
 {
-	var hash = new Set();
-	this.onchanged = isFunction(onchanged) ? onchanged : function() {};
-	
-	this.push = function(value)
-	{
-		if (!hash.has(value))
-		{
-			hash.add(value);
-			this.onchanged();
-		}
-	}
-	this.append = function(values)
-	{
+  var hash = new Set();
+  this.onchanged = isFunction(onchanged) ? onchanged : function() {};
+  
+  this.push = function(value)
+  {
+    if (!hash.has(value))
+    {
+      hash.add(value);
+      this.onchanged();
+    }
+  }
+  this.append = function(values)
+  {
 //var t = performance.now();
-		var sizeBefore = hash.size;
-		hash = new Set([...hash, ...values]);
-		var invalidate = hash.size !== sizeBefore;
+    var sizeBefore = hash.size;
+    hash = new Set([...hash, ...values]);
+    var invalidate = hash.size !== sizeBefore;
 //console.log('append ' + values.length + ': ' + (performance.now() - t));
-		if (invalidate)
-			this.onchanged();
-	}
-	this.set = function(value)
-	{
-		if (hash.size !== 1 || !hash.has(value))
-		{
-			hash = new Set([value]);
-			this.onchanged();
-		}
-	}
-	this.assign = function(values)
-	{
-		if (values.length === 0)
-		{
-			this.clear();
-			return;
-		}
-		
+    if (invalidate)
+      this.onchanged();
+  }
+  this.set = function(value)
+  {
+    if (hash.size !== 1 || !hash.has(value))
+    {
+      hash = new Set([value]);
+      this.onchanged();
+    }
+  }
+  this.assign = function(values)
+  {
+    if (values.length === 0)
+    {
+      this.clear();
+      return;
+    }
+    
 //var t = performance.now();
-		var newHash = new Set(), identical = (values.length === hash.size);
-		values.forEach(function(value) {
-			if (identical && !hash.has(value))
-				identical = false;
-			newHash.add(value);
-		});
-		
-		hash = newHash;
+    var newHash = new Set(), identical = (values.length === hash.size);
+    values.forEach(function(value) {
+      if (identical && !hash.has(value))
+        identical = false;
+      newHash.add(value);
+    });
+    
+    hash = newHash;
 //console.log('assign ' + values.length + ': ' + (performance.now() - t));
-		
-		if (identical === false)
-			this.onchanged();
-	}
-	this.assignRange = function(n)
-	{
-		if (n <= 0)
-			return;
+    
+    if (identical === false)
+      this.onchanged();
+  }
+  this.assignRange = function(n)
+  {
+    if (n <= 0)
+      return;
 //var t = performance.now();
-		hash = new Set();
-		for (var i = 0; i < n; ++i)
-			hash.add(i);
+    hash = new Set();
+    for (var i = 0; i < n; ++i)
+      hash.add(i);
 //console.log('assignRange ' + n + ': ' + (performance.now() - t));
-		this.onchanged();
-	}
-	this.erase = function(value)
-	{
-		if (hash.has(value))
-		{
-			hash.delete(value);
-			this.onchanged();
-		}
-	}
-	this.remove = function(values)
-	{
+    this.onchanged();
+  }
+  this.erase = function(value)
+  {
+    if (hash.has(value))
+    {
+      hash.delete(value);
+      this.onchanged();
+    }
+  }
+  this.remove = function(values)
+  {
 //var t = performance.now();
-		var invalidate = false, self = this;
-		values.forEach(function(value) {
-			if (hash.has(value))
-			{
-				hash.delete(value);
-				--self.length;
-				invalidate = true;
-			}
-		});
+    var invalidate = false, self = this;
+    values.forEach(function(value) {
+      if (hash.has(value))
+      {
+        hash.delete(value);
+        --self.length;
+        invalidate = true;
+      }
+    });
 //console.log('remove ' + values.length + ': ' + (performance.now() - t));
-		if (invalidate)
-			this.onchanged();
-	}
-	this.isempty = function()
-	{
-		return hash.size === 0;
-	}
-	this.clear = function()
-	{
-		if (hash.size !== 0)
-		{
-			hash = new Set();
-			this.onchanged();
-		}
-	}
-	this.forEach = function(callback)
-	{
+    if (invalidate)
+      this.onchanged();
+  }
+  this.isempty = function()
+  {
+    return hash.size === 0;
+  }
+  this.clear = function()
+  {
+    if (hash.size !== 0)
+    {
+      hash = new Set();
+      this.onchanged();
+    }
+  }
+  this.forEach = function(callback)
+  {
 //var last = Number.MIN_SAFE_INTEGER, badOrder = 0;
-		for (var value of hash)
-		{
+    for (var value of hash)
+    {
 //if (value < last) ++badOrder; last = value;
-			callback(value);
-		}
+      callback(value);
+    }
 //if (badOrder !== 0) console.log('bad order: ' + badOrder + ' times');
-	}
-	this.get = function()
-	{
-		return new Uint32Array(hash.keys());
-	}
-	this.size = function()
-	{
-		return hash.size;
-	}
-	this.contains = function(value)
-	{
-		return hash.has(value);
-	}
+  }
+  this.get = function()
+  {
+    return new Uint32Array(hash.keys());
+  }
+  this.size = function()
+  {
+    return hash.size;
+  }
+  this.contains = function(value)
+  {
+    return hash.has(value);
+  }
 }*/
 
 /***/ }),
@@ -1121,8 +1119,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["LoadTextureFromImage"] = LoadTextureFromImage;
 /* harmony export (immutable) */ __webpack_exports__["LoadTextureFromByteArray"] = LoadTextureFromByteArray;
 /* harmony export (immutable) */ __webpack_exports__["LoadTextureFromFloatArray"] = LoadTextureFromFloatArray;
-/* eslint-disable */
-
 var libUtility = __webpack_require__(0);
 
 var currentShader = null;
@@ -1136,198 +1132,198 @@ var currentShader = null;
  * @param {boolean=} debug = false
  */
 function Shader(gl, vs, fs, debug) {
-	if (libUtility.isArray(vs)) vs = vs.join('\n');
-	if (libUtility.isArray(fs)) fs = fs.join('\n');
-	if (debug === true) {
-		console.log(vs);
-		console.log(fs);
-	}
+  if (libUtility.isArray(vs)) vs = vs.join('\n');
+  if (libUtility.isArray(fs)) fs = fs.join('\n');
+  if (debug === true) {
+    console.log(vs);
+    console.log(fs);
+  }
 
-	// Compile vertex shader -> vertexShader
-	var vertexShader = gl.createShader(gl.VERTEX_SHADER);
-	gl.shaderSource(vertexShader, vs);
-	gl.compileShader(vertexShader);
-	if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
-		console.log(vs);
-		alert(gl.getShaderInfoLog(vertexShader));
-		return null;
-	}
+  // Compile vertex shader -> vertexShader
+  var vertexShader = gl.createShader(gl.VERTEX_SHADER);
+  gl.shaderSource(vertexShader, vs);
+  gl.compileShader(vertexShader);
+  if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
+    console.log(vs);
+    alert(gl.getShaderInfoLog(vertexShader));
+    return null;
+  }
 
-	// Compile frament shader -> fragmentShader
-	var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-	gl.shaderSource(fragmentShader, fs);
-	gl.compileShader(fragmentShader);
-	if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
-		console.log(fs);
-		alert(gl.getShaderInfoLog(fragmentShader));
-		return null;
-	}
+  // Compile frament shader -> fragmentShader
+  var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+  gl.shaderSource(fragmentShader, fs);
+  gl.compileShader(fragmentShader);
+  if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
+    console.log(fs);
+    alert(gl.getShaderInfoLog(fragmentShader));
+    return null;
+  }
 
-	// Link shader program -> sdr
-	var sdr = gl.createProgram();
-	gl.attachShader(sdr, vertexShader);
-	gl.attachShader(sdr, fragmentShader);
-	gl.linkProgram(sdr);
-	if (!gl.getProgramParameter(sdr, gl.LINK_STATUS)) {
-		console.log(vs);
-		console.log(fs);
-		alert(gl.getProgramInfoLog(sdr));
-		return null;
-	}
+  // Link shader program -> sdr
+  var sdr = gl.createProgram();
+  gl.attachShader(sdr, vertexShader);
+  gl.attachShader(sdr, fragmentShader);
+  gl.linkProgram(sdr);
+  if (!gl.getProgramParameter(sdr, gl.LINK_STATUS)) {
+    console.log(vs);
+    console.log(fs);
+    alert(gl.getProgramInfoLog(sdr));
+    return null;
+  }
 
-	/* // Print active uniforms
- var count = gl.getProgramParameter(sdr, gl.ACTIVE_UNIFORMS);
- for (var i = 0; i < count; ++i)
- 	console.log(gl.getActiveUniform(sdr, i).name);*/
+  /* // Print active uniforms
+  var count = gl.getProgramParameter(sdr, gl.ACTIVE_UNIFORMS);
+  for (var i = 0; i < count; ++i)
+    console.log(gl.getActiveUniform(sdr, i).name);*/
 
-	this.vertexPositionAttribute = gl.getAttribLocation(sdr, "vpos");
-	this.vertexNormalAttribute = gl.getAttribLocation(sdr, "vnml");
-	this.vertexTangentAttribute = gl.getAttribLocation(sdr, "vtng");
-	this.vertexBinormalAttribute = gl.getAttribLocation(sdr, "vbnml");
-	this.VertexTexCoordAttribute = gl.getAttribLocation(sdr, "vtexcoord");
-	this.samplerUniform = gl.getUniformLocation(sdr, "uSampler");
-	this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
+  this.vertexPositionAttribute = gl.getAttribLocation(sdr, "vpos");
+  this.vertexNormalAttribute = gl.getAttribLocation(sdr, "vnml");
+  this.vertexTangentAttribute = gl.getAttribLocation(sdr, "vtng");
+  this.vertexBinormalAttribute = gl.getAttribLocation(sdr, "vbnml");
+  this.VertexTexCoordAttribute = gl.getAttribLocation(sdr, "vtexcoord");
+  this.samplerUniform = gl.getUniformLocation(sdr, "uSampler");
+  this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
 
-	this.bind = function () {
-		if (currentShader !== this) {
-			currentShader = this;
-			gl.useProgram(sdr);
-		}
-	};
+  this.bind = function () {
+    if (currentShader !== this) {
+      currentShader = this;
+      gl.useProgram(sdr);
+    }
+  };
 
-	this.u1i = function (uniformString) {
-		this.bind();
-		var uniform = gl.getUniformLocation(sdr, uniformString);
-		if (uniform) return function (i) {
-			this.bind();
-			gl.uniform1i(uniform, i);
-			if (debug) console.log("gl.uniform1i({0}, {1})".format(uniformString, i));
-		};else return debug ? function (i) {
-			return console.log("Passing value to unused uniform " + uniformString);
-		} : null;
-	};
-	this.u1f = function (uniformString) {
-		this.bind();
-		var uniform = gl.getUniformLocation(sdr, uniformString);
-		if (uniform) return function (f) {
-			this.bind();
-			gl.uniform1f(uniform, f);
-			if (debug) console.log("gl.uniform1f({0}, {1})".format(uniformString, f));
-		};else return debug ? function (f) {
-			return console.log("Passing value to unused uniform " + uniformString);
-		} : null;
-	};
-	this.u2f = function (uniformString) {
-		this.bind();
-		var uniform = gl.getUniformLocation(sdr, uniformString);
-		if (uniform) return function (x, y) {
-			this.bind();
-			gl.uniform2f(uniform, x, y);
-			if (debug) console.log("gl.uniform2f({0}, {1}, {2})".format(uniformString, x, y));
-		};else return debug ? function (f) {
-			return console.log("Passing value to unused uniform " + uniformString);
-		} : null;
-	};
-	this.u2x2f = function (uniformString) {
-		this.bind();
-		var uniform = gl.getUniformLocation(sdr, uniformString);
-		if (uniform) return function (m) {
-			this.bind();
-			gl.uniformMatrix2fv(uniform, false, m);
-			if (debug) console.log("gl.uniformMatrix2fv({0}, {1})".format(uniformString, m));
-		};else return debug ? function (f) {
-			return console.log("Passing value to unused uniform " + uniformString);
-		} : null;
-	};
-	this.u3f = function (uniformString) {
-		this.bind();
-		var uniform = gl.getUniformLocation(sdr, uniformString);
-		if (uniform) return function (x, y, z) {
-			this.bind();
-			gl.uniform3f(uniform, x, y, z);
-			if (debug) console.log("gl.uniform3f({0}, {1}, {2}, {3})".format(uniformString, x, y, z));
-		};else return debug ? function (f) {
-			return console.log("Passing value to unused uniform " + uniformString);
-		} : null;
-	};
-	this.u4f = function (uniformString) {
-		this.bind();
-		var uniform = gl.getUniformLocation(sdr, uniformString);
-		if (uniform) return function (x, y, z, w) {
-			this.bind();
-			gl.uniform4f(uniform, x, y, z, w);
-			if (debug) console.log("gl.uniform4f({0}, {1}, {2}, {3}, {4})".format(uniformString, x, y, z, w));
-		};else return debug ? function (f) {
-			return console.log("Passing value to unused uniform " + uniformString);
-		} : null;
-	};
-	this.u1fv = function (uniformString) {
-		this.bind();
-		var uniform = gl.getUniformLocation(sdr, uniformString);
-		if (uniform) return function (v) {
-			this.bind();
-			gl.uniform1fv(uniform, v);
-			if (debug) console.log("gl.uniform1fv({0}, {1})".format(uniformString, v));
-		};else return debug ? function (f) {
-			return console.log("Passing value to unused uniform " + uniformString);
-		} : null;
-	};
-	this.u4fv = function (uniformString) {
-		this.bind();
-		var uniform = gl.getUniformLocation(sdr, uniformString);
-		if (uniform) return function (v) {
-			this.bind();
-			gl.uniform4fv(uniform, v);
-			if (debug) console.log("gl.uniform4fv({0}, {1})".format(uniformString, v));
-		};else return debug ? function (f) {
-			return console.log("Passing value to unused uniform " + uniformString);
-		} : null;
-	};
-	this.u4x4f = function (uniformString) {
-		this.bind();
-		var uniform = gl.getUniformLocation(sdr, uniformString);
-		if (uniform) return function (m) {
-			this.bind();
-			gl.uniformMatrix4fv(uniform, false, m);
-			if (debug) console.log("gl.uniformMatrix4fv({0}, {1})".format(uniformString, m));
-		};else return debug ? function (f) {
-			return console.log("Passing value to unused uniform " + uniformString);
-		} : null;
-	};
+  this.u1i = function (uniformString) {
+    this.bind();
+    var uniform = gl.getUniformLocation(sdr, uniformString);
+    if (uniform) return function (i) {
+      this.bind();
+      gl.uniform1i(uniform, i);
+      if (debug) console.log("gl.uniform1i({0}, {1})".format(uniformString, i));
+    };else return debug ? function (i) {
+      return console.log("Passing value to unused uniform " + uniformString);
+    } : null;
+  };
+  this.u1f = function (uniformString) {
+    this.bind();
+    var uniform = gl.getUniformLocation(sdr, uniformString);
+    if (uniform) return function (f) {
+      this.bind();
+      gl.uniform1f(uniform, f);
+      if (debug) console.log("gl.uniform1f({0}, {1})".format(uniformString, f));
+    };else return debug ? function (f) {
+      return console.log("Passing value to unused uniform " + uniformString);
+    } : null;
+  };
+  this.u2f = function (uniformString) {
+    this.bind();
+    var uniform = gl.getUniformLocation(sdr, uniformString);
+    if (uniform) return function (x, y) {
+      this.bind();
+      gl.uniform2f(uniform, x, y);
+      if (debug) console.log("gl.uniform2f({0}, {1}, {2})".format(uniformString, x, y));
+    };else return debug ? function (f) {
+      return console.log("Passing value to unused uniform " + uniformString);
+    } : null;
+  };
+  this.u2x2f = function (uniformString) {
+    this.bind();
+    var uniform = gl.getUniformLocation(sdr, uniformString);
+    if (uniform) return function (m) {
+      this.bind();
+      gl.uniformMatrix2fv(uniform, false, m);
+      if (debug) console.log("gl.uniformMatrix2fv({0}, {1})".format(uniformString, m));
+    };else return debug ? function (f) {
+      return console.log("Passing value to unused uniform " + uniformString);
+    } : null;
+  };
+  this.u3f = function (uniformString) {
+    this.bind();
+    var uniform = gl.getUniformLocation(sdr, uniformString);
+    if (uniform) return function (x, y, z) {
+      this.bind();
+      gl.uniform3f(uniform, x, y, z);
+      if (debug) console.log("gl.uniform3f({0}, {1}, {2}, {3})".format(uniformString, x, y, z));
+    };else return debug ? function (f) {
+      return console.log("Passing value to unused uniform " + uniformString);
+    } : null;
+  };
+  this.u4f = function (uniformString) {
+    this.bind();
+    var uniform = gl.getUniformLocation(sdr, uniformString);
+    if (uniform) return function (x, y, z, w) {
+      this.bind();
+      gl.uniform4f(uniform, x, y, z, w);
+      if (debug) console.log("gl.uniform4f({0}, {1}, {2}, {3}, {4})".format(uniformString, x, y, z, w));
+    };else return debug ? function (f) {
+      return console.log("Passing value to unused uniform " + uniformString);
+    } : null;
+  };
+  this.u1fv = function (uniformString) {
+    this.bind();
+    var uniform = gl.getUniformLocation(sdr, uniformString);
+    if (uniform) return function (v) {
+      this.bind();
+      gl.uniform1fv(uniform, v);
+      if (debug) console.log("gl.uniform1fv({0}, {1})".format(uniformString, v));
+    };else return debug ? function (f) {
+      return console.log("Passing value to unused uniform " + uniformString);
+    } : null;
+  };
+  this.u4fv = function (uniformString) {
+    this.bind();
+    var uniform = gl.getUniformLocation(sdr, uniformString);
+    if (uniform) return function (v) {
+      this.bind();
+      gl.uniform4fv(uniform, v);
+      if (debug) console.log("gl.uniform4fv({0}, {1})".format(uniformString, v));
+    };else return debug ? function (f) {
+      return console.log("Passing value to unused uniform " + uniformString);
+    } : null;
+  };
+  this.u4x4f = function (uniformString) {
+    this.bind();
+    var uniform = gl.getUniformLocation(sdr, uniformString);
+    if (uniform) return function (m) {
+      this.bind();
+      gl.uniformMatrix4fv(uniform, false, m);
+      if (debug) console.log("gl.uniformMatrix4fv({0}, {1})".format(uniformString, m));
+    };else return debug ? function (f) {
+      return console.log("Passing value to unused uniform " + uniformString);
+    } : null;
+  };
 
-	this.getAttribLocation = function (attributeName) {
-		return gl.getAttribLocation(sdr, attributeName);
-	};
+  this.getAttribLocation = function (attributeName) {
+    return gl.getAttribLocation(sdr, attributeName);
+  };
 
-	this.free = function () {
-		if (vertexShader != null || fragmentShader != null || sdr != null) gl.useProgram(null);
+  this.free = function () {
+    if (vertexShader != null || fragmentShader != null || sdr != null) gl.useProgram(null);
 
-		if (vertexShader != null) {
-			gl.deleteShader(vertexShader);
-			vertexShader = null;
-		}
-		if (fragmentShader != null) {
-			gl.deleteShader(fragmentShader);
-			fragmentShader = null;
-		}
-		if (sdr != null) {
-			gl.deleteProgram(sdr);
-			sdr = null;
-		}
-	};
+    if (vertexShader != null) {
+      gl.deleteShader(vertexShader);
+      vertexShader = null;
+    }
+    if (fragmentShader != null) {
+      gl.deleteShader(fragmentShader);
+      fragmentShader = null;
+    }
+    if (sdr != null) {
+      gl.deleteProgram(sdr);
+      sdr = null;
+    }
+  };
 }
 
 function validateGLSL(gl, code) {
-	var vertexShader = gl.createShader(gl.VERTEX_SHADER);
-	gl.shaderSource(vertexShader, "void main() {} " + code);
-	gl.compileShader(vertexShader);
-	if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
-		var err = gl.getShaderInfoLog(vertexShader);
-		gl.deleteShader(vertexShader);
-		return err;
-	}
-	gl.deleteShader(vertexShader);
-	return true;
+  var vertexShader = gl.createShader(gl.VERTEX_SHADER);
+  gl.shaderSource(vertexShader, "void main() {} " + code);
+  gl.compileShader(vertexShader);
+  if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
+    var err = gl.getShaderInfoLog(vertexShader);
+    gl.deleteShader(vertexShader);
+    return err;
+  }
+  gl.deleteShader(vertexShader);
+  return true;
 }
 
 /**
@@ -1345,203 +1341,203 @@ function validateGLSL(gl, code) {
  * @param {number=} _ndim = 3
  */
 function Mesh(_gl, positions, normals, tangents, binormals, texcoords, indices, _primitivetype, _ndim) {
-	var gl = _gl;
-	var posbuffer, nmlbuffer, tgtbuffer, bnmbuffer, texcoordbuffer, idxbuffer;
-	var primitivetype, numvertices, numindices;
-	var ndim;
+  var gl = _gl;
+  var posbuffer, nmlbuffer, tgtbuffer, bnmbuffer, texcoordbuffer, idxbuffer;
+  var primitivetype, numvertices, numindices;
+  var ndim;
 
-	this.reset = function (positions, normals, tangents, binormals, texcoords, indices, _primitivetype, _ndim) {
-		ndim = _ndim ? _ndim : 3;
-		primitivetype = _primitivetype;
-		numvertices = Math.floor(positions.length / ndim);
-		numindices = 0;
+  this.reset = function (positions, normals, tangents, binormals, texcoords, indices, _primitivetype, _ndim) {
+    ndim = _ndim ? _ndim : 3;
+    primitivetype = _primitivetype;
+    numvertices = Math.floor(positions.length / ndim);
+    numindices = 0;
 
-		if (!posbuffer) posbuffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
-		if (normals) {
-			if (!nmlbuffer) nmlbuffer = gl.createBuffer();
-			gl.bindBuffer(gl.ARRAY_BUFFER, nmlbuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, normals, gl.STATIC_DRAW);
-		} else if (!nmlbuffer) gl.deleteBuffer(nmlbuffer);
-		if (tangents) {
-			if (!tgtbuffer) tgtbuffer = gl.createBuffer();
-			gl.bindBuffer(gl.ARRAY_BUFFER, tgtbuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, tangents, gl.STATIC_DRAW);
-		} else if (!tgtbuffer) gl.deleteBuffer(tgtbuffer);
-		if (binormals) {
-			if (!bnmbuffer) bnmbuffer = gl.createBuffer();
-			gl.bindBuffer(gl.ARRAY_BUFFER, bnmbuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, binormals, gl.STATIC_DRAW);
-		} else if (!bnmbuffer) gl.deleteBuffer(bnmbuffer);
-		if (texcoords) {
-			if (!texcoordbuffer) texcoordbuffer = gl.createBuffer();
-			gl.bindBuffer(gl.ARRAY_BUFFER, texcoordbuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, texcoords, gl.STATIC_DRAW);
-		} else if (!texcoordbuffer) gl.deleteBuffer(texcoordbuffer);
-		if (indices) {
-			if (!idxbuffer) idxbuffer = gl.createBuffer();
-			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxbuffer);
-			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
-			numindices = indices.length;
-			if (typeof primitivetype === 'undefined') primitivetype = gl.TRIANGLES; // Default primitive type for indexed geometry is TRIANGLES
-		} else {
-			if (!idxbuffer) gl.deleteBuffer(idxbuffer);
-			if (typeof primitivetype === 'undefined') primitivetype = gl.TRIANGLE_STRIP; // Default primitive type for non-indexed geometry is TRIANGLE_STRIP
-		}
-	};
-	if (positions) // Mesh vertex positions array can't be null
-		this.reset(positions, normals, tangents, binormals, texcoords, indices, _primitivetype, _ndim);
+    if (!posbuffer) posbuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+    if (normals) {
+      if (!nmlbuffer) nmlbuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, nmlbuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, normals, gl.STATIC_DRAW);
+    } else if (!nmlbuffer) gl.deleteBuffer(nmlbuffer);
+    if (tangents) {
+      if (!tgtbuffer) tgtbuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, tgtbuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, tangents, gl.STATIC_DRAW);
+    } else if (!tgtbuffer) gl.deleteBuffer(tgtbuffer);
+    if (binormals) {
+      if (!bnmbuffer) bnmbuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, bnmbuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, binormals, gl.STATIC_DRAW);
+    } else if (!bnmbuffer) gl.deleteBuffer(bnmbuffer);
+    if (texcoords) {
+      if (!texcoordbuffer) texcoordbuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, texcoordbuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, texcoords, gl.STATIC_DRAW);
+    } else if (!texcoordbuffer) gl.deleteBuffer(texcoordbuffer);
+    if (indices) {
+      if (!idxbuffer) idxbuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxbuffer);
+      gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+      numindices = indices.length;
+      if (typeof primitivetype === 'undefined') primitivetype = gl.TRIANGLES; // Default primitive type for indexed geometry is TRIANGLES
+    } else {
+      if (!idxbuffer) gl.deleteBuffer(idxbuffer);
+      if (typeof primitivetype === 'undefined') primitivetype = gl.TRIANGLE_STRIP; // Default primitive type for non-indexed geometry is TRIANGLE_STRIP
+    }
+  };
+  if (positions) // Mesh vertex positions array can't be null
+    this.reset(positions, normals, tangents, binormals, texcoords, indices, _primitivetype, _ndim);
 
-	this.bind = function (sdr, texture) {
-		if (!posbuffer) // Mesh without vertex positions can't be rendered
-			return;
+  this.bind = function (sdr, texture) {
+    if (!posbuffer) // Mesh without vertex positions can't be rendered
+      return;
 
-		sdr.bind();
+    sdr.bind();
 
-		for (var i = 0; i < 16; i++) {
-			gl.disableVertexAttribArray(i);
-			if (gl.ext) gl.ext.vertexAttribDivisorANGLE(i, 0);
-		}
+    for (var i = 0; i < 16; i++) {
+      gl.disableVertexAttribArray(i);
+      if (gl.ext) gl.ext.vertexAttribDivisorANGLE(i, 0);
+    }
 
-		gl.enableVertexAttribArray(sdr.vertexPositionAttribute);
-		gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
-		gl.vertexAttribPointer(sdr.vertexPositionAttribute, ndim, gl.FLOAT, false, 0, 0);
-		if (nmlbuffer && sdr.vertexNormalAttribute != -1) {
-			gl.enableVertexAttribArray(sdr.vertexNormalAttribute);
-			gl.bindBuffer(gl.ARRAY_BUFFER, nmlbuffer);
-			gl.vertexAttribPointer(sdr.vertexNormalAttribute, ndim, gl.FLOAT, false, 0, 0);
-		}
-		if (tgtbuffer && sdr.vertexTangentAttribute != -1) {
-			gl.enableVertexAttribArray(sdr.vertexTangentAttribute);
-			gl.bindBuffer(gl.ARRAY_BUFFER, tgtbuffer);
-			gl.vertexAttribPointer(sdr.vertexTangentAttribute, ndim, gl.FLOAT, false, 0, 0);
-		}
-		if (bnmbuffer && sdr.vertexBinormalAttribute != -1) {
-			gl.enableVertexAttribArray(sdr.vertexBinormalAttribute);
-			gl.bindBuffer(gl.ARRAY_BUFFER, bnmbuffer);
-			gl.vertexAttribPointer(sdr.vertexBinormalAttribute, ndim, gl.FLOAT, false, 0, 0);
-		}
-		if (texcoordbuffer && sdr.VertexTexCoordAttribute != -1) {
-			gl.enableVertexAttribArray(sdr.VertexTexCoordAttribute);
-			gl.bindBuffer(gl.ARRAY_BUFFER, texcoordbuffer);
-			gl.vertexAttribPointer(sdr.VertexTexCoordAttribute, 2, gl.FLOAT, false, 0, 0);
-		}
-		if (texture) {
-			if (libUtility.isArray(texture)) {
-				if (sdr.samplerArrayUniform) {
-					var idxarray = new Array(i);
-					for (var i = 0; i < texture.length; i++) {
-						gl.activeTexture(gl.TEXTURE0 + i);
-						gl.bindTexture(gl.TEXTURE_2D, texture[i]);
-						idxarray[i] = i;
-					}
-					gl.uniform1iv(sdr.samplerArrayUniform, idxarray);
-				}
-			} else {
-				gl.activeTexture(gl.TEXTURE0);
-				gl.bindTexture(gl.TEXTURE_2D, texture);
-				if (sdr.samplerUniform) gl.uniform1i(sdr.samplerUniform, 0);
-				if (sdr.samplerArrayUniform) gl.uniform1iv(sdr.samplerArrayUniform, [0]);
-			}
-		}
-		if (idxbuffer) gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxbuffer);
-	};
+    gl.enableVertexAttribArray(sdr.vertexPositionAttribute);
+    gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
+    gl.vertexAttribPointer(sdr.vertexPositionAttribute, ndim, gl.FLOAT, false, 0, 0);
+    if (nmlbuffer && sdr.vertexNormalAttribute != -1) {
+      gl.enableVertexAttribArray(sdr.vertexNormalAttribute);
+      gl.bindBuffer(gl.ARRAY_BUFFER, nmlbuffer);
+      gl.vertexAttribPointer(sdr.vertexNormalAttribute, ndim, gl.FLOAT, false, 0, 0);
+    }
+    if (tgtbuffer && sdr.vertexTangentAttribute != -1) {
+      gl.enableVertexAttribArray(sdr.vertexTangentAttribute);
+      gl.bindBuffer(gl.ARRAY_BUFFER, tgtbuffer);
+      gl.vertexAttribPointer(sdr.vertexTangentAttribute, ndim, gl.FLOAT, false, 0, 0);
+    }
+    if (bnmbuffer && sdr.vertexBinormalAttribute != -1) {
+      gl.enableVertexAttribArray(sdr.vertexBinormalAttribute);
+      gl.bindBuffer(gl.ARRAY_BUFFER, bnmbuffer);
+      gl.vertexAttribPointer(sdr.vertexBinormalAttribute, ndim, gl.FLOAT, false, 0, 0);
+    }
+    if (texcoordbuffer && sdr.VertexTexCoordAttribute != -1) {
+      gl.enableVertexAttribArray(sdr.VertexTexCoordAttribute);
+      gl.bindBuffer(gl.ARRAY_BUFFER, texcoordbuffer);
+      gl.vertexAttribPointer(sdr.VertexTexCoordAttribute, 2, gl.FLOAT, false, 0, 0);
+    }
+    if (texture) {
+      if (libUtility.isArray(texture)) {
+        if (sdr.samplerArrayUniform) {
+          var idxarray = new Array(i);
+          for (var i = 0; i < texture.length; i++) {
+            gl.activeTexture(gl.TEXTURE0 + i);
+            gl.bindTexture(gl.TEXTURE_2D, texture[i]);
+            idxarray[i] = i;
+          }
+          gl.uniform1iv(sdr.samplerArrayUniform, idxarray);
+        }
+      } else {
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        if (sdr.samplerUniform) gl.uniform1i(sdr.samplerUniform, 0);
+        if (sdr.samplerArrayUniform) gl.uniform1iv(sdr.samplerArrayUniform, [0]);
+      }
+    }
+    if (idxbuffer) gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxbuffer);
+  };
 
-	this.draw = function () {
-		if (!posbuffer) // Mesh without vertex positions can't be rendered
-			return;
+  this.draw = function () {
+    if (!posbuffer) // Mesh without vertex positions can't be rendered
+      return;
 
-		if (idxbuffer) gl.drawElements(primitivetype, numindices, gl.UNSIGNED_SHORT, 0);else gl.drawArrays(primitivetype, 0, numvertices);
-	};
+    if (idxbuffer) gl.drawElements(primitivetype, numindices, gl.UNSIGNED_SHORT, 0);else gl.drawArrays(primitivetype, 0, numvertices);
+  };
 
-	this.free = function () {
-		if (posbuffer) {
-			gl.deleteBuffer(posbuffer);
-			posbuffer = null;
-		}
-		if (nmlbuffer) {
-			gl.deleteBuffer(posbuffer);
-			posbuffer = null;
-		}
-		if (tgtbuffer) {
-			gl.deleteBuffer(posbuffer);
-			posbuffer = null;
-		}
-		if (bnmbuffer) {
-			gl.deleteBuffer(posbuffer);
-			posbuffer = null;
-		}
-		if (texcoordbuffer) {
-			gl.deleteBuffer(posbuffer);
-			posbuffer = null;
-		}
-		if (idxbuffer) {
-			gl.deleteBuffer(posbuffer);
-			posbuffer = null;
-		}
-	};
+  this.free = function () {
+    if (posbuffer) {
+      gl.deleteBuffer(posbuffer);
+      posbuffer = null;
+    }
+    if (nmlbuffer) {
+      gl.deleteBuffer(posbuffer);
+      posbuffer = null;
+    }
+    if (tgtbuffer) {
+      gl.deleteBuffer(posbuffer);
+      posbuffer = null;
+    }
+    if (bnmbuffer) {
+      gl.deleteBuffer(posbuffer);
+      posbuffer = null;
+    }
+    if (texcoordbuffer) {
+      gl.deleteBuffer(posbuffer);
+      posbuffer = null;
+    }
+    if (idxbuffer) {
+      gl.deleteBuffer(posbuffer);
+      posbuffer = null;
+    }
+  };
 }
 
 // >>> Section: Textures
 
 
 function handleLoadedTexture(gl, texture, onload) {
-	gl.bindTexture(gl.TEXTURE_2D, texture);
-	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-	gl.bindTexture(gl.TEXTURE_2D, null);
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.bindTexture(gl.TEXTURE_2D, null);
 
-	if (typeof onload == 'function') onload(texture);
+  if (typeof onload == 'function') onload(texture);
 }
 function LoadTexture(gl, filename, onload) {
-	var texture = gl.createTexture();
-	texture.image = new Image();
-	texture.image.onload = function () {
-		handleLoadedTexture(gl, texture, onload);
-	};
-	texture.image.src = filename;
-	return texture;
+  var texture = gl.createTexture();
+  texture.image = new Image();
+  texture.image.onload = function () {
+    handleLoadedTexture(gl, texture, onload);
+  };
+  texture.image.src = filename;
+  return texture;
 }
 function LoadTextureFromImage(gl, image) {
-	var texture = gl.createTexture();
-	texture.image = image;
-	handleLoadedTexture(gl, texture, null);
-	return texture;
+  var texture = gl.createTexture();
+  texture.image = image;
+  handleLoadedTexture(gl, texture, null);
+  return texture;
 }
 function LoadTextureFromByteArray(gl, array, width, height) {
-	var texture = gl.createTexture();
-	texture.byteArray = array;
-	gl.bindTexture(gl.TEXTURE_2D, texture);
-	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
-	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, array);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-	gl.bindTexture(gl.TEXTURE_2D, null);
-	return texture;
+  var texture = gl.createTexture();
+  texture.byteArray = array;
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, array);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.bindTexture(gl.TEXTURE_2D, null);
+  return texture;
 }
 function LoadTextureFromFloatArray(gl, array, width, height) {
-	if (gl.getExtension('OES_texture_float') === null) {
-		console.warn("GlobalView warning: The browser doesn't support floatingpoint textures");
-		return null;
-	}
-	var texture = gl.createTexture();
-	texture.floatArray = array;
-	gl.bindTexture(gl.TEXTURE_2D, texture);
-	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
-	gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, width, height, 0, gl.LUMINANCE, gl.FLOAT, array);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-	gl.bindTexture(gl.TEXTURE_2D, null);
-	return texture;
+  if (gl.getExtension('OES_texture_float') === null) {
+    console.warn("GlobalView warning: The browser doesn't support floatingpoint textures");
+    return null;
+  }
+  var texture = gl.createTexture();
+  texture.floatArray = array;
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, width, height, 0, gl.LUMINANCE, gl.FLOAT, array);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.bindTexture(gl.TEXTURE_2D, null);
+  return texture;
 }
 
 /***/ }),
@@ -1612,8 +1608,6 @@ THE SOFTWARE. */
 /* 4 */
 /***/ (function(module, exports) {
 
-/* eslint-disable */
-
 /**
  * Blocks of GLSL shader code. Blocks starting with vs... are vertex shaders, 
  * blocks starting with fs... are fragment shaders
@@ -1623,7 +1617,7 @@ THE SOFTWARE. */
 */
 var Shaders = {};
 module.exports = {
-	Shaders: Shaders
+  Shaders: Shaders
 };
 
 /**
@@ -1631,22 +1625,22 @@ module.exports = {
  * @static
  * @readonly
 */
-Shaders.vsSimple = "attribute vec3 vpos;\nattribute vec2 vtexcoord;\nuniform mat4 matWorldViewProj;\nvarying vec2 uv;\n\nvoid main()\n{\n\tgl_Position = matWorldViewProj * vec4(vpos, 1.0);\n\tuv = vtexcoord;\n}\n";
-Shaders.fsLine = "precision mediump float;\nuniform vec4 color;\n\nvoid main()\n{\n\tgl_FragColor = color;\n}\n";
-Shaders.vsTextured = "attribute vec3 vpos;\nattribute vec2 vtexcoord;\nuniform mat4 matWorldViewProj;\nvarying vec2 uv;\n\nvoid main()\n{\n\tgl_Position = matWorldViewProj * vec4(vpos, 1.0);\n\tuv = vtexcoord;\n}\n";
-Shaders.vsTextured2 = "attribute vec3 vpos;\nattribute vec2 vtexcoord;\nuniform mat4 matWorldViewProj;\nuniform mat2 matTexCoordTransform;\nvarying vec2 uv;\n\nvoid main()\n{\n\tgl_Position = matWorldViewProj * vec4(vpos, 1.0);\n\tuv = matTexCoordTransform * vtexcoord;\n}\n";
-Shaders.fsTextured = "precision mediump float;\nvarying vec2 uv;\nuniform sampler2D uSampler;\n\nvoid main()\n{\n\tgl_FragColor = texture2D(uSampler, uv);\n}\n";
-Shaders.fsTextured1D = "precision mediump float;\nvarying vec2 uv;\nuniform sampler2D uSampler;\n\nvoid main()\n{\n\tgl_FragColor = texture2D(uSampler, vec2(uv.y, 0.5));\n}\n";
-Shaders.fsViewDensityMap = "precision mediump float;\nvarying vec2 uv;\nuniform float scale;\nuniform vec3 color;\nuniform sampler2D uSamplers[2];\n\nvoid main()\n{\n\tfloat depth = texture2D(uSamplers[0], uv).r * scale;\n\t//gl_FragColor = vec4(texture2D(uSamplers[1], vec2(depth, 0.5)).rgb, 1.0);\n\tgl_FragColor = vec4(color, depth);\n}\n";
+Shaders.vsSimple = "attribute vec3 vpos;\nattribute vec2 vtexcoord;\nuniform mat4 matWorldViewProj;\nvarying vec2 uv;\n\nvoid main()\n{\n  gl_Position = matWorldViewProj * vec4(vpos, 1.0);\n  uv = vtexcoord;\n}\n";
+Shaders.fsLine = "precision mediump float;\nuniform vec4 color;\n\nvoid main()\n{\n  gl_FragColor = color;\n}\n";
+Shaders.vsTextured = "attribute vec3 vpos;\nattribute vec2 vtexcoord;\nuniform mat4 matWorldViewProj;\nvarying vec2 uv;\n\nvoid main()\n{\n  gl_Position = matWorldViewProj * vec4(vpos, 1.0);\n  uv = vtexcoord;\n}\n";
+Shaders.vsTextured2 = "attribute vec3 vpos;\nattribute vec2 vtexcoord;\nuniform mat4 matWorldViewProj;\nuniform mat2 matTexCoordTransform;\nvarying vec2 uv;\n\nvoid main()\n{\n  gl_Position = matWorldViewProj * vec4(vpos, 1.0);\n  uv = matTexCoordTransform * vtexcoord;\n}\n";
+Shaders.fsTextured = "precision mediump float;\nvarying vec2 uv;\nuniform sampler2D uSampler;\n\nvoid main()\n{\n  gl_FragColor = texture2D(uSampler, uv);\n}\n";
+Shaders.fsTextured1D = "precision mediump float;\nvarying vec2 uv;\nuniform sampler2D uSampler;\n\nvoid main()\n{\n  gl_FragColor = texture2D(uSampler, vec2(uv.y, 0.5));\n}\n";
+Shaders.fsViewDensityMap = "precision mediump float;\nvarying vec2 uv;\nuniform float scale;\nuniform vec3 color;\nuniform sampler2D uSamplers[2];\n\nvoid main()\n{\n  float depth = texture2D(uSamplers[0], uv).r * scale;\n  //gl_FragColor = vec4(texture2D(uSamplers[1], vec2(depth, 0.5)).rgb, 1.0);\n  gl_FragColor = vec4(color, depth);\n}\n";
 
-Shaders.vsDataPoint = "uniform sampler2D uSampler;\nuniform float pointOpacity, pointSize;\nuniform bool flipY;\nvarying vec4 color;\n\nvoid main()\n{\n\tvec3 pos = getPos();\n\tcolor = texture2D(uSampler, vec2(pos.z, 0.5));\n\tcolor.a *= pointOpacity;\n\tgl_Position = vec4(pos.x, flipY ? -pos.y : pos.y, 0.0, 1.0);\n\tgl_PointSize = pointSize;\n}\n";
-Shaders.fsDataPoint = "varying vec4 color;\n\nvoid main()\n{\n\t//float t = clamp(1.0 - length(gl_PointCoord * 2.0 - 1.0), 0.0, 1.0);\n\tgl_FragColor = vec4(color.rgb, color.a * clamp(opacityMap(gl_PointCoord * 2.0 - 1.0), 0.0, 1.0));\n}\n";
-Shaders.vsDataLine = "uniform sampler2D uSampler;\nuniform float pointOpacity, pointSize;\nuniform bool flipY;\nuniform mat2 lineTransform;\nattribute vec2 lineOffset;\nvarying vec4 color;\n\nvoid main()\n{\n\tvec4 pos = getPos();\n\tcolor = texture2D(uSampler, vec2(pos.z, 0.5));\n\tcolor.a *= pointOpacity;\n\tgl_Position = vec4(pos.x, flipY ? -pos.y : pos.y, 0.0, 1.0) + vec4(lineOffset * vec2(pos.w, 1.0) * lineTransform, 0.0, 0.0);\n\tgl_PointSize = pointSize;\n}\n";
-Shaders.fsDataLine = "varying vec4 color;\n\nvoid main()\n{\n\tgl_FragColor = color;\n}\n";
-Shaders.vsDensityMap = "void main()\n{\n\tvec3 pos = getPos();\n\tgl_Position = vec4(pos.xy, 0.0, 1.0);\n\tgl_PointSize = 1.0;\n}\n";
-Shaders.fsDensityMap = "precision highp float;\n\nvoid main()\n{\n\tgl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n}\n";
-Shaders.vsBlurDensityMap = "attribute vec3 vpos;\nattribute vec2 vtexcoord;\nvarying vec2 uv;\n\nvoid main()\n{\n\tgl_Position = vec4(vpos, 1.0);\n\tuv = vtexcoord;\n}\n";
-Shaders.fsBlurDensityMap = "precision highp float;\nvarying vec2 uv;\nuniform sampler2D uSampler;\nuniform vec2 pixelSize;\nuniform float gauss[33 * 33];\n\nvec4 pack_float(float value)\n{\n\tvalue = clamp(value, 0.0, 1.0);\n\treturn vec4(value, mod(value * 256.0, 256.0 / 255.0), mod(value * 65536.0, 256.0 / 255.0), 1.0);\n\t\n\t/*value = clamp(value, 0.0, 1.0);\n\tif(value <= 1e-5)\n\t\treturn vec4(0.0, 0.0, 0.0, 1.0);\n\tvalue = value * 16777214.0 - 1.0;\n\treturn vec4(mod(value / 65536.0, 255.0) / 255.0, mod(value / 256.0, 255.0) / 255.0, mod(value / 1.0, 255.0) / 255.0, 1.0);*/\n}\nfloat unpack_float(vec4 rgba)\n{\n\tfloat value = floor(rgba.r * 255.0) * 65536.0 + floor(rgba.g * 255.0) * 256.0 + floor(rgba.b * 255.0);\n\tvalue = value / 16777215.0; // 16777215.0 == float(0xffffff)\n\tvalue = clamp(value, 0.0, 1.0);\n\treturn value;\n\t\n\t\n\t/*if(rgba.a <= 1e-5)\n\t\treturn -1e20;\n\tfloat valueI = floor(rgba.r * 255.0) * 65536.0 + floor(rgba.g * 255.0) * 256.0 + floor(rgba.b * 255.0);\n\tif(valueI < 0.5)\n\t\treturn -1e20;\n\tfloat valueS = (valueI - 1.0) / 16777214.0; // 0 is reserved as 'nothing' //float(0xfffffe)\n\tvalueS = clamp(valueS, 0.0, 1.0);\n\treturn valueS;*/\n}\n\nvoid main()\n{\n\tfloat c = 0.0;\n\tfor (int y = -16; y <= 16; ++y)\n\t\tfor (int x = -16; x <= 16; ++x)\n\t\t\tc += unpack_float(texture2D(uSampler, uv + pixelSize * vec2(x, y))) * gauss[(y + 16) * 33 + x + 16];\n\tgl_FragColor = pack_float(c);\n}\n";
+Shaders.vsDataPoint = "uniform sampler2D uSampler;\nuniform float pointOpacity, pointSize;\nuniform bool flipY;\nvarying vec4 color;\n\nvoid main()\n{\n  vec3 pos = getPos();\n  color = texture2D(uSampler, vec2(pos.z, 0.5));\n  color.a *= pointOpacity;\n  gl_Position = vec4(pos.x, flipY ? -pos.y : pos.y, 0.0, 1.0);\n  gl_PointSize = pointSize;\n}\n";
+Shaders.fsDataPoint = "varying vec4 color;\n\nvoid main()\n{\n  //float t = clamp(1.0 - length(gl_PointCoord * 2.0 - 1.0), 0.0, 1.0);\n  gl_FragColor = vec4(color.rgb, color.a * clamp(opacityMap(gl_PointCoord * 2.0 - 1.0), 0.0, 1.0));\n}\n";
+Shaders.vsDataLine = "uniform sampler2D uSampler;\nuniform float pointOpacity, pointSize;\nuniform bool flipY;\nuniform mat2 lineTransform;\nattribute vec2 lineOffset;\nvarying vec4 color;\n\nvoid main()\n{\n  vec4 pos = getPos();\n  color = texture2D(uSampler, vec2(pos.z, 0.5));\n  color.a *= pointOpacity;\n  gl_Position = vec4(pos.x, flipY ? -pos.y : pos.y, 0.0, 1.0) + vec4(lineOffset * vec2(pos.w, 1.0) * lineTransform, 0.0, 0.0);\n  gl_PointSize = pointSize;\n}\n";
+Shaders.fsDataLine = "varying vec4 color;\n\nvoid main()\n{\n  gl_FragColor = color;\n}\n";
+Shaders.vsDensityMap = "void main()\n{\n  vec3 pos = getPos();\n  gl_Position = vec4(pos.xy, 0.0, 1.0);\n  gl_PointSize = 1.0;\n}\n";
+Shaders.fsDensityMap = "precision highp float;\n\nvoid main()\n{\n  gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n}\n";
+Shaders.vsBlurDensityMap = "attribute vec3 vpos;\nattribute vec2 vtexcoord;\nvarying vec2 uv;\n\nvoid main()\n{\n  gl_Position = vec4(vpos, 1.0);\n  uv = vtexcoord;\n}\n";
+Shaders.fsBlurDensityMap = "precision highp float;\nvarying vec2 uv;\nuniform sampler2D uSampler;\nuniform vec2 pixelSize;\nuniform float gauss[33 * 33];\n\nvec4 pack_float(float value)\n{\n  value = clamp(value, 0.0, 1.0);\n  return vec4(value, mod(value * 256.0, 256.0 / 255.0), mod(value * 65536.0, 256.0 / 255.0), 1.0);\n  \n  /*value = clamp(value, 0.0, 1.0);\n  if(value <= 1e-5)\n    return vec4(0.0, 0.0, 0.0, 1.0);\n  value = value * 16777214.0 - 1.0;\n  return vec4(mod(value / 65536.0, 255.0) / 255.0, mod(value / 256.0, 255.0) / 255.0, mod(value / 1.0, 255.0) / 255.0, 1.0);*/\n}\nfloat unpack_float(vec4 rgba)\n{\n  float value = floor(rgba.r * 255.0) * 65536.0 + floor(rgba.g * 255.0) * 256.0 + floor(rgba.b * 255.0);\n  value = value / 16777215.0; // 16777215.0 == float(0xffffff)\n  value = clamp(value, 0.0, 1.0);\n  return value;\n  \n  \n  /*if(rgba.a <= 1e-5)\n    return -1e20;\n  float valueI = floor(rgba.r * 255.0) * 65536.0 + floor(rgba.g * 255.0) * 256.0 + floor(rgba.b * 255.0);\n  if(valueI < 0.5)\n    return -1e20;\n  float valueS = (valueI - 1.0) / 16777214.0; // 0 is reserved as 'nothing' //float(0xfffffe)\n  valueS = clamp(valueS, 0.0, 1.0);\n  return valueS;*/\n}\n\nvoid main()\n{\n  float c = 0.0;\n  for (int y = -16; y <= 16; ++y)\n    for (int x = -16; x <= 16; ++x)\n      c += unpack_float(texture2D(uSampler, uv + pixelSize * vec2(x, y))) * gauss[(y + 16) * 33 + x + 16];\n  gl_FragColor = pack_float(c);\n}\n";
 
 /***/ }),
 /* 5 */
@@ -1683,22 +1677,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["vectorLineIntersection2D"] = vectorLineIntersection2D;
 /* harmony export (immutable) */ __webpack_exports__["linesIntersect"] = linesIntersect;
 /* harmony export (immutable) */ __webpack_exports__["pointInsidePolygon"] = pointInsidePolygon;
-/* eslint-disable */
 var libUtility = __webpack_require__(0);
 
 function addTransformFunctions(cls) {
-	cls.transformX = function (x) {
-		return cls.transform[0] * x + cls.transform[1];
-	};
-	cls.transformY = function (y) {
-		return cls.transform[2] * y + cls.transform[3];
-	};
-	cls.invTransformX = function (x) {
-		return (x - cls.transform[1]) / cls.transform[0];
-	};
-	cls.invTransformY = function (y) {
-		return (y - cls.transform[3]) / cls.transform[2];
-	};
+  cls.transformX = function (x) {
+    return cls.transform[0] * x + cls.transform[1];
+  };
+  cls.transformY = function (y) {
+    return cls.transform[2] * y + cls.transform[3];
+  };
+  cls.invTransformX = function (x) {
+    return (x - cls.transform[1]) / cls.transform[0];
+  };
+  cls.invTransformY = function (y) {
+    return (y - cls.transform[3]) / cls.transform[2];
+  };
 }
 
 /**
@@ -1706,27 +1699,27 @@ function addTransformFunctions(cls) {
  * @package
  */
 function DensityMap(obj) {
-	this.data = obj.data;
-	this.width = obj.width;
-	this.height = obj.height;
-	this.minimum = obj.minimum;
-	this.maximum = obj.maximum;
-	this.scale = obj.scale;
-	this.offset = obj.offset;
-	this.transform = obj.transform;
-	this.options = obj.options;
-	this.transformX = function (x) {
-		return this.transform[0] * x + this.transform[1];
-	};
-	this.transformY = function (y) {
-		return this.transform[2] * y + this.transform[3];
-	};
-	this.invTransformX = function (x) {
-		return (x - this.transform[1]) / this.transform[0];
-	};
-	this.invTransformY = function (y) {
-		return (y - this.transform[3]) / this.transform[2];
-	};
+  this.data = obj.data;
+  this.width = obj.width;
+  this.height = obj.height;
+  this.minimum = obj.minimum;
+  this.maximum = obj.maximum;
+  this.scale = obj.scale;
+  this.offset = obj.offset;
+  this.transform = obj.transform;
+  this.options = obj.options;
+  this.transformX = function (x) {
+    return this.transform[0] * x + this.transform[1];
+  };
+  this.transformY = function (y) {
+    return this.transform[2] * y + this.transform[3];
+  };
+  this.invTransformX = function (x) {
+    return (x - this.transform[1]) / this.transform[0];
+  };
+  this.invTransformY = function (y) {
+    return (y - this.transform[3]) / this.transform[2];
+  };
 }
 
 /**
@@ -1736,71 +1729,71 @@ function DensityMap(obj) {
  * @param {DensityMapOptions=} source If not null, creates a copy of source
  */
 function DensityMapOptions(source) {
-	if (source) {
-		// Copy constructor
-		//this.targetWidth = source.targetWidth;
-		//this.targetHeight = source.targetHeight;
-		this['maxExpectedRuntime'] = source['maxExpectedRuntime'];
-		this['cutoffIntensity'] = source['cutoffIntensity'];
-		this['gaussScale'] = source['gaussScale'];
-		this['logScale'] = source['logScale'];
-		this['inflateToFit'] = source['inflateToFit'];
-		this['shrinkToFit'] = source['shrinkToFit'];
-	} else {
-		// Default constructor
-		//this.targetWidth = this.targetHeight = 1024; // Initial density map size (affected by maxExpectedRuntime, inflateToFit and shrinkToFit)
-		/**
-   * @alias maxExpectedRuntime
-   * @memberof DensityMapOptions
-   * @summary If the estimated runtime for computing the density map (in seconds) is higher than maxExpectedRuntime, the density map size is reduced
-   * @type {number}
-   * @default
-   */
-		this['maxExpectedRuntime'] = 1.0;
-		/**
-   * @alias cutoffIntensity
-   * @memberof DensityMapOptions
-   * @summary Densities below cutoffIntensity aren't computed
-   * @type {number}
-   * @default
-   */
-		this['cutoffIntensity'] = 0.001;
-		/**
-   * @alias gaussScale
-   * @memberof DensityMapOptions
-   * @summary Relative variance (variance normalized by density map size)
-   * @type {number}
-   * @default
-   */
-		this['gaussScale'] = 1000;
-		/**
-   * @alias logScale
-   * @memberof DensityMapOptions
-   * @summary When true, computes log-densities
-   * @type {boolean}
-   * @default
-   */
-		this['logScale'] = true;
-		/**
-   * @alias inflateToFit
-   * @memberof DensityMapOptions
-   * @summary When true, increases density map size to fit the full density map
-   * @type {boolean}
-   * @default
-   */
-		this['inflateToFit'] = true;
-		/**
-   * @alias shrinkToFit
-   * @memberof DensityMapOptions
-   * @summary When true, decreases density map size to the area of non-zero densities plus a zero-density border of 1 pixel thickness
-   * @type {boolean}
-   * @default
-   */
-		this['shrinkToFit'] = true;
-	}
+  if (source) {
+    // Copy constructor
+    //this.targetWidth = source.targetWidth;
+    //this.targetHeight = source.targetHeight;
+    this['maxExpectedRuntime'] = source['maxExpectedRuntime'];
+    this['cutoffIntensity'] = source['cutoffIntensity'];
+    this['gaussScale'] = source['gaussScale'];
+    this['logScale'] = source['logScale'];
+    this['inflateToFit'] = source['inflateToFit'];
+    this['shrinkToFit'] = source['shrinkToFit'];
+  } else {
+    // Default constructor
+    //this.targetWidth = this.targetHeight = 1024; // Initial density map size (affected by maxExpectedRuntime, inflateToFit and shrinkToFit)
+    /**
+     * @alias maxExpectedRuntime
+     * @memberof DensityMapOptions
+     * @summary If the estimated runtime for computing the density map (in seconds) is higher than maxExpectedRuntime, the density map size is reduced
+     * @type {number}
+     * @default
+     */
+    this['maxExpectedRuntime'] = 1.0;
+    /**
+     * @alias cutoffIntensity
+     * @memberof DensityMapOptions
+     * @summary Densities below cutoffIntensity aren't computed
+     * @type {number}
+     * @default
+     */
+    this['cutoffIntensity'] = 0.001;
+    /**
+     * @alias gaussScale
+     * @memberof DensityMapOptions
+     * @summary Relative variance (variance normalized by density map size)
+     * @type {number}
+     * @default
+     */
+    this['gaussScale'] = 1000;
+    /**
+     * @alias logScale
+     * @memberof DensityMapOptions
+     * @summary When true, computes log-densities
+     * @type {boolean}
+     * @default
+     */
+    this['logScale'] = true;
+    /**
+     * @alias inflateToFit
+     * @memberof DensityMapOptions
+     * @summary When true, increases density map size to fit the full density map
+     * @type {boolean}
+     * @default
+     */
+    this['inflateToFit'] = true;
+    /**
+     * @alias shrinkToFit
+     * @memberof DensityMapOptions
+     * @summary When true, decreases density map size to the area of non-zero densities plus a zero-density border of 1 pixel thickness
+     * @type {boolean}
+     * @default
+     */
+    this['shrinkToFit'] = true;
+  }
 }
 DensityMapOptions.equals = function (a, b) {
-	return a['maxExpectedRuntime'] === b['maxExpectedRuntime'] && a['cutoffIntensity'] === b['cutoffIntensity'] && a['gaussScale'] === b['gaussScale'] && a['logScale'] === b['logScale'] && a['inflateToFit'] === b['inflateToFit'] && a['shrinkToFit'] === b['shrinkToFit'];
+  return a['maxExpectedRuntime'] === b['maxExpectedRuntime'] && a['cutoffIntensity'] === b['cutoffIntensity'] && a['gaussScale'] === b['gaussScale'] && a['logScale'] === b['logScale'] && a['inflateToFit'] === b['inflateToFit'] && a['shrinkToFit'] === b['shrinkToFit'];
 };
 
 /**
@@ -1808,26 +1801,26 @@ DensityMapOptions.equals = function (a, b) {
  * @package
  */
 function ClusterMap(obj) {
-	this.data = obj.data;
-	this.densities = obj.densities;
-	this.minDensities = obj.minDensities;
-	this.threshold = obj.threshold;
-	this.n = obj.n;
-	this.width = obj.width;
-	this.height = obj.height;
-	this.transform = obj.transform;
-	this.transformX = function (x) {
-		return this.transform[0] * x + this.transform[1];
-	};
-	this.transformY = function (y) {
-		return this.transform[2] * y + this.transform[3];
-	};
-	this.invTransformX = function (x) {
-		return (x - this.transform[1]) / this.transform[0];
-	};
-	this.invTransformY = function (y) {
-		return (y - this.transform[3]) / this.transform[2];
-	};
+  this.data = obj.data;
+  this.densities = obj.densities;
+  this.minDensities = obj.minDensities;
+  this.threshold = obj.threshold;
+  this.n = obj.n;
+  this.width = obj.width;
+  this.height = obj.height;
+  this.transform = obj.transform;
+  this.transformX = function (x) {
+    return this.transform[0] * x + this.transform[1];
+  };
+  this.transformY = function (y) {
+    return this.transform[2] * y + this.transform[3];
+  };
+  this.invTransformX = function (x) {
+    return (x - this.transform[1]) / this.transform[0];
+  };
+  this.invTransformY = function (y) {
+    return (y - this.transform[3]) / this.transform[2];
+  };
 }
 
 /**
@@ -1837,23 +1830,23 @@ function ClusterMap(obj) {
  * @param {ClusterMapOptions=} source If not null, creates a copy of source
  */
 function ClusterMapOptions(source) {
-	if (source) {
-		this.densityMap = source.densityMap;
-		this['threshold'] = this.threshold = source.threshold;
-	} else {
-		this.densityMap = null;
-		/**
-   * @alias threshold
-   * @memberof ClusterMapOptions
-   * @summary Densities below threshold * maximum-density are considered outliers
-   * @type {number}
-   * @default
-   */
-		this['threshold'] = this.threshold = 0.1;
-	}
+  if (source) {
+    this.densityMap = source.densityMap;
+    this['threshold'] = this.threshold = source.threshold;
+  } else {
+    this.densityMap = null;
+    /**
+     * @alias threshold
+     * @memberof ClusterMapOptions
+     * @summary Densities below threshold * maximum-density are considered outliers
+     * @type {number}
+     * @default
+     */
+    this['threshold'] = this.threshold = 0.1;
+  }
 }
 ClusterMapOptions.equals = function (a, b) {
-	return DensityMapOptions.equals(a.densityMap.options, b.densityMap.options) && a.threshold === b.threshold;
+  return DensityMapOptions.equals(a.densityMap.options, b.densityMap.options) && a.threshold === b.threshold;
 };
 
 /**
@@ -1865,27 +1858,27 @@ ClusterMapOptions.equals = function (a, b) {
  * @return {Object} A 1D histogram
  */
 function computeHistogram(dataset, d, width) {
-	var n = dataset.length;
-	var v = dataset.dataVectors[d];
-	var s = width / (v.maximum - v.minimum);
-	var o = -v.minimum * s;
-	var transform = [s, o, 1, 0];
+  var n = dataset.length;
+  var v = dataset.dataVectors[d];
+  var s = width / (v.maximum - v.minimum);
+  var o = -v.minimum * s;
+  var transform = [s, o, 1, 0];
 
-	// Computed number of datapoints per histogram bin -> histogram, maximum
-	var histogram = new Float32Array(width);
-	var maximum = 1; // Start with 1, because as long as n > 0, there will be at least one bin with magnitude >= 1
-	for (var i = 0; i < n; ++i) {
-		var p = Math.floor(v.getValue(i) * s + o);
-		if (++histogram[Math.min(width - 1, p)] > maximum) ++maximum; // maximum can only grow by 1, so we know histogram[...] == maximum + 1
-	}
+  // Computed number of datapoints per histogram bin -> histogram, maximum
+  var histogram = new Float32Array(width);
+  var maximum = 1; // Start with 1, because as long as n > 0, there will be at least one bin with magnitude >= 1
+  for (var i = 0; i < n; ++i) {
+    var p = Math.floor(v.getValue(i) * s + o);
+    if (++histogram[Math.min(width - 1, p)] > maximum) ++maximum; // maximum can only grow by 1, so we know histogram[...] == maximum + 1
+  }
 
-	histogram = {
-		data: histogram,
-		maximum: maximum,
-		width: width, height: 1,
-		transform: transform
-	};
-	return histogram;
+  histogram = {
+    data: histogram,
+    maximum: maximum,
+    width: width, height: 1,
+    transform: transform
+  };
+  return histogram;
 }
 
 /**
@@ -1899,35 +1892,35 @@ function computeHistogram(dataset, d, width) {
  * @return {Object} A 2D histogram
  */
 function computeHistogram2D(dataset, d0, d1, width, height) {
-	var n = dataset.length;
-	var v0 = dataset.dataVectors[d0],
-	    v1 = dataset.dataVectors[d1];
-	var s0 = width / (v0.maximum - v0.minimum);
-	var o0 = -v0.minimum * s0;
-	var s1 = height / (v1.maximum - v1.minimum);
-	var o1 = -v1.minimum * s1;
-	var transform = [s0, o0, s1, o1];
+  var n = dataset.length;
+  var v0 = dataset.dataVectors[d0],
+      v1 = dataset.dataVectors[d1];
+  var s0 = width / (v0.maximum - v0.minimum);
+  var o0 = -v0.minimum * s0;
+  var s1 = height / (v1.maximum - v1.minimum);
+  var o1 = -v1.minimum * s1;
+  var transform = [s0, o0, s1, o1];
 
-	// Computed number of datapoints per histogram bin -> histogram, maximum
-	var histogram = new Float32Array(width * height);
-	var maximum = 1; // Start with 1, because as long as n > 0, there will be at least one bin with magnitude >= 1
-	for (var i = 0; i < n; ++i) {
-		var p0 = Math.floor(v0.getValue(i) * s0 + o0);
-		var p1 = Math.floor(v1.getValue(i) * s1 + o1);
-		if (++histogram[Math.min(height - 1, p1) * width + Math.min(width - 1, p0)] > maximum) ++maximum; // maximum can only grow by 1, so we know histogram[...] == maximum + 1
-	}
+  // Computed number of datapoints per histogram bin -> histogram, maximum
+  var histogram = new Float32Array(width * height);
+  var maximum = 1; // Start with 1, because as long as n > 0, there will be at least one bin with magnitude >= 1
+  for (var i = 0; i < n; ++i) {
+    var p0 = Math.floor(v0.getValue(i) * s0 + o0);
+    var p1 = Math.floor(v1.getValue(i) * s1 + o1);
+    if (++histogram[Math.min(height - 1, p1) * width + Math.min(width - 1, p0)] > maximum) ++maximum; // maximum can only grow by 1, so we know histogram[...] == maximum + 1
+  }
 
-	histogram = {
-		data: histogram,
-		maximum: maximum,
-		width: width, height: height,
-		transform: transform
-		/*transformX: x => transform[0] * x + transform[1],
-  transformY: y => transform[2] * y + transform[3],
-  invTransformX: x => (x - transform[1]) / transform[0],
-  invTransformY: y => (y - transform[3]) / transform[2]*/
-	};
-	return histogram;
+  histogram = {
+    data: histogram,
+    maximum: maximum,
+    width: width, height: height,
+    transform: transform
+    /*transformX: x => transform[0] * x + transform[1],
+    transformY: y => transform[2] * y + transform[3],
+    invTransformX: x => (x - transform[1]) / transform[0],
+    invTransformY: y => (y - transform[3]) / transform[2]*/
+  };
+  return histogram;
 }
 /**
  * This function can be computed by an asynchronous worker.
@@ -1942,304 +1935,304 @@ function computeHistogram2D(dataset, d0, d1, width, height) {
  * To get a {@link DensityMap} from the output object, call `new DensityMap(output)`.
  */
 function computeDensityMap(histogram, options) {
-	var _tiktok_start;
-	var tik = function tik() {
-		_tiktok_start = performance.now();
-	};
-	var tok = function tok() {
-		return (performance.now() - _tiktok_start) / 1000;
-	};
+  var _tiktok_start;
+  var tik = function tik() {
+    _tiktok_start = performance.now();
+  };
+  var tok = function tok() {
+    return (performance.now() - _tiktok_start) / 1000;
+  };
 
-	// Get required information from histogram
-	var width = histogram.width,
-	    height = histogram.height,
-	    transform = histogram.transform.slice(),
-	    initialDensities = histogram.data;
-	var minDensity,
-	    maxDensity = histogram.maximum;
+  // Get required information from histogram
+  var width = histogram.width,
+      height = histogram.height,
+      transform = histogram.transform.slice(),
+      initialDensities = histogram.data;
+  var minDensity,
+      maxDensity = histogram.maximum;
 
-	// Set parameters
-	var cutoffIntensity = options['cutoffIntensity'];
-	var gaussScale = options['gaussScale'];
-	var normalizedGaussScale = -gaussScale / (width * height);
-	var logScale = options['logScale'];
-	var inflateToFit = options['inflateToFit'];
-	var maxExtend = Math.max(width, height);
+  // Set parameters
+  var cutoffIntensity = options['cutoffIntensity'];
+  var gaussScale = options['gaussScale'];
+  var normalizedGaussScale = -gaussScale / (width * height);
+  var logScale = options['logScale'];
+  var inflateToFit = options['inflateToFit'];
+  var maxExtend = Math.max(width, height);
 
-	// Compute a measure of expected runtime
-	var expectedRuntime = 0;
-	var newBounds_l = Number.MAX_VALUE,
-	    newBounds_r = Number.MIN_VALUE,
-	    newBounds_t = Number.MAX_VALUE,
-	    newBounds_b = Number.MIN_VALUE;
-	tik();
-	if (inflateToFit) {
-		for (var y = 0; y < height; ++y) {
-			for (var x = 0; x < width; ++x) {
-				if (initialDensities[y * width + x] !== 0.0) {
-					var r = Math.floor(Math.sqrt(Math.log(cutoffIntensity / initialDensities[y * width + x]) / normalizedGaussScale)) - 1;
-					r = Math.max(1, Math.min(maxExtend, r));
+  // Compute a measure of expected runtime
+  var expectedRuntime = 0;
+  var newBounds_l = Number.MAX_VALUE,
+      newBounds_r = Number.MIN_VALUE,
+      newBounds_t = Number.MAX_VALUE,
+      newBounds_b = Number.MIN_VALUE;
+  tik();
+  if (inflateToFit) {
+    for (var y = 0; y < height; ++y) {
+      for (var x = 0; x < width; ++x) {
+        if (initialDensities[y * width + x] !== 0.0) {
+          var r = Math.floor(Math.sqrt(Math.log(cutoffIntensity / initialDensities[y * width + x]) / normalizedGaussScale)) - 1;
+          r = Math.max(1, Math.min(maxExtend, r));
 
-					expectedRuntime += r * r * Math.PI;
-					newBounds_l = Math.min(newBounds_l, x - r);
-					newBounds_r = Math.max(newBounds_r, x + r);
-					newBounds_t = Math.min(newBounds_t, y - r);
-					newBounds_b = Math.max(newBounds_b, y + r);
-				}
-			}
-		}
-	} else {
-		for (var y = 0; y < height; ++y) {
-			for (var x = 0; x < width; ++x) {
-				if (initialDensities[y * width + x] !== 0.0) {
-					var r = Math.floor(Math.sqrt(Math.log(cutoffIntensity / initialDensities[y * width + x]) / normalizedGaussScale)) - 1;
-					r = Math.max(1, Math.min(maxExtend, r));
+          expectedRuntime += r * r * Math.PI;
+          newBounds_l = Math.min(newBounds_l, x - r);
+          newBounds_r = Math.max(newBounds_r, x + r);
+          newBounds_t = Math.min(newBounds_t, y - r);
+          newBounds_b = Math.max(newBounds_b, y + r);
+        }
+      }
+    }
+  } else {
+    for (var y = 0; y < height; ++y) {
+      for (var x = 0; x < width; ++x) {
+        if (initialDensities[y * width + x] !== 0.0) {
+          var r = Math.floor(Math.sqrt(Math.log(cutoffIntensity / initialDensities[y * width + x]) / normalizedGaussScale)) - 1;
+          r = Math.max(1, Math.min(maxExtend, r));
 
-					var trimX = Math.min(r, Math.min(x, width - x)) / r;
-					var trimY = Math.min(r, Math.min(y, height - y)) / r;
-					trimX = 0.5 + 0.5 * trimX * trimX;
-					trimY = 0.5 + 0.5 * trimY * trimY;
-					expectedRuntime += r * r * Math.PI * trimX * trimY;
-				}
-			}
-		}
-	}
-	var t1 = tok(); // t1 = Runtime of runtime estimation
+          var trimX = Math.min(r, Math.min(x, width - x)) / r;
+          var trimY = Math.min(r, Math.min(y, height - y)) / r;
+          trimX = 0.5 + 0.5 * trimX * trimX;
+          trimY = 0.5 + 0.5 * trimY * trimY;
+          expectedRuntime += r * r * Math.PI * trimX * trimY;
+        }
+      }
+    }
+  }
+  var t1 = tok(); // t1 = Runtime of runtime estimation
 
-	expectedRuntime = inflateToFit ? 0.011447356659209 * Math.pow(expectedRuntime, 0.508796587646921) : 0.017471566555264 * Math.pow(expectedRuntime, 0.466050299746328);
-	expectedRuntime *= t1;
-	//console.log("Expected runtime: " + expectedRuntime + "s");
+  expectedRuntime = inflateToFit ? 0.011447356659209 * Math.pow(expectedRuntime, 0.508796587646921) : 0.017471566555264 * Math.pow(expectedRuntime, 0.466050299746328);
+  expectedRuntime *= t1;
+  //console.log("Expected runtime: " + expectedRuntime + "s");
 
-	while (expectedRuntime > options['maxExpectedRuntime'] && width >= 2 && height >= 2) {
-		// Downscale density map size by a factor of 2
-		var downScaledWidth = width >> 1,
-		    downScaledHeight = height >> 1;
-		//console.log("Expected runtime too high. Down-scaling to: " + downScaledWidth + "x" + downScaledHeight);
+  while (expectedRuntime > options['maxExpectedRuntime'] && width >= 2 && height >= 2) {
+    // Downscale density map size by a factor of 2
+    var downScaledWidth = width >> 1,
+        downScaledHeight = height >> 1;
+    //console.log("Expected runtime too high. Down-scaling to: " + downScaledWidth + "x" + downScaledHeight);
 
-		transform[0] *= downScaledWidth / width;
-		transform[1] *= downScaledWidth / width;
-		transform[2] *= downScaledHeight / height;
-		transform[3] *= downScaledHeight / height;
+    transform[0] *= downScaledWidth / width;
+    transform[1] *= downScaledWidth / width;
+    transform[2] *= downScaledHeight / height;
+    transform[3] *= downScaledHeight / height;
 
-		// Recompute number of datapoints per density map pixel
-		var downScaledInitialDensities = new Float32Array(downScaledWidth * downScaledHeight);
-		maxDensity = 1;
-		for (var y = 0; y < downScaledHeight; ++y) {
-			for (var x = 0; x < downScaledWidth; ++x) {
-				maxDensity = Math.max(maxDensity, downScaledInitialDensities[y * downScaledWidth + x] = initialDensities[(2 * y + 0) * width + (2 * x + 0)] + initialDensities[(2 * y + 0) * width + (2 * x + 1)] + initialDensities[(2 * y + 1) * width + (2 * x + 0)] + initialDensities[(2 * y + 1) * width + (2 * x + 1)]);
-			}
-		}initialDensities = downScaledInitialDensities;
-		width = downScaledWidth;
-		height = downScaledHeight;
-		maxExtend = Math.max(width, height);
-		normalizedGaussScale = -gaussScale / (width * height);
+    // Recompute number of datapoints per density map pixel
+    var downScaledInitialDensities = new Float32Array(downScaledWidth * downScaledHeight);
+    maxDensity = 1;
+    for (var y = 0; y < downScaledHeight; ++y) {
+      for (var x = 0; x < downScaledWidth; ++x) {
+        maxDensity = Math.max(maxDensity, downScaledInitialDensities[y * downScaledWidth + x] = initialDensities[(2 * y + 0) * width + (2 * x + 0)] + initialDensities[(2 * y + 0) * width + (2 * x + 1)] + initialDensities[(2 * y + 1) * width + (2 * x + 0)] + initialDensities[(2 * y + 1) * width + (2 * x + 1)]);
+      }
+    }initialDensities = downScaledInitialDensities;
+    width = downScaledWidth;
+    height = downScaledHeight;
+    maxExtend = Math.max(width, height);
+    normalizedGaussScale = -gaussScale / (width * height);
 
-		// Recompute expected runtime
-		expectedRuntime = 0;
-		newBounds_l = Number.MAX_VALUE;newBounds_r = Number.MIN_VALUE;newBounds_t = Number.MAX_VALUE;newBounds_b = Number.MIN_VALUE;
-		tik();
-		if (inflateToFit) {
-			for (var y = 0; y < height; ++y) {
-				for (var x = 0; x < width; ++x) {
-					if (initialDensities[y * width + x] !== 0.0) {
-						var r = Math.floor(Math.sqrt(Math.log(cutoffIntensity / initialDensities[y * width + x]) / normalizedGaussScale)) - 1;
-						r = Math.max(1, Math.min(maxExtend, r));
+    // Recompute expected runtime
+    expectedRuntime = 0;
+    newBounds_l = Number.MAX_VALUE;newBounds_r = Number.MIN_VALUE;newBounds_t = Number.MAX_VALUE;newBounds_b = Number.MIN_VALUE;
+    tik();
+    if (inflateToFit) {
+      for (var y = 0; y < height; ++y) {
+        for (var x = 0; x < width; ++x) {
+          if (initialDensities[y * width + x] !== 0.0) {
+            var r = Math.floor(Math.sqrt(Math.log(cutoffIntensity / initialDensities[y * width + x]) / normalizedGaussScale)) - 1;
+            r = Math.max(1, Math.min(maxExtend, r));
 
-						expectedRuntime += r * r * Math.PI;
-						newBounds_l = Math.min(newBounds_l, x - r);
-						newBounds_r = Math.max(newBounds_r, x + r);
-						newBounds_t = Math.min(newBounds_t, y - r);
-						newBounds_b = Math.max(newBounds_b, y + r);
-					}
-				}
-			}
-		} else {
-			for (var y = 0; y < height; ++y) {
-				for (var x = 0; x < width; ++x) {
-					if (initialDensities[y * width + x] !== 0.0) {
-						var r = Math.floor(Math.sqrt(Math.log(cutoffIntensity / initialDensities[y * width + x]) / normalizedGaussScale)) - 1;
-						r = Math.max(1, Math.min(maxExtend, r));
+            expectedRuntime += r * r * Math.PI;
+            newBounds_l = Math.min(newBounds_l, x - r);
+            newBounds_r = Math.max(newBounds_r, x + r);
+            newBounds_t = Math.min(newBounds_t, y - r);
+            newBounds_b = Math.max(newBounds_b, y + r);
+          }
+        }
+      }
+    } else {
+      for (var y = 0; y < height; ++y) {
+        for (var x = 0; x < width; ++x) {
+          if (initialDensities[y * width + x] !== 0.0) {
+            var r = Math.floor(Math.sqrt(Math.log(cutoffIntensity / initialDensities[y * width + x]) / normalizedGaussScale)) - 1;
+            r = Math.max(1, Math.min(maxExtend, r));
 
-						var trimX = Math.min(r, Math.min(x, width - x)) / r;
-						var trimY = Math.min(r, Math.min(y, height - y)) / r;
-						trimX = 0.5 + 0.5 * trimX * trimX;
-						trimY = 0.5 + 0.5 * trimY * trimY;
-						expectedRuntime += r * r * Math.PI * trimX * trimY;
-					}
-				}
-			}
-		}
-		t1 = tok(); // t1 = Runtime of runtime estimation
+            var trimX = Math.min(r, Math.min(x, width - x)) / r;
+            var trimY = Math.min(r, Math.min(y, height - y)) / r;
+            trimX = 0.5 + 0.5 * trimX * trimX;
+            trimY = 0.5 + 0.5 * trimY * trimY;
+            expectedRuntime += r * r * Math.PI * trimX * trimY;
+          }
+        }
+      }
+    }
+    t1 = tok(); // t1 = Runtime of runtime estimation
 
-		expectedRuntime = inflateToFit ? 0.011447356659209 * Math.pow(expectedRuntime, 0.508796587646921) : 0.017471566555264 * Math.pow(expectedRuntime, 0.466050299746328);
-		expectedRuntime *= t1;
-		//console.log("Expected runtime: " + expectedRuntime + "s");
-	}
-	//console.log("Expected runtime acceptable");
+    expectedRuntime = inflateToFit ? 0.011447356659209 * Math.pow(expectedRuntime, 0.508796587646921) : 0.017471566555264 * Math.pow(expectedRuntime, 0.466050299746328);
+    expectedRuntime *= t1;
+    //console.log("Expected runtime: " + expectedRuntime + "s");
+  }
+  //console.log("Expected runtime acceptable");
 
-	var densitMapWidth, densitMapHeight;
-	if (inflateToFit) {
-		if (options['shrinkToFit']) {
-			// Inflate output size to keep a 1-pixel-wide frame of zeros around the density map
-			// This allows algorithms that march through densities to stay within density map bounds without explictly checking
-			--newBounds_l;
-			++newBounds_r;
-			--newBounds_t;
-			++newBounds_b;
-		}
+  var densitMapWidth, densitMapHeight;
+  if (inflateToFit) {
+    if (options['shrinkToFit']) {
+      // Inflate output size to keep a 1-pixel-wide frame of zeros around the density map
+      // This allows algorithms that march through densities to stay within density map bounds without explictly checking
+      --newBounds_l;
+      ++newBounds_r;
+      --newBounds_t;
+      ++newBounds_b;
+    }
 
-		densitMapWidth = newBounds_r - newBounds_l + 1;
-		densitMapHeight = newBounds_b - newBounds_t + 1;
+    densitMapWidth = newBounds_r - newBounds_l + 1;
+    densitMapHeight = newBounds_b - newBounds_t + 1;
 
-		transform[1] -= newBounds_l;
-		transform[3] -= newBounds_t;
-	} else {
-		densitMapWidth = width;
-		densitMapHeight = height;
-	}
-	var densities = new Float32Array(densitMapWidth * densitMapHeight);
+    transform[1] -= newBounds_l;
+    transform[3] -= newBounds_t;
+  } else {
+    densitMapWidth = width;
+    densitMapHeight = height;
+  }
+  var densities = new Float32Array(densitMapWidth * densitMapHeight);
 
-	/*// Precompute extends of gaussians up to maxDensity based on cutoffIntensity and normalizedGaussScale -> ext[]
- var ext = new Float32Array(maxDensity);
- for (var i = 0; i < maxDensity; ++i)
- {
- 	ext[i] = Math.floor(Math.sqrt(Math.log(cutoffIntensity / (i + 1)) / normalizedGaussScale));
- 	ext[i] = Math.min(ext[i], maxExtend); // Set upper bound for ext[i]: Precomputed map of gaussian scales shouldn't be larger than densityMap (size*size)
- }*/
+  /*// Precompute extends of gaussians up to maxDensity based on cutoffIntensity and normalizedGaussScale -> ext[]
+  var ext = new Float32Array(maxDensity);
+  for (var i = 0; i < maxDensity; ++i)
+  {
+    ext[i] = Math.floor(Math.sqrt(Math.log(cutoffIntensity / (i + 1)) / normalizedGaussScale));
+    ext[i] = Math.min(ext[i], maxExtend); // Set upper bound for ext[i]: Precomputed map of gaussian scales shouldn't be larger than densityMap (size*size)
+  }*/
 
-	// Compute extend of the largest gaussian based on cutoffIntensity and normalizedGaussScale -> maxExtend
-	//console.log(maxExtend);
-	maxExtend = Math.min(Math.floor(Math.sqrt(Math.log(cutoffIntensity / maxDensity) / normalizedGaussScale)), maxExtend); // Set upper bound for maxExtend: Precomputed map of gaussian scales shouldn't be larger than densityMap (size*size)
-	//var maxExtend = ext[maxDensity - 1]; // Get precomputed maxExtend
-	//console.log(maxExtend);
+  // Compute extend of the largest gaussian based on cutoffIntensity and normalizedGaussScale -> maxExtend
+  //console.log(maxExtend);
+  maxExtend = Math.min(Math.floor(Math.sqrt(Math.log(cutoffIntensity / maxDensity) / normalizedGaussScale)), maxExtend); // Set upper bound for maxExtend: Precomputed map of gaussian scales shouldn't be larger than densityMap (size*size)
+  //var maxExtend = ext[maxDensity - 1]; // Get precomputed maxExtend
+  //console.log(maxExtend);
 
-	// Precompute 2D map array of gaussian scales within maxExtend*maxExtend -> gauss[]
-	var gauss = new Float32Array(maxExtend * maxExtend);
-	for (var y = 0; y < maxExtend; ++y) {
-		for (var x = 0; x < maxExtend; ++x) {
-			gauss[y * maxExtend + x] = Math.exp(normalizedGaussScale * (x * x + y * y));
-		}
-	} // Draw gaussians -> densities[]
-	tik();
-	if (inflateToFit) {
-		for (var y = 0; y < height; ++y) {
-			for (var x = 0; x < width; ++x) {
-				if (initialDensities[y * width + x] !== 0.0) {
-					var initialDensities_xy = initialDensities[y * width + x];
+  // Precompute 2D map array of gaussian scales within maxExtend*maxExtend -> gauss[]
+  var gauss = new Float32Array(maxExtend * maxExtend);
+  for (var y = 0; y < maxExtend; ++y) {
+    for (var x = 0; x < maxExtend; ++x) {
+      gauss[y * maxExtend + x] = Math.exp(normalizedGaussScale * (x * x + y * y));
+    }
+  } // Draw gaussians -> densities[]
+  tik();
+  if (inflateToFit) {
+    for (var y = 0; y < height; ++y) {
+      for (var x = 0; x < width; ++x) {
+        if (initialDensities[y * width + x] !== 0.0) {
+          var initialDensities_xy = initialDensities[y * width + x];
 
-					// Compute extend of gaussian with value initialDensities_xy -> yExtend
-					var yExtend = Math.sqrt(Math.log(cutoffIntensity / initialDensities_xy) / normalizedGaussScale);
-					yExtend = Math.min(Math.floor(yExtend), maxExtend) - 1;
-					if (yExtend <= 0) {
-						densities[y * densitMapWidth + x] += initialDensities_xy;
-						continue;
-					}
-					//var yExtend = ext[initialDensities_xy - 1] - 1; // Get precomputed yExtend
-					var sqYExtend = yExtend * yExtend;
+          // Compute extend of gaussian with value initialDensities_xy -> yExtend
+          var yExtend = Math.sqrt(Math.log(cutoffIntensity / initialDensities_xy) / normalizedGaussScale);
+          yExtend = Math.min(Math.floor(yExtend), maxExtend) - 1;
+          if (yExtend <= 0) {
+            densities[y * densitMapWidth + x] += initialDensities_xy;
+            continue;
+          }
+          //var yExtend = ext[initialDensities_xy - 1] - 1; // Get precomputed yExtend
+          var sqYExtend = yExtend * yExtend;
 
-					for (var yy = y - yExtend, yend = y + yExtend; yy <= yend; ++yy) {
-						// Compute horizontal extend of gaussian at height yy - y => xExtend
-						var xExtend = Math.floor(Math.sqrt(sqYExtend - (yy - y) * (yy - y)));
+          for (var yy = y - yExtend, yend = y + yExtend; yy <= yend; ++yy) {
+            // Compute horizontal extend of gaussian at height yy - y => xExtend
+            var xExtend = Math.floor(Math.sqrt(sqYExtend - (yy - y) * (yy - y)));
 
-						for (var xx = x - xExtend, xend = x + xExtend; xx <= xend; ++xx) {
-							densities[(yy - newBounds_t) * densitMapWidth + xx - newBounds_l] += initialDensities_xy * gauss[Math.abs(y - yy) * maxExtend + Math.abs(x - xx)];
-						}
-					}
-				}
-			}
-		}
-	} else {
-		for (var y = 0; y < height; ++y) {
-			for (var x = 0; x < width; ++x) {
-				if (initialDensities[y * width + x] !== 0.0) {
-					var initialDensities_xy = initialDensities[y * width + x];
+            for (var xx = x - xExtend, xend = x + xExtend; xx <= xend; ++xx) {
+              densities[(yy - newBounds_t) * densitMapWidth + xx - newBounds_l] += initialDensities_xy * gauss[Math.abs(y - yy) * maxExtend + Math.abs(x - xx)];
+            }
+          }
+        }
+      }
+    }
+  } else {
+    for (var y = 0; y < height; ++y) {
+      for (var x = 0; x < width; ++x) {
+        if (initialDensities[y * width + x] !== 0.0) {
+          var initialDensities_xy = initialDensities[y * width + x];
 
-					// Compute extend of gaussian with value initialDensities_xy -> yExtend
-					var yExtend = Math.sqrt(Math.log(cutoffIntensity / initialDensities_xy) / normalizedGaussScale);
-					yExtend = Math.min(Math.floor(yExtend), maxExtend) - 1;
-					if (yExtend <= 0) {
-						densities[y * densitMapWidth + x] += initialDensities_xy;
-						continue;
-					}
-					//var yExtend = ext[initialDensities_xy - 1] - 1; // Get precomputed yExtend
-					var sqYExtend = yExtend * yExtend;
+          // Compute extend of gaussian with value initialDensities_xy -> yExtend
+          var yExtend = Math.sqrt(Math.log(cutoffIntensity / initialDensities_xy) / normalizedGaussScale);
+          yExtend = Math.min(Math.floor(yExtend), maxExtend) - 1;
+          if (yExtend <= 0) {
+            densities[y * densitMapWidth + x] += initialDensities_xy;
+            continue;
+          }
+          //var yExtend = ext[initialDensities_xy - 1] - 1; // Get precomputed yExtend
+          var sqYExtend = yExtend * yExtend;
 
-					for (var yy = Math.max(0, y - yExtend), yend = Math.min(densitMapHeight - 1, y + yExtend); yy <= yend; ++yy) {
-						// Compute horizontal extend of gaussian at height yy - y => xExtend
-						var xExtend = Math.floor(Math.sqrt(sqYExtend - (yy - y) * (yy - y)));
+          for (var yy = Math.max(0, y - yExtend), yend = Math.min(densitMapHeight - 1, y + yExtend); yy <= yend; ++yy) {
+            // Compute horizontal extend of gaussian at height yy - y => xExtend
+            var xExtend = Math.floor(Math.sqrt(sqYExtend - (yy - y) * (yy - y)));
 
-						for (var xx = Math.max(0, x - xExtend), xend = Math.min(densitMapWidth - 1, x + xExtend); xx <= xend; ++xx) {
-							densities[yy * densitMapWidth + xx] += initialDensities_xy * gauss[Math.abs(y - yy) * maxExtend + Math.abs(x - xx)];
-						}
-					}
-				}
-			}
-		}
-	}
-	var t2 = tok(); // t2 = Measured runtime
-	//console.log("Actual runtime: " + t2 + "s");
+            for (var xx = Math.max(0, x - xExtend), xend = Math.min(densitMapWidth - 1, x + xExtend); xx <= xend; ++xx) {
+              densities[yy * densitMapWidth + xx] += initialDensities_xy * gauss[Math.abs(y - yy) * maxExtend + Math.abs(x - xx)];
+            }
+          }
+        }
+      }
+    }
+  }
+  var t2 = tok(); // t2 = Measured runtime
+  //console.log("Actual runtime: " + t2 + "s");
 
-	// Free precomputed gaussian scales
-	gauss = null;
+  // Free precomputed gaussian scales
+  gauss = null;
 
-	// Compute overall bounds of density map
-	minDensity = Number.MAX_VALUE;maxDensity = Number.MIN_VALUE;
-	newBounds_l = densitMapWidth - 1;newBounds_r = 0;newBounds_t = densitMapHeight - 1;newBounds_b = 0;
-	for (var y = 0, i = 0; y < densitMapHeight; ++y) {
-		for (var x = 0; x < densitMapWidth; ++x, ++i) {
-			var density = logScale ? Math.log(densities[i]) : densities[i];
-			if (density > 0.0) {
-				densities[i] = density;
-				minDensity = Math.min(minDensity, density);
-				maxDensity = Math.max(maxDensity, density);
-				newBounds_l = Math.min(newBounds_l, x);
-				newBounds_r = Math.max(newBounds_r, x);
-				newBounds_t = Math.min(newBounds_t, y);
-				newBounds_b = Math.max(newBounds_b, y);
-			} else densities[i] = 0.0;
-		}
-	}if (options['shrinkToFit']) {
-		if (inflateToFit) {
-			// Inflate output size to keep a 1-pixel-wide frame of zeros around the density map
-			// This allows algorithms that march through densities to stay within density map bounds without explictly checking
-			--newBounds_l;
-			++newBounds_r;
-			--newBounds_t;
-			++newBounds_b;
-		}
+  // Compute overall bounds of density map
+  minDensity = Number.MAX_VALUE;maxDensity = Number.MIN_VALUE;
+  newBounds_l = densitMapWidth - 1;newBounds_r = 0;newBounds_t = densitMapHeight - 1;newBounds_b = 0;
+  for (var y = 0, i = 0; y < densitMapHeight; ++y) {
+    for (var x = 0; x < densitMapWidth; ++x, ++i) {
+      var density = logScale ? Math.log(densities[i]) : densities[i];
+      if (density > 0.0) {
+        densities[i] = density;
+        minDensity = Math.min(minDensity, density);
+        maxDensity = Math.max(maxDensity, density);
+        newBounds_l = Math.min(newBounds_l, x);
+        newBounds_r = Math.max(newBounds_r, x);
+        newBounds_t = Math.min(newBounds_t, y);
+        newBounds_b = Math.max(newBounds_b, y);
+      } else densities[i] = 0.0;
+    }
+  }if (options['shrinkToFit']) {
+    if (inflateToFit) {
+      // Inflate output size to keep a 1-pixel-wide frame of zeros around the density map
+      // This allows algorithms that march through densities to stay within density map bounds without explictly checking
+      --newBounds_l;
+      ++newBounds_r;
+      --newBounds_t;
+      ++newBounds_b;
+    }
 
-		transform[1] -= newBounds_l;
-		transform[3] -= newBounds_t;
+    transform[1] -= newBounds_l;
+    transform[3] -= newBounds_t;
 
-		// Shrink density map to exclude non-empty area
-		var resizedDensitMapWidth = Math.max(0, newBounds_r - newBounds_l + 1),
-		    resizedDensitMapHeight = Math.max(0, newBounds_b - newBounds_t + 1),
-		    resizedDensityMapLength = resizedDensitMapWidth * resizedDensitMapHeight;
-		var resizedDensities = new Float32Array(resizedDensityMapLength);
-		if (resizedDensities.length !== 0) for (var y = 0, i = 0, j = newBounds_l + newBounds_t * densitMapWidth; y < resizedDensitMapHeight; ++y, j += densitMapWidth - resizedDensitMapWidth) {
-			for (var x = 0; x < resizedDensitMapWidth; ++x, ++i, ++j) {
-				resizedDensities[i] = densities[j];
-			}
-		}densities = resizedDensities;
-		densitMapWidth = resizedDensitMapWidth;
-		densitMapHeight = resizedDensitMapHeight;
-	}
+    // Shrink density map to exclude non-empty area
+    var resizedDensitMapWidth = Math.max(0, newBounds_r - newBounds_l + 1),
+        resizedDensitMapHeight = Math.max(0, newBounds_b - newBounds_t + 1),
+        resizedDensityMapLength = resizedDensitMapWidth * resizedDensitMapHeight;
+    var resizedDensities = new Float32Array(resizedDensityMapLength);
+    if (resizedDensities.length !== 0) for (var y = 0, i = 0, j = newBounds_l + newBounds_t * densitMapWidth; y < resizedDensitMapHeight; ++y, j += densitMapWidth - resizedDensitMapWidth) {
+      for (var x = 0; x < resizedDensitMapWidth; ++x, ++i, ++j) {
+        resizedDensities[i] = densities[j];
+      }
+    }densities = resizedDensities;
+    densitMapWidth = resizedDensitMapWidth;
+    densitMapHeight = resizedDensitMapHeight;
+  }
 
-	var densityMap = {
-		data: densities,
-		minimum: minDensity,
-		maximum: maxDensity,
-		scale: 1.0 / (maxDensity - minDensity),
-		offset: -minDensity / (maxDensity - minDensity),
-		width: densitMapWidth, height: densitMapHeight,
-		transform: transform,
-		options: options
-		/*transformX: x => transform[0] * x + transform[1],
-  transformY: y => transform[2] * y + transform[3],
-  invTransformX: x => (x - transform[1]) / transform[0],
-  invTransformY: y => (y - transform[3]) / transform[2]*/
-	};
-	return densityMap;
+  var densityMap = {
+    data: densities,
+    minimum: minDensity,
+    maximum: maxDensity,
+    scale: 1.0 / (maxDensity - minDensity),
+    offset: -minDensity / (maxDensity - minDensity),
+    width: densitMapWidth, height: densitMapHeight,
+    transform: transform,
+    options: options
+    /*transformX: x => transform[0] * x + transform[1],
+    transformY: y => transform[2] * y + transform[3],
+    invTransformX: x => (x - transform[1]) / transform[0],
+    invTransformY: y => (y - transform[3]) / transform[2]*/
+  };
+  return densityMap;
 }
 /**
  * @summary Create a triangular matrix (d0 < d1) of density maps for each combination of dimensions
@@ -2253,15 +2246,15 @@ function computeDensityMap(histogram, options) {
  * The density map of dimensions d0 and d1 can be accessed using `densityMapArray[d0][d1 - d0 - 1]`.
  */
 function computeDensityMapND(dataset, width, height, options) {
-	var nc = dataset.numColumns;
-	var densityMap = new Array(nc - 1);
-	for (var d0 = 0; d0 < nc; ++d0) {
-		densityMap[d0] = new Array(nc - d0 - 1);
-		for (var d1 = d0 + 1; d1 < nc; ++d1) {
-			densityMap[d0][d1 - d0 - 1] = new DensityMap(computeDensityMap(computeHistogram2D(dataset, d0, d1, width, height), options));
-		}
-	}
-	return densityMap;
+  var nc = dataset.numColumns;
+  var densityMap = new Array(nc - 1);
+  for (var d0 = 0; d0 < nc; ++d0) {
+    densityMap[d0] = new Array(nc - d0 - 1);
+    for (var d1 = d0 + 1; d1 < nc; ++d1) {
+      densityMap[d0][d1 - d0 - 1] = new DensityMap(computeDensityMap(computeHistogram2D(dataset, d0, d1, width, height), options));
+    }
+  }
+  return densityMap;
 }
 
 /**
@@ -2281,73 +2274,73 @@ function computeDensityMapND(dataset, width, height, options) {
  * @return {Array<number>} An array of up to k point indices of characteristic points
  */
 function findRepresentativePoints(dataset, d0, d1, densityMap, k, dist, targetRatio) {
-	if (k <= 0) return []; // No representative points
+  if (k <= 0) return []; // No representative points
 
-	var n = dataset.length;
-	var densities = densityMap.data,
-	    width = densityMap.width,
-	    height = densityMap.height;
-	var v0 = dataset.dataVectors[d0],
-	    v1 = dataset.dataVectors[d1];
+  var n = dataset.length;
+  var densities = densityMap.data,
+      width = densityMap.width,
+      height = densityMap.height;
+  var v0 = dataset.dataVectors[d0],
+      v1 = dataset.dataVectors[d1];
 
-	// Compute density at each datapoint
-	var pointDensities = new Float32Array(n);
-	for (var i = 0; i < n; ++i) {
-		var p0 = Math.floor(densityMap.transformX(v0.getValue(i)));
-		var p1 = Math.floor(densityMap.transformY(v1.getValue(i)));
+  // Compute density at each datapoint
+  var pointDensities = new Float32Array(n);
+  for (var i = 0; i < n; ++i) {
+    var p0 = Math.floor(densityMap.transformX(v0.getValue(i)));
+    var p1 = Math.floor(densityMap.transformY(v1.getValue(i)));
 
-		pointDensities[i] = densities[Math.min(height - 1, p1) * width + Math.min(width - 1, p0)];
-	}
+    pointDensities[i] = densities[Math.min(height - 1, p1) * width + Math.min(width - 1, p0)];
+  }
 
-	// Create indices sorted by density
-	var indices = Array.from(pointDensities.keys());
-	indices.sort(function (idxA, idxB) {
-		return pointDensities[idxA] - pointDensities[idxB];
-	});
+  // Create indices sorted by density
+  var indices = Array.from(pointDensities.keys());
+  indices.sort(function (idxA, idxB) {
+    return pointDensities[idxA] - pointDensities[idxB];
+  });
 
-	/*// If k >= n, all points are representative
- if (k >= n)
- 	return indices;*/
+  /*// If k >= n, all points are representative
+  if (k >= n)
+    return indices;*/
 
-	// Find k representative points
-	var sqDist = dist * dist;
-	var d_high = indices.length - 1,
-	    d_low = 0;
-	var pointIsHigh,
-	    numHighRepresentativePoints = 0,
-	    ratio = 0.5; // Initial ratio is "fifty-fifty"
-	var next = function next() {
-		if (ratio < targetRatio || ratio === targetRatio && targetRatio >= 0.5) // If ratio is too low or ratio is perfect and targetRatio is high
-			{
-				pointIsHigh = 1;
-				return d_high--; // Retrieve next high density data point
-			} else // If ratio is too high or ratio is perfect and targetRatioChoose k characteristic points from the given dataset based on the given density map is low
-			{
-				pointIsHigh = 0;
-				return d_low++; // Retrieve next low density data point
-			}
-	};
-	var representativePoints = [indices[next()]]; // Set first represenatative point
-	numHighRepresentativePoints += pointIsHigh;
-	ratio = numHighRepresentativePoints / representativePoints.length;
-	while (d_high >= d_low && representativePoints.length < k) {
-		var di = indices[next()];
-		var di_0 = densityMap.transformX(v0.getValue(di)) / densityMap.width;
-		var di_1 = densityMap.transformY(v1.getValue(di)) / densityMap.height;
+  // Find k representative points
+  var sqDist = dist * dist;
+  var d_high = indices.length - 1,
+      d_low = 0;
+  var pointIsHigh,
+      numHighRepresentativePoints = 0,
+      ratio = 0.5; // Initial ratio is "fifty-fifty"
+  var next = function next() {
+    if (ratio < targetRatio || ratio === targetRatio && targetRatio >= 0.5) // If ratio is too low or ratio is perfect and targetRatio is high
+      {
+        pointIsHigh = 1;
+        return d_high--; // Retrieve next high density data point
+      } else // If ratio is too high or ratio is perfect and targetRatioChoose k characteristic points from the given dataset based on the given density map is low
+      {
+        pointIsHigh = 0;
+        return d_low++; // Retrieve next low density data point
+      }
+  };
+  var representativePoints = [indices[next()]]; // Set first represenatative point
+  numHighRepresentativePoints += pointIsHigh;
+  ratio = numHighRepresentativePoints / representativePoints.length;
+  while (d_high >= d_low && representativePoints.length < k) {
+    var di = indices[next()];
+    var di_0 = densityMap.transformX(v0.getValue(di)) / densityMap.width;
+    var di_1 = densityMap.transformY(v1.getValue(di)) / densityMap.height;
 
-		if (representativePoints.every(function (p) {
-			var p0 = densityMap.transformX(v0.getValue(p)) / densityMap.width;
-			var p1 = densityMap.transformY(v1.getValue(p)) / densityMap.height;
-			return Math.pow(p0 - di_0, 2) + Math.pow(p1 - di_1, 2) > sqDist;
-		})) {
-			representativePoints.push(di);
-			numHighRepresentativePoints += pointIsHigh;
-			ratio = numHighRepresentativePoints / representativePoints.length;
-		}
-	}
-	//console.log([targetRatio, ratio]);
-	//console.log("[" + representativePoints.join(", ") + "]");
-	return representativePoints;
+    if (representativePoints.every(function (p) {
+      var p0 = densityMap.transformX(v0.getValue(p)) / densityMap.width;
+      var p1 = densityMap.transformY(v1.getValue(p)) / densityMap.height;
+      return Math.pow(p0 - di_0, 2) + Math.pow(p1 - di_1, 2) > sqDist;
+    })) {
+      representativePoints.push(di);
+      numHighRepresentativePoints += pointIsHigh;
+      ratio = numHighRepresentativePoints / representativePoints.length;
+    }
+  }
+  //console.log([targetRatio, ratio]);
+  //console.log("[" + representativePoints.join(", ") + "]");
+  return representativePoints;
 }
 
 /**
@@ -2364,14 +2357,14 @@ function findRepresentativePoints(dataset, d0, d1, densityMap, k, dist, targetRa
  * @return {Array<number>} An array of up to k point indices of characteristic points
  */
 function findRepresentativePoints2(dataset, d0, d1, densityMap, k, targetRatio) {
-	if (libUtility.isUndefined(targetRatio)) targetRatio = 0.5; // Default ratio is "fifty-fifty"
+  if (libUtility.isUndefined(targetRatio)) targetRatio = 0.5; // Default ratio is "fifty-fifty"
 
-	k = Math.min(k, dataset.length);
-	var dist = 0.1;
-	var representativePoints;
-	while ((representativePoints = findRepresentativePoints(dataset, d0, d1, densityMap, k, dist, targetRatio)).length < k) {
-		dist /= 2.0;
-	}return representativePoints;
+  k = Math.min(k, dataset.length);
+  var dist = 0.1;
+  var representativePoints;
+  while ((representativePoints = findRepresentativePoints(dataset, d0, d1, densityMap, k, dist, targetRatio)).length < k) {
+    dist /= 2.0;
+  }return representativePoints;
 }
 
 /**
@@ -2384,66 +2377,66 @@ function findRepresentativePoints2(dataset, d0, d1, densityMap, k, targetRatio) 
  * @return {Array<number>} An array of up to k point indices of characteristic points
  */
 function findRepresentativePointsND(dataset, densityMap, k, dist) {
-	if (k <= 0) return []; // No representative points
+  if (k <= 0) return []; // No representative points
 
-	var data = dataset.fdata;
-	var n = dataset.length;
-	var nc = dataset.numColumns;
-	var size = densityMap[0][0].width;
-	var offsets = new Float32Array(nc),
-	    scales = new Float32Array(nc),
-	    p = new Float32Array(nc);
-	for (var c = 0; c < nc; ++c) {
-		scales[c] = 1 / (dataset.columns[c].maximum - dataset.columns[c].minimum);
-		offsets[c] = -dataset.columns[c].minimum * scales[c];
-	}
+  var data = dataset.fdata;
+  var n = dataset.length;
+  var nc = dataset.numColumns;
+  var size = densityMap[0][0].width;
+  var offsets = new Float32Array(nc),
+      scales = new Float32Array(nc),
+      p = new Float32Array(nc);
+  for (var c = 0; c < nc; ++c) {
+    scales[c] = 1 / (dataset.columns[c].maximum - dataset.columns[c].minimum);
+    offsets[c] = -dataset.columns[c].minimum * scales[c];
+  }
 
-	// Compute density at each datapoint
-	var pointDensities = new Float32Array(n);
-	for (var i = 0; i < n; ++i) {
-		for (var c = 0; c < nc; ++c) {
-			p[c] = data[i * nc + c] * scales[c] + offsets[c];
-		}pointDensities[i] = 0.0;
-		for (var d0 = 0; d0 < nc; ++d0) {
-			for (var d1 = d0 + 1; d1 < nc; ++d1) {
-				var idx = Math.min(Math.floor(p[d1] * size), size - 1) * size + Math.min(Math.floor(p[d0] * size), size - 1);
-				pointDensities[i] += densityMap[d0][d1 - d0 - 1].data[idx];
-			}
-		}
-	}
+  // Compute density at each datapoint
+  var pointDensities = new Float32Array(n);
+  for (var i = 0; i < n; ++i) {
+    for (var c = 0; c < nc; ++c) {
+      p[c] = data[i * nc + c] * scales[c] + offsets[c];
+    }pointDensities[i] = 0.0;
+    for (var d0 = 0; d0 < nc; ++d0) {
+      for (var d1 = d0 + 1; d1 < nc; ++d1) {
+        var idx = Math.min(Math.floor(p[d1] * size), size - 1) * size + Math.min(Math.floor(p[d0] * size), size - 1);
+        pointDensities[i] += densityMap[d0][d1 - d0 - 1].data[idx];
+      }
+    }
+  }
 
-	// Create indices sorted by density
-	var indices = Array.from(pointDensities.keys());
-	indices.sort(function (idxA, idxB) {
-		return pointDensities[idxA] - pointDensities[idxB];
-	});
+  // Create indices sorted by density
+  var indices = Array.from(pointDensities.keys());
+  indices.sort(function (idxA, idxB) {
+    return pointDensities[idxA] - pointDensities[idxB];
+  });
 
-	/*// If k >= n, all points are representative
- if (k >= n)
- 	return indices;*/
+  /*// If k >= n, all points are representative
+  if (k >= n)
+    return indices;*/
 
-	// Find k representative points
-	var sqDist = dist * dist,
-	    dpsq = new Float32Array(nc);
-	var d_high = indices.length - 1,
-	    d_low = 0;
-	var representativePoints = [indices[d_high--]]; // First represenatative point is point with highest density
-	while (d_high >= d_low && representativePoints.length < k) {
-		var di = indices[representativePoints.length & 0x1 ? d_low++ : d_high--];
-		for (var c = 0; c < nc; ++c) {
-			p[c] = data[di * nc + c] * scales[c];
-		}if (representativePoints.every(function (r) {
-			for (var c = 0; c < nc; ++c) {
-				dpsq[c] = Math.pow(data[r * nc + c] * scales[c] - p[c], 2);
-			}for (var d0 = 0; d0 < nc; ++d0) {
-				for (var d1 = d0 + 1; d1 < nc; ++d1) {
-					if (dpsq[d0] + dpsq[d1] <= sqDist) return false;
-				}
-			}return true;
-		})) representativePoints.push(di);
-	}
-	//console.log("[" + representativePoints.join(", ") + "]");
-	return representativePoints;
+  // Find k representative points
+  var sqDist = dist * dist,
+      dpsq = new Float32Array(nc);
+  var d_high = indices.length - 1,
+      d_low = 0;
+  var representativePoints = [indices[d_high--]]; // First represenatative point is point with highest density
+  while (d_high >= d_low && representativePoints.length < k) {
+    var di = indices[representativePoints.length & 0x1 ? d_low++ : d_high--];
+    for (var c = 0; c < nc; ++c) {
+      p[c] = data[di * nc + c] * scales[c];
+    }if (representativePoints.every(function (r) {
+      for (var c = 0; c < nc; ++c) {
+        dpsq[c] = Math.pow(data[r * nc + c] * scales[c] - p[c], 2);
+      }for (var d0 = 0; d0 < nc; ++d0) {
+        for (var d1 = d0 + 1; d1 < nc; ++d1) {
+          if (dpsq[d0] + dpsq[d1] <= sqDist) return false;
+        }
+      }return true;
+    })) representativePoints.push(di);
+  }
+  //console.log("[" + representativePoints.join(", ") + "]");
+  return representativePoints;
 }
 /**
  * @summary N-dimensional version of {@link findRepresentativePoints2}
@@ -2454,12 +2447,12 @@ function findRepresentativePointsND(dataset, densityMap, k, dist) {
  * @return {Array<number>} An array of up to k point indices of characteristic points
  */
 function findRepresentativePointsND2(dataset, densityMap, k) {
-	k = Math.min(k, dataset.length);
-	var dist = 0.2;
-	var representativePoints;
-	while ((representativePoints = findRepresentativePointsND(dataset, densityMap, k, dist)).length < k) {
-		dist /= 2.0;
-	}return representativePoints;
+  k = Math.min(k, dataset.length);
+  var dist = 0.2;
+  var representativePoints;
+  while ((representativePoints = findRepresentativePointsND(dataset, densityMap, k, dist)).length < k) {
+    dist /= 2.0;
+  }return representativePoints;
 }
 
 /**
@@ -2476,82 +2469,82 @@ function findRepresentativePointsND2(dataset, densityMap, k) {
  * @return {Array<number>} 2D coordinates of the found point in data space
  */
 function findClosePointOfLowDensity(dataset, d0, d1, p, densityMap, stencilMap, minDistX, minDistY) {
-	var densities = densityMap.data,
-	    width = densityMap.width,
-	    height = densityMap.height,
-	    densityScale = densityMap.scale,
-	    densityOffset = -densityMap.offset;
-	var v0 = dataset.dataVectors[d0],
-	    v1 = dataset.dataVectors[d1];
+  var densities = densityMap.data,
+      width = densityMap.width,
+      height = densityMap.height,
+      densityScale = densityMap.scale,
+      densityOffset = -densityMap.offset;
+  var v0 = dataset.dataVectors[d0],
+      v1 = dataset.dataVectors[d1];
 
-	// Transform density, minDistX, minDistY from [0 ... 1] space to density map space
-	densityOffset *= (width + height) / 2;
-	densityScale *= (width + height) / 2;
-	minDistX = Math.ceil(minDistX * width);
-	minDistY = Math.ceil(minDistY * height);
+  // Transform density, minDistX, minDistY from [0 ... 1] space to density map space
+  densityOffset *= (width + height) / 2;
+  densityScale *= (width + height) / 2;
+  minDistX = Math.ceil(minDistX * width);
+  minDistY = Math.ceil(minDistY * height);
 
-	// Transform data point and data space bounds from data space to density map space
-	var p0 = densityMap.transformX(v0.getValue(p));
-	var p1 = densityMap.transformY(v1.getValue(p));
-	var xmin = Math.min(0, Math.floor(densityMap.transformX(v0.minimum)) - minDistX - 1); //TODO: -1 ... Why?
-	var xmax = Math.max(width, Math.ceil(densityMap.transformX(v0.maximum)) + minDistX + 2); //TODO: +2 ... Why?
-	var ymin = Math.min(0, Math.floor(densityMap.transformY(v1.minimum)) - minDistY - 1); //TODO: -1 ... Why?
-	var ymax = Math.max(height, Math.ceil(densityMap.transformY(v1.maximum)) + minDistY + 2); //TODO: +2 ... Why?
-	var stencilStride = xmax - xmin;
+  // Transform data point and data space bounds from data space to density map space
+  var p0 = densityMap.transformX(v0.getValue(p));
+  var p1 = densityMap.transformY(v1.getValue(p));
+  var xmin = Math.min(0, Math.floor(densityMap.transformX(v0.minimum)) - minDistX - 1); //TODO: -1 ... Why?
+  var xmax = Math.max(width, Math.ceil(densityMap.transformX(v0.maximum)) + minDistX + 2); //TODO: +2 ... Why?
+  var ymin = Math.min(0, Math.floor(densityMap.transformY(v1.minimum)) - minDistY - 1); //TODO: -1 ... Why?
+  var ymax = Math.max(height, Math.ceil(densityMap.transformY(v1.maximum)) + minDistY + 2); //TODO: +2 ... Why?
+  var stencilStride = xmax - xmin;
 
-	// Create stencilMap if it doesn't exist
-	if (!stencilMap.data) stencilMap.data = new Uint8Array((stencilMap.width = xmax - xmin) * (stencilMap.height = ymax - ymin));
-	var stencil = stencilMap.data;
+  // Create stencilMap if it doesn't exist
+  if (!stencilMap.data) stencilMap.data = new Uint8Array((stencilMap.width = xmax - xmin) * (stencilMap.height = ymax - ymin));
+  var stencil = stencilMap.data;
 
-	// Mark p in stencil map
-	var imgxmin = Math.max(xmin, Math.floor(p0) - minDistX),
-	    imgxmax = Math.min(xmax, Math.floor(p0) + minDistX);
-	var imgymin = Math.max(ymin, Math.floor(p1) - minDistY),
-	    imgymax = Math.min(ymax, Math.floor(p1) + minDistY);
-	for (var y = imgymin; y < imgymax; ++y) {
-		for (var x = imgxmin; x < imgxmax; ++x) {
-			stencil[(y - ymin) * stencilStride + (x - xmin)] = 1;
-		}
-	} // Square minimum distances
-	var sqMinDistX = minDistX * minDistX,
-	    sqMinDistY = minDistY * minDistY;
-	var sqDensityOffset = densityOffset * densityOffset;
+  // Mark p in stencil map
+  var imgxmin = Math.max(xmin, Math.floor(p0) - minDistX),
+      imgxmax = Math.min(xmax, Math.floor(p0) + minDistX);
+  var imgymin = Math.max(ymin, Math.floor(p1) - minDistY),
+      imgymax = Math.min(ymax, Math.floor(p1) + minDistY);
+  for (var y = imgymin; y < imgymax; ++y) {
+    for (var x = imgxmin; x < imgxmax; ++x) {
+      stencil[(y - ymin) * stencilStride + (x - xmin)] = 1;
+    }
+  } // Square minimum distances
+  var sqMinDistX = minDistX * minDistX,
+      sqMinDistY = minDistY * minDistY;
+  var sqDensityOffset = densityOffset * densityOffset;
 
-	var closestPoint = null,
-	    closestPointPenalty = Number.MAX_VALUE;
-	var sqdx, sqdy;
-	for (var y = ymin; y < ymax; ++y) {
-		for (var x = xmin; x < xmax; ++x) {
-			if (stencil[(y - ymin) * stencilStride + (x - xmin)] === 0) {
-				sqdx = Math.pow(x - p0, 2);
-				sqdy = Math.pow(y - p1, 2);
-				if (sqdx > sqMinDistX && sqdy > sqMinDistY) {
-					var sqDensity = x >= 0 && x < width && y >= 0 && y < height ? Math.pow(densityOffset + densities[y * width + x] * densityScale, 2) : sqDensityOffset;
-					var sqDist = sqdx + sqdy;
-					var penalty = 1e10 * sqDensity + sqDist;
-					if (penalty < closestPointPenalty) {
-						closestPointPenalty = penalty;
-						closestPoint = [x, y];
-					}
-				}
-			}
-		}
-	}if (closestPoint === null) return closestPoint;
+  var closestPoint = null,
+      closestPointPenalty = Number.MAX_VALUE;
+  var sqdx, sqdy;
+  for (var y = ymin; y < ymax; ++y) {
+    for (var x = xmin; x < xmax; ++x) {
+      if (stencil[(y - ymin) * stencilStride + (x - xmin)] === 0) {
+        sqdx = Math.pow(x - p0, 2);
+        sqdy = Math.pow(y - p1, 2);
+        if (sqdx > sqMinDistX && sqdy > sqMinDistY) {
+          var sqDensity = x >= 0 && x < width && y >= 0 && y < height ? Math.pow(densityOffset + densities[y * width + x] * densityScale, 2) : sqDensityOffset;
+          var sqDist = sqdx + sqdy;
+          var penalty = 1e10 * sqDensity + sqDist;
+          if (penalty < closestPointPenalty) {
+            closestPointPenalty = penalty;
+            closestPoint = [x, y];
+          }
+        }
+      }
+    }
+  }if (closestPoint === null) return closestPoint;
 
-	// Mark image in stencil map
-	imgxmin = Math.max(xmin, closestPoint[0] - 2 * minDistX);imgxmax = Math.min(xmax, closestPoint[0] + 2 * minDistX);
-	imgymin = Math.max(ymin, closestPoint[1] - 2 * minDistY);imgymax = Math.min(ymax, closestPoint[1] + 2 * minDistY);
-	for (var y = imgymin; y < imgymax; ++y) {
-		for (var x = imgxmin; x < imgxmax; ++x) {
-			stencil[(y - ymin) * stencilStride + (x - xmin)] = 1;
-		}
-	} //downloadStencilMap(stencilMap);
+  // Mark image in stencil map
+  imgxmin = Math.max(xmin, closestPoint[0] - 2 * minDistX);imgxmax = Math.min(xmax, closestPoint[0] + 2 * minDistX);
+  imgymin = Math.max(ymin, closestPoint[1] - 2 * minDistY);imgymax = Math.min(ymax, closestPoint[1] + 2 * minDistY);
+  for (var y = imgymin; y < imgymax; ++y) {
+    for (var x = imgxmin; x < imgxmax; ++x) {
+      stencil[(y - ymin) * stencilStride + (x - xmin)] = 1;
+    }
+  } //downloadStencilMap(stencilMap);
 
-	// Transform closestPoint back from density map space to data space
-	closestPoint[0] = densityMap.invTransformX(closestPoint[0]); //(closestPoint[0] / width - o0) / s0;
-	closestPoint[1] = densityMap.invTransformY(closestPoint[1]); //(closestPoint[1] / height - o1) / s1;
+  // Transform closestPoint back from density map space to data space
+  closestPoint[0] = densityMap.invTransformX(closestPoint[0]); //(closestPoint[0] / width - o0) / s0;
+  closestPoint[1] = densityMap.invTransformY(closestPoint[1]); //(closestPoint[1] / height - o1) / s1;
 
-	return closestPoint;
+  return closestPoint;
 }
 /**
  * This function marks regions of minDistX/minDistY around each point in points in the stencil map.
@@ -2568,40 +2561,40 @@ function findClosePointOfLowDensity(dataset, d0, d1, p, densityMap, stencilMap, 
  * @param  {number} minDistY Minimum distance to reserve around the marked points in y-direction of normalized space (in percentage of overall data space height)
  */
 function markPointsInStencilMap(dataset, d0, d1, points, densityMap, stencilMap, minDistX, minDistY) {
-	var width = densityMap.width,
-	    height = densityMap.height;
-	var v0 = dataset.dataVectors[d0],
-	    v1 = dataset.dataVectors[d1];
+  var width = densityMap.width,
+      height = densityMap.height;
+  var v0 = dataset.dataVectors[d0],
+      v1 = dataset.dataVectors[d1];
 
-	// Transform minDistX, minDistY from [0 ... 1] space to density map space
-	minDistX = Math.ceil(minDistX * width);
-	minDistY = Math.ceil(minDistY * height);
+  // Transform minDistX, minDistY from [0 ... 1] space to density map space
+  minDistX = Math.ceil(minDistX * width);
+  minDistY = Math.ceil(minDistY * height);
 
-	// Transform data space bounds from data space to density map space
-	var xmin = Math.min(0, Math.floor(densityMap.transformX(v0.minimum)) - minDistX - 1); //TODO: -1 ... Why?
-	var xmax = Math.max(width, Math.ceil(densityMap.transformX(v0.maximum)) + minDistX + 2); //TODO: +2 ... Why?
-	var ymin = Math.min(0, Math.floor(densityMap.transformY(v1.minimum)) - minDistY - 1); //TODO: -1 ... Why?
-	var ymax = Math.max(height, Math.ceil(densityMap.transformY(v1.maximum)) + minDistY + 2); //TODO: +2 ... Why?
-	var stencilStride = xmax - xmin;
+  // Transform data space bounds from data space to density map space
+  var xmin = Math.min(0, Math.floor(densityMap.transformX(v0.minimum)) - minDistX - 1); //TODO: -1 ... Why?
+  var xmax = Math.max(width, Math.ceil(densityMap.transformX(v0.maximum)) + minDistX + 2); //TODO: +2 ... Why?
+  var ymin = Math.min(0, Math.floor(densityMap.transformY(v1.minimum)) - minDistY - 1); //TODO: -1 ... Why?
+  var ymax = Math.max(height, Math.ceil(densityMap.transformY(v1.maximum)) + minDistY + 2); //TODO: +2 ... Why?
+  var stencilStride = xmax - xmin;
 
-	// Create stencilMap if it doesn't exist
-	if (!stencilMap.data) stencilMap.data = new Uint8Array((stencilMap.width = xmax - xmin) * (stencilMap.height = ymax - ymin));
-	var stencil = stencilMap.data;
+  // Create stencilMap if it doesn't exist
+  if (!stencilMap.data) stencilMap.data = new Uint8Array((stencilMap.width = xmax - xmin) * (stencilMap.height = ymax - ymin));
+  var stencil = stencilMap.data;
 
-	points.forEach(function (p) {
-		var p0 = Math.floor(densityMap.transformX(v0.getValue(p)));
-		var p1 = Math.floor(densityMap.transformY(v1.getValue(p)));
-		var imgxmin = Math.max(xmin, p0 - minDistX),
-		    imgxmax = Math.min(xmax, p0 + minDistX);
-		var imgymin = Math.max(ymin, p1 - minDistY),
-		    imgymax = Math.min(ymax, p1 + minDistY);
-		for (var y = imgymin; y < imgymax; ++y) {
-			for (var x = imgxmin; x < imgxmax; ++x) {
-				stencil[(y - ymin) * stencilStride + (x - xmin)] = 1;
-			}
-		}
-	});
-	//downloadStencilMap(stencilMap);
+  points.forEach(function (p) {
+    var p0 = Math.floor(densityMap.transformX(v0.getValue(p)));
+    var p1 = Math.floor(densityMap.transformY(v1.getValue(p)));
+    var imgxmin = Math.max(xmin, p0 - minDistX),
+        imgxmax = Math.min(xmax, p0 + minDistX);
+    var imgymin = Math.max(ymin, p1 - minDistY),
+        imgymax = Math.min(ymax, p1 + minDistY);
+    for (var y = imgymin; y < imgymax; ++y) {
+      for (var x = imgxmin; x < imgxmax; ++x) {
+        stencil[(y - ymin) * stencilStride + (x - xmin)] = 1;
+      }
+    }
+  });
+  //downloadStencilMap(stencilMap);
 }
 /**
  * @summary Download the given stencil map as black-and-white image
@@ -2610,14 +2603,14 @@ function markPointsInStencilMap(dataset, d0, d1, points, densityMap, stencilMap,
  * @param  {string=} fileName=stencilMap.png The file name of the downloaded image.
  */
 function downloadStencilMap(stencilMap, fileName) {
-	if (!fileName) fileName = "stencilMap.png";
+  if (!fileName) fileName = "stencilMap.png";
 
-	var bytes = new Uint8Array(4 * stencilMap.width * stencilMap.height);
-	for (var i = 0; i < stencilMap.data.length; ++i) {
-		bytes[i * 4 + 0] = bytes[i * 4 + 1] = bytes[i * 4 + 2] = stencilMap.data[i] != 0 ? 255 : 0;
-		bytes[i * 4 + 3] = 255;
-	}
-	libUtility.download(fileName, libUtility.imageUrlFromBytes(bytes, stencilMap.width, stencilMap.height));
+  var bytes = new Uint8Array(4 * stencilMap.width * stencilMap.height);
+  for (var i = 0; i < stencilMap.data.length; ++i) {
+    bytes[i * 4 + 0] = bytes[i * 4 + 1] = bytes[i * 4 + 2] = stencilMap.data[i] != 0 ? 255 : 0;
+    bytes[i * 4 + 3] = 255;
+  }
+  libUtility.download(fileName, libUtility.imageUrlFromBytes(bytes, stencilMap.width, stencilMap.height));
 }
 /**
  * This function uses uniform cost search to explore regions beyond local minima.
@@ -2634,81 +2627,81 @@ function downloadStencilMap(stencilMap, fileName) {
  * @deprecated Use {@link findClosePointOfLowDensity} instead
  */
 function findClosePointOfLowDensity_descend(dataset, d0, d1, p, densityMap, minDistX, minDistY) {
-	var data = dataset.fdata;
-	var n = dataset.length;
-	var nc = dataset.numColumns;
-	var s0 = 1 / (dataset.columns[d0].maximum - dataset.columns[d0].minimum);
-	var o0 = -dataset.columns[d0].minimum * s0;
-	var s1 = 1 / (dataset.columns[d1].maximum - dataset.columns[d1].minimum);
-	var o1 = -dataset.columns[d1].minimum * s1;
-	var densities = densityMap.data,
-	    width = densityMap.width,
-	    height = densityMap.height,
-	    densityScale = densityMap.scale,
-	    densityOffset = -densityMap.offset;
+  var data = dataset.fdata;
+  var n = dataset.length;
+  var nc = dataset.numColumns;
+  var s0 = 1 / (dataset.columns[d0].maximum - dataset.columns[d0].minimum);
+  var o0 = -dataset.columns[d0].minimum * s0;
+  var s1 = 1 / (dataset.columns[d1].maximum - dataset.columns[d1].minimum);
+  var o1 = -dataset.columns[d1].minimum * s1;
+  var densities = densityMap.data,
+      width = densityMap.width,
+      height = densityMap.height,
+      densityScale = densityMap.scale,
+      densityOffset = -densityMap.offset;
 
-	// Transform data point from data space to density map space
-	var p0 = (data[p * nc + d0] * s0 + o0) * width;
-	var p1 = (data[p * nc + d1] * s1 + o1) * height;
-	//console.log(p0);
-	//console.log(p1);
+  // Transform data point from data space to density map space
+  var p0 = (data[p * nc + d0] * s0 + o0) * width;
+  var p1 = (data[p * nc + d1] * s1 + o1) * height;
+  //console.log(p0);
+  //console.log(p1);
 
-	// Transform density, minDistX, minDistY from [0 ... 1] space to density map space
-	densityOffset *= (width + height) / 2;
-	densityScale *= (width + height) / 2;
-	minDistX = Math.ceil(minDistX * width);
-	minDistY = Math.ceil(minDistY * height);
+  // Transform density, minDistX, minDistY from [0 ... 1] space to density map space
+  densityOffset *= (width + height) / 2;
+  densityScale *= (width + height) / 2;
+  minDistX = Math.ceil(minDistX * width);
+  minDistY = Math.ceil(minDistY * height);
 
-	// Define overall bounds
-	var xMin = minDistX,
-	    xMax = width - minDistX;
-	var yMin = minDistY,
-	    yMax = height - minDistY;
+  // Define overall bounds
+  var xMin = minDistX,
+      xMax = width - minDistX;
+  var yMin = minDistY,
+      yMax = height - minDistY;
 
-	var computePenalty = function computePenalty(x, y) {
-		var sqDensity = Math.pow(densityOffset + densities[y * width + x] * densityScale, 2);
-		var sqDist = Math.pow(x - p0, 2) + Math.pow(y - p1, 2);
-		return 1e5 * sqDensity + sqDist;
-	};
+  var computePenalty = function computePenalty(x, y) {
+    var sqDensity = Math.pow(densityOffset + densities[y * width + x] * densityScale, 2);
+    var sqDist = Math.pow(x - p0, 2) + Math.pow(y - p1, 2);
+    return 1e5 * sqDensity + sqDist;
+  };
 
-	var bestState = { penalty: Number.MAX_VALUE },
-	    maxIterations = 5000;
-	var searchProblem = {
-		getStartState: function getStartState() {
-			return {
-				x: Math.max(xMin, Math.min(xMax - 1, Math.floor(p0))),
-				y: Math.max(yMin, Math.min(yMax - 1, Math.floor(p1)))
-			};
-		},
-		isGoalState: function isGoalState(state) {
-			return --maxIterations === 0;
-		},
-		forEachSuccessor: function forEachSuccessor(state, onSuccessor) {
-			[[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]].forEach(function (action) {
-				var x = state.x + action[0];
-				var y = state.y + action[1];
-				if (x >= xMin && x < xMax && y >= yMin && y < yMax) {
-					var newState = { x: x, y: y, penalty: computePenalty(x, y) };
-					if (newState.penalty < bestState.penalty && (x < p0 - minDistX || x > p0 + minDistX) && (y < p0 - minDistY || y > p0 + minDistY)) bestState = newState;
-					onSuccessor(newState, newState.penalty);
-				}
-			});
-		},
-		computeHash: function computeHash(state) {
-			return state.y * width + state.x;
-		},
-		heuristic: function heuristic(state) {
-			return Math.pow(densityOffset + densities[state.y * width + state.x] * densityScale, 2);
-		}
-	};
-	SimpleUniformCostSearch(searchProblem);
-	var closestPoint = [bestState.x, bestState.y];
+  var bestState = { penalty: Number.MAX_VALUE },
+      maxIterations = 5000;
+  var searchProblem = {
+    getStartState: function getStartState() {
+      return {
+        x: Math.max(xMin, Math.min(xMax - 1, Math.floor(p0))),
+        y: Math.max(yMin, Math.min(yMax - 1, Math.floor(p1)))
+      };
+    },
+    isGoalState: function isGoalState(state) {
+      return --maxIterations === 0;
+    },
+    forEachSuccessor: function forEachSuccessor(state, onSuccessor) {
+      [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]].forEach(function (action) {
+        var x = state.x + action[0];
+        var y = state.y + action[1];
+        if (x >= xMin && x < xMax && y >= yMin && y < yMax) {
+          var newState = { x: x, y: y, penalty: computePenalty(x, y) };
+          if (newState.penalty < bestState.penalty && (x < p0 - minDistX || x > p0 + minDistX) && (y < p0 - minDistY || y > p0 + minDistY)) bestState = newState;
+          onSuccessor(newState, newState.penalty);
+        }
+      });
+    },
+    computeHash: function computeHash(state) {
+      return state.y * width + state.x;
+    },
+    heuristic: function heuristic(state) {
+      return Math.pow(densityOffset + densities[state.y * width + state.x] * densityScale, 2);
+    }
+  };
+  SimpleUniformCostSearch(searchProblem);
+  var closestPoint = [bestState.x, bestState.y];
 
-	// Transform closestPoint back from density map space to data space
-	closestPoint[0] = (closestPoint[0] / width - o0) / s0;
-	closestPoint[1] = (closestPoint[1] / height - o1) / s1;
+  // Transform closestPoint back from density map space to data space
+  closestPoint[0] = (closestPoint[0] / width - o0) / s0;
+  closestPoint[1] = (closestPoint[1] / height - o1) / s1;
 
-	return closestPoint;
+  return closestPoint;
 }
 
 /**
@@ -2722,117 +2715,117 @@ function findClosePointOfLowDensity_descend(dataset, d0, d1, p, densityMap, minD
  * @deprecated This function is slow and yields unsatisfying results. Consider using 2D algorithms instead.
  */
 function findClosePointOfLowDensityND_descend(dataset, p, densityMap, minDist) {
-	var data = dataset.fdata;
-	var n = dataset.length;
-	var nc = dataset.numColumns;
-	var size = densityMap[0][0].width,
-	    densityScale = densityMap[0][0].scale,
-	    densityOffset = -densityMap[0][0].offset; //EDIT: Take offset/scale over all density maps
+  var data = dataset.fdata;
+  var n = dataset.length;
+  var nc = dataset.numColumns;
+  var size = densityMap[0][0].width,
+      densityScale = densityMap[0][0].scale,
+      densityOffset = -densityMap[0][0].offset; //EDIT: Take offset/scale over all density maps
 
-	// Transform data point from data space to [0 ... size] space
-	var start = new Float32Array(nc);
-	for (var c = 0; c < nc; ++c) {
-		start[c] = (data[p * nc + c] - dataset.columns[c].minimum) * size / (dataset.columns[c].maximum - dataset.columns[c].minimum);
-	} // Transform density and minDist from [0 ... 1] space to [0 ... size] space
-	densityOffset *= size;
-	densityScale *= size;
-	minDist = Math.ceil(minDist * size);
+  // Transform data point from data space to [0 ... size] space
+  var start = new Float32Array(nc);
+  for (var c = 0; c < nc; ++c) {
+    start[c] = (data[p * nc + c] - dataset.columns[c].minimum) * size / (dataset.columns[c].maximum - dataset.columns[c].minimum);
+  } // Transform density and minDist from [0 ... 1] space to [0 ... size] space
+  densityOffset *= size;
+  densityScale *= size;
+  minDist = Math.ceil(minDist * size);
 
-	// Define overall bounds
-	var min = minDist,
-	    max = size - minDist;
+  // Define overall bounds
+  var min = minDist,
+      max = size - minDist;
 
-	var actions = [];
-	var a = new Float32Array(nc),
-	    i;
-	for (var c = 0; c < nc; ++c) {
-		a[c] = -1;
-	}do {
-		if (!a.every(function (aa) {
-			return aa === 0;
-		})) actions.push(a.slice());
-		i = 0;
-		while (i !== a.length && ++a[i] === 2) {
-			a[i] = 0;
-			++i;
-		}
-	} while (i !== a.length);
+  var actions = [];
+  var a = new Float32Array(nc),
+      i;
+  for (var c = 0; c < nc; ++c) {
+    a[c] = -1;
+  }do {
+    if (!a.every(function (aa) {
+      return aa === 0;
+    })) actions.push(a.slice());
+    i = 0;
+    while (i !== a.length && ++a[i] === 2) {
+      a[i] = 0;
+      ++i;
+    }
+  } while (i !== a.length);
 
-	var computePenalty = function computePenalty(p) {
-		var sqDensity = 0.0;
-		for (var d0 = 0; d0 < nc; ++d0) {
-			for (var d1 = d0 + 1; d1 < nc; ++d1) {
-				sqDensity += Math.pow(densityOffset + densityMap[d0][d1 - d0 - 1].data[p[d1] * size + p[d0]] * densityScale, 2);
-			}
-		}var sqDist = p.reduce(function (a, p, pi) {
-			var dp = Math.abs(p - start[pi]);
-			return a + (dp > minDist ? Math.pow(dp - minDist, 2) : Math.pow(minDist - dp, 2));
-		});
-		return sqDensity + sqDist;
-	};
+  var computePenalty = function computePenalty(p) {
+    var sqDensity = 0.0;
+    for (var d0 = 0; d0 < nc; ++d0) {
+      for (var d1 = d0 + 1; d1 < nc; ++d1) {
+        sqDensity += Math.pow(densityOffset + densityMap[d0][d1 - d0 - 1].data[p[d1] * size + p[d0]] * densityScale, 2);
+      }
+    }var sqDist = p.reduce(function (a, p, pi) {
+      var dp = Math.abs(p - start[pi]);
+      return a + (dp > minDist ? Math.pow(dp - minDist, 2) : Math.pow(minDist - dp, 2));
+    });
+    return sqDensity + sqDist;
+  };
 
-	var bestState = { penalty: Number.MAX_VALUE },
-	    maxIterations = 100; //5000;
-	var searchProblem = {
-		getStartState: function getStartState() {
-			var _start = new Float32Array(nc);
-			for (var c = 0; c < nc; ++c) {
-				_start[c] = Math.max(min, Math.min(max - 1, Math.floor(start[c])));
-			}return { p: _start };
-		},
-		isGoalState: function isGoalState(state) {
-			return --maxIterations === 0;
-		},
-		forEachSuccessor: function forEachSuccessor(state, onSuccessor) {
-			actions.forEach(function (action) {
-				var p = new Float32Array(nc);
-				for (var c = 0; c < nc; ++c) {
-					p[c] = state.p[c] + action[c];
-					if (p[c] < min || p[c] >= max) return;
-				}
-				var newState = { p: p, penalty: computePenalty(p) };
-				if (newState.penalty < bestState.penalty /*&& p.every(function(pp, pi) { return pp < start[pi] - minDist || pp > start[pi] + minDist; })*/) bestState = newState;
-				onSuccessor(newState, newState.penalty);
-			});
-		},
-		computeHash: function computeHash(state) {
-			var factor = 1.0,
-			    hash = 0.0;
-			for (var c = 0; c < nc; ++c) {
-				hash += state.p[c] * factor;
-				factor *= size;
-			}
-			return hash;
-		},
-		heuristic: function heuristic(state) {
-			var sqDensity = 0.0;
-			for (var d0 = 0; d0 < nc; ++d0) {
-				for (var d1 = d0 + 1; d1 < nc; ++d1) {
-					sqDensity += Math.pow(densityOffset + densityMap[d0][d1 - d0 - 1].data[state.p[d1] * size + state.p[d0]] * densityScale, 2);
-				}
-			}return sqDensity;
-		}
-	};
-	//var tStart = performance.now();
-	//BreadthFirstSearch(searchProblem);
-	//DepthFirstSearch(searchProblem);
-	SimpleUniformCostSearch(searchProblem);
-	//SimpleAStarSearch(searchProblem);
-	//SimpleGreedySearch(searchProblem);
-	//var tEnd = performance.now();
-	//console.log((tEnd - tStart) / 1000.0);
-	var closestPoint = bestState.p;
+  var bestState = { penalty: Number.MAX_VALUE },
+      maxIterations = 100; //5000;
+  var searchProblem = {
+    getStartState: function getStartState() {
+      var _start = new Float32Array(nc);
+      for (var c = 0; c < nc; ++c) {
+        _start[c] = Math.max(min, Math.min(max - 1, Math.floor(start[c])));
+      }return { p: _start };
+    },
+    isGoalState: function isGoalState(state) {
+      return --maxIterations === 0;
+    },
+    forEachSuccessor: function forEachSuccessor(state, onSuccessor) {
+      actions.forEach(function (action) {
+        var p = new Float32Array(nc);
+        for (var c = 0; c < nc; ++c) {
+          p[c] = state.p[c] + action[c];
+          if (p[c] < min || p[c] >= max) return;
+        }
+        var newState = { p: p, penalty: computePenalty(p) };
+        if (newState.penalty < bestState.penalty /*&& p.every(function(pp, pi) { return pp < start[pi] - minDist || pp > start[pi] + minDist; })*/) bestState = newState;
+        onSuccessor(newState, newState.penalty);
+      });
+    },
+    computeHash: function computeHash(state) {
+      var factor = 1.0,
+          hash = 0.0;
+      for (var c = 0; c < nc; ++c) {
+        hash += state.p[c] * factor;
+        factor *= size;
+      }
+      return hash;
+    },
+    heuristic: function heuristic(state) {
+      var sqDensity = 0.0;
+      for (var d0 = 0; d0 < nc; ++d0) {
+        for (var d1 = d0 + 1; d1 < nc; ++d1) {
+          sqDensity += Math.pow(densityOffset + densityMap[d0][d1 - d0 - 1].data[state.p[d1] * size + state.p[d0]] * densityScale, 2);
+        }
+      }return sqDensity;
+    }
+  };
+  //var tStart = performance.now();
+  //BreadthFirstSearch(searchProblem);
+  //DepthFirstSearch(searchProblem);
+  SimpleUniformCostSearch(searchProblem);
+  //SimpleAStarSearch(searchProblem);
+  //SimpleGreedySearch(searchProblem);
+  //var tEnd = performance.now();
+  //console.log((tEnd - tStart) / 1000.0);
+  var closestPoint = bestState.p;
 
-	/*var xMin = Math.max(0, closestPoint[0] - 2 * minDistX), xMax = Math.min(size, closestPoint[0] + 2 * minDistX);
- var yMin = Math.max(0, closestPoint[1] - 2 * minDistY), yMax = Math.min(size, closestPoint[1] + 2 * minDistY);
- for (var y = yMin; y < yMax; ++y)
- 	for (var x = xMin; x < xMax; ++x)
- 		densityMap[y * size + x] = 1e20;*/
+  /*var xMin = Math.max(0, closestPoint[0] - 2 * minDistX), xMax = Math.min(size, closestPoint[0] + 2 * minDistX);
+  var yMin = Math.max(0, closestPoint[1] - 2 * minDistY), yMax = Math.min(size, closestPoint[1] + 2 * minDistY);
+  for (var y = yMin; y < yMax; ++y)
+    for (var x = xMin; x < xMax; ++x)
+      densityMap[y * size + x] = 1e20;*/
 
-	// Transform closestPoint back from [0 ... size] space to data space
-	for (var c = 0; c < nc; ++c) {
-		closestPoint[c] = dataset.columns[c].minimum + closestPoint[c] * (dataset.columns[c].maximum - dataset.columns[c].minimum) / size;
-	}return closestPoint;
+  // Transform closestPoint back from [0 ... size] space to data space
+  for (var c = 0; c < nc; ++c) {
+    closestPoint[c] = dataset.columns[c].minimum + closestPoint[c] * (dataset.columns[c].maximum - dataset.columns[c].minimum) / size;
+  }return closestPoint;
 }
 /**
  * This function uses rejection sampling
@@ -2842,20 +2835,20 @@ function findClosePointOfLowDensityND_descend(dataset, p, densityMap, minDist) {
  * @return {Array<number>} 2D coordinates of the sampled point in density map coordinates
  */
 function sampleDensityMap(densityMap) {
-	var width = densityMap.width,
-	    height = densityMap.height,
-	    scale = densityMap.maximum;
+  var width = densityMap.width,
+      height = densityMap.height,
+      scale = densityMap.maximum;
 
-	var sample_x, sample_y, sample_d;
-	//var nAttempts = 0;
-	do {
-		sample_x = Math.random() * width;
-		sample_y = Math.random() * height;
-		sample_d = Math.random() * scale;
-		//++nAttempts;
-	} while (densityMap.data[Math.floor(sample_y) * width + Math.floor(sample_x)] < sample_d);
+  var sample_x, sample_y, sample_d;
+  //var nAttempts = 0;
+  do {
+    sample_x = Math.random() * width;
+    sample_y = Math.random() * height;
+    sample_d = Math.random() * scale;
+    //++nAttempts;
+  } while (densityMap.data[Math.floor(sample_y) * width + Math.floor(sample_x)] < sample_d);
 
-	return [sample_x, sample_y];
+  return [sample_x, sample_y];
 }
 /**
  * This function uses rejection sampling
@@ -2867,20 +2860,20 @@ function sampleDensityMap(densityMap) {
  * @return {number} The y-coordinate (row) of the sampled point or `NaN` if maxIterations attempts were unsuccessful
  */
 function sampleDensityMapRow(densityMap, sample_y, maxIterations) {
-	if (libUtility.isUndefined(maxIterations)) maxIterations = Number.MAX_SAFE_INTEGER;
+  if (libUtility.isUndefined(maxIterations)) maxIterations = Number.MAX_SAFE_INTEGER;
 
-	var width = densityMap.width,
-	    height = densityMap.height,
-	    scale = densityMap.maximum;
-	sample_y = Math.floor(sample_y) * height;
+  var width = densityMap.width,
+      height = densityMap.height,
+      scale = densityMap.maximum;
+  sample_y = Math.floor(sample_y) * height;
 
-	var sample_x, sample_d;
-	do {
-		sample_x = Math.random() * width;
-		sample_d = Math.random() * scale;
-	} while (--maxIterations && densityMap.data[sample_y + Math.floor(sample_x)] < sample_d);
+  var sample_x, sample_d;
+  do {
+    sample_x = Math.random() * width;
+    sample_d = Math.random() * scale;
+  } while (--maxIterations && densityMap.data[sample_y + Math.floor(sample_x)] < sample_d);
 
-	return densityMap.data[sample_y + Math.floor(sample_x)] >= sample_d ? sample_x : NaN;
+  return densityMap.data[sample_y + Math.floor(sample_x)] >= sample_d ? sample_x : NaN;
 }
 /**
  * This function uses rejection sampling
@@ -2892,20 +2885,20 @@ function sampleDensityMapRow(densityMap, sample_y, maxIterations) {
  * @return {number} The x-coordinate (column) of the sampled point or `NaN` if maxIterations attempts were unsuccessful
  */
 function sampleDensityMapColumn(densityMap, sample_x, maxIterations) {
-	if (libUtility.isUndefined(maxIterations)) maxIterations = Number.MAX_SAFE_INTEGER;
+  if (libUtility.isUndefined(maxIterations)) maxIterations = Number.MAX_SAFE_INTEGER;
 
-	var width = densityMap.width,
-	    height = densityMap.height,
-	    scale = densityMap.maximum;
-	sample_x = Math.floor(sample_x);
+  var width = densityMap.width,
+      height = densityMap.height,
+      scale = densityMap.maximum;
+  sample_x = Math.floor(sample_x);
 
-	var sample_y, sample_d;
-	do {
-		sample_y = Math.random() * height;
-		sample_d = Math.random() * scale;
-	} while (--maxIterations && densityMap.data[Math.floor(sample_y) * width + sample_x] < sample_d);
+  var sample_y, sample_d;
+  do {
+    sample_y = Math.random() * height;
+    sample_d = Math.random() * scale;
+  } while (--maxIterations && densityMap.data[Math.floor(sample_y) * width + sample_x] < sample_d);
 
-	return densityMap.data[Math.floor(sample_y) * width + sample_x] >= sample_d ? sample_y : NaN;
+  return densityMap.data[Math.floor(sample_y) * width + sample_x] >= sample_d ? sample_y : NaN;
 }
 
 /**
@@ -2916,33 +2909,33 @@ function sampleDensityMapColumn(densityMap, sample_x, maxIterations) {
  * @return {Array<number>} n-dimensional coordinates of the sampled point in density map coordinates
  */
 function sampleDensityMapChain(densityMapChain) {
-	var chainLength = densityMapChain.length,
-	    sample = new Array(chainLength + 1);
+  var chainLength = densityMapChain.length,
+      sample = new Array(chainLength + 1);
 
-	// Pick an initial densityMap from the chain
-	var sample_m = Math.floor(Math.random() * chainLength);
+  // Pick an initial densityMap from the chain
+  var sample_m = Math.floor(Math.random() * chainLength);
 
-	var i;
-	do {
-		// Sample the initial map
-		var initialSamples = sampleDensityMap(densityMapChain[sample_m]);
-		sample[sample_m] = initialSamples[0];
-		sample[sample_m + 1] = initialSamples[1];
+  var i;
+  do {
+    // Sample the initial map
+    var initialSamples = sampleDensityMap(densityMapChain[sample_m]);
+    sample[sample_m] = initialSamples[0];
+    sample[sample_m + 1] = initialSamples[1];
 
-		// Sample below initialSamples
-		var lastSample = initialSamples[0];
-		for (i = sample_m - 1; i >= 0 && !isNaN(lastSample); --i) {
-			sample[i] = lastSample = sampleDensityMapRow(densityMapChain[i], lastSample, sample_m - i);
-		}if (isNaN(lastSample)) continue;
+    // Sample below initialSamples
+    var lastSample = initialSamples[0];
+    for (i = sample_m - 1; i >= 0 && !isNaN(lastSample); --i) {
+      sample[i] = lastSample = sampleDensityMapRow(densityMapChain[i], lastSample, sample_m - i);
+    }if (isNaN(lastSample)) continue;
 
-		// Sample above initialSamples
-		lastSample = initialSamples[1];
-		for (i = sample_m + 1; i < chainLength && !isNaN(lastSample); ++i) {
-			sample[i + 1] = lastSample = sampleDensityMapColumn(densityMapChain[i], lastSample, i - sample_m);
-		}
-	} while (isNaN(lastSample));
+    // Sample above initialSamples
+    lastSample = initialSamples[1];
+    for (i = sample_m + 1; i < chainLength && !isNaN(lastSample); ++i) {
+      sample[i + 1] = lastSample = sampleDensityMapColumn(densityMapChain[i], lastSample, i - sample_m);
+    }
+  } while (isNaN(lastSample));
 
-	return sample;
+  return sample;
 }
 
 /**
@@ -2955,107 +2948,107 @@ function sampleDensityMapChain(densityMapChain) {
  * @deprecated Use {@link computeClusterMap_method3} instead
  */
 function computeClusterMap_method1(dataset, d0, d1, densityMap) {
-	var data = dataset.fdata;
-	var n = dataset.length;
-	var nc = dataset.numColumns;
-	var s0 = 1 / (dataset.columns[d0].maximum - dataset.columns[d0].minimum);
-	var o0 = -dataset.columns[d0].minimum * s0;
-	var s1 = 1 / (dataset.columns[d1].maximum - dataset.columns[d1].minimum);
-	var o1 = -dataset.columns[d1].minimum * s1;
-	var densities = densityMap.data,
-	    width = densityMap.width,
-	    height = densityMap.height;
+  var data = dataset.fdata;
+  var n = dataset.length;
+  var nc = dataset.numColumns;
+  var s0 = 1 / (dataset.columns[d0].maximum - dataset.columns[d0].minimum);
+  var o0 = -dataset.columns[d0].minimum * s0;
+  var s1 = 1 / (dataset.columns[d1].maximum - dataset.columns[d1].minimum);
+  var o1 = -dataset.columns[d1].minimum * s1;
+  var densities = densityMap.data,
+      width = densityMap.width,
+      height = densityMap.height;
 
-	// Compute density at each datapoints -> pointDensities
-	var pointDensities = new Float32Array(n);
-	for (var i = 0; i < n; ++i) {
-		var p0 = data[i * nc + d0] * s0 + o0;
-		var p1 = data[i * nc + d1] * s1 + o1;
+  // Compute density at each datapoints -> pointDensities
+  var pointDensities = new Float32Array(n);
+  for (var i = 0; i < n; ++i) {
+    var p0 = data[i * nc + d0] * s0 + o0;
+    var p1 = data[i * nc + d1] * s1 + o1;
 
-		var idx = Math.min(Math.floor(p1 * height), height - 1) * width + Math.min(Math.floor(p0 * width), width - 1);
-		pointDensities[i] = densities[idx];
-	}
+    var idx = Math.min(Math.floor(p1 * height), height - 1) * width + Math.min(Math.floor(p0 * width), width - 1);
+    pointDensities[i] = densities[idx];
+  }
 
-	// Create indices sorted by density
-	var indices = Array.from(pointDensities.keys());
-	indices.sort(function (idxA, idxB) {
-		return pointDensities[idxA] - pointDensities[idxB];
-	});
+  // Create indices sorted by density
+  var indices = Array.from(pointDensities.keys());
+  indices.sort(function (idxA, idxB) {
+    return pointDensities[idxA] - pointDensities[idxB];
+  });
 
-	// Allocate cluster map
-	var clustermap = new Uint32Array(width * height);
+  // Allocate cluster map
+  var clustermap = new Uint32Array(width * height);
 
-	var currentClusterId = 1; // Cluster IDs start at 1. 0 represents empty areas
+  var currentClusterId = 1; // Cluster IDs start at 1. 0 represents empty areas
 
-	var floodFillRecursive = function floodFillRecursive(x, y, d) {
-		clustermap[y * width + x] = currentClusterId;
+  var floodFillRecursive = function floodFillRecursive(x, y, d) {
+    clustermap[y * width + x] = currentClusterId;
 
-		--x;
-		--y;
-		if (x !== -1 && y !== -1) {
-			var nd = densities[y * width + x];
-			if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) floodFillRecursive(x, y, nd);
-		}
+    --x;
+    --y;
+    if (x !== -1 && y !== -1) {
+      var nd = densities[y * width + x];
+      if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) floodFillRecursive(x, y, nd);
+    }
 
-		++x;
-		if (y !== -1) {
-			var nd = densities[y * width + x];
-			if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) floodFillRecursive(x, y, nd);
-		}
+    ++x;
+    if (y !== -1) {
+      var nd = densities[y * width + x];
+      if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) floodFillRecursive(x, y, nd);
+    }
 
-		++x;
-		if (x !== width && y !== -1) {
-			var nd = densities[y * width + x];
-			if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) floodFillRecursive(x, y, nd);
-		}
+    ++x;
+    if (x !== width && y !== -1) {
+      var nd = densities[y * width + x];
+      if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) floodFillRecursive(x, y, nd);
+    }
 
-		++y;
-		if (x !== width) {
-			var nd = densities[y * width + x];
-			if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) floodFillRecursive(x, y, nd);
-		}
+    ++y;
+    if (x !== width) {
+      var nd = densities[y * width + x];
+      if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) floodFillRecursive(x, y, nd);
+    }
 
-		++y;
-		if (x !== width && y !== height) {
-			var nd = densities[y * width + x];
-			if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) floodFillRecursive(x, y, nd);
-		}
+    ++y;
+    if (x !== width && y !== height) {
+      var nd = densities[y * width + x];
+      if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) floodFillRecursive(x, y, nd);
+    }
 
-		--x;
-		if (y !== height) {
-			var nd = densities[y * width + x];
-			if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) floodFillRecursive(x, y, nd);
-		}
+    --x;
+    if (y !== height) {
+      var nd = densities[y * width + x];
+      if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) floodFillRecursive(x, y, nd);
+    }
 
-		--x;
-		if (x !== -1 && y !== height) {
-			var nd = densities[y * width + x];
-			if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) floodFillRecursive(x, y, nd);
-		}
+    --x;
+    if (x !== -1 && y !== height) {
+      var nd = densities[y * width + x];
+      if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) floodFillRecursive(x, y, nd);
+    }
 
-		++y;
-		if (x !== -1) {
-			var nd = densities[y * width + x];
-			if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) floodFillRecursive(x, y, nd);
-		}
-	};
+    ++y;
+    if (x !== -1) {
+      var nd = densities[y * width + x];
+      if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) floodFillRecursive(x, y, nd);
+    }
+  };
 
-	//for (var i = n - 1; i >= 0; --i) // Iteraterate points in order of decreasing point density
-	for (var i = 0; i < n; ++i) // Iteraterate points in order of increasing point density
-	{
-		var p0 = data[indices[i] * nc + d0] * s0 + o0;
-		var p1 = data[indices[i] * nc + d1] * s1 + o1;
+  //for (var i = n - 1; i >= 0; --i) // Iteraterate points in order of decreasing point density
+  for (var i = 0; i < n; ++i) // Iteraterate points in order of increasing point density
+  {
+    var p0 = data[indices[i] * nc + d0] * s0 + o0;
+    var p1 = data[indices[i] * nc + d1] * s1 + o1;
 
-		var x = Math.clamp(Math.floor(p0 * width), 0, width - 1);
-		var y = Math.clamp(Math.floor(p1 * height), 0, height - 1);
-		if (clustermap[y * width + x] === 0) // If clustermap[y * width + x] doesn't contain a cluster
-			{
-				floodFillRecursive(x, y, densities[y * width + x]);
-				++currentClusterId;
-			}
-	}
+    var x = Math.clamp(Math.floor(p0 * width), 0, width - 1);
+    var y = Math.clamp(Math.floor(p1 * height), 0, height - 1);
+    if (clustermap[y * width + x] === 0) // If clustermap[y * width + x] doesn't contain a cluster
+      {
+        floodFillRecursive(x, y, densities[y * width + x]);
+        ++currentClusterId;
+      }
+  }
 
-	return clustermap;
+  return clustermap;
 }
 
 /**
@@ -3068,113 +3061,113 @@ function computeClusterMap_method1(dataset, d0, d1, densityMap) {
  * @deprecated Use {@link computeClusterMap_method3} instead
  */
 function computeClusterMap_method2(dataset, d0, d1, densityMap) {
-	var data = dataset.fdata;
-	var n = dataset.length;
-	var nc = dataset.numColumns;
-	var s0 = 1 / (dataset.columns[d0].maximum - dataset.columns[d0].minimum);
-	var o0 = -dataset.columns[d0].minimum * s0;
-	var s1 = 1 / (dataset.columns[d1].maximum - dataset.columns[d1].minimum);
-	var o1 = -dataset.columns[d1].minimum * s1;
-	var densities = densityMap.data,
-	    width = densityMap.width,
-	    height = densityMap.height;
+  var data = dataset.fdata;
+  var n = dataset.length;
+  var nc = dataset.numColumns;
+  var s0 = 1 / (dataset.columns[d0].maximum - dataset.columns[d0].minimum);
+  var o0 = -dataset.columns[d0].minimum * s0;
+  var s1 = 1 / (dataset.columns[d1].maximum - dataset.columns[d1].minimum);
+  var o1 = -dataset.columns[d1].minimum * s1;
+  var densities = densityMap.data,
+      width = densityMap.width,
+      height = densityMap.height;
 
-	// Compute density at each datapoints -> pointDensities
-	var pointDensities = new Float32Array(n);
-	for (var i = 0; i < n; ++i) {
-		var p0 = data[i * nc + d0] * s0 + o0;
-		var p1 = data[i * nc + d1] * s1 + o1;
+  // Compute density at each datapoints -> pointDensities
+  var pointDensities = new Float32Array(n);
+  for (var i = 0; i < n; ++i) {
+    var p0 = data[i * nc + d0] * s0 + o0;
+    var p1 = data[i * nc + d1] * s1 + o1;
 
-		var idx = Math.min(Math.floor(p1 * height), height - 1) * width + Math.min(Math.floor(p0 * width), width - 1);
-		pointDensities[i] = densities[idx];
-	}
+    var idx = Math.min(Math.floor(p1 * height), height - 1) * width + Math.min(Math.floor(p0 * width), width - 1);
+    pointDensities[i] = densities[idx];
+  }
 
-	// Create indices sorted by density
-	var indices = Array.from(pointDensities.keys());
-	indices.sort(function (idxA, idxB) {
-		return pointDensities[idxA] - pointDensities[idxB];
-	});
+  // Create indices sorted by density
+  var indices = Array.from(pointDensities.keys());
+  indices.sort(function (idxA, idxB) {
+    return pointDensities[idxA] - pointDensities[idxB];
+  });
 
-	// Allocate cluster map
-	var clustermap = new Uint32Array(width * height);
-	//var clusterQueues = [];
+  // Allocate cluster map
+  var clustermap = new Uint32Array(width * height);
+  //var clusterQueues = [];
 
-	var currentClusterId = 1; // Cluster IDs start at 1. 0 represents empty areas
+  var currentClusterId = 1; // Cluster IDs start at 1. 0 represents empty areas
 
-	var neighborQueue = new libUtility.PriorityQueue('d'); // Queue of all neighbors of clusters (candidates ro be included in the cluster)
+  var neighborQueue = new libUtility.PriorityQueue('d'); // Queue of all neighbors of clusters (candidates ro be included in the cluster)
 
-	//for (var i = n - 1; i >= 0; --i) // Iteraterate points in order of decreasing point density
-	for (var i = 0; i < n; ++i) // Iteraterate points in order of increasing point density
-	{
-		var p0 = data[indices[i] * nc + d0] * s0 + o0;
-		var p1 = data[indices[i] * nc + d1] * s1 + o1;
+  //for (var i = n - 1; i >= 0; --i) // Iteraterate points in order of decreasing point density
+  for (var i = 0; i < n; ++i) // Iteraterate points in order of increasing point density
+  {
+    var p0 = data[indices[i] * nc + d0] * s0 + o0;
+    var p1 = data[indices[i] * nc + d1] * s1 + o1;
 
-		var x = Math.clamp(Math.floor(p0 * width), 0, width - 1);
-		var y = Math.clamp(Math.floor(p1 * height), 0, height - 1);
-		if (clustermap[y * width + x] === 0) // If clustermap[y * width + x] doesn't contain a cluster
-			{
-				clustermap[y * width + x] = currentClusterId;
-				var d = densities[y * width + x]; //EDIT: Not sure if we need 'nd < n'
+    var x = Math.clamp(Math.floor(p0 * width), 0, width - 1);
+    var y = Math.clamp(Math.floor(p1 * height), 0, height - 1);
+    if (clustermap[y * width + x] === 0) // If clustermap[y * width + x] doesn't contain a cluster
+      {
+        clustermap[y * width + x] = currentClusterId;
+        var d = densities[y * width + x]; //EDIT: Not sure if we need 'nd < n'
 
-				if (--x !== -1) {
-					var nd = densities[y * width + x];
-					if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) neighborQueue.push({ c: clustermap[y * width + x] = currentClusterId, x: x, y: y, d: densities[y * width + x] });
-				}
+        if (--x !== -1) {
+          var nd = densities[y * width + x];
+          if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) neighborQueue.push({ c: clustermap[y * width + x] = currentClusterId, x: x, y: y, d: densities[y * width + x] });
+        }
 
-				++x;
-				if (++x !== width) {
-					var nd = densities[y * width + x];
-					if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) neighborQueue.push({ c: clustermap[y * width + x] = currentClusterId, x: x, y: y, d: densities[y * width + x] });
-				}
+        ++x;
+        if (++x !== width) {
+          var nd = densities[y * width + x];
+          if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) neighborQueue.push({ c: clustermap[y * width + x] = currentClusterId, x: x, y: y, d: densities[y * width + x] });
+        }
 
-				--x;
-				if (--y !== -1) {
-					var nd = densities[y * width + x];
-					if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) neighborQueue.push({ c: clustermap[y * width + x] = currentClusterId, x: x, y: y, d: densities[y * width + x] });
-				}
+        --x;
+        if (--y !== -1) {
+          var nd = densities[y * width + x];
+          if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) neighborQueue.push({ c: clustermap[y * width + x] = currentClusterId, x: x, y: y, d: densities[y * width + x] });
+        }
 
-				++y;
-				if (++y !== height) {
-					var nd = densities[y * width + x];
-					if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) neighborQueue.push({ c: clustermap[y * width + x] = currentClusterId, x: x, y: y, d: densities[y * width + x] });
-				}
+        ++y;
+        if (++y !== height) {
+          var nd = densities[y * width + x];
+          if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) neighborQueue.push({ c: clustermap[y * width + x] = currentClusterId, x: x, y: y, d: densities[y * width + x] });
+        }
 
-				++currentClusterId; // EDIT: Maybe use 'i + 1' as cluster ID
-			}
-	}
+        ++currentClusterId; // EDIT: Maybe use 'i + 1' as cluster ID
+      }
+  }
 
-	while (neighborQueue.length) {
-		var neighbor = neighborQueue.shift();
-		var x = neighbor.x,
-		    y = neighbor.y,
-		    d = neighbor.d,
-		    id = neighbor.c;
+  while (neighborQueue.length) {
+    var neighbor = neighborQueue.shift();
+    var x = neighbor.x,
+        y = neighbor.y,
+        d = neighbor.d,
+        id = neighbor.c;
 
-		if (--x !== -1) {
-			var nd = densities[y * width + x];
-			if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) neighborQueue.push({ c: clustermap[y * width + x] = id, x: x, y: y, d: densities[y * width + x] });
-		}
+    if (--x !== -1) {
+      var nd = densities[y * width + x];
+      if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) neighborQueue.push({ c: clustermap[y * width + x] = id, x: x, y: y, d: densities[y * width + x] });
+    }
 
-		++x;
-		if (++x !== width) {
-			var nd = densities[y * width + x];
-			if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) neighborQueue.push({ c: clustermap[y * width + x] = id, x: x, y: y, d: densities[y * width + x] });
-		}
+    ++x;
+    if (++x !== width) {
+      var nd = densities[y * width + x];
+      if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) neighborQueue.push({ c: clustermap[y * width + x] = id, x: x, y: y, d: densities[y * width + x] });
+    }
 
-		--x;
-		if (--y !== -1) {
-			var nd = densities[y * width + x];
-			if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) neighborQueue.push({ c: clustermap[y * width + x] = id, x: x, y: y, d: densities[y * width + x] });
-		}
+    --x;
+    if (--y !== -1) {
+      var nd = densities[y * width + x];
+      if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) neighborQueue.push({ c: clustermap[y * width + x] = id, x: x, y: y, d: densities[y * width + x] });
+    }
 
-		++y;
-		if (++y !== height) {
-			var nd = densities[y * width + x];
-			if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) neighborQueue.push({ c: clustermap[y * width + x] = id, x: x, y: y, d: densities[y * width + x] });
-		}
-	}
+    ++y;
+    if (++y !== height) {
+      var nd = densities[y * width + x];
+      if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) neighborQueue.push({ c: clustermap[y * width + x] = id, x: x, y: y, d: densities[y * width + x] });
+    }
+  }
 
-	return clustermap;
+  return clustermap;
 }
 
 var ForwardList = libUtility.ForwardList;
@@ -3195,129 +3188,129 @@ var PriorityQueue = libUtility.PriorityQueue;
  * To get a {@link ClusterMap} from the output object, call `new ClusterMap(clusterMap)`
  */
 function computeClusterMap_method3(densityMap, d0, d1, options) {
-	var densities = densityMap.data,
-	    width = densityMap.width,
-	    height = densityMap.height,
-	    len = width * height;
-	var densityThreshold = options.threshold * densityMap.maximum;
+  var densities = densityMap.data,
+      width = densityMap.width,
+      height = densityMap.height,
+      len = width * height;
+  var densityThreshold = options.threshold * densityMap.maximum;
 
-	// Allocate cluster map
-	var clustermap = new Uint32Array(len);
+  // Allocate cluster map
+  var clustermap = new Uint32Array(len);
 
-	// Walk through density map and combine regions of density>=densityThreshold into clusters -> clusters, clustermap
-	var leftClusterId, topClusterId;
-	var clusters = [];
-	for (var y = 0; y < height; ++y) {
-		leftClusterId = 0;
-		for (var x = 0; x < width; ++x) {
-			var d = densities[y * width + x];
+  // Walk through density map and combine regions of density>=densityThreshold into clusters -> clusters, clustermap
+  var leftClusterId, topClusterId;
+  var clusters = [];
+  for (var y = 0; y < height; ++y) {
+    leftClusterId = 0;
+    for (var x = 0; x < width; ++x) {
+      var d = densities[y * width + x];
 
-			if (d >= densityThreshold) {
-				if (leftClusterId !== 0) {
-					if (y !== 0 && (topClusterId = clustermap[(y - 1) * width + x]) !== 0 && topClusterId !== leftClusterId) {
-						// Link clusters
-						var leftCluster = clusters[leftClusterId - 1];
-						var topCluster = clusters[topClusterId - 1];
-						clusters[leftClusterId - 1] = ForwardList.sortedMerge(leftCluster, topCluster);
-						clusters[topClusterId - 1] = clusters[leftClusterId - 1];
-						topClusterId = leftClusterId;
-					}
-					clustermap[y * width + x] = leftClusterId;
-				} else if (y !== 0 && (topClusterId = clustermap[(y - 1) * width + x]) !== 0) clustermap[y * width + x] = leftClusterId = topClusterId;else clusters.push(new ForwardList(clustermap[y * width + x] = leftClusterId = clusters.length + 1));
-			} else
-				//clustermap[y * width + x] = leftClusterId = 0; // For languages that don't initialize arrays
-				leftClusterId = 0;
-		}
-	}
+      if (d >= densityThreshold) {
+        if (leftClusterId !== 0) {
+          if (y !== 0 && (topClusterId = clustermap[(y - 1) * width + x]) !== 0 && topClusterId !== leftClusterId) {
+            // Link clusters
+            var leftCluster = clusters[leftClusterId - 1];
+            var topCluster = clusters[topClusterId - 1];
+            clusters[leftClusterId - 1] = ForwardList.sortedMerge(leftCluster, topCluster);
+            clusters[topClusterId - 1] = clusters[leftClusterId - 1];
+            topClusterId = leftClusterId;
+          }
+          clustermap[y * width + x] = leftClusterId;
+        } else if (y !== 0 && (topClusterId = clustermap[(y - 1) * width + x]) !== 0) clustermap[y * width + x] = leftClusterId = topClusterId;else clusters.push(new ForwardList(clustermap[y * width + x] = leftClusterId = clusters.length + 1));
+      } else
+        //clustermap[y * width + x] = leftClusterId = 0; // For languages that don't initialize arrays
+        leftClusterId = 0;
+    }
+  }
 
-	// Combine lists of merged cluster IDs to cluster IDs -> clusters
-	var clusterId = 1;
-	for (var i = 0; i < clusters.length; ++i) {
-		if (clusters[i] === null) clusters[i] = 0;else if (clusters[i] instanceof ForwardList) {
-			clusters[i].forEach(function (id) {
-				clusters[id - 1] = clusterId;
-			});
-			++clusterId;
-		}
-	}
-	var numClusters = --clusterId;
+  // Combine lists of merged cluster IDs to cluster IDs -> clusters
+  var clusterId = 1;
+  for (var i = 0; i < clusters.length; ++i) {
+    if (clusters[i] === null) clusters[i] = 0;else if (clusters[i] instanceof ForwardList) {
+      clusters[i].forEach(function (id) {
+        clusters[id - 1] = clusterId;
+      });
+      ++clusterId;
+    }
+  }
+  var numClusters = --clusterId;
 
-	// Assign cluster IDs to clustermap -> clustermap
-	for (var i = 0; i < len; ++i) {
-		clustermap[i] = clustermap[i] ? clusters[clustermap[i] - 1] : 0;
-	} // Compute cluster densities (= maximum densities per cluster) -> clusterDensities
-	var clusterDensities = Array.apply(null, Array(numClusters)).map(Number.prototype.valueOf, Number.MIN_VALUE);
-	for (var i = 0; i < len; ++i) {
-		if (clusterId = clustermap[i]) clusterDensities[clusterId - 1] = Math.max(clusterDensities[clusterId - 1], densityMap.data[i]);
-	}var clusterMinDensities = Array.apply(null, Array(numClusters)).map(Number.prototype.valueOf, densityThreshold);
+  // Assign cluster IDs to clustermap -> clustermap
+  for (var i = 0; i < len; ++i) {
+    clustermap[i] = clustermap[i] ? clusters[clustermap[i] - 1] : 0;
+  } // Compute cluster densities (= maximum densities per cluster) -> clusterDensities
+  var clusterDensities = Array.apply(null, Array(numClusters)).map(Number.prototype.valueOf, Number.MIN_VALUE);
+  for (var i = 0; i < len; ++i) {
+    if (clusterId = clustermap[i]) clusterDensities[clusterId - 1] = Math.max(clusterDensities[clusterId - 1], densityMap.data[i]);
+  }var clusterMinDensities = Array.apply(null, Array(numClusters)).map(Number.prototype.valueOf, densityThreshold);
 
-	if (false) {
-		// Extend clusters to fill entire density != 0 area
+  if (false) {
+    // Extend clusters to fill entire density != 0 area
 
-		var neighborQueue = new PriorityQueue('d'); // Queue of all neighbors of clusters (candidates ro be included in the cluster)
+    var neighborQueue = new PriorityQueue('d'); // Queue of all neighbors of clusters (candidates ro be included in the cluster)
 
-		for (var y = 0; y < height; ++y) {
-			for (var x = 0; x < width; ++x) {
-				if (clustermap[y * width + x] !== 0 && (x < width - 1 && clustermap[y * width + x - 1] === 0 || x > 0 && clustermap[y * width + x + 1] === 0 || y > 0 && clustermap[(y - 1) * width + x] === 0 || y < height - 1 && clustermap[(y + 1) * width + x] === 0)) neighborQueue.push({ c: clustermap[y * width + x], x: x, y: y, d: densities[y * width + x] });
-			}
-		}while (neighborQueue.length) {
-			var neighbor = neighborQueue.shift();
-			var x = neighbor.x,
-			    y = neighbor.y,
-			    d = neighbor.d,
-			    id = neighbor.c;
+    for (var y = 0; y < height; ++y) {
+      for (var x = 0; x < width; ++x) {
+        if (clustermap[y * width + x] !== 0 && (x < width - 1 && clustermap[y * width + x - 1] === 0 || x > 0 && clustermap[y * width + x + 1] === 0 || y > 0 && clustermap[(y - 1) * width + x] === 0 || y < height - 1 && clustermap[(y + 1) * width + x] === 0)) neighborQueue.push({ c: clustermap[y * width + x], x: x, y: y, d: densities[y * width + x] });
+      }
+    }while (neighborQueue.length) {
+      var neighbor = neighborQueue.shift();
+      var x = neighbor.x,
+          y = neighbor.y,
+          d = neighbor.d,
+          id = neighbor.c;
 
-			if (--x !== -1) {
-				var nd = densities[y * width + x];
-				if (nd !== 0 && clustermap[y * width + x] === 0) {
-					neighborQueue.push({ c: clustermap[y * width + x] = id, x: x, y: y, d: nd = densities[y * width + x] });
-					clusterMinDensities[id - 1] = Math.min(clusterMinDensities[id - 1], nd);
-				}
-			}
+      if (--x !== -1) {
+        var nd = densities[y * width + x];
+        if (nd !== 0 && clustermap[y * width + x] === 0) {
+          neighborQueue.push({ c: clustermap[y * width + x] = id, x: x, y: y, d: nd = densities[y * width + x] });
+          clusterMinDensities[id - 1] = Math.min(clusterMinDensities[id - 1], nd);
+        }
+      }
 
-			++x;
-			if (++x !== width) {
-				var nd = densities[y * width + x];
-				if (nd !== 0 && clustermap[y * width + x] === 0) {
-					neighborQueue.push({ c: clustermap[y * width + x] = id, x: x, y: y, d: nd = densities[y * width + x] });
-					clusterMinDensities[id - 1] = Math.min(clusterMinDensities[id - 1], nd);
-				}
-			}
+      ++x;
+      if (++x !== width) {
+        var nd = densities[y * width + x];
+        if (nd !== 0 && clustermap[y * width + x] === 0) {
+          neighborQueue.push({ c: clustermap[y * width + x] = id, x: x, y: y, d: nd = densities[y * width + x] });
+          clusterMinDensities[id - 1] = Math.min(clusterMinDensities[id - 1], nd);
+        }
+      }
 
-			--x;
-			if (--y !== -1) {
-				var nd = densities[y * width + x];
-				if (nd !== 0 && clustermap[y * width + x] === 0) {
-					neighborQueue.push({ c: clustermap[y * width + x] = id, x: x, y: y, d: nd = densities[y * width + x] });
-					clusterMinDensities[id - 1] = Math.min(clusterMinDensities[id - 1], nd);
-				}
-			}
+      --x;
+      if (--y !== -1) {
+        var nd = densities[y * width + x];
+        if (nd !== 0 && clustermap[y * width + x] === 0) {
+          neighborQueue.push({ c: clustermap[y * width + x] = id, x: x, y: y, d: nd = densities[y * width + x] });
+          clusterMinDensities[id - 1] = Math.min(clusterMinDensities[id - 1], nd);
+        }
+      }
 
-			++y;
-			if (++y !== height) {
-				var nd = densities[y * width + x];
-				if (nd !== 0 && clustermap[y * width + x] === 0) {
-					neighborQueue.push({ c: clustermap[y * width + x] = id, x: x, y: y, d: nd = densities[y * width + x] });
-					clusterMinDensities[id - 1] = Math.min(clusterMinDensities[id - 1], nd);
-				}
-			}
-		}
-	}
+      ++y;
+      if (++y !== height) {
+        var nd = densities[y * width + x];
+        if (nd !== 0 && clustermap[y * width + x] === 0) {
+          neighborQueue.push({ c: clustermap[y * width + x] = id, x: x, y: y, d: nd = densities[y * width + x] });
+          clusterMinDensities[id - 1] = Math.min(clusterMinDensities[id - 1], nd);
+        }
+      }
+    }
+  }
 
-	var clusterMap = {
-		data: clustermap,
-		densities: clusterDensities,
-		minDensities: clusterMinDensities,
-		threshold: densityThreshold,
-		n: numClusters,
-		width: width, height: height,
-		transform: densityMap.transform
-		/*transformX: densityMap.transformX,
-  transformY: densityMap.transformY,
-  invTransformX: densityMap.invTransformX,
-  invTransformY: densityMap.invTransformY*/
-	};
-	return clusterMap;
+  var clusterMap = {
+    data: clustermap,
+    densities: clusterDensities,
+    minDensities: clusterMinDensities,
+    threshold: densityThreshold,
+    n: numClusters,
+    width: width, height: height,
+    transform: densityMap.transform
+    /*transformX: densityMap.transformX,
+    transformY: densityMap.transformY,
+    invTransformX: densityMap.invTransformX,
+    invTransformY: densityMap.invTransformY*/
+  };
+  return clusterMap;
 }
 
 /**
@@ -3327,9 +3320,9 @@ function computeClusterMap_method3(densityMap, d0, d1, options) {
  * @param  {string=} fileName=densityMap.png The file name of the downloaded image.
  */
 function downloadDensityMap(densityMap, fileName) {
-	if (!fileName) fileName = "densityMap.png";
+  if (!fileName) fileName = "densityMap.png";
 
-	libUtility.download(fileName, libUtility.imageUrlFromBytes(libUtility.F32toI24flipY(densityMap.data, [densityMap.minimum, densityMap.maximum], densityMap.width, densityMap.height), densityMap.width, densityMap.height));
+  libUtility.download(fileName, libUtility.imageUrlFromBytes(libUtility.F32toI24flipY(densityMap.data, [densityMap.minimum, densityMap.maximum], densityMap.width, densityMap.height), densityMap.width, densityMap.height));
 }
 
 /**
@@ -3342,29 +3335,29 @@ function downloadDensityMap(densityMap, fileName) {
  * @return {Array<number>} Point of intersection or null if no intersection occured
  */
 function vectorLineIntersection2D(vpos, vdir, a, b) {
-	var x1 = vpos[0],
-	    y1 = vpos[1],
-	    x2 = vpos[0] + vdir[0],
-	    y2 = vpos[1] + vdir[1];
-	var x3 = a[0],
-	    y3 = a[1],
-	    x4 = b[0],
-	    y4 = b[1];
+  var x1 = vpos[0],
+      y1 = vpos[1],
+      x2 = vpos[0] + vdir[0],
+      y2 = vpos[1] + vdir[1];
+  var x3 = a[0],
+      y3 = a[1],
+      x4 = b[0],
+      y4 = b[1];
 
-	var denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-	if (denom > -1e-5 && denom < 1e-5) return null; // Line and vector are parallel or coincident
+  var denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+  if (denom > -1e-5 && denom < 1e-5) return null; // Line and vector are parallel or coincident
 
-	//console.log([(x1 * y2 - y1 * x2) / denom, (x3 * y4 - y3 * x4) / denom]);
+  //console.log([(x1 * y2 - y1 * x2) / denom, (x3 * y4 - y3 * x4) / denom]);
 
-	var xi = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / denom;
-	var yi = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / denom;
+  var xi = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / denom;
+  var yi = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / denom;
 
-	var u = Math.abs(x4 - x3) > Math.abs(y4 - y3) ? (xi - x3) / (x4 - x3) : (yi - y3) / (y4 - y3);
-	//console.log(u);
-	if (u < 0.0 || u > 1.0) return null; // Intersection lies outside the range a...b
+  var u = Math.abs(x4 - x3) > Math.abs(y4 - y3) ? (xi - x3) / (x4 - x3) : (yi - y3) / (y4 - y3);
+  //console.log(u);
+  if (u < 0.0 || u > 1.0) return null; // Intersection lies outside the range a...b
 
 
-	return [xi, yi];
+  return [xi, yi];
 }
 
 /**
@@ -3378,27 +3371,27 @@ function vectorLineIntersection2D(vpos, vdir, a, b) {
  * @return {boolean} True if the two lines intersect
  */
 function linesIntersect(a, b, c, d) {
-	var CmP = [c[0] - a[0], c[1] - a[1]];
-	var r = [b[0] - a[0], b[1] - a[1]];
-	var s = [d[0] - c[0], d[1] - c[1]];
+  var CmP = [c[0] - a[0], c[1] - a[1]];
+  var r = [b[0] - a[0], b[1] - a[1]];
+  var s = [d[0] - c[0], d[1] - c[1]];
 
-	var CmPxr = CmP[0] * r[1] - CmP[1] * r[0];
-	var CmPxs = CmP[0] * s[1] - CmP[1] * s[0];
-	var rxs = r[0] * s[1] - r[1] * s[0];
+  var CmPxr = CmP[0] * r[1] - CmP[1] * r[0];
+  var CmPxs = CmP[0] * s[1] - CmP[1] * s[0];
+  var rxs = r[0] * s[1] - r[1] * s[0];
 
-	if (CmPxr === 0)
-		// Lines are collinear, and therefore intersect if they have any overlap
-		return c[0] - a[0] < 0 !== c[0] - b[0] < 0 || c[1] - a[1] < 0 !== c[1] - b[1] < 0;
+  if (CmPxr === 0)
+    // Lines are collinear, and therefore intersect if they have any overlap
+    return c[0] - a[0] < 0 !== c[0] - b[0] < 0 || c[1] - a[1] < 0 !== c[1] - b[1] < 0;
 
-	if (rxs === 0)
-		// Lines are parallel
-		return false;
+  if (rxs === 0)
+    // Lines are parallel
+    return false;
 
-	var rxsr = 1 / rxs;
-	var t = CmPxs * rxsr;
-	var u = CmPxr * rxsr;
+  var rxsr = 1 / rxs;
+  var t = CmPxs * rxsr;
+  var u = CmPxr * rxsr;
 
-	return t >= 0 && t <= 1 && u >= 0 && u <= 1;
+  return t >= 0 && t <= 1 && u >= 0 && u <= 1;
 }
 
 /**
@@ -3418,29 +3411,29 @@ function linesIntersect(a, b, c, d) {
  * @return {boolean} True if point P is included by polygon V
  */
 function pointInsidePolygon(P, V) {
-	var n = V.length - 1,
-	    wn = 0; // wn: The winding number counter
+  var n = V.length - 1,
+      wn = 0; // wn: The winding number counter
 
-	var isLeft = function isLeft(P0, P1, P2) {
-		return (P1[0] - P0[0]) * (P2[1] - P0[1]) - (P2[0] - P0[0]) * (P1[1] - P0[1]);
-	};
+  var isLeft = function isLeft(P0, P1, P2) {
+    return (P1[0] - P0[0]) * (P2[1] - P0[1]) - (P2[0] - P0[0]) * (P1[1] - P0[1]);
+  };
 
-	// loop through all edges of the polygon
-	for (var i = 0; i < n; i++) {
-		// Test edge from V[i] to V[i + 1]
-		if (V[i][1] <= P[1]) // If edge-start is on or below P
-			{
-				if (V[i + 1][1] > P[1]) // If edge is upward crossing
-					if (isLeft(V[i], V[i + 1], P) > 0) // If P is to the left of edge
-						++wn; // We have a valid up intersect
-			} else // If edge-start is above P
-			{
-				if (V[i + 1][1] <= P[1]) // If edge is downward crossing
-					if (isLeft(V[i], V[i + 1], P) < 0) // If P is to the right of edge
-						--wn; // We have a valid down intersect
-			}
-	}
-	return wn !== 0;
+  // loop through all edges of the polygon
+  for (var i = 0; i < n; i++) {
+    // Test edge from V[i] to V[i + 1]
+    if (V[i][1] <= P[1]) // If edge-start is on or below P
+      {
+        if (V[i + 1][1] > P[1]) // If edge is upward crossing
+          if (isLeft(V[i], V[i + 1], P) > 0) // If P is to the left of edge
+            ++wn; // We have a valid up intersect
+      } else // If edge-start is above P
+      {
+        if (V[i + 1][1] <= P[1]) // If edge is downward crossing
+          if (isLeft(V[i], V[i + 1], P) < 0) // If P is to the right of edge
+            --wn; // We have a valid down intersect
+      }
+  }
+  return wn !== 0;
 }
 
 /***/ }),
@@ -3455,8 +3448,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["parseColor"] = parseColor;
 /* harmony export (immutable) */ __webpack_exports__["validateColormap"] = validateColormap;
 /* harmony export (immutable) */ __webpack_exports__["parseColormap"] = parseColormap;
-/* eslint-disable */
-
 var libUtility = __webpack_require__(0);
 var libGraphics = __webpack_require__(2);
 var libShaders = __webpack_require__(4);
@@ -3474,254 +3465,254 @@ var COLORMAP_WIDTH = 10; // [pixel]
  * @param {Object} globalView // {GlobalView}
  */
 function Colormap(gl, globalView) {
-	var TICK_LENGTH = 6; // [pixel]
-	var NUM_TICKS = 10;
+  var TICK_LENGTH = 6; // [pixel]
+  var NUM_TICKS = 10;
 
-	var sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
-	sdrLine.color = sdrLine.u4f("color");
-	sdrLine.color.apply(sdrLine, gl.foreColor);
-	sdrLine.matWorldViewProj = sdrLine.u4x4f("matWorldViewProj");
-	this.updateColorSchema = function () {
-		sdrLine.color.apply(sdrLine, gl.foreColor);
-	};
+  var sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
+  sdrLine.color = sdrLine.u4f("color");
+  sdrLine.color.apply(sdrLine, gl.foreColor);
+  sdrLine.matWorldViewProj = sdrLine.u4x4f("matWorldViewProj");
+  this.updateColorSchema = function () {
+    sdrLine.color.apply(sdrLine, gl.foreColor);
+  };
 
-	var sdrColormap = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured, libShaders.Shaders.fsTextured1D);
-	sdrColormap.matWorldViewProj = sdrColormap.u4x4f("matWorldViewProj");
-	var colormaps = {
-		exhue: libGraphics.LoadTexture(gl, "/exhue.png", function () {
-			globalView.invalidate();
-		}), //function() { setTimeout(function() { globalView.invalidate(); }, 1000); }),
-		rainbow: libGraphics.LoadTexture(gl, "/rainbow.png", function () {
-			globalView.invalidate();
-		}), //function() { setTimeout(function() { globalView.invalidate(); }, 1000); }),
-		2: libGraphics.LoadTextureFromByteArray(gl, new Uint8Array([255, 0, 0, 255, 0, 255, 0, 255]), 2, 1)
-	};
-	this.builtinColormaps = ["exhue", "rainbow"];
-	var texColormap = colormaps.exhue;
+  var sdrColormap = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured, libShaders.Shaders.fsTextured1D);
+  sdrColormap.matWorldViewProj = sdrColormap.u4x4f("matWorldViewProj");
+  var colormaps = {
+    exhue: libGraphics.LoadTexture(gl, "/exhue.png", function () {
+      globalView.invalidate();
+    }), //function() { setTimeout(function() { globalView.invalidate(); }, 1000); }),
+    rainbow: libGraphics.LoadTexture(gl, "/rainbow.png", function () {
+      globalView.invalidate();
+    }), //function() { setTimeout(function() { globalView.invalidate(); }, 1000); }),
+    2: libGraphics.LoadTextureFromByteArray(gl, new Uint8Array([255, 0, 0, 255, 0, 255, 0, 255]), 2, 1)
+  };
+  this.builtinColormaps = ["exhue", "rainbow"];
+  var texColormap = colormaps.exhue;
 
-	// Create a 2D line mesh
-	var meshLine = new libGraphics.Mesh(gl, new Float32Array([
-	// Positions
-	0, 0, 0, 1, 0, 0]), null, null, null, null, null, gl.LINES);
+  // Create a 2D line mesh
+  var meshLine = new libGraphics.Mesh(gl, new Float32Array([
+  // Positions
+  0, 0, 0, 1, 0, 0]), null, null, null, null, null, gl.LINES);
 
-	// Create a 2D line quad mesh
-	var meshLineQuad = new libGraphics.Mesh(gl, new Float32Array([
-	// Positions
-	0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0]), null, null, null, null, null, gl.LINE_LOOP);
+  // Create a 2D line quad mesh
+  var meshLineQuad = new libGraphics.Mesh(gl, new Float32Array([
+  // Positions
+  0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0]), null, null, null, null, null, gl.LINE_LOOP);
 
-	// Create a 2D quad mesh
-	var meshQuad = new libGraphics.Mesh(gl, new Float32Array([
-	// Positions
-	0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0]), null, null, null, new Float32Array([
-	// Texture coordinates
-	0, 1, 0, 0, 1, 1, 1, 0]));
+  // Create a 2D quad mesh
+  var meshQuad = new libGraphics.Mesh(gl, new Float32Array([
+  // Positions
+  0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0]), null, null, null, new Float32Array([
+  // Texture coordinates
+  0, 1, 0, 0, 1, 1, 1, 0]));
 
-	var axis = { minimum: 0, maximum: 100, values: null, tickOffset: 0, tickDistance: 10, tickCount: 11, tickLength: TICK_LENGTH };
+  var axis = { minimum: 0, maximum: 100, values: null, tickOffset: 0, tickDistance: 10, tickCount: 11, tickLength: TICK_LENGTH };
 
-	this.visible = true;
-	this.render = function (flipY, plotBounds) {
-		if (!this.visible) return;
+  this.visible = true;
+  this.render = function (flipY, plotBounds) {
+    if (!this.visible) return;
 
-		// >>> Draw colormap
+    // >>> Draw colormap
 
-		sdrColormap.bind();
-		meshQuad.bind(sdrColormap, texColormap);
+    sdrColormap.bind();
+    meshQuad.bind(sdrColormap, texColormap);
 
-		var mattrans = libGlMatrix.mat4.create();
-		libGlMatrix.mat4.identity(mattrans);
-		if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-		libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + plotBounds.width + 0.5) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
-		libGlMatrix.mat4.scale(mattrans, mattrans, [2 * COLORMAP_WIDTH / gl.width, 2 * plotBounds.height / gl.height, 1]);
-		sdrColormap.matWorldViewProj(mattrans);
-		meshQuad.draw();
+    var mattrans = libGlMatrix.mat4.create();
+    libGlMatrix.mat4.identity(mattrans);
+    if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+    libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + plotBounds.width + 0.5) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
+    libGlMatrix.mat4.scale(mattrans, mattrans, [2 * COLORMAP_WIDTH / gl.width, 2 * plotBounds.height / gl.height, 1]);
+    sdrColormap.matWorldViewProj(mattrans);
+    meshQuad.draw();
 
-		// >>> Draw borders
+    // >>> Draw borders
 
-		sdrLine.bind();
-		meshLineQuad.bind(sdrLine, null);
+    sdrLine.bind();
+    meshLineQuad.bind(sdrLine, null);
 
-		sdrLine.matWorldViewProj(mattrans);
-		meshLineQuad.draw();
+    sdrLine.matWorldViewProj(mattrans);
+    meshLineQuad.draw();
 
-		// >>> Draw ticks and tick labels
+    // >>> Draw ticks and tick labels
 
-		// Draw y-axis ticks and tick labels
-		var tickLabel_left = 0.0;
-		libGlMatrix.mat4.identity(mattrans);
-		if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-		libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + plotBounds.width + COLORMAP_WIDTH + 0.5) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
-		libGlMatrix.mat4.scale(mattrans, mattrans, [2 * axis.tickLength / gl.width, 2 * plotBounds.height / gl.height, 1]);
-		sdrLine.matWorldViewProj(mattrans);
-		meshLine.draw();
-		libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, 1.0, 0.0]);
-		sdrLine.matWorldViewProj(mattrans);
-		meshLine.draw();
-		libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -1.0, 0.0]);
-		for (var i = 0; i < axis.tickCount; ++i) {
-			var y = axis.tickOffset + i * axis.tickDistance;
-			var tickPos = (y - axis.minimum) / (axis.maximum - axis.minimum);
+    // Draw y-axis ticks and tick labels
+    var tickLabel_left = 0.0;
+    libGlMatrix.mat4.identity(mattrans);
+    if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+    libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + plotBounds.width + COLORMAP_WIDTH + 0.5) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
+    libGlMatrix.mat4.scale(mattrans, mattrans, [2 * axis.tickLength / gl.width, 2 * plotBounds.height / gl.height, 1]);
+    sdrLine.matWorldViewProj(mattrans);
+    meshLine.draw();
+    libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, 1.0, 0.0]);
+    sdrLine.matWorldViewProj(mattrans);
+    meshLine.draw();
+    libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -1.0, 0.0]);
+    for (var i = 0; i < axis.tickCount; ++i) {
+      var y = axis.tickOffset + i * axis.tickDistance;
+      var tickPos = (y - axis.minimum) / (axis.maximum - axis.minimum);
 
-			libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, tickPos, 0.0]);
-			sdrLine.matWorldViewProj(mattrans);
-			meshLine.draw();
-			libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -tickPos, 0.0]);
+      libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, tickPos, 0.0]);
+      sdrLine.matWorldViewProj(mattrans);
+      meshLine.draw();
+      libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -tickPos, 0.0]);
 
-			var tickLabel = axis.values ? axis.values[y] : y.toPrecision(6) / 1;
-			tickLabel_left = Math.max(tickLabel_left, gl.measureTextWidth(tickLabel));
-			gl.drawText(tickLabel, plotBounds.x + plotBounds.width + COLORMAP_WIDTH + axis.tickLength + 2, gl.height - plotBounds.y - plotBounds.height * tickPos, 'middleleft');
-		}
-		tickLabel_left = Math.ceil(plotBounds.x + plotBounds.width + COLORMAP_WIDTH + axis.tickLength + 10 + tickLabel_left);
+      var tickLabel = axis.values ? axis.values[y] : y.toPrecision(6) / 1;
+      tickLabel_left = Math.max(tickLabel_left, gl.measureTextWidth(tickLabel));
+      gl.drawText(tickLabel, plotBounds.x + plotBounds.width + COLORMAP_WIDTH + axis.tickLength + 2, gl.height - plotBounds.y - plotBounds.height * tickPos, 'middleleft');
+    }
+    tickLabel_left = Math.ceil(plotBounds.x + plotBounds.width + COLORMAP_WIDTH + axis.tickLength + 10 + tickLabel_left);
 
-		// >>> Draw axis label
+    // >>> Draw axis label
 
-		if (axis.label) gl.drawText(axis.label, tickLabel_left, gl.height - plotBounds.y - plotBounds.height / 2, 'topcenter', -Math.PI / 2);
-	};
+    if (axis.label) gl.drawText(axis.label, tickLabel_left, gl.height - plotBounds.y - plotBounds.height / 2, 'topcenter', -Math.PI / 2);
+  };
 
-	function checkOverlap() {
-		var MIN_TICK_LABEL_DISTANCE = gl.measureTextWidth('  '); // Minimum distance between tick labels in pixel
-		var plotBounds = globalView.getPlotBounds();
-		return plotBounds.height * axis.tickDistance / (axis.maximum - axis.minimum) >= gl.measureTextHeight() + MIN_TICK_LABEL_DISTANCE;
-	}
+  function checkOverlap() {
+    var MIN_TICK_LABEL_DISTANCE = gl.measureTextWidth('  '); // Minimum distance between tick labels in pixel
+    var plotBounds = globalView.getPlotBounds();
+    return plotBounds.height * axis.tickDistance / (axis.maximum - axis.minimum) >= gl.measureTextHeight() + MIN_TICK_LABEL_DISTANCE;
+  }
 
-	/**
-  * @param  {number} minimum
-  * @param  {number} maximum
-  * @param  {boolean=} changeTickDistance=true
-  */
-	this.setNumericRange = function (minimum, maximum, changeTickDistance) {
-		axis.minimum = minimum;
-		axis.maximum = maximum;
-		axis.values = null;
+  /**
+   * @param  {number} minimum
+   * @param  {number} maximum
+   * @param  {boolean=} changeTickDistance=true
+   */
+  this.setNumericRange = function (minimum, maximum, changeTickDistance) {
+    axis.minimum = minimum;
+    axis.maximum = maximum;
+    axis.values = null;
 
-		for (var numTicks = NUM_TICKS; numTicks >= 0; --numTicks) {
-			if (changeTickDistance === false) {
-				axis.tickOffset = Math.ceil(minimum / axis.tickDistance) * axis.tickDistance;
-				axis.tickCount = Math.floor((maximum - axis.tickOffset) / axis.tickDistance) + 1;
-			} else {
-				axis.tickDistance = (maximum - minimum) / numTicks;
-				var exp = Math.ceil(Math.log(axis.tickDistance) / Math.log(10)); // Compute power-of-10 just above tickDistance -> pow(10, exp)
+    for (var numTicks = NUM_TICKS; numTicks >= 0; --numTicks) {
+      if (changeTickDistance === false) {
+        axis.tickOffset = Math.ceil(minimum / axis.tickDistance) * axis.tickDistance;
+        axis.tickCount = Math.floor((maximum - axis.tickOffset) / axis.tickDistance) + 1;
+      } else {
+        axis.tickDistance = (maximum - minimum) / numTicks;
+        var exp = Math.ceil(Math.log(axis.tickDistance) / Math.log(10)); // Compute power-of-10 just above tickDistance -> pow(10, exp)
 
-				// Try less aggressive rounding in each iteration until break condition is met
-				for (var i = 0; i < 10; ++i) // Maximum 10 iterations
-				{
-					axis.tickDistance = (maximum - minimum) / numTicks;
-					var base = Math.pow(10, exp--);
-					axis.tickDistance = Math.round(axis.tickDistance / base) * base; // Round tickDistance to base
-					axis.tickOffset = Math.ceil(minimum / axis.tickDistance) * axis.tickDistance;
-					axis.tickCount = Math.floor((maximum - axis.tickOffset) / axis.tickDistance) + 1;
-					if (axis.tickCount >= numTicks - 2 && axis.tickCount <= numTicks + 2) // Condition: numTicks - 2 <= tickCount <= numTicks + 2
-						break;
-				}
-			}
+        // Try less aggressive rounding in each iteration until break condition is met
+        for (var i = 0; i < 10; ++i) // Maximum 10 iterations
+        {
+          axis.tickDistance = (maximum - minimum) / numTicks;
+          var base = Math.pow(10, exp--);
+          axis.tickDistance = Math.round(axis.tickDistance / base) * base; // Round tickDistance to base
+          axis.tickOffset = Math.ceil(minimum / axis.tickDistance) * axis.tickDistance;
+          axis.tickCount = Math.floor((maximum - axis.tickOffset) / axis.tickDistance) + 1;
+          if (axis.tickCount >= numTicks - 2 && axis.tickCount <= numTicks + 2) // Condition: numTicks - 2 <= tickCount <= numTicks + 2
+            break;
+        }
+      }
 
-			if (checkOverlap()) break;
-		}
-	};
-	this.setEnumRange = function (minimum, maximum, values) {
-		axis.minimum = minimum -= 0.5; // 0.5 ... Move to center of value-bin
-		axis.maximum = maximum -= 0.5; // 0.5 ... Move to center of value-bin
-		axis.values = values;
+      if (checkOverlap()) break;
+    }
+  };
+  this.setEnumRange = function (minimum, maximum, values) {
+    axis.minimum = minimum -= 0.5; // 0.5 ... Move to center of value-bin
+    axis.maximum = maximum -= 0.5; // 0.5 ... Move to center of value-bin
+    axis.values = values;
 
-		axis.tickDistance = 1;
-		axis.tickOffset = Math.max(0, Math.ceil(minimum / axis.tickDistance) * axis.tickDistance);
-		axis.tickCount = Math.min(values.length - axis.tickOffset, Math.floor((maximum - axis.tickOffset + 1) / axis.tickDistance));
-	};
-	this.setLabel = function (label) {
-		axis.label = label;
-	};
+    axis.tickDistance = 1;
+    axis.tickOffset = Math.max(0, Math.ceil(minimum / axis.tickDistance) * axis.tickDistance);
+    axis.tickCount = Math.min(values.length - axis.tickOffset, Math.floor((maximum - axis.tickOffset + 1) / axis.tickDistance));
+  };
+  this.setLabel = function (label) {
+    axis.label = label;
+  };
 
-	var pointColor = null;
-	this.setDataset = function (dataset, options) {};
-	this.onInputChanged = function (activeInputs, animatedInputs, options) {};
-	this.onOptionsChanged = function (options) {
-		axis.tickLength = TICK_LENGTH + (options['showColormapHistogram'] ? options['histogramHeight'] : 0);
-		if (options['pointColor'] !== pointColor) {
-			pointColor = options['pointColor'];
+  var pointColor = null;
+  this.setDataset = function (dataset, options) {};
+  this.onInputChanged = function (activeInputs, animatedInputs, options) {};
+  this.onOptionsChanged = function (options) {
+    axis.tickLength = TICK_LENGTH + (options['showColormapHistogram'] ? options['histogramHeight'] : 0);
+    if (options['pointColor'] !== pointColor) {
+      pointColor = options['pointColor'];
 
-			if (pointColor === null) texColormap = colormaps.exhue;else {
-				var c = parseColormap(pointColor);
-				if (c) texColormap = libGraphics.LoadTextureFromByteArray(gl, c, c.length / 4, 1);
-			}
-		}
-	};
-	this.onPlotBoundsChanged = function (plotBounds) {
-		axis.values === null ? this.setNumericRange(axis.minimum, axis.maximum, true) : this.setEnumRange(axis.minimum + 0.5, axis.maximum + 0.5, axis.values);
-	};
+      if (pointColor === null) texColormap = colormaps.exhue;else {
+        var c = parseColormap(pointColor);
+        if (c) texColormap = libGraphics.LoadTextureFromByteArray(gl, c, c.length / 4, 1);
+      }
+    }
+  };
+  this.onPlotBoundsChanged = function (plotBounds) {
+    axis.values === null ? this.setNumericRange(axis.minimum, axis.maximum, true) : this.setEnumRange(axis.minimum + 0.5, axis.maximum + 0.5, axis.values);
+  };
 
-	this.getTexture = function () {
-		return texColormap;
-	};
+  this.getTexture = function () {
+    return texColormap;
+  };
 
-	this.free = function () {
-		meshLine.free();
-	};
+  this.free = function () {
+    meshLine.free();
+  };
 }
 
 function validateColor(color) {
-	if (libUtility.isString(color)) {
-		if (!libUtility.isUndefined(libUtility.colorNameToHex(color))) return true; // color is known color name
-		var rgb;
-		if ((rgb = libUtility.hexToRgb(color)) !== null && rgb.r >= 0x00 && rgb.r <= 0xFF && rgb.g >= 0x00 && rgb.g <= 0xFF && rgb.b >= 0x00 && rgb.b <= 0xFF) return true; // color is hex color
-		return "Unknown color " + color;
-	}
+  if (libUtility.isString(color)) {
+    if (!libUtility.isUndefined(libUtility.colorNameToHex(color))) return true; // color is known color name
+    var rgb;
+    if ((rgb = libUtility.hexToRgb(color)) !== null && rgb.r >= 0x00 && rgb.r <= 0xFF && rgb.g >= 0x00 && rgb.g <= 0xFF && rgb.b >= 0x00 && rgb.b <= 0xFF) return true; // color is hex color
+    return "Unknown color " + color;
+  }
 
-	if (libUtility.isArray(color)) {
-		if (color.length !== 4) return "Color array needs to have 4 components (RGBA).";
-		return true;
-	}
+  if (libUtility.isArray(color)) {
+    if (color.length !== 4) return "Color array needs to have 4 components (RGBA).";
+    return true;
+  }
 
-	return "Unknown color " + color;
+  return "Unknown color " + color;
 }
 
 function parseColor(color) {
-	if (libUtility.isString(color)) {
-		var hex = libUtility.colorNameToHex(color);
-		var rgb = libUtility.hexToRgb(hex ? hex : color);
-		return rgb ? new Uint8Array([rgb.r, rgb.g, rgb.b, 255]) : null;
-	}
+  if (libUtility.isString(color)) {
+    var hex = libUtility.colorNameToHex(color);
+    var rgb = libUtility.hexToRgb(hex ? hex : color);
+    return rgb ? new Uint8Array([rgb.r, rgb.g, rgb.b, 255]) : null;
+  }
 
-	if (libUtility.isArray(color)) return color.length >= 4 ? new Uint8Array([color[0], color[1], color[2], color[3]]) : null;
+  if (libUtility.isArray(color)) return color.length >= 4 ? new Uint8Array([color[0], color[1], color[2], color[3]]) : null;
 
-	return null;
+  return null;
 }
 
 function validateColormap(colormap) {
-	if (colormap === null) return true;
-	if (libUtility.isString(colormap)) return validateColor(colormap);
+  if (colormap === null) return true;
+  if (libUtility.isString(colormap)) return validateColor(colormap);
 
-	if (libUtility.isArray(colormap)) {
-		if (colormap.length === 0) return "Colormap array cannot be empty.";
-		if (libUtility.isString(colormap[0])) {
-			var err;
-			for (var i = 0; i < colormap.length; ++i) {
-				if ((err = validateColor(colormap[i])) !== true) return err;
-			}return true;
-		} else {
-			if (colormap.length % 4 !== 0) return "Colormap array length must be multiple of 4.";
-			for (var i = 0; i < colormap.length; ++i) {
-				if (!libUtility.isNumber(colormap[i]) || colormap[i] < 0x00 || colormap[i] > 0xFF) return "Colormap array must contain numbers between 0 and 255.";
-			}return true;
-		}
-	}
+  if (libUtility.isArray(colormap)) {
+    if (colormap.length === 0) return "Colormap array cannot be empty.";
+    if (libUtility.isString(colormap[0])) {
+      var err;
+      for (var i = 0; i < colormap.length; ++i) {
+        if ((err = validateColor(colormap[i])) !== true) return err;
+      }return true;
+    } else {
+      if (colormap.length % 4 !== 0) return "Colormap array length must be multiple of 4.";
+      for (var i = 0; i < colormap.length; ++i) {
+        if (!libUtility.isNumber(colormap[i]) || colormap[i] < 0x00 || colormap[i] > 0xFF) return "Colormap array must contain numbers between 0 and 255.";
+      }return true;
+    }
+  }
 
-	return "Unknown colormap " + colormap;
+  return "Unknown colormap " + colormap;
 }
 
 function parseColormap(colormap) {
-	if (libUtility.isString(colormap)) return parseColor(colormap);
+  if (libUtility.isString(colormap)) return parseColor(colormap);
 
-	if (libUtility.isArray(colormap)) {
-		if (colormap.length === 0) return null;
-		if (libUtility.isString(colormap[0])) {
-			var array = [],
-			    color;
-			for (var i = 0; i < colormap.length; ++i) {
-				if (color = parseColor(colormap[i])) Array.prototype.push.apply(array, color);else return null;
-			}return new Uint8Array(array);
-		} else if (libUtility.isNumber(colormap[0])) return new Uint8Array(colormap);
-	}
+  if (libUtility.isArray(colormap)) {
+    if (colormap.length === 0) return null;
+    if (libUtility.isString(colormap[0])) {
+      var array = [],
+          color;
+      for (var i = 0; i < colormap.length; ++i) {
+        if (color = parseColor(colormap[i])) Array.prototype.push.apply(array, color);else return null;
+      }return new Uint8Array(array);
+    } else if (libUtility.isNumber(colormap[0])) return new Uint8Array(colormap);
+  }
 
-	return null;
+  return null;
 }
 
 /***/ }),
@@ -6103,8 +6094,6 @@ function range() {
 /* unused harmony export libAlgorithm */
 /* harmony export (immutable) */ __webpack_exports__["b"] = initCanvas;
 /* harmony export (immutable) */ __webpack_exports__["a"] = GlobalView;
-/* eslint-disable */
-
 var webglUtils = __webpack_require__(13);
 var libUtility = __webpack_require__(0);
 var libTextRenderContext = __webpack_require__(14);
@@ -6119,21 +6108,21 @@ var libGraphics = __webpack_require__(2);
 var libGlMatrix = __webpack_require__(3);
 
 function myAlert(msg) {
-	alert(msg); // eslint-disable-line no-alert, no-undef
+  alert(msg); // eslint-disable-line no-alert, no-undef
 }
 
 function initCanvas(canvasElement) {
-	// var canvas = document.getElementById("canvas");
-	var gl = canvasElement.getContext('webgl') || canvasElement.getContext('experimental-webgl');
+  // var canvas = document.getElementById("canvas");
+  var gl = canvasElement.getContext('webgl') || canvasElement.getContext('experimental-webgl');
 
-	// Only continue if WebGL is available and working
-	if (!gl) {
-		myAlert('Unable to initialize WebGL. Your browser or machine may not support it.');
-		return;
-	}
+  // Only continue if WebGL is available and working
+  if (!gl) {
+    myAlert('Unable to initialize WebGL. Your browser or machine may not support it.');
+    return;
+  }
 
-	gl.clearColor(1, 0, 0, 1);
-	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // eslint-disable-line no-bitwise
+  gl.clearColor(1, 0, 0, 1);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // eslint-disable-line no-bitwise
 }
 
 // >>> Options
@@ -6161,2150 +6150,2150 @@ var OptionDescription;
  * @export
  */
 function GlobalView(div, startupOptions) {
-	var globalView = this;
+  var globalView = this;
 
-	var canvas = null;
-	for (var i = 0; i < div.children.length; ++i) {
-		if (div.children[i] instanceof HTMLCanvasElement && div.children[i].globalViewWebGLCanvas) // If div already contains a GlobalView-WebGL-canvas, ...
-			{
-				// Share canvas
-				canvas = /** @type {HTMLCanvasElement} */div.children[i];
-				break;
-			}
-	}if (canvas === null) {
-		canvas = /** @type {HTMLCanvasElement} */document.createElement('canvas');
-		canvas.style.position = "static"; //"absolute";
-		canvas.style.left = canvas.style.top = "0px";
-		canvas.style.width = canvas.style.height = "100%";
-		canvas.style.backgroundColor = "transparent";
-		canvas.globalViewWebGLCanvas = true;
-		div.appendChild(canvas);
-	}
+  var canvas = null;
+  for (var i = 0; i < div.children.length; ++i) {
+    if (div.children[i] instanceof HTMLCanvasElement && div.children[i].globalViewWebGLCanvas) // If div already contains a GlobalView-WebGL-canvas, ...
+      {
+        // Share canvas
+        canvas = /** @type {HTMLCanvasElement} */div.children[i];
+        break;
+      }
+  }if (canvas === null) {
+    canvas = /** @type {HTMLCanvasElement} */document.createElement('canvas');
+    canvas.style.position = "static"; //"absolute";
+    canvas.style.left = canvas.style.top = "0px";
+    canvas.style.width = canvas.style.height = "100%";
+    canvas.style.backgroundColor = "transparent";
+    canvas.globalViewWebGLCanvas = true;
+    div.appendChild(canvas);
+  }
 
-	this['invalidate'] = this.invalidate = function () {}; // Silently ignore calls to invalidate during initialization
+  this['invalidate'] = this.invalidate = function () {}; // Silently ignore calls to invalidate during initialization
 
-	var gl = canvas.getContext("webgl");
-	if (!gl) {
-		alert("Error: WebGL not supported");
-		return;
-	}
-	var OES_element_index_uint = gl.getExtension("OES_element_index_uint");
-	if (!OES_element_index_uint) console.warn("GlobalView warning: Unsupported WebGL extension: OES_element_index_uint");
-	gl.ext = gl.getExtension('ANGLE_instanced_arrays');
-	if (!gl.ext) console.warn("GlobalView warning: Unsupported WebGL extension: ANGLE_instanced_arrays");
+  var gl = canvas.getContext("webgl");
+  if (!gl) {
+    alert("Error: WebGL not supported");
+    return;
+  }
+  var OES_element_index_uint = gl.getExtension("OES_element_index_uint");
+  if (!OES_element_index_uint) console.warn("GlobalView warning: Unsupported WebGL extension: OES_element_index_uint");
+  gl.ext = gl.getExtension('ANGLE_instanced_arrays');
+  if (!gl.ext) console.warn("GlobalView warning: Unsupported WebGL extension: ANGLE_instanced_arrays");
 
-	var divStyle = window.getComputedStyle(div);
-	gl.backColor = divStyle.backgroundColor == 'transparent' ? [0, 0, 0, 0] : libUtility.rgbStringToFloatArray(divStyle.backgroundColor);
-	gl.foreColor = libUtility.rgbStringToFloatArray(gl.foreColorString = divStyle.color);
-	this['updateColorSchema'] =
-	/**
-  * Call this method after updating the parent div's color or background-color styles in order for the changes to be applied to the rendering pipeline.
-  * @summary Apply div foreground- and background colors to the plot
+  var divStyle = window.getComputedStyle(div);
+  gl.backColor = divStyle.backgroundColor == 'transparent' ? [0, 0, 0, 0] : libUtility.rgbStringToFloatArray(divStyle.backgroundColor);
+  gl.foreColor = libUtility.rgbStringToFloatArray(gl.foreColorString = divStyle.color);
+  this['updateColorSchema'] =
+  /**
+   * Call this method after updating the parent div's color or background-color styles in order for the changes to be applied to the rendering pipeline.
+   * @summary Apply div foreground- and background colors to the plot
+   */
+  this.updateColorSchema = function () {
+    var divStyle = window.getComputedStyle(div);
+    gl.backColor = divStyle.backgroundColor == 'transparent' ? [0, 0, 0, 0] : libUtility.rgbStringToFloatArray(divStyle.backgroundColor);
+    gl.foreColor = libUtility.rgbStringToFloatArray(gl.foreColorString = divStyle.color);
+    gl.clearColor.apply(gl, gl.backColor);
+    //histogramViewer.updateColorSchema();
+    coordSys.updateColorSchema();
+    colormap.updateColorSchema();
+    this.invalidate();
+  };
+
+  var trc = new libTextRenderContext.TextRenderContext(gl, canvas);
+  //trc.setFont("10px monospace");
+  trc.setFont(divStyle.fontSize + ' ' + divStyle.fontFamily);
+  this['updateFont'] =
+  /**
+   * Call this method after updating the parent div's font style in order for the changes to be applied to the rendering pipeline.
+   * @summary Apply div font to the plot
+   */
+  this.updateFont = function () {
+    var divStyle = window.getComputedStyle(div);
+    trc.setFont(divStyle.fontSize + ' ' + divStyle.fontFamily);
+    this.invalidate();
+  };
+
+  var t = performance.now(),
+      dt = 0.1,
+      fps = null,
+      fpsStart = t,
+      frameCounter = 0;
+
+  var pointViewer = new libPointViewer.PointViewer(gl, this);
+  var imageViewer = new libImageViewer.ImageViewer(gl, this);
+  var densityViewer = new libDensityViewer.DensityViewer(gl, this);
+  var histogramViewer = new libHistogramViewer.HistogramViewer(gl, this);
+  var coordSys = new libCoordinateSystem.CoordinateSystem(gl, this);
+  var colormap = new libColormap.Colormap(gl, this);
+  /** @type  {Array<Viewer>} */var viewers = [pointViewer, imageViewer, densityViewer, histogramViewer, coordSys, colormap];
+
+  var dataset = null;
+  var activeInputs = Array.create(ND, -1);
+  var animatedInputs = Array.create(ND, function () {
+    return { target: null, f: 0 };
+  });
+
+  this['points'] = this.points = pointViewer.points;
+  pointViewer.representativePoints = pointViewer.createPointSet([0, 255, 0, 255], 1);
+  this['createPointSet'] = this.createPointSet = pointViewer.createPointSet;
+  this['removePointSet'] = this.removePointSet = pointViewer.removePointSet;
+
+  var mouseRect = null,
+      mousePolygon = null;
+  var pointDrag = null;
+
+  function render(flipY) {
+    invalidating = false;
+    if (typeof flipY !== 'boolean') flipY = false;
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    trc.clear();
+    if (plotBounds.width <= 0 || plotBounds.height <= 0) return;
+
+    gl.enable(gl.SCISSOR_TEST);
+    gl.scissor(plotBounds.x, flipY ? gl.height - plotBounds.y - plotBounds.height : plotBounds.y, plotBounds.width, plotBounds.height);
+
+    if (tf !== null) {
+      var isAnimating = tf.animate();
+      if (isAnimating) globalView.invalidate();
+
+      /*var _dcTransform, _transform;
+      if (flipY === true)
+      {
+        _dcTransform = matN.clone(tf.getDcTransform());
+        matN.scale(_dcTransform, [1, -1]);
+        _transform = matN.clone(tf.getTransform());
+        matN.scale(_transform, [1, -1]);
+      }
+      else
+      {
+        _dcTransform = tf.getDcTransform();
+        _transform = tf.getTransform();
+      }*/
+
+      var d0 = activeInputs[0],
+          d1 = activeInputs[1];
+      // densityViewer.updateImages(imageViewer.getImages(), d0, d1);
+      densityViewer.render(flipY, tf, d0, d1);
+      pointViewer.render(flipY, tf, colormap.getTexture(), pointDrag);
+      //if (!isAnimating)
+      imageViewer.render(flipY, tf);
+    }
+
+    gl.disable(gl.SCISSOR_TEST);
+
+    if (tf !== null) histogramViewer.render(flipY, tf, plotBounds);
+    coordSys.render(flipY, plotBounds);
+    colormap.render(flipY, plotBounds);
+
+    if (mouseRect !== null && (mouseRect.width != 0 || mouseRect.height != 0)) gl.drawRect(mouseRect.x, mouseRect.y, mouseRect.width, mouseRect.height);
+    if (mousePolygon !== null) {
+      gl.fillPolygon(mousePolygon, "rgba(255, 255, 255, 0.25)");
+      gl.drawPolygon(mousePolygon);
+    }
+
+    var tn = performance.now();
+    dt = tn - t;
+    t = tn;
+    if (SHOW_FPS) {
+      ++frameCounter;
+      if (t - fpsStart > 10000.0 || frameCounter > 1000) // Refresh FPS after 10s or 1000 frames
+        {
+          //fps = (frameCounter == 1 ? 10000.0 : 1000 * frameCounter) / (t - fpsStart);
+          fps = 1000 * frameCounter / (t - fpsStart);
+          fpsStart = t;
+          frameCounter = 0;
+        }
+      if (fps !== null) gl.drawText(fps.toFixed(5) + " FPS", canvas.width - 8, 8, "topright");else gl.drawText("approx. " + Math.floor((frameCounter == 1 ? 10000.0 : 1000 * frameCounter) / (t - fpsStart)) + " FPS", canvas.width - 8, 8, "topright");
+    }
+    if (SIMULATE_LOW_FPS) setTimeout(function () {
+      globalView.invalidate();
+    }, 100);else if (ENABLE_CONTINUOUS_RENDERING) globalView.invalidate();
+  }
+
+  var invalidating = false;
+  this['invalidate'] =
+  /**
+   * @summary Request to rerender the plot
+   */
+  this.invalidate = function () {
+    if (invalidating === false && offscreenRendering === null) {
+      invalidating = true;
+      webglUtils.requestAnimFrame(render);
+    }
+  };
+  var reresizeTimer = null;
+  var onresize = function onresize() {
+    var rect = canvas.getBoundingClientRect(),
+        width = rect.right - rect.left,
+        height = rect.bottom - rect.top;
+    if (!offscreenRendering && (width !== gl.width || height !== gl.height)) {
+      gl.viewport(0, 0, gl.width = canvas.width = width, gl.height = canvas.height = height);
+      trc.onResize();
+      if (options['padding']) setPlotBounds(options['padding']);
+      if (invalidating === false && offscreenRendering === null) {
+        invalidating = true;
+        webglUtils.requestAnimFrame(render);
+      }
+
+      // Refire event after 100ms in case another resize handler queued after this on changes the canvas size
+      if (reresizeTimer !== null) clearTimeout(reresizeTimer);
+      reresizeTimer = setTimeout(onresize, 100);
+    }
+  };
+
+  /**
+   * A class containing variables and functions for transforming data vectors into device space
+   * @constructor
+   * @package
+   */
+  function Transform() {
+    var offsets = new Float32Array(ND),
+        scales = new Float32Array(ND),
+        animatedScales = new Float32Array(ND);
+    var invalid = false;
+
+    // Setter methods
+    this.setFromMinMax = function (d, minimum, maximum) {
+      dataset.dataVectors[d].scale = maximum - minimum;
+      if (dataset.dataVectors[d].scale > -1e-5 && dataset.dataVectors[d].scale < 1e-5) dataset.dataVectors[d].offset = 0.5 - 0.5 * (minimum + maximum) * (dataset.dataVectors[d].scale = 0.5);else dataset.dataVectors[d].offset = -minimum * (dataset.dataVectors[d].scale = 1 / dataset.dataVectors[d].scale);
+      invalid = true;
+
+      if (d === activeInputs[0]) updateCoorinateSystem(0, activeInputs[0]);
+      if (d === activeInputs[1]) updateCoorinateSystem(1, activeInputs[1]);
+      if (d === activeInputs[2]) updateColormap(activeInputs[2]);
+      if (d === activeInputs[0] || d === activeInputs[1] || d === activeInputs[2]) globalView.invalidate();
+    };
+    this.translate = function (d, distance) {
+      dataset.dataVectors[d].offset += distance * dataset.dataVectors[d].scale;
+      invalid = true;
+
+      if (d === activeInputs[0]) updateCoorinateSystem(0, activeInputs[0], false);
+      if (d === activeInputs[1]) updateCoorinateSystem(1, activeInputs[1], false);
+      if (d === activeInputs[2]) updateColormap(activeInputs[2], false);
+      if (d === activeInputs[0] || d === activeInputs[1] || d === activeInputs[2]) globalView.invalidate();
+    };
+    this.scale = function (d, factor) {
+      dataset.dataVectors[d].scale *= factor;
+      invalid = true;
+
+      if (d === activeInputs[0]) updateCoorinateSystem(0, activeInputs[0]);
+      if (d === activeInputs[1]) updateCoorinateSystem(1, activeInputs[1]);
+      if (d === activeInputs[2]) updateColormap(activeInputs[2]);
+      if (d === activeInputs[0] || d === activeInputs[1] || d === activeInputs[2]) globalView.invalidate();
+    };
+    this.onInputChanged = function () {
+      return invalid = true;
+    };
+
+    // Getter methods
+    this.getOffset = function (d) {
+      return dataset.dataVectors[activeInputs[d]].offset;
+    };
+    this.getScale = function (d) {
+      return dataset.dataVectors[activeInputs[d]].scale;
+    };
+    this.getMinimum = function (d) {
+      return dataset.dataVectors[activeInputs[d]].minimum;
+    };
+    this.getMaximum = function (d) {
+      return dataset.dataVectors[activeInputs[d]].maximum;
+    };
+    this.getVisibleMinimum = function (d) {
+      return (0 - dataset.dataVectors[activeInputs[d]].offset) / dataset.dataVectors[activeInputs[d]].scale;
+    };
+    this.getVisibleMaximum = function (d) {
+      return (1 - dataset.dataVectors[activeInputs[d]].offset) / dataset.dataVectors[activeInputs[d]].scale;
+    };
+    this.getOffsets = function () {
+      if (invalid === true) recompute();
+      return offsets;
+    };
+    this.getScales = function () {
+      if (invalid === true) recompute();
+      return scales;
+    };
+    this.getAnimatedScales = function () {
+      if (invalid === true) recompute();
+      return animatedScales;
+    };
+
+    // Transformation methods
+    this.deviceCoordToDatasetCoord = function (vOut, vIn) {
+      if (invalid === true) {
+        invalid = false;
+        recompute();
+      }
+      for (var d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; ++d) {
+        vOut[d] = (vIn[d] - offsets[d]) / scales[d];
+      }return vOut;
+    };
+    this.deviceDistToDatasetDist = function (vOut, vIn) {
+      if (invalid === true) {
+        invalid = false;
+        recompute();
+      }
+      for (var d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; ++d) {
+        vOut[d] = vIn[d] / scales[d];
+      }return vOut;
+    };
+    this.datasetCoordToDeviceCoord = function (vOut, vIn) {
+      if (invalid === true) {
+        invalid = false;
+        recompute();
+      }
+      for (var d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; ++d) {
+        vOut[d] = offsets[d] + vIn[d] * scales[d];
+      }return vOut;
+    };
+    this.datasetDistToDeviceDist = function (vOut, vIn) {
+      if (invalid === true) {
+        invalid = false;
+        recompute();
+      }
+      for (var d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; ++d) {
+        vOut[d] = vIn[d] * scales[d];
+      }return vOut;
+    };
+    this.transformPos = function (vOut, vIn) {
+      if (invalid === true) {
+        invalid = false;
+        recompute();
+      }
+      for (var d = 0, nd = vOut.length; d < nd; ++d) {
+        vOut[d] = offsets[d] + vIn[activeInputs[d]] * scales[d];
+      }return vOut;
+    };
+    this.transformNml = function (vOut, vIn) {
+      if (invalid === true) {
+        invalid = false;
+        recompute();
+      }
+      for (var d = 0, nd = vOut.length; d < nd; ++d) {
+        vOut[d] = vIn[activeInputs[d]] * scales[d];
+      }return vOut;
+    };
+    this.transformNml2 = function (vOut, vIn) {
+      if (invalid === true) {
+        invalid = false;
+        recompute();
+      }
+      for (var d = 0, nd = vOut.length; d < nd; ++d) {
+        vOut[d] = vIn[activeInputs[d]] * dataset.dataVectors[activeInputs[d]].scale;
+      }return vOut;
+    };
+
+    // Methods modifying offsets, scales and animatedScales
+    function recompute() {
+      invalid = false;
+
+      // Compute offsets and scales for active inputs
+      for (var d = 0; d < ND; ++d) {
+        offsets[d] = dataset.dataVectors[activeInputs[d]].offset;
+        scales[d] = dataset.dataVectors[activeInputs[d]].scale;
+        animatedScales[d] = 0;
+      }
+
+      // Transform first two dimensions offsets and scales into device coordinates
+      offsets[0] *= 2 * plotBounds.width / gl.width;
+      offsets[0] += 2 * plotBounds.x / gl.width - 1;
+      offsets[1] *= 2 * plotBounds.height / gl.height;
+      offsets[1] += 2 * plotBounds.y / gl.height - 1;
+      scales[0] *= 2 * plotBounds.width / gl.width;
+      scales[1] *= 2 * plotBounds.height / gl.height;
+      animatedScales[0] *= 2 * plotBounds.width / gl.width;
+      animatedScales[1] *= 2 * plotBounds.height / gl.height;
+
+      return offsets;
+    }
+    this.animate = function () {
+      invalid = false;
+
+      var isAnimating = false;
+
+      // Compute offsets and scales, either static based on activeInputs, or animated between activeInputs and animatedInputs
+      var oi = animatedInputs.map(function (anim) {
+        return anim.origin;
+      });
+      var di = activeInputs;
+      for (var d = 0; d < ND; ++d) {
+        var ts = dataset.dataVectors[di[d]].scale;
+        var tt = dataset.dataVectors[di[d]].offset;
+
+        if (animatedInputs[d].origin == activeInputs[d]) {
+          scales[d] = ts;
+          offsets[d] = tt;
+          animatedScales[d] = 0;
+        } else {
+          var os = dataset.dataVectors[oi[d]].scale;
+          var ot = dataset.dataVectors[oi[d]].offset;
+
+          var alpha = animatedInputs[d].f;
+          offsets[d] = alpha * tt + (1 - alpha) * ot;
+          alpha *= Math.PI / 2.0;
+          scales[d] = Math.sin(alpha) * ts;
+          animatedScales[d] = Math.cos(alpha) * os;
+
+          animatedInputs[d].f += dt * 0.001;
+          if (animatedInputs[d].f >= 1.0) animatedInputs[d].origin = activeInputs[d];
+
+          isAnimating = true;
+        }
+      }
+
+      // Transform first two dimensions offsets and scales into device coordinates
+      offsets[0] *= 2 * plotBounds.width / gl.width;
+      offsets[0] += 2 * plotBounds.x / gl.width - 1;
+      offsets[1] *= 2 * plotBounds.height / gl.height;
+      offsets[1] += 2 * plotBounds.y / gl.height - 1;
+      scales[0] *= 2 * plotBounds.width / gl.width;
+      scales[1] *= 2 * plotBounds.height / gl.height;
+      animatedScales[0] *= 2 * plotBounds.width / gl.width;
+      animatedScales[1] *= 2 * plotBounds.height / gl.height;
+
+      return isAnimating;
+    };
+  }
+  var tf = null;
+
+  var plotBounds = { x: 0, y: 0, width: 0, height: 0 }; // Plot bounds [pixel]
+  this.getPlotBounds = function () {
+    return plotBounds;
+  };
+  function setPlotBounds(padding) {
+    var computedPadding;
+    if (libUtility.isArray(padding) && padding.length === 4) computedPadding = padding.map(function (v, i) {
+      return Math.floor(libUtility.isString(v) ? Number.parseFloat(v) * (v.endsWith('%') ? (i % 2 === 0 ? canvas.width : canvas.height) / 100 : 1) : padding[i]);
+    });else if (libUtility.isNumber(padding) || libUtility.isString(padding)) computedPadding = Array.create(4, function (i) {
+      return Math.floor(libUtility.isString(padding) ? Number.parseFloat(padding) * (padding.endsWith('%') ? (i % 2 === 0 ? canvas.width : canvas.height) / 100 : 1) : padding);
+    });
+
+    var newPlotBounds = {
+      x: computedPadding[3],
+      y: computedPadding[2],
+      width: canvas.width - computedPadding[3] - computedPadding[1],
+      height: canvas.height - computedPadding[0] - computedPadding[2]
+    };
+
+    if (newPlotBounds.x != plotBounds.x || newPlotBounds.y != plotBounds.y || newPlotBounds.width != plotBounds.width || newPlotBounds.height != plotBounds.height) viewers.forEach(function (viewer) {
+      return viewer.onPlotBoundsChanged(plotBounds = newPlotBounds);
+    });else plotBounds = newPlotBounds;
+  }
+
+  this['zoomFit'] =
+  /**
+   * @summary Zoom all dimensions to exactly fit all data points
+   */
+  this.zoomFit = function () {
+    var nv = dataset.dataVectors.length;
+
+    // Compute offsets and scales to fit dataset inside view
+    for (var v = 0; v < nv; ++v) {
+      tf.setFromMinMax(v, dataset.dataVectors[v].minimum, dataset.dataVectors[v].maximum);
+    }
+  };
+  this['zoomFit2D'] =
+  /**
+   * @summary Zoom currently visible x- and y- dimensions to exactly fit all data points
+   */
+  this.zoomFit2D = function () {
+    var d0 = activeInputs[0],
+        d1 = activeInputs[1];
+
+    // Compute offsets and scales to fit dataset inside view
+    tf.setFromMinMax(d0, dataset.dataVectors[d0].minimum, dataset.dataVectors[d0].maximum);
+    tf.setFromMinMax(d1, dataset.dataVectors[d1].minimum, dataset.dataVectors[d1].maximum);
+  };
+  this['zoomRect'] =
+  /**
+   * @summary Zoom currently visible x- and y- dimensions to the given bounds in data space
+   * @param  {{l: number, t: number, r: number, b: number}} rect Bounds of the visible region
+   */
+  this.zoomRect = function (rect) {
+    var d0 = activeInputs[0],
+        d1 = activeInputs[1];
+
+    tf.setFromMinMax(d0, rect['l'], rect['r']);
+    tf.setFromMinMax(d1, rect['t'], rect['b']);
+  };
+
+  // >>> Options
+
+  /**
+   * @summary A map of valid options with option descriptions, validation functions and flags about side effects
+   * @const
+   * @enum {OptionDescription}
   */
-	this.updateColorSchema = function () {
-		var divStyle = window.getComputedStyle(div);
-		gl.backColor = divStyle.backgroundColor == 'transparent' ? [0, 0, 0, 0] : libUtility.rgbStringToFloatArray(divStyle.backgroundColor);
-		gl.foreColor = libUtility.rgbStringToFloatArray(gl.foreColorString = divStyle.color);
-		gl.clearColor.apply(gl, gl.backColor);
-		//histogramViewer.updateColorSchema();
-		coordSys.updateColorSchema();
-		colormap.updateColorSchema();
-		this.invalidate();
-	};
-
-	var trc = new libTextRenderContext.TextRenderContext(gl, canvas);
-	//trc.setFont("10px monospace");
-	trc.setFont(divStyle.fontSize + ' ' + divStyle.fontFamily);
-	this['updateFont'] =
-	/**
-  * Call this method after updating the parent div's font style in order for the changes to be applied to the rendering pipeline.
-  * @summary Apply div font to the plot
-  */
-	this.updateFont = function () {
-		var divStyle = window.getComputedStyle(div);
-		trc.setFont(divStyle.fontSize + ' ' + divStyle.fontFamily);
-		this.invalidate();
-	};
-
-	var t = performance.now(),
-	    dt = 0.1,
-	    fps = null,
-	    fpsStart = t,
-	    frameCounter = 0;
-
-	var pointViewer = new libPointViewer.PointViewer(gl, this);
-	var imageViewer = new libImageViewer.ImageViewer(gl, this);
-	var densityViewer = new libDensityViewer.DensityViewer(gl, this);
-	var histogramViewer = new libHistogramViewer.HistogramViewer(gl, this);
-	var coordSys = new libCoordinateSystem.CoordinateSystem(gl, this);
-	var colormap = new libColormap.Colormap(gl, this);
-	/** @type  {Array<Viewer>} */var viewers = [pointViewer, imageViewer, densityViewer, histogramViewer, coordSys, colormap];
-
-	var dataset = null;
-	var activeInputs = Array.create(ND, -1);
-	var animatedInputs = Array.create(ND, function () {
-		return { target: null, f: 0 };
-	});
-
-	this['points'] = this.points = pointViewer.points;
-	pointViewer.representativePoints = pointViewer.createPointSet([0, 255, 0, 255], 1);
-	this['createPointSet'] = this.createPointSet = pointViewer.createPointSet;
-	this['removePointSet'] = this.removePointSet = pointViewer.removePointSet;
-
-	var mouseRect = null,
-	    mousePolygon = null;
-	var pointDrag = null;
-
-	function render(flipY) {
-		invalidating = false;
-		if (typeof flipY !== 'boolean') flipY = false;
-		gl.clear(gl.COLOR_BUFFER_BIT);
-		trc.clear();
-		if (plotBounds.width <= 0 || plotBounds.height <= 0) return;
-
-		gl.enable(gl.SCISSOR_TEST);
-		gl.scissor(plotBounds.x, flipY ? gl.height - plotBounds.y - plotBounds.height : plotBounds.y, plotBounds.width, plotBounds.height);
-
-		if (tf !== null) {
-			var isAnimating = tf.animate();
-			if (isAnimating) globalView.invalidate();
-
-			/*var _dcTransform, _transform;
-   if (flipY === true)
-   {
-   	_dcTransform = matN.clone(tf.getDcTransform());
-   	matN.scale(_dcTransform, [1, -1]);
-   	_transform = matN.clone(tf.getTransform());
-   	matN.scale(_transform, [1, -1]);
-   }
-   else
-   {
-   	_dcTransform = tf.getDcTransform();
-   	_transform = tf.getTransform();
-   }*/
-
-			var d0 = activeInputs[0],
-			    d1 = activeInputs[1];
-			//			densityViewer.updateImages(imageViewer.getImages(), d0, d1);
-			densityViewer.render(flipY, tf, d0, d1);
-			pointViewer.render(flipY, tf, colormap.getTexture(), pointDrag);
-			//if (!isAnimating)
-			imageViewer.render(flipY, tf);
-		}
-
-		gl.disable(gl.SCISSOR_TEST);
-
-		if (tf !== null) histogramViewer.render(flipY, tf, plotBounds);
-		coordSys.render(flipY, plotBounds);
-		colormap.render(flipY, plotBounds);
-
-		if (mouseRect !== null && (mouseRect.width != 0 || mouseRect.height != 0)) gl.drawRect(mouseRect.x, mouseRect.y, mouseRect.width, mouseRect.height);
-		if (mousePolygon !== null) {
-			gl.fillPolygon(mousePolygon, "rgba(255, 255, 255, 0.25)");
-			gl.drawPolygon(mousePolygon);
-		}
-
-		var tn = performance.now();
-		dt = tn - t;
-		t = tn;
-		if (SHOW_FPS) {
-			++frameCounter;
-			if (t - fpsStart > 10000.0 || frameCounter > 1000) // Refresh FPS after 10s or 1000 frames
-				{
-					//fps = (frameCounter == 1 ? 10000.0 : 1000 * frameCounter) / (t - fpsStart);
-					fps = 1000 * frameCounter / (t - fpsStart);
-					fpsStart = t;
-					frameCounter = 0;
-				}
-			if (fps !== null) gl.drawText(fps.toFixed(5) + " FPS", canvas.width - 8, 8, "topright");else gl.drawText("approx. " + Math.floor((frameCounter == 1 ? 10000.0 : 1000 * frameCounter) / (t - fpsStart)) + " FPS", canvas.width - 8, 8, "topright");
-		}
-		if (SIMULATE_LOW_FPS) setTimeout(function () {
-			globalView.invalidate();
-		}, 100);else if (ENABLE_CONTINUOUS_RENDERING) globalView.invalidate();
-	}
-
-	var invalidating = false;
-	this['invalidate'] =
-	/**
-  * @summary Request to rerender the plot
-  */
-	this.invalidate = function () {
-		if (invalidating === false && offscreenRendering === null) {
-			invalidating = true;
-			webglUtils.requestAnimFrame(render);
-		}
-	};
-	var reresizeTimer = null;
-	var onresize = function onresize() {
-		var rect = canvas.getBoundingClientRect(),
-		    width = rect.right - rect.left,
-		    height = rect.bottom - rect.top;
-		if (!offscreenRendering && (width !== gl.width || height !== gl.height)) {
-			gl.viewport(0, 0, gl.width = canvas.width = width, gl.height = canvas.height = height);
-			trc.onResize();
-			if (options['padding']) setPlotBounds(options['padding']);
-			if (invalidating === false && offscreenRendering === null) {
-				invalidating = true;
-				webglUtils.requestAnimFrame(render);
-			}
-
-			// Refire event after 100ms in case another resize handler queued after this on changes the canvas size
-			if (reresizeTimer !== null) clearTimeout(reresizeTimer);
-			reresizeTimer = setTimeout(onresize, 100);
-		}
-	};
-
-	/**
-  * A class containing variables and functions for transforming data vectors into device space
-  * @constructor
-  * @package
-  */
-	function Transform() {
-		var offsets = new Float32Array(ND),
-		    scales = new Float32Array(ND),
-		    animatedScales = new Float32Array(ND);
-		var invalid = false;
-
-		// Setter methods
-		this.setFromMinMax = function (d, minimum, maximum) {
-			dataset.dataVectors[d].scale = maximum - minimum;
-			if (dataset.dataVectors[d].scale > -1e-5 && dataset.dataVectors[d].scale < 1e-5) dataset.dataVectors[d].offset = 0.5 - 0.5 * (minimum + maximum) * (dataset.dataVectors[d].scale = 0.5);else dataset.dataVectors[d].offset = -minimum * (dataset.dataVectors[d].scale = 1 / dataset.dataVectors[d].scale);
-			invalid = true;
-
-			if (d === activeInputs[0]) updateCoorinateSystem(0, activeInputs[0]);
-			if (d === activeInputs[1]) updateCoorinateSystem(1, activeInputs[1]);
-			if (d === activeInputs[2]) updateColormap(activeInputs[2]);
-			if (d === activeInputs[0] || d === activeInputs[1] || d === activeInputs[2]) globalView.invalidate();
-		};
-		this.translate = function (d, distance) {
-			dataset.dataVectors[d].offset += distance * dataset.dataVectors[d].scale;
-			invalid = true;
-
-			if (d === activeInputs[0]) updateCoorinateSystem(0, activeInputs[0], false);
-			if (d === activeInputs[1]) updateCoorinateSystem(1, activeInputs[1], false);
-			if (d === activeInputs[2]) updateColormap(activeInputs[2], false);
-			if (d === activeInputs[0] || d === activeInputs[1] || d === activeInputs[2]) globalView.invalidate();
-		};
-		this.scale = function (d, factor) {
-			dataset.dataVectors[d].scale *= factor;
-			invalid = true;
-
-			if (d === activeInputs[0]) updateCoorinateSystem(0, activeInputs[0]);
-			if (d === activeInputs[1]) updateCoorinateSystem(1, activeInputs[1]);
-			if (d === activeInputs[2]) updateColormap(activeInputs[2]);
-			if (d === activeInputs[0] || d === activeInputs[1] || d === activeInputs[2]) globalView.invalidate();
-		};
-		this.onInputChanged = function () {
-			return invalid = true;
-		};
-
-		// Getter methods
-		this.getOffset = function (d) {
-			return dataset.dataVectors[activeInputs[d]].offset;
-		};
-		this.getScale = function (d) {
-			return dataset.dataVectors[activeInputs[d]].scale;
-		};
-		this.getMinimum = function (d) {
-			return dataset.dataVectors[activeInputs[d]].minimum;
-		};
-		this.getMaximum = function (d) {
-			return dataset.dataVectors[activeInputs[d]].maximum;
-		};
-		this.getVisibleMinimum = function (d) {
-			return (0 - dataset.dataVectors[activeInputs[d]].offset) / dataset.dataVectors[activeInputs[d]].scale;
-		};
-		this.getVisibleMaximum = function (d) {
-			return (1 - dataset.dataVectors[activeInputs[d]].offset) / dataset.dataVectors[activeInputs[d]].scale;
-		};
-		this.getOffsets = function () {
-			if (invalid === true) recompute();
-			return offsets;
-		};
-		this.getScales = function () {
-			if (invalid === true) recompute();
-			return scales;
-		};
-		this.getAnimatedScales = function () {
-			if (invalid === true) recompute();
-			return animatedScales;
-		};
-
-		// Transformation methods
-		this.deviceCoordToDatasetCoord = function (vOut, vIn) {
-			if (invalid === true) {
-				invalid = false;
-				recompute();
-			}
-			for (var d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; ++d) {
-				vOut[d] = (vIn[d] - offsets[d]) / scales[d];
-			}return vOut;
-		};
-		this.deviceDistToDatasetDist = function (vOut, vIn) {
-			if (invalid === true) {
-				invalid = false;
-				recompute();
-			}
-			for (var d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; ++d) {
-				vOut[d] = vIn[d] / scales[d];
-			}return vOut;
-		};
-		this.datasetCoordToDeviceCoord = function (vOut, vIn) {
-			if (invalid === true) {
-				invalid = false;
-				recompute();
-			}
-			for (var d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; ++d) {
-				vOut[d] = offsets[d] + vIn[d] * scales[d];
-			}return vOut;
-		};
-		this.datasetDistToDeviceDist = function (vOut, vIn) {
-			if (invalid === true) {
-				invalid = false;
-				recompute();
-			}
-			for (var d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; ++d) {
-				vOut[d] = vIn[d] * scales[d];
-			}return vOut;
-		};
-		this.transformPos = function (vOut, vIn) {
-			if (invalid === true) {
-				invalid = false;
-				recompute();
-			}
-			for (var d = 0, nd = vOut.length; d < nd; ++d) {
-				vOut[d] = offsets[d] + vIn[activeInputs[d]] * scales[d];
-			}return vOut;
-		};
-		this.transformNml = function (vOut, vIn) {
-			if (invalid === true) {
-				invalid = false;
-				recompute();
-			}
-			for (var d = 0, nd = vOut.length; d < nd; ++d) {
-				vOut[d] = vIn[activeInputs[d]] * scales[d];
-			}return vOut;
-		};
-		this.transformNml2 = function (vOut, vIn) {
-			if (invalid === true) {
-				invalid = false;
-				recompute();
-			}
-			for (var d = 0, nd = vOut.length; d < nd; ++d) {
-				vOut[d] = vIn[activeInputs[d]] * dataset.dataVectors[activeInputs[d]].scale;
-			}return vOut;
-		};
-
-		// Methods modifying offsets, scales and animatedScales
-		function recompute() {
-			invalid = false;
-
-			// Compute offsets and scales for active inputs
-			for (var d = 0; d < ND; ++d) {
-				offsets[d] = dataset.dataVectors[activeInputs[d]].offset;
-				scales[d] = dataset.dataVectors[activeInputs[d]].scale;
-				animatedScales[d] = 0;
-			}
-
-			// Transform first two dimensions offsets and scales into device coordinates
-			offsets[0] *= 2 * plotBounds.width / gl.width;
-			offsets[0] += 2 * plotBounds.x / gl.width - 1;
-			offsets[1] *= 2 * plotBounds.height / gl.height;
-			offsets[1] += 2 * plotBounds.y / gl.height - 1;
-			scales[0] *= 2 * plotBounds.width / gl.width;
-			scales[1] *= 2 * plotBounds.height / gl.height;
-			animatedScales[0] *= 2 * plotBounds.width / gl.width;
-			animatedScales[1] *= 2 * plotBounds.height / gl.height;
-
-			return offsets;
-		}
-		this.animate = function () {
-			invalid = false;
-
-			var isAnimating = false;
-
-			// Compute offsets and scales, either static based on activeInputs, or animated between activeInputs and animatedInputs
-			var oi = animatedInputs.map(function (anim) {
-				return anim.origin;
-			});
-			var di = activeInputs;
-			for (var d = 0; d < ND; ++d) {
-				var ts = dataset.dataVectors[di[d]].scale;
-				var tt = dataset.dataVectors[di[d]].offset;
-
-				if (animatedInputs[d].origin == activeInputs[d]) {
-					scales[d] = ts;
-					offsets[d] = tt;
-					animatedScales[d] = 0;
-				} else {
-					var os = dataset.dataVectors[oi[d]].scale;
-					var ot = dataset.dataVectors[oi[d]].offset;
-
-					var alpha = animatedInputs[d].f;
-					offsets[d] = alpha * tt + (1 - alpha) * ot;
-					alpha *= Math.PI / 2.0;
-					scales[d] = Math.sin(alpha) * ts;
-					animatedScales[d] = Math.cos(alpha) * os;
-
-					animatedInputs[d].f += dt * 0.001;
-					if (animatedInputs[d].f >= 1.0) animatedInputs[d].origin = activeInputs[d];
-
-					isAnimating = true;
-				}
-			}
-
-			// Transform first two dimensions offsets and scales into device coordinates
-			offsets[0] *= 2 * plotBounds.width / gl.width;
-			offsets[0] += 2 * plotBounds.x / gl.width - 1;
-			offsets[1] *= 2 * plotBounds.height / gl.height;
-			offsets[1] += 2 * plotBounds.y / gl.height - 1;
-			scales[0] *= 2 * plotBounds.width / gl.width;
-			scales[1] *= 2 * plotBounds.height / gl.height;
-			animatedScales[0] *= 2 * plotBounds.width / gl.width;
-			animatedScales[1] *= 2 * plotBounds.height / gl.height;
-
-			return isAnimating;
-		};
-	}
-	var tf = null;
-
-	var plotBounds = { x: 0, y: 0, width: 0, height: 0 }; // Plot bounds [pixel]
-	this.getPlotBounds = function () {
-		return plotBounds;
-	};
-	function setPlotBounds(padding) {
-		var computedPadding;
-		if (libUtility.isArray(padding) && padding.length === 4) computedPadding = padding.map(function (v, i) {
-			return Math.floor(libUtility.isString(v) ? Number.parseFloat(v) * (v.endsWith('%') ? (i % 2 === 0 ? canvas.width : canvas.height) / 100 : 1) : padding[i]);
-		});else if (libUtility.isNumber(padding) || libUtility.isString(padding)) computedPadding = Array.create(4, function (i) {
-			return Math.floor(libUtility.isString(padding) ? Number.parseFloat(padding) * (padding.endsWith('%') ? (i % 2 === 0 ? canvas.width : canvas.height) / 100 : 1) : padding);
-		});
-
-		var newPlotBounds = {
-			x: computedPadding[3],
-			y: computedPadding[2],
-			width: canvas.width - computedPadding[3] - computedPadding[1],
-			height: canvas.height - computedPadding[0] - computedPadding[2]
-		};
-
-		if (newPlotBounds.x != plotBounds.x || newPlotBounds.y != plotBounds.y || newPlotBounds.width != plotBounds.width || newPlotBounds.height != plotBounds.height) viewers.forEach(function (viewer) {
-			return viewer.onPlotBoundsChanged(plotBounds = newPlotBounds);
-		});else plotBounds = newPlotBounds;
-	}
-
-	this['zoomFit'] =
-	/**
-  * @summary Zoom all dimensions to exactly fit all data points
-  */
-	this.zoomFit = function () {
-		var nv = dataset.dataVectors.length;
-
-		// Compute offsets and scales to fit dataset inside view
-		for (var v = 0; v < nv; ++v) {
-			tf.setFromMinMax(v, dataset.dataVectors[v].minimum, dataset.dataVectors[v].maximum);
-		}
-	};
-	this['zoomFit2D'] =
-	/**
-  * @summary Zoom currently visible x- and y- dimensions to exactly fit all data points
-  */
-	this.zoomFit2D = function () {
-		var d0 = activeInputs[0],
-		    d1 = activeInputs[1];
-
-		// Compute offsets and scales to fit dataset inside view
-		tf.setFromMinMax(d0, dataset.dataVectors[d0].minimum, dataset.dataVectors[d0].maximum);
-		tf.setFromMinMax(d1, dataset.dataVectors[d1].minimum, dataset.dataVectors[d1].maximum);
-	};
-	this['zoomRect'] =
-	/**
-  * @summary Zoom currently visible x- and y- dimensions to the given bounds in data space
-  * @param  {{l: number, t: number, r: number, b: number}} rect Bounds of the visible region
-  */
-	this.zoomRect = function (rect) {
-		var d0 = activeInputs[0],
-		    d1 = activeInputs[1];
-
-		tf.setFromMinMax(d0, rect['l'], rect['r']);
-		tf.setFromMinMax(d1, rect['t'], rect['b']);
-	};
-
-	// >>> Options
-
-	/**
-  * @summary A map of valid options with option descriptions, validation functions and flags about side effects
-  * @const
-  * @enum {OptionDescription}
- */
-	var OPTIONS = {
-		// General plot options
-		/** The space around the drawing area in the form [top, right, bottom, left]. X-axis, y-axis and colormap are drawn within padding space. */
-		'padding': {
-			description: "The space around the drawing area in the form [top, right, bottom, left]. X-axis, y-axis and colormap are drawn within padding space.",
-			default: [50, 60, 50, 50],
-			valid: function valid(value) {
-				return libUtility.isNumber(value) || libUtility.isString(value) || libUtility.isArray(value) && value.length === 4;
-			},
-			requireRedraw: true,
-			requireRecompile: false
-		},
-		/** When enabled, shows a colormap to the right of the plot. */
-		'showColormap': {
-			description: "When enabled, shows a colormap to the right of the plot.",
-			default: true,
-			valid: [true, false],
-			requireRedraw: true,
-			requireRecompile: false
-		},
-		/** When enabled, scrolling above the plot zooms in or out of the data. */
-		'enableScrolling': {
-			description: "When enabled, scrolling above the plot zooms in or out of the data.",
-			default: true,
-			valid: [true, false],
-			requireRedraw: false,
-			requireRecompile: false
-		},
-		/** When enabled, thumbnails can be dragged with the mouse. */
-		'enableThumbnailDragging': {
-			description: "When enabled, thumbnails can be dragged with the mouse.",
-			default: true,
-			valid: [true, false],
-			requireRedraw: false,
-			requireRecompile: false
-		},
-
-		// Advanced plot options
-		/** When enabled, the canvas is continuously rerendered at up to 60 frames per second. Keep this setting disabled to save processing resources. */
-		'enableContinuousRendering': {
-			description: "When enabled, the canvas is continuously rerendered at up to 60 frames per second. Keep this setting disabled to save processing resources.",
-			default: false,
-			valid: [true, false],
-			requireRedraw: true,
-			requireRecompile: false
-		},
-		/** Enables/disables blending in WebGL. Whenever using any kind of transparency, this setting should be kept enabled. */
-		'enableTransparency': {
-			description: "Enables/disables blending in WebGL. Whenever using any kind of transparency, this setting should be kept enabled.",
-			default: true,
-			valid: [true, false],
-			requireRedraw: true,
-			requireRecompile: false
-		},
-		/** When enabled, draws an image into the background, that shows density of points. (can be combined with 'showPointClusters') */
-		'showPointDensity': {
-			description: "When enabled, draws an image into the background, that shows density of points. (can be combined with 'showPointClusters')",
-			default: false,
-			valid: [true, false],
-			requireRedraw: true,
-			requireRecompile: false
-		},
-		/** When enabled, draws an image into the background, that shows colored clusters of points. (can be combined with 'showPointDensity') */
-		'showPointClusters': {
-			description: "When enabled, draws an image into the background, that shows colored clusters of points. (can be combined with 'showPointDensity')",
-			default: false,
-			valid: [true, false],
-			requireRedraw: true,
-			requireRecompile: false
-		},
-		'pointClusterThreshold': {
-			description: "Controls the realtive threshold between clusters and outliers when showing clusters (see 'showPointClusters')",
-			default: new libAlgorithm.ClusterMapOptions().threshold,
-			valid: function valid(value) {
-				return value > 0;
-			},
-			requireRedraw: false, // Requests redraw internally
-			requireRecompile: false
-		},
-
-		// Histogram options
-		/** When enabled, shows a histogram between the x-axis and the plot. */
-		'showXAxisHistogram': {
-			description: "When enabled, shows a histogram between the x-axis and the plot.",
-			default: false,
-			valid: [true, false],
-			requireRedraw: true,
-			requireRecompile: false
-		},
-		/** When enabled, shows a histogram between the y-axis and the plot. */
-		'showYAxisHistogram': {
-			description: "When enabled, shows a histogram between the y-axis and the plot.",
-			default: false,
-			valid: [true, false],
-			requireRedraw: true,
-			requireRecompile: false
-		},
-		/** When enabled, shows a histogram between the colormap and the plot. */
-		'showColormapHistogram': {
-			description: "When enabled, shows a histogram between the colormap and the plot.",
-			default: false,
-			valid: [true, false],
-			requireRedraw: true,
-			requireRecompile: false
-		},
-		/** Controls the number of bins within each histogram in the scatterplot. */
-		'numHistogramBins': {
-			description: "Controls the number of bins within each histogram in the scatterplot.",
-			default: 50,
-			valid: function valid(value) {
-				return value >= 1;
-			},
-			requireRedraw: true,
-			requireRecompile: false
-		},
-		/** Controls the height of each histogram in the scatterplot (in pixels). */
-		'histogramHeight': {
-			description: "Controls the height of each histogram in the scatterplot (in pixels).",
-			default: 64,
-			valid: function valid(value) {
-				return value >= 0;
-			},
-			requireRedraw: true,
-			requireRecompile: false
-		},
-
-		// Point options
-		/** Controls the shape of data points in the scatterplot. */
-		'pointShape': {
-			description: "Controls the shape of data points in the scatterplot.",
-			default: "Circle",
-			valid: ["Rectangle", "Circle", "Cross", "Diamond", "Gaussian", "Custom"],
-			requireRedraw: true,
-			requireRecompile: true
-		},
-		/** When 'pointShape' is set to 'Custom', this defines a GLSL function given vec2 p, that returns opacity in the range [0.0 ... 1.0] at location p. */
-		'customPointShape': {
-			description: "When 'pointShape' is set to 'Custom', this defines a GLSL function given vec2 p, that returns opacity in the range [0.0 ... 1.0] at location p.",
-			default: "{ return 1.0; }",
-			valid: function valid(value) {
-				return libGraphics.validateGLSL(gl, "float opacityMap(in vec2 p) " + value);
-			},
-			requireRedraw: true,
-			requireRecompile: true
-		},
-		/** Controls the diameter of data points in the scatterplot (in pixels). */
-		'pointSize': {
-			description: "Controls the diameter of data points in the scatterplot (in pixels).",
-			default: 6,
-			valid: function valid(value) {
-				return value >= 0;
-			},
-			requireRedraw: true,
-			requireRecompile: false
-		},
-		/** Controls the visibility of data points in the scatterplot between 0 (invisible) and 1 (fully opaque). */
-		'pointOpacity': {
-			description: "Controls the visibility of data points in the scatterplot between 0 (invisible) and 1 (fully opaque).",
-			default: 1,
-			valid: function valid(value) {
-				return value >= 0 && value <= 1;
-			},
-			requireRedraw: true,
-			requireRecompile: false
-		},
-		/** Controls the color of data points in the scatterplot. Valid values are an array of bytes in RGBA order or a colormap name. */
-		'pointColor': {
-			description: "Controls the color of data points in the scatterplot. Valid values are an array of bytes in RGBA order or a colormap name.",
-			default: "exhue",
-			valid: function valid(value) {
-				return libColormap.validateColormap(value);
-			},
-			requireRedraw: true,
-			requireRecompile: false
-		},
-
-		// Thumbnail options
-		/** Controls the width/height of thumbnails in the scatterplot (in pixels). */
-		'thumbnailSize': {
-			description: "Controls the width/height of thumbnails in the scatterplot (in pixels).",
-			default: 64,
-			valid: function valid(value) {
-				return value > 0;
-			},
-			requireRedraw: true,
-			requireRecompile: false
-		},
-		/** Controls the width of thumbnail borders in the scatterplot. */
-		'thumbnailBorderWidth': {
-			description: "Controls the width of thumbnail borders in the scatterplot.",
-			default: 1,
-			valid: function valid(value) {
-				return value >= 0;
-			},
-			requireRedraw: true,
-			requireRecompile: false
-		},
-		/** Controls the color of thumbnail borders in the scatterplot. Valid values are an array of bytes in RGBA order, a color name or 'null'.
-  	If set to 'null', the CSS foreground color will be used. */
-		'thumbnailBorderColor': {
-			description: "Controls the color of thumbnail borders in the scatterplot. Valid values are an array of bytes in RGBA order, a color name or 'null'. " + "If set to 'null', the CSS foreground color will be used.",
-			default: null,
-			valid: function valid(value) {
-				return value === null || libColormap.validateColor(value);
-			},
-			requireRedraw: true,
-			requireRecompile: false
-		},
-		/** Controls the color of thumbnail line in the scatterplot. Valid values are an array of bytes in RGBA order, a color name or 'null'.
-  If set to 'null', the CSS foreground color will be used. */
-		'thumbnailLineColor': {
-			description: "Controls the color of thumbnail line in the scatterplot. Valid values are an array of bytes in RGBA order, a color name or 'null'. " + "If set to 'null', the CSS foreground color will be used.",
-			default: null,
-			valid: function valid(value) {
-				return value === null || libColormap.validateColor(value);
-			},
-			requireRedraw: true,
-			requireRecompile: false
-		},
-		/** Controls the color of thumbnail labels in the scatterplot. Valid values are an array of bytes in RGBA order, a color name or 'null'.
-  If set to 'null', the CSS background color will be used. */
-		'thumbnailLabelColor': {
-			description: "Controls the color of thumbnail labels in the scatterplot. Valid values are an array of bytes in RGBA order, a color name or 'null'. " + "If set to 'null', the CSS foreground color will be used.",
-			default: null,
-			valid: function valid(value) {
-				return value === null || libColormap.validateColor(value);
-			},
-			requireRedraw: true,
-			requireRecompile: false
-		},
-		/** When enabled, links thumbnails to points using unique labels instead of lines. */
-		'labelThumbnails': {
-			description: "When enabled, links thumbnails to points using unique labels instead of lines.",
-			default: false,
-			valid: [true, false],
-			requireRedraw: true,
-			requireRecompile: false
-		}
-	};
-	/** @enum */
-	var options = {};
-
-	var pushedOptions = [];
-	function onOptionsChanged(requireRedraw, requireRecompile) {
-		// Update trivial options
-		ENABLE_CONTINUOUS_RENDERING = options['enableContinuousRendering'];
-		SHOW_FPS = options['enableContinuousRendering'];
-		if (options['enableTransparency']) gl.enable(gl.BLEND);else gl.disable(gl.BLEND);
-		colormap.visible = options['showColormap'];
-		densityViewer.showDensityMap = options['showPointDensity'];
-		densityViewer.showClusterMap = options['showPointClusters'];
-		densityViewer.setClusterMapThreshold(options['pointClusterThreshold']);
-
-		if (options['padding']) setPlotBounds(options['padding']);
-
-		viewers.forEach(function (viewer) {
-			return viewer.onOptionsChanged(options, requireRecompile);
-		});
-
-		if (dataset !== null) {
-			// Reset FPS counter
-			fps = null;
-			fpsStart = t;
-			frameCounter = 0;
-
-			// Redraw
-			if (requireRedraw) this.invalidate();
-		}
-	}
-	this['setOption'] =
-	/**
-  * Note: When setting multiple options, {@link GlobalView#setOptions} should be prefered.
-  * @summary Sets the given option
-  * @see GlobalView#OPTIONS
-  * @param  {string} option
-  * @param  {*} value
-  */
-	this.setOption = function (option, value) {
-		// Validate option
-		if (!OPTIONS.hasOwnProperty(option)) {
-			console.warn("GlobalView warning: Unsupported option: " + option);
-			return;
-		}
-		var optionDefinition = OPTIONS[option];
-
-		// Validate value
-		var validationResult;
-		if (libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1 || libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true) {
-			console.warn("GlobalView warning: Invalid value for option " + option + ": " + value);
-			if (libUtility.isString(validationResult)) console.warn("                    " + validationResult);
-			return;
-		}
-
-		// Set option
-		options[option] = value;
-
-		onOptionsChanged.call(this, optionDefinition.requireRedraw, optionDefinition.requireRecompile);
-	};
-	this['setOptions'] =
-	/**
-  * @summary Sets multiple options
-  * @param  {Object} newOptions A JavaScript object of options
-  */
-	this.setOptions = function (newOptions) {
-		var requireRecompile = false,
-		    requireRedraw = false;
-		for (var option in newOptions) {
-			if (!newOptions.hasOwnProperty(option)) continue;
-
-			// Validate option
-			if (!OPTIONS.hasOwnProperty(option)) {
-				console.warn("GlobalView warning: Unsupported option: " + option);
-				continue;
-			}
-			var optionDefinition = OPTIONS[option];
-
-			// Validate value
-			var value = newOptions[option],
-			    validationResult;
-			if (libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1 || libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true) {
-				console.warn("GlobalView warning: Invalid value for option " + option + ": " + value);
-				if (libUtility.isString(validationResult)) {
-					//HY:
-					validationResult = optionDefinition.valid(value);
-					console.warn("                    " + validationResult);
-				}
-				continue;
-			}
-
-			// Set option
-			options[option] = value;
-
-			requireRecompile = requireRecompile || optionDefinition.requireRecompile;
-			requireRedraw = requireRedraw || optionDefinition.requireRedraw;
-		}
-
-		onOptionsChanged.call(this, requireRedraw, requireRecompile);
-	};
-	this['setDefaultOption'] =
-	/**
-  * @summary Sets the given option to its default value
-  * @param  {string} option
-  */
-	this.setDefaultOption = function (option) {
-		// Validate option
-		if (!OPTIONS.hasOwnProperty(option)) {
-			console.warn("GlobalView warning: Unsupported option: " + option);
-			return;
-		}
-		var optionDefinition = OPTIONS[option];
-
-		this.setOption(option, optionDefinition.default);
-	};
-	this['setDefaultOptions'] =
-	/**
-  * @summary Sets all options to their respective defaults
-  */
-	this.setDefaultOptions = function () {
-		var defaultOptions = {};
-		for (var option in OPTIONS) {
-			if (OPTIONS.hasOwnProperty(option)) defaultOptions[option] = OPTIONS[option].default;
-		}this.setOptions(defaultOptions);
-	};
-	this['validateOption'] =
-	/**
-  * @summary Checks the given option for errors without setting it
-  * @param  {string} option
-  * @param  {*} value
-  * @return  {string|boolean} Error message or 'true' if the option is valid
-  */
-	this.validateOption = function (option, value) {
-		// Validate option
-		if (!OPTIONS.hasOwnProperty(option)) return "Unsupported option: " + option;
-		var optionDefinition = OPTIONS[option];
-
-		// Validate value
-		var validationResult;
-		if (libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1 || libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true) return "Invalid value for option " + option + ": " + value + (libUtility.isString(validationResult) ? "\n    " + validationResult : "");
-
-		return true;
-	};
-	this['validateOptions'] =
-	/**
-  * @summary Checks multiple options for errors without setting them
-  * @param  {Object} newOptions A JavaScript object of options
-  * @return  {string|boolean} Error message or 'true' if all options are valid
-  */
-	this.validateOptions = function (newOptions) {
-		var errors = [];
-		for (var option in newOptions) {
-			if (!newOptions.hasOwnProperty(option)) continue;
-
-			// Validate option
-			if (!OPTIONS.hasOwnProperty(option)) {
-				errors.push("Unsupported option: " + option);
-				continue;
-			}
-			var optionDefinition = OPTIONS[option];
-
-			// Validate value
-			var value = newOptions[option],
-			    validationResult;
-			if (libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1 || libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true) {
-				errors.push("Invalid value for option " + option + ": " + value + (libUtility.isString(validationResult) ? "\n    " + validationResult : ""));
-				continue;
-			}
-		}
-
-		return errors.length === 0 ? true : errors.join('\n');
-	};
-	this['getOption'] =
-	/**
-  * @summary Returns the value assigned to the given option
-  * @param  {string} option
-  * @return {*}
-  */
-	this.getOption = function (option) {
-		return options[option];
-	};
-	this['getOptions'] =
-	/**
-  * @summary Returns a JavaScript object of all options and their values
-  * @return {Object}
-  */
-	this.getOptions = function () {
-		return (/** @type {Object} */JSON.parse(JSON.stringify(options))
-		);
-	};
-	this['pushOptions'] =
-	/**
-  * @summary Save all options
-  */
-	this.pushOptions = function () {
-		pushedOptions.push(options);
-		//options = {};
-	};
-	this['popOptions'] =
-	/**
-  * @summary Recall the options last saved with {@link GlobalView#pushOptions}
-  */
-	this.popOptions = function () {
-		if (pushedOptions.length !== 0) this.setOptions(pushedOptions.pop());
-	};
-
-	// >>> Dataset interaction
-
-	/**
-  * @private
-  * @param  {number} d
-  * @param  {number} columnIdx
-  * @param  {boolean=} changeTickDistance=true
-  */
-	function updateCoorinateSystem(d, columnIdx, changeTickDistance) {
-		if (dataset.dataVectors[columnIdx].values) coordSys.setEnumRange(d, tf.getVisibleMinimum(d), tf.getVisibleMaximum(d), dataset.dataVectors[columnIdx].values);else coordSys.setNumericRange(d, tf.getVisibleMinimum(d), tf.getVisibleMaximum(d), changeTickDistance);
-		coordSys.setLabel(d, dataset.dataVectors[columnIdx].label);
-	}
-	/**
-  * @private
-  * @param  {number} columnIdx
-  * @param  {boolean=} changeTickDistance=true
-  */
-	function updateColormap(columnIdx, changeTickDistance) {
-		if (dataset.dataVectors[columnIdx].values) colormap.setEnumRange(tf.getVisibleMinimum(2), tf.getVisibleMaximum(2), dataset.dataVectors[columnIdx].values);else colormap.setNumericRange(tf.getVisibleMinimum(2), tf.getVisibleMaximum(2), changeTickDistance);
-		colormap.setLabel(dataset.dataVectors[columnIdx].label);
-	}
-
-	//var pushedDatasets = [];
-	this['load'] =
-	/**
-  * @summary Load a dataset into the plot
-  * @param  {Dataset} _dataset
-  * @param  {number} activeColumnX
-  * @param  {number} activeColumnY
-  * @param  {number} activeColumnC
-  * @param  {number} activeColumnS
-  */
-	this.load = function (_dataset, activeColumnX, activeColumnY, activeColumnC, activeColumnS) {
-		// Remove old dataset
-		dataset = null;
-		activeInputs = Array.create(ND, -1);
-		imageViewer.clearImages();
-
-		// Set new dataset
-		dataset = _dataset;
-		animatedInputs[0].origin = activeInputs[0] = activeColumnX;
-		animatedInputs[1].origin = activeInputs[1] = activeColumnY;
-		animatedInputs[2].origin = activeInputs[2] = activeColumnC;
-		animatedInputs[3].origin = activeInputs[3] = activeColumnS;
-		//dataset.dataVectors.push(new DataVector(dataset, "({1} + {2}) / 2.0"));//"i"));
-		//dataset.dataVectors.push(new DataVector(dataset, "{2} + 2.0"));//"i"));
-
-
-		// Reset transform
-		tf = new Transform();
-		this.zoomFit();
-
-		// Update viewers
-		viewers.forEach(function (viewer) {
-			return viewer.setDataset(dataset, options);
-		});
-		viewers.forEach(function (viewer) {
-			return viewer.onInputChanged(activeInputs, animatedInputs, options);
-		});
-		/*pointViewer.setDataset(dataset, options);
-  pointViewer.onInputChanged(activeInputs, animatedInputs, options);
-  densityViewer.setDataset(dataset, options);
-  histogramViewer.setDataset(dataset, options);
-  histogramViewer.onInputChanged(activeInputs, animatedInputs, options);*/
-
-		// Reset FPS counter
-		fps = null;
-		fpsStart = t;
-		frameCounter = 0;
-
-		// Redraw
-		this.invalidate();
-	};
-	this['setActiveColumn'] =
-	/**
-  * Assign dataset column c to axis d
-  * @param  {number} d
-  * @param  {number} c
-  */
-	this.setActiveColumn = function (d, c) {
-		if (!ENABLE_CONTINUOUS_RENDERING) {
-			dt = 0.0;
-			t = performance.now();
-		}
-
-		animatedInputs[d].origin = activeInputs[d];
-		animatedInputs[d].f = 0.0;
-		activeInputs[d] = c;
-
-		tf.onInputChanged();
-		viewers.forEach(function (viewer) {
-			return viewer.onInputChanged(activeInputs, animatedInputs, options);
-		});
-		/*pointViewer.onInputChanged(activeInputs, animatedInputs, options);
-  histogramViewer.onInputChanged(activeInputs, animatedInputs, options);*/
-		if (d < 2) updateCoorinateSystem(d, activeInputs[d]);else updateColormap(activeInputs[2]);
-		if (d < 3) this.invalidate();
-	};
-	this['getActiveColumn'] =
-	/**
-  * Get column assigned to axis c
-  * @param  {number} d
-  * @return {number}
-  */
-	this.getActiveColumn = function (d) {
-		return d >= 0 && d < activeInputs.length ? activeInputs[d] : -1;
-	};
-
-	this['getCharacteristicPoints'] =
-	/**
-  * @param  {number} n
-  * @param  {number} densityRatio
-  * @param  {function(Array<number>)} ondone Event handler, called after characteristic points have been found
-  */
-	this.getCharacteristicPoints = function (n, densityRatio, ondone) {
-		if (!dataset) return;
-		var d0 = activeInputs[0],
-		    d1 = activeInputs[1];
-		dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
-			if (d1 < d0) {
-				// Swap d0 <-> d1
-				var temp = d0;
-				d0 = d1;
-				d1 = temp;
-			}
-
-			var characteristicPoints = libAlgorithm.findRepresentativePoints2(dataset, d0, d1, densityMap, n, densityRatio);
-			ondone(characteristicPoints);
-		});
-	};
-
-	// >>> Annotation
-
-	/**
-  * @summary Remove all thumbnails from the plot
-  */
-	this['clearThumbnails'] = this.clearThumbnails = function () {
-		// Clear stencil maps
-		if (dataset) dataset.iterateDensityMaps(function (densityMap) {
-			if (densityMap.stencilMap && densityMap.stencilMap.data) for (var i = 0, stencilMap = densityMap.stencilMap.data, len = stencilMap.length; i < len; ++i) {
-				stencilMap[i] = 0;
-			}
-		});
-
-		imageViewer.clearImages();
-		this.invalidate();
-	};
-	/**
-  */
-	this['showData2D'] = this.showData2D = function () {
-		imageViewer.clearImages();
-
-		var d0 = activeInputs[0],
-		    d1 = activeInputs[1];
-		dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
-			if (d1 < d0) {
-				// Swap d0 <-> d1
-				var temp = d0;
-				d0 = d1;
-				d1 = temp;
-			}
-
-			if (!densityMap.stencilMap) densityMap.stencilMap = {};
-
-			//downloadDensityMap(densityMap);
-			pointViewer.representativePoints.assign(libAlgorithm.findRepresentativePoints2(dataset, d0, d1, densityMap, 16, 0.3));
-			if (dataset.imageFilenames) pointViewer.representativePoints.forEach(function (r) {
-				if (dataset.imageFilenames[r]) {
-					var dataPos = dataset.dataVectors.map(function (v) {
-						return v.getValue(r);
-					});
-					var imagePos = dataPos.slice(0);
-					var p = libAlgorithm.findClosePointOfLowDensity(dataset, d0, d1, r, densityMap, densityMap.stencilMap, 0.6 * options['thumbnailSize'] / gl.width, 0.6 * (options['thumbnailSize'] + libImageViewer.LABEL_HEIGHT) / gl.height); //EDIT: Factor 0.6: WHY?
-					imagePos[d0] = p[0];
-					imagePos[d1] = p[1];
-					var imageSize = dataset.dataVectors.map(function (v) {
-						return options['thumbnailSize'] * (v.maximum - v.minimum);
-					});
-					imageViewer.showImage(dataset.imageFilenames[r], r, dataPos, imagePos, imageSize);
-				}
-			});
-			//downloadDensityMap(densityMap);
-		});
-	};
-
-	this['showImage_lowDensity'] =
-	/**
-  * @summary A shorthand function to `showImage(index, "lowDensity")`
-  * @param  {number} index Index of the datapoint to show
-  */
-	this.showImage_lowDensity = function (index) {
-		if (dataset.imageFilenames && dataset.imageFilenames[index]) {
-			var d0 = activeInputs[0],
-			    d1 = activeInputs[1];
-			//console.log(dataset.requestDensityMap(d0, d1, undefined, undefined));
-			//dataset.requestDensityMap(d0, d1, undefined, undefined, function(densityMap) { console.log(densityMap); });
-
-			dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
-				var imageWidth = 0.6 * options['thumbnailSize'] / gl.width,
-				    imageHeight = (0.6 * options['thumbnailSize'] + libImageViewer.LABEL_HEIGHT) / gl.height; //EDIT: Factor 0.6: WHY?
-				if (d1 < d0) {
-					// Swap d0 <-> d1
-					var temp = d0;
-					d0 = d1;
-					d1 = temp;
-
-					// Swap imageWidth <-> imageHeight
-					temp = imageWidth;
-					imageWidth = imageHeight;
-					imageHeight = temp;
-				}
-
-				var dataPos = dataset.dataVectors.map(function (v) {
-					return v.getValue(index);
-				});
-				var imagePos;
-				if (libUtility.isUndefined(densityMap.data)) // If densityMap is nD
-					imagePos = libAlgorithm.findClosePointOfLowDensityND_descend(dataset, index, densityMap, 0.6 * options['thumbnailSize'] / Math.min(gl.width, gl.height)); //EDIT: Factor 0.6: WHY?
-				else {
-						imagePos = dataPos.slice(0);
-
-						if (!densityMap.stencilMap) densityMap.stencilMap = {};
-						var p = libAlgorithm.findClosePointOfLowDensity(dataset, d0, d1, index, densityMap, densityMap.stencilMap, imageWidth, imageHeight);
-						if (p) {
-							imagePos[d0] = p[0];
-							imagePos[d1] = p[1];
-						} else {
-							var halfImageSize = [1.1 * options['thumbnailSize'] / gl.width, 1.1 * options['thumbnailSize'] / gl.height];
-							tf.deviceDistToDatasetDist(halfImageSize, halfImageSize);
-							imagePos[d0] += halfImageSize[0];
-							imagePos[d1] += halfImageSize[1];
-						}
-					}
-				var imageSize = dataset.dataVectors.map(function (v) {
-					return options['thumbnailSize'] * (v.maximum - v.minimum);
-				});
-				imageViewer.showImage(dataset.imageFilenames[index], index, dataPos, imagePos, imageSize);
-			});
-		}
-	};
-	this['showImages_lowDensity'] =
-	/**
-  * @summary A shorthand function to `showImages(index, "lowDensity")`
-  * @param  {Array<number>} points List of indices of datapoints to show
-  */
-	this.showImages_lowDensity = function (points) {
-		if (dataset.imageFilenames) {
-			var d0 = activeInputs[0],
-			    d1 = activeInputs[1];
-			dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
-				var imageWidth = 0.6 * options['thumbnailSize'] / gl.width,
-				    imageHeight = (0.6 * options['thumbnailSize'] + libImageViewer.LABEL_HEIGHT) / gl.height; //EDIT: Factor 0.6: WHY?
-				if (d1 < d0) {
-					// Swap d0 <-> d1
-					var temp = d0;
-					d0 = d1;
-					d1 = temp;
-
-					// Swap imageWidth <-> imageHeight
-					temp = imageWidth;
-					imageWidth = imageHeight;
-					imageHeight = temp;
-				}
-				if (!densityMap.stencilMap) densityMap.stencilMap = {};
-				libAlgorithm.markPointsInStencilMap(dataset, d0, d1, points, densityMap, densityMap.stencilMap, imageWidth, imageHeight);
-			});
-		}
-		points.forEach(function (i) {
-			return globalView.showImage_lowDensity(i);
-		});
-		imageViewer.resolveIntersections(tf);
-	};
-
-	this['showImage_none'] =
-	/**
-  * @summary A shorthand function to `showImage(index, "none")`
-  * @param  {number} index Index of the datapoint to show
-  */
-	this.showImage_none = function (index) {
-		var dataPos = dataset.dataVectors.map(function (v) {
-			return v.getValue(index);
-		});
-		imageViewer.showImage(dataset.imageFilenames[index], index, dataPos);
-	};
-	this['showImages_none'] =
-	/**
-  * @summary A shorthand function to `showImages(index, "none")`
-  * @param  {Array<number>} points List of indices of datapoints to show
-  */
-	this.showImages_none = function (points) {
-		points.forEach(function (p) {
-			var dataPos = dataset.dataVectors.map(function (v) {
-				return v.getValue(p);
-			});
-			imageViewer.showImage(dataset.imageFilenames[p], p, dataPos);
-		});
-	};
-
-	this['showImage_adjacent'] =
-	/**
-  * @summary A shorthand function to `showImage(index, "adjacent")`
-  * @param  {number} index Index of the datapoint to show
-  */
-	this.showImage_adjacent = function (index) {
-		var dataPos = dataset.dataVectors.map(function (v) {
-			return v.getValue(index);
-		});
-		var imageSize = dataset.dataVectors.map(function (v) {
-			return options['thumbnailSize'] * (v.maximum - v.minimum);
-		});
-		imageViewer.showImage(dataset.imageFilenames[index], index, dataPos, dataPos, imageSize, 'bottomleft');
-	};
-	this['showImages_adjacent'] =
-	/**
-  * @summary A shorthand function to `showImages(index, "adjacent")`
-  * @param  {Array<number>} points List of indices of datapoints to show
-  */
-	this.showImages_adjacent = function (points) {
-		points.forEach(function (i) {
-			return globalView.showImage_adjacent(i);
-		});
-	};
-
-	this['showImages_project'] =
-	/**
-  * @summary A shorthand function to `showImages(index, "project")`
-  * @param  {Array<number>} points List of indices of datapoints to show
-  */
-	this.showImages_project = function (points) {
-		if (!dataset.imageFilenames) return;
-
-		var d0 = activeInputs[0],
-		    d1 = activeInputs[1];
-		var offsets = tf.getOffsets(),
-		    scales = tf.getScales();
-
-		// Computed expected value (= mean) of points -> E
-		var E = [0, 0];
-		points.forEach(function (p) {
-			E[0] += dataset.dataVectors[d0].getValue(p);
-			E[1] += dataset.dataVectors[d1].getValue(p);
-		});
-		E[0] *= scales[0] / points.length;
-		E[1] *= scales[1] / points.length;
-
-		// Compute covariance matrix of points -> cov [symetrical 2D matrix]
-		var cov = [0, 0, 0];
-		points.forEach(function (p) {
-			var x0 = dataset.dataVectors[d0].getValue(p) * scales[0] - E[0];
-			var x1 = dataset.dataVectors[d1].getValue(p) * scales[1] - E[1];
-			cov[0] += x0 * x0;
-			cov[1] += x0 * x1;
-			cov[2] += x1 * x1;
-		});
-		cov[0] /= points.length;
-		cov[1] /= points.length;
-		cov[2] /= points.length;
-
-		// Compute eigen values
-		var disc = Math.sqrt((cov[0] - cov[2]) * (cov[0] - cov[2]) + 4 * cov[1] * cov[1]) / 2;
-		var eigenval1 = (cov[0] + cov[2]) / 2 + disc;
-		var eigenval2 = (cov[0] + cov[2]) / 2 - disc;
-
-		// Compute eigen vector with smallest eigen value (for second principal component)
-		var eigenvec = [-cov[1], cov[0] - Math.min(eigenval1, eigenval2)];
-
-		// Normalize eigen vector
-		var eigenvec_length = Math.sqrt(eigenvec[0] * eigenvec[0] + eigenvec[1] * eigenvec[1]);
-		eigenvec[0] /= eigenvec_length;
-		eigenvec[1] /= eigenvec_length;
-
-		// Define corners of AABB
-		var imageSize = dataset.dataVectors.map(function (v) {
-			return options['thumbnailSize'] * (v.maximum - v.minimum);
-		});
-		var labelHeightOffset = 1.0 + libImageViewer.LABEL_HEIGHT / options['thumbnailSize'];
-		var labelWidthOffset = 1.0 + (libImageViewer.LABEL_HEIGHT + 2 * libImageViewer.LABEL_WIDTH) / options['thumbnailSize'];
-		var bl = [tf.getMinimum(0) - imageSize[d0] * 0.6 / plotBounds.width, tf.getMinimum(1) - imageSize[d1] * 0.6 / plotBounds.height];
-		var tl = [tf.getMinimum(0) - imageSize[d0] * 0.6 / plotBounds.width, tf.getMaximum(1) + imageSize[d1] * labelHeightOffset * 0.8 / plotBounds.height];
-		var tr = [tf.getMaximum(0) + imageSize[d0] * labelWidthOffset * 0.6 / plotBounds.width, tf.getMaximum(1) + imageSize[d1] * labelHeightOffset * 0.8 / plotBounds.height];
-		var br = [tf.getMaximum(0) + imageSize[d0] * labelWidthOffset * 0.6 / plotBounds.width, tf.getMinimum(1) - imageSize[d1] * 0.6 / plotBounds.height];
-		tf.datasetCoordToDeviceCoord(bl, bl);
-		tf.datasetCoordToDeviceCoord(tl, tl);
-		tf.datasetCoordToDeviceCoord(tr, tr);
-		tf.datasetCoordToDeviceCoord(br, br);
-
-		// >>> Set image locations to be projections of data positions along eigenvec onto AABB
-
-		var posToLoc = function posToLoc(p) {
-			p[0] = Math.max(0, Math.min(1, (p[0] - tl[0]) / (br[0] - tl[0]))); // Normalize p[0] from [l ... r] to [0 ... 1]
-			p[1] = Math.max(0, Math.min(1, (p[1] - tl[1]) / (br[1] - tl[1]))); // Normalize p[1] from [t ... b] to [0 ... 1]
-			switch ([p[0], p[1], 1 - p[0], 1 - p[1]].minIndex()) {
-				default:
-					/*case 0:*/return 1 - p[1];
-				case 1:
-					return 1 + p[0];
-				case 2:
-					return 2 + p[1];
-				case 3:
-					return 4 - p[0];
-			}
-		};
-		var locToPos = function locToPos(l) {
-			l = (l + 4) % 4;
-			var p,
-			    li = Math.floor(l);
-			switch (li) {
-				case 0:
-					p = [0, li + 1 - l];break;
-				case 1:
-					p = [l - li, 0];break;
-				case 2:
-					p = [1, l - li];break;
-				case 3:
-					p = [li + 1 - l, 1];break;
-			}
-			p[0] = p[0] * (br[0] - tl[0]) + tl[0]; // Denormalize p[0] from [0 ... 1] to [l ... r]
-			p[1] = p[1] * (br[1] - tl[1]) + tl[1]; // Denormalize p[1] from [0 ... 1] to [t ... b]
-			return p;
-		};
-
-		var imageLocations = [];
-		var dest,
-		    v0 = dataset.dataVectors[activeInputs[0]],
-		    v1 = dataset.dataVectors[activeInputs[1]];
-		points.forEach(function (p) {
-			if (!dataset.imageFilenames[p]) return;
-
-			var src = [v0.getValue(p), v1.getValue(p)];
-			tf.datasetCoordToDeviceCoord(src, src); // Same as src = [v0.getValue(p) * scales[0] + offsets[0], v1.getValue(p) * scales[1] + offsets[1]];
-
-			if (libGlMatrix.vec2.dot([src[0] - offsets[0] - E[0], src[1] - offsets[1] - E[1]], eigenvec) > 0.0) // If src is above E in direction eigenvec
-				{
-					dest = libAlgorithm.vectorLineIntersection2D(src, eigenvec, bl, tl); // Project src in direction eigenvec onto line from bl, to tl
-					if (!dest) dest = libAlgorithm.vectorLineIntersection2D(src, eigenvec, tl, tr); // Project src in direction eigenvec onto line from tl, to tr
-				} else // If src is below E in direction eigenvec
-				{
-					dest = libAlgorithm.vectorLineIntersection2D(src, eigenvec, bl, br); // Project src in direction -eigenvec onto line from bl, to br
-					if (!dest) dest = libAlgorithm.vectorLineIntersection2D(src, eigenvec, br, tr); // Project src in direction -eigenvec onto line from br, to tr
-				}
-			if (!dest) return; // This should never happen!
-
-			// Convert position on rectangle [bl, br, tl, tr] to scalar -> imagePos
-			imageLocations.push(posToLoc(dest));
-		});
-
-		var detectOverlap = function detectOverlap(R, overlapThreshold) {
-			var P = [];
-			for (var j = 1; j < R.length; ++j) {
-				for (var i = 0; i < j; ++i) {
-					if (Math.abs(R[i] - R[j]) < overlapThreshold) P.push([i, j]);
-				}
-			}return P;
-		};
-		var removeOverlap = function removeOverlap(R, i, j, rank, overlapThreshold) {
-			var overlap = overlapThreshold - Math.abs(R[i] - R[j]);
-			if (overlap > 0.0) {
-				var shift = 0.5 * (rank[i] > rank[j] ? overlapThreshold - (R[i] - R[j]) : R[j] - R[i] - overlapThreshold);
-				R[i] += shift;
-				R[j] -= shift;
-			}
-		};
-
-		var maxNumIterations = 10000;
-		if (maxNumIterations != 0) {
-			var R = imageLocations;
-			var overlapThreshold = Math.min(0.15, 4 / imageLocations.length);
-
-			var rank = Array.create(R.length, function (i) {
-				return i;
-			});
-			rank.sort(function (a, b) {
-				return imageLocations[a] < imageLocations[b] ? -1 : imageLocations[a] > imageLocations[b] ? 1 : 0;
-			});
-
-			var P = detectOverlap(R, overlapThreshold);
-			for (var iter = 0; iter < maxNumIterations && P.length !== 0; ++iter) {
-				//TODO: Shuffle P
-				P.forEach(function (pair) {
-					return removeOverlap(R, pair[0], pair[1], rank, overlapThreshold + 0.0001);
-				});
-				P = detectOverlap(R, overlapThreshold);
-			}
-			//console.log(iter, overlapThreshold);
-
-			// Repair order
-			var newRank = Array.create(R.length, function (i) {
-				return i;
-			});
-			newRank.sort(function (a, b) {
-				return R[a] < R[b] ? -1 : R[a] > R[b] ? 1 : 0;
-			});
-			var R_repaired = new Array(R.length);
-			for (var i = 0; i < R.length; ++i) {
-				R_repaired[rank[i]] = R[newRank[i]];
-			}imageLocations = R_repaired;
-		}
-
-		var idx = 0;
-		points.forEach(function (p) {
-			if (!dataset.imageFilenames[p]) return;
-
-			var dataPos = dataset.dataVectors.map(function (v) {
-				return v.getValue(p);
-			});
-			var imagePos = dataPos.slice(0);
-
-			// Convert scalar to position on rectangle [bl, br, tl, tr] -> dest
-			dest = locToPos(imageLocations[idx++]);
-			tf.deviceCoordToDatasetCoord(dest, dest);
-			imagePos[d0] = dest[0];
-			imagePos[d1] = dest[1];
-
-			imageViewer.showImage(dataset.imageFilenames[p], p, dataPos, imagePos, imageSize);
-		});
-
-		imageViewer.resolveIntersections(tf);
-	};
-
-	this['showImage'] =
-	/**
-  * Valid placement strategies are:
-  * + none
-  * + adjacent
-  * + lowDensity
-  * @summary Show a thumbnail of the given datapoint
-  * @param  {number} index Index of the datapoint to show
-  * @param  {string} placement
-  */
-	this.showImage = function (index, placement) {
-		switch (placement) {
-			case 'none':
-				return this.showImage_none(index);
-			case 'adjacent':
-				return this.showImage_adjacent(index);
-			case 'lowDensity':
-				return this.showImage_lowDensity(index);
-			case 'project':
-				console.warn("GlobalView warning: Can't place a single image using the 'project'-strategy");return false;
-			default:
-				console.warn("GlobalView warning: Unknown image placement strategy: " + placement);return false;
-		}
-	};
-	this['showImages'] =
-	/**
-  * Valid placement strategies are:
-  * + none
-  * + adjacent
-  * + lowDensity
-  * + project
-  * @summary Show a thumbnail of the given data points
-  * @param  {Array<number>} points List of indices of datapoints to show
-  * @param  {string} placement
-  */
-	this.showImages = function (points, placement) {
-		switch (placement) {
-			case 'none':
-				return this.showImages_none(points);
-			case 'adjacent':
-				return this.showImages_adjacent(points);
-			case 'lowDensity':
-				return this.showImages_lowDensity(points);
-			case 'project':
-				return this.showImages_project(points);
-			default:
-				console.warn("GlobalView warning: Unknown image placement strategy: " + placement);return false;
-		}
-	};
-
-	this['highlightImage'] =
-	/**
-  * Images other than the given image will be de-highlighted.
-  * @summary Highlight the given image with a highlight color
-  * @deprecated Set image.labelColor manually
-  * @param  {Thumbnail|number} image Image or index of image to show
-  */
-	this.highlightImage = function (image) {
-		var images = imageViewer.getImages();
-		if (libUtility.isNumber(image)) for (var i = 0; i < images.length; ++i) {
-			images[i].highlighted = i === image;
-		} else for (var i = 0; i < images.length; ++i) {
-			images[i].highlighted = images[i] === image;
-		}this.invalidate();
-	};
-
-	this['getImages'] =
-	/**
-  * @summary Get an array of all images of the plot
-  * @return {Array<Thumbnail>}
-  */
-	this.getImages = imageViewer.getImages;
-
-	// >>> Mouse handlers
-
-	var mouseOverDatapoint = -1,
-	    pointDragDownPos = null,
-	    viewDragStartPos = null,
-	    viewDragX,
-	    viewDragY,
-	    viewDragZ;
-	var mouseOverAxisLabel = null,
-	    mouseOverImage = null,
-	    imageDragStartPos = null,
-	    imageDragImages = [];
-
-	/**
-  * @callback onMouseDownCallback
-  * @param  {Object} event
-  */
-	/**
-  * The following properties of 'event' can be set to true:
-  * + __pointSelection__: Enable selection of data points
-  * + __pointDragging__: Enable dragging of data points
-  * + __viewDragging__: Enable moving of the view
-  * + __lassoSelection__: Enable selection of data points with a rectangular lasso
-  * + __polygonLassoSelection__: Enable selection of data points with a freeform lasso
-  * @summary Event handler that sets flags about how to process this mouse-down event
-  * @member
-  * @alias onMouseDown
-  * @memberof GlobalView
-  * @type {onMouseDownCallback}
-  */
-	this['onMouseDown'] = function (event) {
-		// Default mouse-down handler
-		switch (event.button) {
-			// On left mouse button: Enable point selection and dragging events.
-			//                       If control button is pressed, initiate view dragging, else, enable lasso selection
-			case 0:
-				event['pointSelection'] = true;
-				event['pointDragging'] = true;
-				if (ctrlPressed) event['viewDragging'] = true;else event['lassoSelection'] = true;
-				break;
-
-			// On middle mouse button: Initiate view dragging
-			case 1:
-				event['viewDragging'] = true;
-				break;
-
-			// On right mouse button: Do nothing
-			case 2:
-				break;
-		}
-	};
-	/**
-  * @callback onMouseOverDatapointCallback
-  * @param  {Dataset} dataset
-  * @param  {number} mouseOverDatapoint Index of the point the mouse cursor is hovering over
-  */
-	/**
-  * There is no mouse-leave event for datapoints.
-  * When the mouse cursor leaves a datapoint, this event is raised with `mouseOverDatapoint == -1`.
-  * @summary Event handler that gets fired everytime the mouse cursor enters the boundaries of a datapoint
-  * @member
-  * @alias onMouseOverDatapoint
-  * @memberof GlobalView
-  * @type {onMouseOverDatapointCallback}
-  */
-	this['onMouseOverDatapoint'] = null;
-	/**
-  * @callback onMouseOverAxisLabelCallback
-  * @param  {DataVector} dataVector Data vector whose axis label the mouse cursor is hovering over
-  * @param  {{l: number, t: number, r: number, b: number}} labelRect Area of the label relative to the location of the plot
-  */
-	/**
-  * There is no mouse-leave event for axis labels.
-  * When the mouse cursor leaves an axis label, this event is raised with `dataVector == labelRect == null`.
-  * @summary Event handler that gets fired everytime the mouse cursor enters the boundaries of an axis label
-  * @member
-  * @alias onMouseOverAxisLabel
-  * @memberof GlobalView
-  * @type {onMouseOverAxisLabelCallback}
-  */
-	this['onMouseOverAxisLabel'] = null;
-	/**
-  * @callback onSelectionChangedCallback
-  * @param  {Dataset} dataset
-  * @param  {Array<number>} selection Array of indices of all selected points
-  */
-	/**
-  * When the selection is cleared, this event is raised with `selection == []`.
-  * @summary Event handler that gets fired everytime the collection of selected points is altered
-  * @member
-  * @alias onSelectionChanged
-  * @memberof GlobalView
-  * @type {onSelectionChangedCallback}
-  */
-	this['onSelectionChanged'] = null;
-	/**
-  * @callback onLassoSelectionCallback
-  * @param  {Dataset} dataset
-  * @param  {Array<number>} selection Array of indices of all selected points
-  * @param  {{l: number, t: number, r: number, b: number}|Array<Array<number>>} lassoArea
-  * Rectangle or list of 2D points of the area selected by the lasso relative to the location of the plot
-  */
-	/**
-  * This event is fired with `selection == []` if no points lie inside the lasso area.
-  * @summary Event handler that gets fired everytime a lasso selection was made
-  * @member
-  * @alias onLassoSelection
-  * @memberof GlobalView
-  * @type {onLassoSelectionCallback}
-  */
-	this['onLassoSelection'] = null;
-	/**
-  * @callback onThumbnailSelectionChangedCallback
-  * @param  {Dataset} dataset
-  * @param  {Array<Thumbnail>} selection Array of all selected images
-  */
-	/**
-  * When the selection is cleared, this event is raised with `selection == []`.
-  * @summary Event handler that gets fired everytime the collection of selected images is altered
-  * @member
-  * @alias onThumbnailSelectionChanged
-  * @memberof GlobalView
-  * @type {onThumbnailSelectionChangedCallback}
-  */
-	this['onThumbnailSelectionChanged'] = null;
-	var ctrlPressed = false,
-	    shiftPressed = false;
-	var CTRL = navigator.appVersion.indexOf("Mac") == -1 ? 17 : 224;
-	libUtility.addKeyDownHandler(function (event) {
-		if (event.keyCode === CTRL) ctrlPressed = true;else if (event.keyCode === 16) shiftPressed = true;
-	});
-	libUtility.addKeyUpHandler(function (event) {
-		if (event.which === CTRL) ctrlPressed = false;else if (event.keyCode === 16) shiftPressed = false;
-	});
-	canvas.oncontextmenu = function () {
-		return false;
-	}; // Disable canvas context menu
-	canvas.onmousedown = function (event) {
-		if (tf === null || offscreenRendering !== null) return;
-
-		// Compute mousepos in canvas space -> p
-		var canvasBounds = canvas.getBoundingClientRect();
-		var p = new Float32Array([event.clientX - canvasBounds.left, event.clientY - canvasBounds.top, event.clientY - canvasBounds.top]);
-
-		// Fire mouse-down handler
-		this['onMouseDown'](event);
-
-		if (event['viewDragging']) // If mouse-down handler set ['viewDragging'] property to a truthy value
-			{
-				if (p[0] > plotBounds.x + plotBounds.width) {
-					viewDragX = viewDragY = false;
-					viewDragZ = colormap.visible;
-				} else {
-					viewDragX = p[0] >= plotBounds.x;
-					viewDragY = p[1] <= plotBounds.y + plotBounds.height;
-					viewDragZ = false;
-				}
-
-				// Transform mousepos from canvas space to device coordinates
-				p[0] = 2 * p[0] / canvasBounds.width - 1;
-				p[1] = 1 - 2 * p[1] / canvasBounds.height;
-				p[2] = 1 - (p[2] - plotBounds.y) / plotBounds.height;
-
-				if (viewDragX || viewDragY || viewDragZ) viewDragStartPos = p; // Initiate view dragging
-				return; // Prevent other mouse-down events
-			} else {
-			// Transform mousepos from canvas space to device coordinates
-			p[0] = 2 * p[0] / canvasBounds.width - 1;
-			p[1] = 1 - 2 * p[1] / canvasBounds.height;
-		}
-
-		var selectedImage = imageViewer.imageFromPoint(tf, p);
-		if (!shiftPressed && !ctrlPressed && imageDragImages.length !== 0 && (selectedImage === null || imageDragImages.indexOf(selectedImage) === -1)) {
-			// Deselect images
-			imageDragImages.forEach(function (image) {
-				return image.highlighted = false;
-			});
-			imageDragImages = [];
-			this.invalidate();
-			if (this['onThumbnailSelectionChanged'] !== null) this['onThumbnailSelectionChanged'](dataset, []);
-		}
-		if (selectedImage !== null) {
-			selectedImage.highlighted = true;
-			if (imageDragImages.indexOf(selectedImage) === -1) imageDragImages.push(selectedImage);
-			if (options['enableThumbnailDragging']) imageDragStartPos = p; // Initiate image dragging
-			this.invalidate();
-			if (event['pointSelection'] && this['onSelectionChanged'] !== null) this['onSelectionChanged'](dataset, []);
-			if (this['onThumbnailSelectionChanged'] !== null) this['onThumbnailSelectionChanged'](dataset, imageDragImages);
-			return; // Prevent other mouse-down events
-		}
-
-		// Transform p from device coordinates to dataset coordinates
-		tf.deviceCoordToDatasetCoord(p, p);
-
-		var closest = Number.MAX_VALUE,
-		    closestIndex = -1,
-		    sqDist;
-		var sqscl0 = tf.getScale(0) * tf.getScale(0),
-		    sqscl1 = tf.getScale(1) * tf.getScale(1);
-		var v0 = dataset.dataVectors[activeInputs[0]],
-		    v1 = dataset.dataVectors[activeInputs[1]];
-		pointViewer.points.forEach(function (i) {
-			sqDist = sqscl0 * Math.pow(p[0] - v0.getValue(i), 2) + sqscl1 * Math.pow(p[1] - v1.getValue(i), 2);
-			if (sqDist < closest) {
-				closest = sqDist;
-				closestIndex = i;
-			}
-		});
-
-		// Get closest dataset coordinates in dataset coordinates -> dp
-		var dp = new Float32Array([v0.getValue(closestIndex), v1.getValue(closestIndex)]);
-
-		// Transform dp from dataset coordinates to canvas coordinates
-		tf.datasetCoordToDeviceCoord(dp, dp);
-		dp[0] = (0.5 + 0.5 * dp[0]) * canvasBounds.width;
-		dp[1] = (0.5 - 0.5 * dp[1]) * canvasBounds.height;
-
-		sqDist = Math.pow(event.clientX - canvasBounds.left - dp[0], 2) + Math.pow(event.clientY - canvasBounds.top - dp[1], 2);
-		if (sqDist > Math.pow(options['pointSize'] / 2.0, 2)) {
-			if ((event['lassoSelection'] || event['polygonLassoSelection']) && this['onLassoSelection'] !== null) {
-				if (event['polygonLassoSelection']) mousePolygon = [];else mouseRect = { x: event.clientX - canvasBounds.left, y: event.clientY - canvasBounds.top, width: 0, height: 0 };
-			}
-			if (event['pointSelection'] && this['onSelectionChanged'] !== null) this['onSelectionChanged'](dataset, []);
-		} else {
-			if (event['pointDragging']) pointDragDownPos = [dp[0], dp[1], closestIndex]; // (This makes sure pointDragDownPos is centered on the selected datapoint)
-			if (event['pointSelection'] && this['onSelectionChanged'] !== null) this['onSelectionChanged'](dataset, [closestIndex]);
-		}
-	}.bind(this);
-	var onmousemove;
-	libUtility.addMouseMoveHandler(onmousemove = function (event) {
-		if (tf === null || offscreenRendering !== null || event.target !== canvas && pointDragDownPos === null && viewDragStartPos === null && imageDragStartPos === null && mouseRect === null && mousePolygon === null) return;
-
-		// Compute mousepos in canvas space -> p
-		var canvasBounds = canvas.getBoundingClientRect();
-		var p = new Float32Array([event.clientX - canvasBounds.left, event.clientY - canvasBounds.top, event.clientY - canvasBounds.top]);
-
-		// Resize mouse polygon
-		if (mousePolygon !== null) {
-			mousePolygon.push(p);
-			this.invalidate();
-			return;
-		}
-
-		// Resize mouse rect
-		if (mouseRect !== null) {
-			mouseRect.width = p[0] - mouseRect.x;
-			mouseRect.height = p[1] - mouseRect.y;
-			this.invalidate();
-			return;
-		}
-
-		if (pointDragDownPos) {
-			var scale = 1 / (dataset.dataVectors[activeInputs[3]].getValue(pointDragDownPos[2]) * tf.getScale(3)) + tf.getOffset(3);
-			//console.log(scale);
-
-			pointDrag = [scale * (p[0] - pointDragDownPos[0]), scale * (p[1] - pointDragDownPos[1])];
-			this.invalidate();
-			return;
-		}
-
-		if (this['onMouseOverAxisLabel']) {
-			var newMouseOverAxisLabel = coordSys.labelFromPoint(plotBounds, p);
-			if (newMouseOverAxisLabel !== mouseOverAxisLabel) {
-				if ((mouseOverAxisLabel = newMouseOverAxisLabel) !== null) this['onMouseOverAxisLabel'](dataset.dataVectors[activeInputs[mouseOverAxisLabel]], coordSys.getLabelBounds(plotBounds, mouseOverAxisLabel));else this['onMouseOverAxisLabel'](null, null);
-			}
-		}
-
-		// Transform mousepos from canvas space to device coordinates
-		p[0] = 2 * p[0] / canvasBounds.width - 1;
-		p[1] = 1 - 2 * p[1] / canvasBounds.height;
-		p[2] = 1 - (p[2] - plotBounds.y) / plotBounds.height;
-
-		var d0 = activeInputs[0],
-		    d1 = activeInputs[1];
-
-		if (viewDragStartPos) {
-			var d2 = activeInputs[2];
-			var viewDelta = libGlMatrix.vec3.create();
-			tf.deviceDistToDatasetDist(viewDelta, libGlMatrix.vec3.subtract(viewDelta, p, viewDragStartPos));
-
-			if (viewDragX) tf.translate(d0, viewDelta[0]);
-			if (viewDragY) tf.translate(d1, viewDelta[1]);
-			if (viewDragZ) tf.translate(d2, viewDelta[2]);
-			viewDragStartPos = p;
-			return;
-		}
-
-		if (imageDragStartPos) {
-			var imageDelta = libGlMatrix.vec2.create();
-			tf.deviceDistToDatasetDist(imageDelta, libGlMatrix.vec2.subtract(imageDelta, p, imageDragStartPos));
-			imageDragImages.forEach(function (image) {
-				image.imagePos[activeInputs[0]] += imageDelta[0];
-				image.imagePos[activeInputs[1]] += imageDelta[1];
-			});
-			imageDragStartPos = p;
-			this.invalidate();
-			return;
-		}
-
-		if (mouseOverImage != null && imageDragImages.indexOf(mouseOverImage) === -1) {
-			mouseOverImage.highlighted = false;
-			this.invalidate();
-			mouseOverImage = null;
-		}
-		mouseOverImage = imageViewer.imageFromPoint(tf, p);
-		if (mouseOverImage != null) {
-			if (imageDragImages.indexOf(mouseOverImage) === -1) {
-				mouseOverImage.highlighted = true;
-				this.invalidate();
-			}
-			if (mouseOverDatapoint !== -1) {
-				mouseOverDatapoint = -1;
-				if (this['onMouseOverDatapoint'] !== null) this['onMouseOverDatapoint'](dataset, mouseOverDatapoint);
-			}
-			return;
-		}
-
-		// Transform p from device coordinates to dataset coordinates
-		tf.deviceCoordToDatasetCoord(p, p);
-
-		var closest = Number.MAX_VALUE,
-		    closestIndex = -1,
-		    sqDist;
-		var sqscl0 = tf.getScale(0) * tf.getScale(0),
-		    sqscl1 = tf.getScale(1) * tf.getScale(1);
-		var v0 = dataset.dataVectors[d0],
-		    v1 = dataset.dataVectors[d1];
-		pointViewer.points.forEach(function (i) {
-			sqDist = sqscl0 * Math.pow(p[0] - v0.getValue(i), 2) + sqscl1 * Math.pow(p[1] - v1.getValue(i), 2);
-			if (sqDist < closest) {
-				closest = sqDist;
-				closestIndex = i;
-			}
-		});
-
-		// Get closest dataset coordinates in dataset coordinates -> dp
-		var dp = new Float32Array([v0.getValue(closestIndex), v1.getValue(closestIndex)]);
-
-		// Transform dp from dataset coordinates to canvas coordinates
-		tf.datasetCoordToDeviceCoord(dp, dp);
-		dp[0] = (0.5 + 0.5 * dp[0]) * canvasBounds.width;
-		dp[1] = (0.5 - 0.5 * dp[1]) * canvasBounds.height;
-
-		sqDist = Math.pow(event.clientX - canvasBounds.left - dp[0], 2) + Math.pow(event.clientY - canvasBounds.top - dp[1], 2);
-		if (sqDist > Math.pow(options['pointSize'] / 2.0, 2)) {
-			if (mouseOverDatapoint !== -1) {
-				mouseOverDatapoint = -1;
-				if (this['onMouseOverDatapoint'] !== null) this['onMouseOverDatapoint'](dataset, mouseOverDatapoint);
-			}
-		} else {
-			if (mouseOverDatapoint !== closestIndex) {
-				mouseOverDatapoint = closestIndex;
-				if (this['onMouseOverDatapoint'] !== null) this['onMouseOverDatapoint'](dataset, mouseOverDatapoint);
-			}
-		}
-	}.bind(this));
-	libUtility.addMouseUpHandler(function (event) {
-		if (tf === null || offscreenRendering !== null || event.target !== canvas && pointDragDownPos === null && viewDragStartPos === null && mouseRect === null) return;
-
-		var invalidate = false;
-		if (pointDragDownPos !== null) {
-			pointDragDownPos = pointDrag = null;
-			invalidate = true;
-		}
-		viewDragStartPos = imageDragStartPos = null;
-		if (mousePolygon !== null) {
-			if (this['onSelectionChanged'] !== null && mousePolygon.length >= 3) {
-				//TODO: Find points within mousePolygon -> selection
-
-				// Transform mousePolygon from canvas space to dataset coordinates
-				for (var i = 0; i < mousePolygon.length; ++i) {
-					var p = mousePolygon[i];
-
-					// Transform p from canvas space to device coordinates
-					p[0] = 2 * p[0] / canvas.width - 1;
-					p[1] = 1 - 2 * p[1] / canvas.height;
-
-					// Transform p from device coordinates to dataset coordinates
-					tf.deviceCoordToDatasetCoord(p, p);
-
-					mousePolygon[i] = p;
-				}
-
-				// Close polygon
-				mousePolygon.push(mousePolygon[0]);
-
-				var px,
-				    py,
-				    selection = [];
-				var v0 = dataset.dataVectors[activeInputs[0]],
-				    v1 = dataset.dataVectors[activeInputs[1]];
-				pointViewer.points.forEach(function (i) {
-					px = v0.getValue(i);
-					py = v1.getValue(i);
-					;
-					if (libAlgorithm.pointInsidePolygon([px, py], mousePolygon)) selection.push(i);
-				});
-				this['onLassoSelection'](dataset, selection, mousePolygon);
-			}
-
-			mousePolygon = null;
-			invalidate = true;
-		}
-		if (mouseRect !== null) {
-			if (this['onSelectionChanged'] !== null && mouseRect.width != 0 && mouseRect.height != 0) {
-				// Normalize mouseRect (make sure width/height are positive)
-				if (mouseRect.width < 0) {
-					mouseRect.x += mouseRect.width;
-					mouseRect.width = -mouseRect.width;
-				}
-				if (mouseRect.height < 0) {
-					mouseRect.y += mouseRect.height;
-					mouseRect.height = -mouseRect.height;
-				}
-
-				// Transform mouseRect from canvas space to device coordinates
-				mouseRect.l = 2 * mouseRect.x / canvas.width - 1;
-				mouseRect.r = 2 * (mouseRect.x + mouseRect.width) / canvas.width - 1;
-				mouseRect.t = 1 - 2 * (mouseRect.y + mouseRect.height) / canvas.height;
-				mouseRect.b = 1 - 2 * mouseRect.y / canvas.height;
-
-				// Transform mouseRect from device coordinates to dataset coordinates
-				var p = new Float32Array([mouseRect.l, mouseRect.t]);
-				tf.deviceCoordToDatasetCoord(p, p);
-				mouseRect.l = p[0];mouseRect.t = p[1];
-				p = new Float32Array([mouseRect.r, mouseRect.b]);
-				tf.deviceCoordToDatasetCoord(p, p);
-				mouseRect.r = p[0];mouseRect.b = p[1];
-
-				var px,
-				    py,
-				    selection = [];
-				var v0 = dataset.dataVectors[activeInputs[0]],
-				    v1 = dataset.dataVectors[activeInputs[1]];
-				pointViewer.points.forEach(function (i) {
-					px = v0.getValue(i);
-					py = v1.getValue(i);
-					if (px >= mouseRect.l && px < mouseRect.r && py >= mouseRect.t && py < mouseRect.b) selection.push(i);
-				});
-				this['onLassoSelection'](dataset, selection, mouseRect);
-			}
-
-			mouseRect = null;
-			invalidate = true;
-		}
-		if (invalidate) {
-			this.invalidate();
-			onmousemove(event);
-		}
-	}.bind(this));
-	canvas.onmouseleave = function (event) {
-		if (mouseOverImage != null && imageDragImages.indexOf(mouseOverImage) === -1) {
-			mouseOverImage.highlighted = false;
-			this.invalidate();
-			mouseOverImage = null;
-		}
-		if (this['onMouseOverAxisLabel'] && mouseOverAxisLabel !== null) {
-			this['onMouseOverAxisLabel'](null, null);
-			mouseOverAxisLabel = null;
-		}
-
-		if (this['onMouseOverDatapoint'] !== null && mouseOverDatapoint !== -1) this['onMouseOverDatapoint'](dataset, mouseOverDatapoint = -1);
-	}.bind(this);
-	libUtility.addMouseWheelHandler(function (event) {
-		if (event.target !== canvas || !options['enableScrolling']) return;
-		var deltaZ = event.wheelDelta == null ? event.detail : -event.wheelDelta / 20.0;
-		event.preventDefault();
-
-		// Compute mousepos in canvas space -> p
-		var canvasBounds = canvas.getBoundingClientRect();
-		var p = new Float32Array([event.clientX - canvasBounds.left, event.clientY - canvasBounds.top, event.clientY - canvasBounds.top]);
-
-		var scrollX, scrollY, scrollZ;
-		if (p[0] > plotBounds.x + plotBounds.width) {
-			scrollX = scrollY = false;
-			scrollZ = true;
-		} else {
-			scrollX = p[0] >= plotBounds.x;
-			scrollY = p[1] < canvas.height - plotBounds.y;
-			scrollZ = false;
-		}
-
-		// Transform mousepos from canvas space to device coordinates
-		p[0] = 2 * p[0] / canvasBounds.width - 1;
-		p[1] = 1 - 2 * p[1] / canvasBounds.height;
-		p[2] = 1 - (p[2] - plotBounds.y) / plotBounds.height;
-
-		var d0 = activeInputs[0],
-		    d1 = activeInputs[1],
-		    d2 = activeInputs[2];
-
-		// Transform p from device coordinates to dataset coordinates
-		tf.deviceCoordToDatasetCoord(p, p);
-
-		// Zoom towards mouse position
-		var zoom = 1.0 - deltaZ / 50.0;
-		libGlMatrix.vec3.scaleAndAdd(p, p, p, -zoom); // Offset is difference between p in current zoom level and p after zooming
-		if (scrollX) {
-			tf.translate(d0, p[0]);
-			tf.scale(d0, zoom);
-		}
-		if (scrollY) {
-			tf.translate(d1, p[1]);
-			tf.scale(d1, zoom);
-		}
-		if (scrollZ) {
-			tf.translate(d2, p[2]);
-			tf.scale(d2, zoom);
-		}
-	}.bind(this));
-
-	this['ondragover'] = null;
-	canvas.ondragover = function (event) {
-		if (this['ondragover'] !== null) this['ondragover'](event);
-	}.bind(this);
-	this['ondrop'] = null;
-	canvas.ondrop = function (event) {
-		if (this['ondrop'] !== null) this['ondrop'](event);
-	}.bind(this);
-
-	// >>> Offscreen Rendering
-
-	var offscreenRendering = null;
-	this['enableOffscreenRendering'] = this.enableOffscreenRendering = function (width, height) {
-		if (offscreenRendering !== null) return;
-		offscreenRendering = {};
-
-		gl.width = canvas.width = width;
-		gl.height = canvas.height = height;
-
-		trc.enableOffscreenRendering(width, height);
-
-		// Disable continuous rendering
-		offscreenRendering.enableContinuousRendering = options['enableContinuousRendering'];
-		if (offscreenRendering['enableContinuousRendering']) this.setOption('enableContinuousRendering', false);
-
-		// Create render target texture
-		offscreenRendering.rttTexture = gl.createTexture();
-		gl.bindTexture(gl.TEXTURE_2D, offscreenRendering.rttTexture);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-
-		// Create render target framebuffer -> offscreenRendering.rttFramebuffer
-		offscreenRendering.rttFramebuffer = gl.createFramebuffer();
-		gl.bindFramebuffer(gl.FRAMEBUFFER, offscreenRendering.rttFramebuffer);
-		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-
-		/* // Create depth buffer -> offscreenRendering.rttRenderbuffer
-  offscreenRendering.rttRenderbuffer = gl.createRenderbuffer();
-  gl.bindRenderbuffer(gl.RENDERBUFFER, offscreenRendering.rttRenderbuffer);
-  gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);*/
-
-		gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, offscreenRendering.rttTexture, 0); // Bind framebuffer
-		//gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, offscreenRendering.rttRenderbuffer); // Bind depth buffer
-
-		gl.bindTexture(gl.TEXTURE_2D, null);
-		gl.bindRenderbuffer(gl.RENDERBUFFER, null);
-
-		// Set viewport
-		gl.viewportWidth = width;
-		gl.viewportHeight = height;
-		gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
-
-		if (options['padding']) setPlotBounds(options['padding']);
-	};
-	this['disableOffscreenRendering'] = this.disableOffscreenRendering = function () {
-		if (offscreenRendering === null) return;
-
-		trc.disableOffscreenRendering();
-
-		// Remove framebuffer
-		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-		gl.deleteFramebuffer(offscreenRendering.rttFramebuffer);
-
-		// Restore viewport
-		gl.viewportWidth = canvas.width;
-		gl.viewportHeight = canvas.height;
-		gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
-
-		//if (options['padding'])
-		//	setPlotBounds(options['padding']);
-
-		// Reenable continuous rendering
-		if (offscreenRendering['enableContinuousRendering']) this.setOption('enableContinuousRendering', true);
-
-		offscreenRendering = null;
-
-		onresize();
-	};
-	this['renderOffscreenBuffer'] = this.renderOffscreenBuffer = function () {
-		// Render scene
-		render(true);
-		gl.finish();
-	};
-	this['saveOffscreenBuffer'] = this.saveOffscreenBuffer = function () {
-		// Read pixels
-		var data = new Uint8Array(gl.viewportWidth * gl.viewportHeight * 4);
-		gl.readPixels(0, 0, gl.viewportWidth, gl.viewportHeight, gl.RGBA, gl.UNSIGNED_BYTE, data);
-
-		// Create a temporary 2D canvas to store the result -> tempCanvas
-		var tempCanvas = document.createElement('canvas');
-		tempCanvas.width = gl.viewportWidth;
-		tempCanvas.height = gl.viewportHeight;
-		var tempContext = tempCanvas.getContext('2d');
-
-		// Copy the pixels to the 2D canvas
-		var imageData = tempContext.createImageData(tempCanvas.width, tempCanvas.height);
-		imageData.data.set(data);
-		tempContext.putImageData(imageData, 0, 0);
-		tempContext.drawImage(trc.getCanvas(), 0, 0);
-		var dataURL = tempCanvas.toDataURL();
-
-		// Free tempCanvas
-		tempCanvas = null;
-
-		return dataURL;
-	};
-
-	// >>> Initialize global view
-
-	gl.disable(gl.CULL_FACE);
-	gl.enable(gl.BLEND);
-	gl.blendEquationSeparate(gl.FUNC_ADD, gl.FUNC_ADD);
-	gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE);
-	gl.clearColor.apply(gl, gl.backColor);
-
-	// Hook to window-resize event and fire once for initial setup
-	window.addEventListener('resize', onresize, false);
-	onresize();
-
-	// Set unset options to default values
-	this.setDefaultOptions();
-	this.setOptions(startupOptions);
+  var OPTIONS = {
+    // General plot options
+    /** The space around the drawing area in the form [top, right, bottom, left]. X-axis, y-axis and colormap are drawn within padding space. */
+    'padding': {
+      description: "The space around the drawing area in the form [top, right, bottom, left]. X-axis, y-axis and colormap are drawn within padding space.",
+      default: [50, 60, 50, 50],
+      valid: function valid(value) {
+        return libUtility.isNumber(value) || libUtility.isString(value) || libUtility.isArray(value) && value.length === 4;
+      },
+      requireRedraw: true,
+      requireRecompile: false
+    },
+    /** When enabled, shows a colormap to the right of the plot. */
+    'showColormap': {
+      description: "When enabled, shows a colormap to the right of the plot.",
+      default: true,
+      valid: [true, false],
+      requireRedraw: true,
+      requireRecompile: false
+    },
+    /** When enabled, scrolling above the plot zooms in or out of the data. */
+    'enableScrolling': {
+      description: "When enabled, scrolling above the plot zooms in or out of the data.",
+      default: true,
+      valid: [true, false],
+      requireRedraw: false,
+      requireRecompile: false
+    },
+    /** When enabled, thumbnails can be dragged with the mouse. */
+    'enableThumbnailDragging': {
+      description: "When enabled, thumbnails can be dragged with the mouse.",
+      default: true,
+      valid: [true, false],
+      requireRedraw: false,
+      requireRecompile: false
+    },
+
+    // Advanced plot options
+    /** When enabled, the canvas is continuously rerendered at up to 60 frames per second. Keep this setting disabled to save processing resources. */
+    'enableContinuousRendering': {
+      description: "When enabled, the canvas is continuously rerendered at up to 60 frames per second. Keep this setting disabled to save processing resources.",
+      default: false,
+      valid: [true, false],
+      requireRedraw: true,
+      requireRecompile: false
+    },
+    /** Enables/disables blending in WebGL. Whenever using any kind of transparency, this setting should be kept enabled. */
+    'enableTransparency': {
+      description: "Enables/disables blending in WebGL. Whenever using any kind of transparency, this setting should be kept enabled.",
+      default: true,
+      valid: [true, false],
+      requireRedraw: true,
+      requireRecompile: false
+    },
+    /** When enabled, draws an image into the background, that shows density of points. (can be combined with 'showPointClusters') */
+    'showPointDensity': {
+      description: "When enabled, draws an image into the background, that shows density of points. (can be combined with 'showPointClusters')",
+      default: false,
+      valid: [true, false],
+      requireRedraw: true,
+      requireRecompile: false
+    },
+    /** When enabled, draws an image into the background, that shows colored clusters of points. (can be combined with 'showPointDensity') */
+    'showPointClusters': {
+      description: "When enabled, draws an image into the background, that shows colored clusters of points. (can be combined with 'showPointDensity')",
+      default: false,
+      valid: [true, false],
+      requireRedraw: true,
+      requireRecompile: false
+    },
+    'pointClusterThreshold': {
+      description: "Controls the realtive threshold between clusters and outliers when showing clusters (see 'showPointClusters')",
+      default: new libAlgorithm.ClusterMapOptions().threshold,
+      valid: function valid(value) {
+        return value > 0;
+      },
+      requireRedraw: false, // Requests redraw internally
+      requireRecompile: false
+    },
+
+    // Histogram options
+    /** When enabled, shows a histogram between the x-axis and the plot. */
+    'showXAxisHistogram': {
+      description: "When enabled, shows a histogram between the x-axis and the plot.",
+      default: false,
+      valid: [true, false],
+      requireRedraw: true,
+      requireRecompile: false
+    },
+    /** When enabled, shows a histogram between the y-axis and the plot. */
+    'showYAxisHistogram': {
+      description: "When enabled, shows a histogram between the y-axis and the plot.",
+      default: false,
+      valid: [true, false],
+      requireRedraw: true,
+      requireRecompile: false
+    },
+    /** When enabled, shows a histogram between the colormap and the plot. */
+    'showColormapHistogram': {
+      description: "When enabled, shows a histogram between the colormap and the plot.",
+      default: false,
+      valid: [true, false],
+      requireRedraw: true,
+      requireRecompile: false
+    },
+    /** Controls the number of bins within each histogram in the scatterplot. */
+    'numHistogramBins': {
+      description: "Controls the number of bins within each histogram in the scatterplot.",
+      default: 50,
+      valid: function valid(value) {
+        return value >= 1;
+      },
+      requireRedraw: true,
+      requireRecompile: false
+    },
+    /** Controls the height of each histogram in the scatterplot (in pixels). */
+    'histogramHeight': {
+      description: "Controls the height of each histogram in the scatterplot (in pixels).",
+      default: 64,
+      valid: function valid(value) {
+        return value >= 0;
+      },
+      requireRedraw: true,
+      requireRecompile: false
+    },
+
+    // Point options
+    /** Controls the shape of data points in the scatterplot. */
+    'pointShape': {
+      description: "Controls the shape of data points in the scatterplot.",
+      default: "Circle",
+      valid: ["Rectangle", "Circle", "Cross", "Diamond", "Gaussian", "Custom"],
+      requireRedraw: true,
+      requireRecompile: true
+    },
+    /** When 'pointShape' is set to 'Custom', this defines a GLSL function given vec2 p, that returns opacity in the range [0.0 ... 1.0] at location p. */
+    'customPointShape': {
+      description: "When 'pointShape' is set to 'Custom', this defines a GLSL function given vec2 p, that returns opacity in the range [0.0 ... 1.0] at location p.",
+      default: "{ return 1.0; }",
+      valid: function valid(value) {
+        return libGraphics.validateGLSL(gl, "float opacityMap(in vec2 p) " + value);
+      },
+      requireRedraw: true,
+      requireRecompile: true
+    },
+    /** Controls the diameter of data points in the scatterplot (in pixels). */
+    'pointSize': {
+      description: "Controls the diameter of data points in the scatterplot (in pixels).",
+      default: 6,
+      valid: function valid(value) {
+        return value >= 0;
+      },
+      requireRedraw: true,
+      requireRecompile: false
+    },
+    /** Controls the visibility of data points in the scatterplot between 0 (invisible) and 1 (fully opaque). */
+    'pointOpacity': {
+      description: "Controls the visibility of data points in the scatterplot between 0 (invisible) and 1 (fully opaque).",
+      default: 1,
+      valid: function valid(value) {
+        return value >= 0 && value <= 1;
+      },
+      requireRedraw: true,
+      requireRecompile: false
+    },
+    /** Controls the color of data points in the scatterplot. Valid values are an array of bytes in RGBA order or a colormap name. */
+    'pointColor': {
+      description: "Controls the color of data points in the scatterplot. Valid values are an array of bytes in RGBA order or a colormap name.",
+      default: "exhue",
+      valid: function valid(value) {
+        return libColormap.validateColormap(value);
+      },
+      requireRedraw: true,
+      requireRecompile: false
+    },
+
+    // Thumbnail options
+    /** Controls the width/height of thumbnails in the scatterplot (in pixels). */
+    'thumbnailSize': {
+      description: "Controls the width/height of thumbnails in the scatterplot (in pixels).",
+      default: 64,
+      valid: function valid(value) {
+        return value > 0;
+      },
+      requireRedraw: true,
+      requireRecompile: false
+    },
+    /** Controls the width of thumbnail borders in the scatterplot. */
+    'thumbnailBorderWidth': {
+      description: "Controls the width of thumbnail borders in the scatterplot.",
+      default: 1,
+      valid: function valid(value) {
+        return value >= 0;
+      },
+      requireRedraw: true,
+      requireRecompile: false
+    },
+    /** Controls the color of thumbnail borders in the scatterplot. Valid values are an array of bytes in RGBA order, a color name or 'null'.
+      If set to 'null', the CSS foreground color will be used. */
+    'thumbnailBorderColor': {
+      description: "Controls the color of thumbnail borders in the scatterplot. Valid values are an array of bytes in RGBA order, a color name or 'null'. " + "If set to 'null', the CSS foreground color will be used.",
+      default: null,
+      valid: function valid(value) {
+        return value === null || libColormap.validateColor(value);
+      },
+      requireRedraw: true,
+      requireRecompile: false
+    },
+    /** Controls the color of thumbnail line in the scatterplot. Valid values are an array of bytes in RGBA order, a color name or 'null'.
+    If set to 'null', the CSS foreground color will be used. */
+    'thumbnailLineColor': {
+      description: "Controls the color of thumbnail line in the scatterplot. Valid values are an array of bytes in RGBA order, a color name or 'null'. " + "If set to 'null', the CSS foreground color will be used.",
+      default: null,
+      valid: function valid(value) {
+        return value === null || libColormap.validateColor(value);
+      },
+      requireRedraw: true,
+      requireRecompile: false
+    },
+    /** Controls the color of thumbnail labels in the scatterplot. Valid values are an array of bytes in RGBA order, a color name or 'null'.
+    If set to 'null', the CSS background color will be used. */
+    'thumbnailLabelColor': {
+      description: "Controls the color of thumbnail labels in the scatterplot. Valid values are an array of bytes in RGBA order, a color name or 'null'. " + "If set to 'null', the CSS foreground color will be used.",
+      default: null,
+      valid: function valid(value) {
+        return value === null || libColormap.validateColor(value);
+      },
+      requireRedraw: true,
+      requireRecompile: false
+    },
+    /** When enabled, links thumbnails to points using unique labels instead of lines. */
+    'labelThumbnails': {
+      description: "When enabled, links thumbnails to points using unique labels instead of lines.",
+      default: false,
+      valid: [true, false],
+      requireRedraw: true,
+      requireRecompile: false
+    }
+  };
+  /** @enum */
+  var options = {};
+
+  var pushedOptions = [];
+  function onOptionsChanged(requireRedraw, requireRecompile) {
+    // Update trivial options
+    ENABLE_CONTINUOUS_RENDERING = options['enableContinuousRendering'];
+    SHOW_FPS = options['enableContinuousRendering'];
+    if (options['enableTransparency']) gl.enable(gl.BLEND);else gl.disable(gl.BLEND);
+    colormap.visible = options['showColormap'];
+    densityViewer.showDensityMap = options['showPointDensity'];
+    densityViewer.showClusterMap = options['showPointClusters'];
+    densityViewer.setClusterMapThreshold(options['pointClusterThreshold']);
+
+    if (options['padding']) setPlotBounds(options['padding']);
+
+    viewers.forEach(function (viewer) {
+      return viewer.onOptionsChanged(options, requireRecompile);
+    });
+
+    if (dataset !== null) {
+      // Reset FPS counter
+      fps = null;
+      fpsStart = t;
+      frameCounter = 0;
+
+      // Redraw
+      if (requireRedraw) this.invalidate();
+    }
+  }
+  this['setOption'] =
+  /**
+   * Note: When setting multiple options, {@link GlobalView#setOptions} should be prefered.
+   * @summary Sets the given option
+   * @see GlobalView#OPTIONS
+   * @param  {string} option
+   * @param  {*} value
+   */
+  this.setOption = function (option, value) {
+    // Validate option
+    if (!OPTIONS.hasOwnProperty(option)) {
+      console.warn("GlobalView warning: Unsupported option: " + option);
+      return;
+    }
+    var optionDefinition = OPTIONS[option];
+
+    // Validate value
+    var validationResult;
+    if (libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1 || libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true) {
+      console.warn("GlobalView warning: Invalid value for option " + option + ": " + value);
+      if (libUtility.isString(validationResult)) console.warn("                    " + validationResult);
+      return;
+    }
+
+    // Set option
+    options[option] = value;
+
+    onOptionsChanged.call(this, optionDefinition.requireRedraw, optionDefinition.requireRecompile);
+  };
+  this['setOptions'] =
+  /**
+   * @summary Sets multiple options
+   * @param  {Object} newOptions A JavaScript object of options
+   */
+  this.setOptions = function (newOptions) {
+    var requireRecompile = false,
+        requireRedraw = false;
+    for (var option in newOptions) {
+      if (!newOptions.hasOwnProperty(option)) continue;
+
+      // Validate option
+      if (!OPTIONS.hasOwnProperty(option)) {
+        console.warn("GlobalView warning: Unsupported option: " + option);
+        continue;
+      }
+      var optionDefinition = OPTIONS[option];
+
+      // Validate value
+      var value = newOptions[option],
+          validationResult;
+      if (libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1 || libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true) {
+        console.warn("GlobalView warning: Invalid value for option " + option + ": " + value);
+        if (libUtility.isString(validationResult)) {
+          //HY:
+          validationResult = optionDefinition.valid(value);
+          console.warn("                    " + validationResult);
+        }
+        continue;
+      }
+
+      // Set option
+      options[option] = value;
+
+      requireRecompile = requireRecompile || optionDefinition.requireRecompile;
+      requireRedraw = requireRedraw || optionDefinition.requireRedraw;
+    }
+
+    onOptionsChanged.call(this, requireRedraw, requireRecompile);
+  };
+  this['setDefaultOption'] =
+  /**
+   * @summary Sets the given option to its default value
+   * @param  {string} option
+   */
+  this.setDefaultOption = function (option) {
+    // Validate option
+    if (!OPTIONS.hasOwnProperty(option)) {
+      console.warn("GlobalView warning: Unsupported option: " + option);
+      return;
+    }
+    var optionDefinition = OPTIONS[option];
+
+    this.setOption(option, optionDefinition.default);
+  };
+  this['setDefaultOptions'] =
+  /**
+   * @summary Sets all options to their respective defaults
+   */
+  this.setDefaultOptions = function () {
+    var defaultOptions = {};
+    for (var option in OPTIONS) {
+      if (OPTIONS.hasOwnProperty(option)) defaultOptions[option] = OPTIONS[option].default;
+    }this.setOptions(defaultOptions);
+  };
+  this['validateOption'] =
+  /**
+   * @summary Checks the given option for errors without setting it
+   * @param  {string} option
+   * @param  {*} value
+   * @return  {string|boolean} Error message or 'true' if the option is valid
+   */
+  this.validateOption = function (option, value) {
+    // Validate option
+    if (!OPTIONS.hasOwnProperty(option)) return "Unsupported option: " + option;
+    var optionDefinition = OPTIONS[option];
+
+    // Validate value
+    var validationResult;
+    if (libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1 || libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true) return "Invalid value for option " + option + ": " + value + (libUtility.isString(validationResult) ? "\n    " + validationResult : "");
+
+    return true;
+  };
+  this['validateOptions'] =
+  /**
+   * @summary Checks multiple options for errors without setting them
+   * @param  {Object} newOptions A JavaScript object of options
+   * @return  {string|boolean} Error message or 'true' if all options are valid
+   */
+  this.validateOptions = function (newOptions) {
+    var errors = [];
+    for (var option in newOptions) {
+      if (!newOptions.hasOwnProperty(option)) continue;
+
+      // Validate option
+      if (!OPTIONS.hasOwnProperty(option)) {
+        errors.push("Unsupported option: " + option);
+        continue;
+      }
+      var optionDefinition = OPTIONS[option];
+
+      // Validate value
+      var value = newOptions[option],
+          validationResult;
+      if (libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1 || libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true) {
+        errors.push("Invalid value for option " + option + ": " + value + (libUtility.isString(validationResult) ? "\n    " + validationResult : ""));
+        continue;
+      }
+    }
+
+    return errors.length === 0 ? true : errors.join('\n');
+  };
+  this['getOption'] =
+  /**
+   * @summary Returns the value assigned to the given option
+   * @param  {string} option
+   * @return {*}
+   */
+  this.getOption = function (option) {
+    return options[option];
+  };
+  this['getOptions'] =
+  /**
+   * @summary Returns a JavaScript object of all options and their values
+   * @return {Object}
+   */
+  this.getOptions = function () {
+    return (/** @type {Object} */JSON.parse(JSON.stringify(options))
+    );
+  };
+  this['pushOptions'] =
+  /**
+   * @summary Save all options
+   */
+  this.pushOptions = function () {
+    pushedOptions.push(options);
+    //options = {};
+  };
+  this['popOptions'] =
+  /**
+   * @summary Recall the options last saved with {@link GlobalView#pushOptions}
+   */
+  this.popOptions = function () {
+    if (pushedOptions.length !== 0) this.setOptions(pushedOptions.pop());
+  };
+
+  // >>> Dataset interaction
+
+  /**
+   * @private
+   * @param  {number} d
+   * @param  {number} columnIdx
+   * @param  {boolean=} changeTickDistance=true
+   */
+  function updateCoorinateSystem(d, columnIdx, changeTickDistance) {
+    if (dataset.dataVectors[columnIdx].values) coordSys.setEnumRange(d, tf.getVisibleMinimum(d), tf.getVisibleMaximum(d), dataset.dataVectors[columnIdx].values);else coordSys.setNumericRange(d, tf.getVisibleMinimum(d), tf.getVisibleMaximum(d), changeTickDistance);
+    coordSys.setLabel(d, dataset.dataVectors[columnIdx].label);
+  }
+  /**
+   * @private
+   * @param  {number} columnIdx
+   * @param  {boolean=} changeTickDistance=true
+   */
+  function updateColormap(columnIdx, changeTickDistance) {
+    if (dataset.dataVectors[columnIdx].values) colormap.setEnumRange(tf.getVisibleMinimum(2), tf.getVisibleMaximum(2), dataset.dataVectors[columnIdx].values);else colormap.setNumericRange(tf.getVisibleMinimum(2), tf.getVisibleMaximum(2), changeTickDistance);
+    colormap.setLabel(dataset.dataVectors[columnIdx].label);
+  }
+
+  //var pushedDatasets = [];
+  this['load'] =
+  /**
+   * @summary Load a dataset into the plot
+   * @param  {Dataset} _dataset
+   * @param  {number} activeColumnX
+   * @param  {number} activeColumnY
+   * @param  {number} activeColumnC
+   * @param  {number} activeColumnS
+   */
+  this.load = function (_dataset, activeColumnX, activeColumnY, activeColumnC, activeColumnS) {
+    // Remove old dataset
+    dataset = null;
+    activeInputs = Array.create(ND, -1);
+    imageViewer.clearImages();
+
+    // Set new dataset
+    dataset = _dataset;
+    animatedInputs[0].origin = activeInputs[0] = activeColumnX;
+    animatedInputs[1].origin = activeInputs[1] = activeColumnY;
+    animatedInputs[2].origin = activeInputs[2] = activeColumnC;
+    animatedInputs[3].origin = activeInputs[3] = activeColumnS;
+    //dataset.dataVectors.push(new DataVector(dataset, "({1} + {2}) / 2.0"));//"i"));
+    //dataset.dataVectors.push(new DataVector(dataset, "{2} + 2.0"));//"i"));
+
+
+    // Reset transform
+    tf = new Transform();
+    this.zoomFit();
+
+    // Update viewers
+    viewers.forEach(function (viewer) {
+      return viewer.setDataset(dataset, options);
+    });
+    viewers.forEach(function (viewer) {
+      return viewer.onInputChanged(activeInputs, animatedInputs, options);
+    });
+    /*pointViewer.setDataset(dataset, options);
+    pointViewer.onInputChanged(activeInputs, animatedInputs, options);
+    densityViewer.setDataset(dataset, options);
+    histogramViewer.setDataset(dataset, options);
+    histogramViewer.onInputChanged(activeInputs, animatedInputs, options);*/
+
+    // Reset FPS counter
+    fps = null;
+    fpsStart = t;
+    frameCounter = 0;
+
+    // Redraw
+    this.invalidate();
+  };
+  this['setActiveColumn'] =
+  /**
+   * Assign dataset column c to axis d
+   * @param  {number} d
+   * @param  {number} c
+   */
+  this.setActiveColumn = function (d, c) {
+    if (!ENABLE_CONTINUOUS_RENDERING) {
+      dt = 0.0;
+      t = performance.now();
+    }
+
+    animatedInputs[d].origin = activeInputs[d];
+    animatedInputs[d].f = 0.0;
+    activeInputs[d] = c;
+
+    tf.onInputChanged();
+    viewers.forEach(function (viewer) {
+      return viewer.onInputChanged(activeInputs, animatedInputs, options);
+    });
+    /*pointViewer.onInputChanged(activeInputs, animatedInputs, options);
+    histogramViewer.onInputChanged(activeInputs, animatedInputs, options);*/
+    if (d < 2) updateCoorinateSystem(d, activeInputs[d]);else updateColormap(activeInputs[2]);
+    if (d < 3) this.invalidate();
+  };
+  this['getActiveColumn'] =
+  /**
+   * Get column assigned to axis c
+   * @param  {number} d
+   * @return {number}
+   */
+  this.getActiveColumn = function (d) {
+    return d >= 0 && d < activeInputs.length ? activeInputs[d] : -1;
+  };
+
+  this['getCharacteristicPoints'] =
+  /**
+   * @param  {number} n
+   * @param  {number} densityRatio
+   * @param  {function(Array<number>)} ondone Event handler, called after characteristic points have been found
+   */
+  this.getCharacteristicPoints = function (n, densityRatio, ondone) {
+    if (!dataset) return;
+    var d0 = activeInputs[0],
+        d1 = activeInputs[1];
+    dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
+      if (d1 < d0) {
+        // Swap d0 <-> d1
+        var temp = d0;
+        d0 = d1;
+        d1 = temp;
+      }
+
+      var characteristicPoints = libAlgorithm.findRepresentativePoints2(dataset, d0, d1, densityMap, n, densityRatio);
+      ondone(characteristicPoints);
+    });
+  };
+
+  // >>> Annotation
+
+  /**
+   * @summary Remove all thumbnails from the plot
+   */
+  this['clearThumbnails'] = this.clearThumbnails = function () {
+    // Clear stencil maps
+    if (dataset) dataset.iterateDensityMaps(function (densityMap) {
+      if (densityMap.stencilMap && densityMap.stencilMap.data) for (var i = 0, stencilMap = densityMap.stencilMap.data, len = stencilMap.length; i < len; ++i) {
+        stencilMap[i] = 0;
+      }
+    });
+
+    imageViewer.clearImages();
+    this.invalidate();
+  };
+  /**
+   */
+  this['showData2D'] = this.showData2D = function () {
+    imageViewer.clearImages();
+
+    var d0 = activeInputs[0],
+        d1 = activeInputs[1];
+    dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
+      if (d1 < d0) {
+        // Swap d0 <-> d1
+        var temp = d0;
+        d0 = d1;
+        d1 = temp;
+      }
+
+      if (!densityMap.stencilMap) densityMap.stencilMap = {};
+
+      //downloadDensityMap(densityMap);
+      pointViewer.representativePoints.assign(libAlgorithm.findRepresentativePoints2(dataset, d0, d1, densityMap, 16, 0.3));
+      if (dataset.imageFilenames) pointViewer.representativePoints.forEach(function (r) {
+        if (dataset.imageFilenames[r]) {
+          var dataPos = dataset.dataVectors.map(function (v) {
+            return v.getValue(r);
+          });
+          var imagePos = dataPos.slice(0);
+          var p = libAlgorithm.findClosePointOfLowDensity(dataset, d0, d1, r, densityMap, densityMap.stencilMap, 0.6 * options['thumbnailSize'] / gl.width, 0.6 * (options['thumbnailSize'] + libImageViewer.LABEL_HEIGHT) / gl.height); //EDIT: Factor 0.6: WHY?
+          imagePos[d0] = p[0];
+          imagePos[d1] = p[1];
+          var imageSize = dataset.dataVectors.map(function (v) {
+            return options['thumbnailSize'] * (v.maximum - v.minimum);
+          });
+          imageViewer.showImage(dataset.imageFilenames[r], r, dataPos, imagePos, imageSize);
+        }
+      });
+      //downloadDensityMap(densityMap);
+    });
+  };
+
+  this['showImage_lowDensity'] =
+  /**
+   * @summary A shorthand function to `showImage(index, "lowDensity")`
+   * @param  {number} index Index of the datapoint to show
+   */
+  this.showImage_lowDensity = function (index) {
+    if (dataset.imageFilenames && dataset.imageFilenames[index]) {
+      var d0 = activeInputs[0],
+          d1 = activeInputs[1];
+      //console.log(dataset.requestDensityMap(d0, d1, undefined, undefined));
+      //dataset.requestDensityMap(d0, d1, undefined, undefined, function(densityMap) { console.log(densityMap); });
+
+      dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
+        var imageWidth = 0.6 * options['thumbnailSize'] / gl.width,
+            imageHeight = (0.6 * options['thumbnailSize'] + libImageViewer.LABEL_HEIGHT) / gl.height; //EDIT: Factor 0.6: WHY?
+        if (d1 < d0) {
+          // Swap d0 <-> d1
+          var temp = d0;
+          d0 = d1;
+          d1 = temp;
+
+          // Swap imageWidth <-> imageHeight
+          temp = imageWidth;
+          imageWidth = imageHeight;
+          imageHeight = temp;
+        }
+
+        var dataPos = dataset.dataVectors.map(function (v) {
+          return v.getValue(index);
+        });
+        var imagePos;
+        if (libUtility.isUndefined(densityMap.data)) // If densityMap is nD
+          imagePos = libAlgorithm.findClosePointOfLowDensityND_descend(dataset, index, densityMap, 0.6 * options['thumbnailSize'] / Math.min(gl.width, gl.height)); //EDIT: Factor 0.6: WHY?
+        else {
+            imagePos = dataPos.slice(0);
+
+            if (!densityMap.stencilMap) densityMap.stencilMap = {};
+            var p = libAlgorithm.findClosePointOfLowDensity(dataset, d0, d1, index, densityMap, densityMap.stencilMap, imageWidth, imageHeight);
+            if (p) {
+              imagePos[d0] = p[0];
+              imagePos[d1] = p[1];
+            } else {
+              var halfImageSize = [1.1 * options['thumbnailSize'] / gl.width, 1.1 * options['thumbnailSize'] / gl.height];
+              tf.deviceDistToDatasetDist(halfImageSize, halfImageSize);
+              imagePos[d0] += halfImageSize[0];
+              imagePos[d1] += halfImageSize[1];
+            }
+          }
+        var imageSize = dataset.dataVectors.map(function (v) {
+          return options['thumbnailSize'] * (v.maximum - v.minimum);
+        });
+        imageViewer.showImage(dataset.imageFilenames[index], index, dataPos, imagePos, imageSize);
+      });
+    }
+  };
+  this['showImages_lowDensity'] =
+  /**
+   * @summary A shorthand function to `showImages(index, "lowDensity")`
+   * @param  {Array<number>} points List of indices of datapoints to show
+   */
+  this.showImages_lowDensity = function (points) {
+    if (dataset.imageFilenames) {
+      var d0 = activeInputs[0],
+          d1 = activeInputs[1];
+      dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
+        var imageWidth = 0.6 * options['thumbnailSize'] / gl.width,
+            imageHeight = (0.6 * options['thumbnailSize'] + libImageViewer.LABEL_HEIGHT) / gl.height; //EDIT: Factor 0.6: WHY?
+        if (d1 < d0) {
+          // Swap d0 <-> d1
+          var temp = d0;
+          d0 = d1;
+          d1 = temp;
+
+          // Swap imageWidth <-> imageHeight
+          temp = imageWidth;
+          imageWidth = imageHeight;
+          imageHeight = temp;
+        }
+        if (!densityMap.stencilMap) densityMap.stencilMap = {};
+        libAlgorithm.markPointsInStencilMap(dataset, d0, d1, points, densityMap, densityMap.stencilMap, imageWidth, imageHeight);
+      });
+    }
+    points.forEach(function (i) {
+      return globalView.showImage_lowDensity(i);
+    });
+    imageViewer.resolveIntersections(tf);
+  };
+
+  this['showImage_none'] =
+  /**
+   * @summary A shorthand function to `showImage(index, "none")`
+   * @param  {number} index Index of the datapoint to show
+   */
+  this.showImage_none = function (index) {
+    var dataPos = dataset.dataVectors.map(function (v) {
+      return v.getValue(index);
+    });
+    imageViewer.showImage(dataset.imageFilenames[index], index, dataPos);
+  };
+  this['showImages_none'] =
+  /**
+   * @summary A shorthand function to `showImages(index, "none")`
+   * @param  {Array<number>} points List of indices of datapoints to show
+   */
+  this.showImages_none = function (points) {
+    points.forEach(function (p) {
+      var dataPos = dataset.dataVectors.map(function (v) {
+        return v.getValue(p);
+      });
+      imageViewer.showImage(dataset.imageFilenames[p], p, dataPos);
+    });
+  };
+
+  this['showImage_adjacent'] =
+  /**
+   * @summary A shorthand function to `showImage(index, "adjacent")`
+   * @param  {number} index Index of the datapoint to show
+   */
+  this.showImage_adjacent = function (index) {
+    var dataPos = dataset.dataVectors.map(function (v) {
+      return v.getValue(index);
+    });
+    var imageSize = dataset.dataVectors.map(function (v) {
+      return options['thumbnailSize'] * (v.maximum - v.minimum);
+    });
+    imageViewer.showImage(dataset.imageFilenames[index], index, dataPos, dataPos, imageSize, 'bottomleft');
+  };
+  this['showImages_adjacent'] =
+  /**
+   * @summary A shorthand function to `showImages(index, "adjacent")`
+   * @param  {Array<number>} points List of indices of datapoints to show
+   */
+  this.showImages_adjacent = function (points) {
+    points.forEach(function (i) {
+      return globalView.showImage_adjacent(i);
+    });
+  };
+
+  this['showImages_project'] =
+  /**
+   * @summary A shorthand function to `showImages(index, "project")`
+   * @param  {Array<number>} points List of indices of datapoints to show
+   */
+  this.showImages_project = function (points) {
+    if (!dataset.imageFilenames) return;
+
+    var d0 = activeInputs[0],
+        d1 = activeInputs[1];
+    var offsets = tf.getOffsets(),
+        scales = tf.getScales();
+
+    // Computed expected value (= mean) of points -> E
+    var E = [0, 0];
+    points.forEach(function (p) {
+      E[0] += dataset.dataVectors[d0].getValue(p);
+      E[1] += dataset.dataVectors[d1].getValue(p);
+    });
+    E[0] *= scales[0] / points.length;
+    E[1] *= scales[1] / points.length;
+
+    // Compute covariance matrix of points -> cov [symetrical 2D matrix]
+    var cov = [0, 0, 0];
+    points.forEach(function (p) {
+      var x0 = dataset.dataVectors[d0].getValue(p) * scales[0] - E[0];
+      var x1 = dataset.dataVectors[d1].getValue(p) * scales[1] - E[1];
+      cov[0] += x0 * x0;
+      cov[1] += x0 * x1;
+      cov[2] += x1 * x1;
+    });
+    cov[0] /= points.length;
+    cov[1] /= points.length;
+    cov[2] /= points.length;
+
+    // Compute eigen values
+    var disc = Math.sqrt((cov[0] - cov[2]) * (cov[0] - cov[2]) + 4 * cov[1] * cov[1]) / 2;
+    var eigenval1 = (cov[0] + cov[2]) / 2 + disc;
+    var eigenval2 = (cov[0] + cov[2]) / 2 - disc;
+
+    // Compute eigen vector with smallest eigen value (for second principal component)
+    var eigenvec = [-cov[1], cov[0] - Math.min(eigenval1, eigenval2)];
+
+    // Normalize eigen vector
+    var eigenvec_length = Math.sqrt(eigenvec[0] * eigenvec[0] + eigenvec[1] * eigenvec[1]);
+    eigenvec[0] /= eigenvec_length;
+    eigenvec[1] /= eigenvec_length;
+
+    // Define corners of AABB
+    var imageSize = dataset.dataVectors.map(function (v) {
+      return options['thumbnailSize'] * (v.maximum - v.minimum);
+    });
+    var labelHeightOffset = 1.0 + libImageViewer.LABEL_HEIGHT / options['thumbnailSize'];
+    var labelWidthOffset = 1.0 + (libImageViewer.LABEL_HEIGHT + 2 * libImageViewer.LABEL_WIDTH) / options['thumbnailSize'];
+    var bl = [tf.getMinimum(0) - imageSize[d0] * 0.6 / plotBounds.width, tf.getMinimum(1) - imageSize[d1] * 0.6 / plotBounds.height];
+    var tl = [tf.getMinimum(0) - imageSize[d0] * 0.6 / plotBounds.width, tf.getMaximum(1) + imageSize[d1] * labelHeightOffset * 0.8 / plotBounds.height];
+    var tr = [tf.getMaximum(0) + imageSize[d0] * labelWidthOffset * 0.6 / plotBounds.width, tf.getMaximum(1) + imageSize[d1] * labelHeightOffset * 0.8 / plotBounds.height];
+    var br = [tf.getMaximum(0) + imageSize[d0] * labelWidthOffset * 0.6 / plotBounds.width, tf.getMinimum(1) - imageSize[d1] * 0.6 / plotBounds.height];
+    tf.datasetCoordToDeviceCoord(bl, bl);
+    tf.datasetCoordToDeviceCoord(tl, tl);
+    tf.datasetCoordToDeviceCoord(tr, tr);
+    tf.datasetCoordToDeviceCoord(br, br);
+
+    // >>> Set image locations to be projections of data positions along eigenvec onto AABB
+
+    var posToLoc = function posToLoc(p) {
+      p[0] = Math.max(0, Math.min(1, (p[0] - tl[0]) / (br[0] - tl[0]))); // Normalize p[0] from [l ... r] to [0 ... 1]
+      p[1] = Math.max(0, Math.min(1, (p[1] - tl[1]) / (br[1] - tl[1]))); // Normalize p[1] from [t ... b] to [0 ... 1]
+      switch ([p[0], p[1], 1 - p[0], 1 - p[1]].minIndex()) {
+        default:
+          /*case 0:*/return 1 - p[1];
+        case 1:
+          return 1 + p[0];
+        case 2:
+          return 2 + p[1];
+        case 3:
+          return 4 - p[0];
+      }
+    };
+    var locToPos = function locToPos(l) {
+      l = (l + 4) % 4;
+      var p,
+          li = Math.floor(l);
+      switch (li) {
+        case 0:
+          p = [0, li + 1 - l];break;
+        case 1:
+          p = [l - li, 0];break;
+        case 2:
+          p = [1, l - li];break;
+        case 3:
+          p = [li + 1 - l, 1];break;
+      }
+      p[0] = p[0] * (br[0] - tl[0]) + tl[0]; // Denormalize p[0] from [0 ... 1] to [l ... r]
+      p[1] = p[1] * (br[1] - tl[1]) + tl[1]; // Denormalize p[1] from [0 ... 1] to [t ... b]
+      return p;
+    };
+
+    var imageLocations = [];
+    var dest,
+        v0 = dataset.dataVectors[activeInputs[0]],
+        v1 = dataset.dataVectors[activeInputs[1]];
+    points.forEach(function (p) {
+      if (!dataset.imageFilenames[p]) return;
+
+      var src = [v0.getValue(p), v1.getValue(p)];
+      tf.datasetCoordToDeviceCoord(src, src); // Same as src = [v0.getValue(p) * scales[0] + offsets[0], v1.getValue(p) * scales[1] + offsets[1]];
+
+      if (libGlMatrix.vec2.dot([src[0] - offsets[0] - E[0], src[1] - offsets[1] - E[1]], eigenvec) > 0.0) // If src is above E in direction eigenvec
+        {
+          dest = libAlgorithm.vectorLineIntersection2D(src, eigenvec, bl, tl); // Project src in direction eigenvec onto line from bl, to tl
+          if (!dest) dest = libAlgorithm.vectorLineIntersection2D(src, eigenvec, tl, tr); // Project src in direction eigenvec onto line from tl, to tr
+        } else // If src is below E in direction eigenvec
+        {
+          dest = libAlgorithm.vectorLineIntersection2D(src, eigenvec, bl, br); // Project src in direction -eigenvec onto line from bl, to br
+          if (!dest) dest = libAlgorithm.vectorLineIntersection2D(src, eigenvec, br, tr); // Project src in direction -eigenvec onto line from br, to tr
+        }
+      if (!dest) return; // This should never happen!
+
+      // Convert position on rectangle [bl, br, tl, tr] to scalar -> imagePos
+      imageLocations.push(posToLoc(dest));
+    });
+
+    var detectOverlap = function detectOverlap(R, overlapThreshold) {
+      var P = [];
+      for (var j = 1; j < R.length; ++j) {
+        for (var i = 0; i < j; ++i) {
+          if (Math.abs(R[i] - R[j]) < overlapThreshold) P.push([i, j]);
+        }
+      }return P;
+    };
+    var removeOverlap = function removeOverlap(R, i, j, rank, overlapThreshold) {
+      var overlap = overlapThreshold - Math.abs(R[i] - R[j]);
+      if (overlap > 0.0) {
+        var shift = 0.5 * (rank[i] > rank[j] ? overlapThreshold - (R[i] - R[j]) : R[j] - R[i] - overlapThreshold);
+        R[i] += shift;
+        R[j] -= shift;
+      }
+    };
+
+    var maxNumIterations = 10000;
+    if (maxNumIterations != 0) {
+      var R = imageLocations;
+      var overlapThreshold = Math.min(0.15, 4 / imageLocations.length);
+
+      var rank = Array.create(R.length, function (i) {
+        return i;
+      });
+      rank.sort(function (a, b) {
+        return imageLocations[a] < imageLocations[b] ? -1 : imageLocations[a] > imageLocations[b] ? 1 : 0;
+      });
+
+      var P = detectOverlap(R, overlapThreshold);
+      for (var iter = 0; iter < maxNumIterations && P.length !== 0; ++iter) {
+        //TODO: Shuffle P
+        P.forEach(function (pair) {
+          return removeOverlap(R, pair[0], pair[1], rank, overlapThreshold + 0.0001);
+        });
+        P = detectOverlap(R, overlapThreshold);
+      }
+      //console.log(iter, overlapThreshold);
+
+      // Repair order
+      var newRank = Array.create(R.length, function (i) {
+        return i;
+      });
+      newRank.sort(function (a, b) {
+        return R[a] < R[b] ? -1 : R[a] > R[b] ? 1 : 0;
+      });
+      var R_repaired = new Array(R.length);
+      for (var i = 0; i < R.length; ++i) {
+        R_repaired[rank[i]] = R[newRank[i]];
+      }imageLocations = R_repaired;
+    }
+
+    var idx = 0;
+    points.forEach(function (p) {
+      if (!dataset.imageFilenames[p]) return;
+
+      var dataPos = dataset.dataVectors.map(function (v) {
+        return v.getValue(p);
+      });
+      var imagePos = dataPos.slice(0);
+
+      // Convert scalar to position on rectangle [bl, br, tl, tr] -> dest
+      dest = locToPos(imageLocations[idx++]);
+      tf.deviceCoordToDatasetCoord(dest, dest);
+      imagePos[d0] = dest[0];
+      imagePos[d1] = dest[1];
+
+      imageViewer.showImage(dataset.imageFilenames[p], p, dataPos, imagePos, imageSize);
+    });
+
+    imageViewer.resolveIntersections(tf);
+  };
+
+  this['showImage'] =
+  /**
+   * Valid placement strategies are:
+   * + none
+   * + adjacent
+   * + lowDensity
+   * @summary Show a thumbnail of the given datapoint
+   * @param  {number} index Index of the datapoint to show
+   * @param  {string} placement
+   */
+  this.showImage = function (index, placement) {
+    switch (placement) {
+      case 'none':
+        return this.showImage_none(index);
+      case 'adjacent':
+        return this.showImage_adjacent(index);
+      case 'lowDensity':
+        return this.showImage_lowDensity(index);
+      case 'project':
+        console.warn("GlobalView warning: Can't place a single image using the 'project'-strategy");return false;
+      default:
+        console.warn("GlobalView warning: Unknown image placement strategy: " + placement);return false;
+    }
+  };
+  this['showImages'] =
+  /**
+   * Valid placement strategies are:
+   * + none
+   * + adjacent
+   * + lowDensity
+   * + project
+   * @summary Show a thumbnail of the given data points
+   * @param  {Array<number>} points List of indices of datapoints to show
+   * @param  {string} placement
+   */
+  this.showImages = function (points, placement) {
+    switch (placement) {
+      case 'none':
+        return this.showImages_none(points);
+      case 'adjacent':
+        return this.showImages_adjacent(points);
+      case 'lowDensity':
+        return this.showImages_lowDensity(points);
+      case 'project':
+        return this.showImages_project(points);
+      default:
+        console.warn("GlobalView warning: Unknown image placement strategy: " + placement);return false;
+    }
+  };
+
+  this['highlightImage'] =
+  /**
+   * Images other than the given image will be de-highlighted.
+   * @summary Highlight the given image with a highlight color
+   * @deprecated Set image.labelColor manually
+   * @param  {Thumbnail|number} image Image or index of image to show
+   */
+  this.highlightImage = function (image) {
+    var images = imageViewer.getImages();
+    if (libUtility.isNumber(image)) for (var i = 0; i < images.length; ++i) {
+      images[i].highlighted = i === image;
+    } else for (var i = 0; i < images.length; ++i) {
+      images[i].highlighted = images[i] === image;
+    }this.invalidate();
+  };
+
+  this['getImages'] =
+  /**
+   * @summary Get an array of all images of the plot
+   * @return {Array<Thumbnail>}
+   */
+  this.getImages = imageViewer.getImages;
+
+  // >>> Mouse handlers
+
+  var mouseOverDatapoint = -1,
+      pointDragDownPos = null,
+      viewDragStartPos = null,
+      viewDragX,
+      viewDragY,
+      viewDragZ;
+  var mouseOverAxisLabel = null,
+      mouseOverImage = null,
+      imageDragStartPos = null,
+      imageDragImages = [];
+
+  /**
+   * @callback onMouseDownCallback
+   * @param  {Object} event
+   */
+  /**
+   * The following properties of 'event' can be set to true:
+   * + __pointSelection__: Enable selection of data points
+   * + __pointDragging__: Enable dragging of data points
+   * + __viewDragging__: Enable moving of the view
+   * + __lassoSelection__: Enable selection of data points with a rectangular lasso
+   * + __polygonLassoSelection__: Enable selection of data points with a freeform lasso
+   * @summary Event handler that sets flags about how to process this mouse-down event
+   * @member
+   * @alias onMouseDown
+   * @memberof GlobalView
+   * @type {onMouseDownCallback}
+   */
+  this['onMouseDown'] = function (event) {
+    // Default mouse-down handler
+    switch (event.button) {
+      // On left mouse button: Enable point selection and dragging events.
+      //                       If control button is pressed, initiate view dragging, else, enable lasso selection
+      case 0:
+        event['pointSelection'] = true;
+        event['pointDragging'] = true;
+        if (ctrlPressed) event['viewDragging'] = true;else event['lassoSelection'] = true;
+        break;
+
+      // On middle mouse button: Initiate view dragging
+      case 1:
+        event['viewDragging'] = true;
+        break;
+
+      // On right mouse button: Do nothing
+      case 2:
+        break;
+    }
+  };
+  /**
+   * @callback onMouseOverDatapointCallback
+   * @param  {Dataset} dataset
+   * @param  {number} mouseOverDatapoint Index of the point the mouse cursor is hovering over
+   */
+  /**
+   * There is no mouse-leave event for datapoints.
+   * When the mouse cursor leaves a datapoint, this event is raised with `mouseOverDatapoint == -1`.
+   * @summary Event handler that gets fired everytime the mouse cursor enters the boundaries of a datapoint
+   * @member
+   * @alias onMouseOverDatapoint
+   * @memberof GlobalView
+   * @type {onMouseOverDatapointCallback}
+   */
+  this['onMouseOverDatapoint'] = null;
+  /**
+   * @callback onMouseOverAxisLabelCallback
+   * @param  {DataVector} dataVector Data vector whose axis label the mouse cursor is hovering over
+   * @param  {{l: number, t: number, r: number, b: number}} labelRect Area of the label relative to the location of the plot
+   */
+  /**
+   * There is no mouse-leave event for axis labels.
+   * When the mouse cursor leaves an axis label, this event is raised with `dataVector == labelRect == null`.
+   * @summary Event handler that gets fired everytime the mouse cursor enters the boundaries of an axis label
+   * @member
+   * @alias onMouseOverAxisLabel
+   * @memberof GlobalView
+   * @type {onMouseOverAxisLabelCallback}
+   */
+  this['onMouseOverAxisLabel'] = null;
+  /**
+   * @callback onSelectionChangedCallback
+   * @param  {Dataset} dataset
+   * @param  {Array<number>} selection Array of indices of all selected points
+   */
+  /**
+   * When the selection is cleared, this event is raised with `selection == []`.
+   * @summary Event handler that gets fired everytime the collection of selected points is altered
+   * @member
+   * @alias onSelectionChanged
+   * @memberof GlobalView
+   * @type {onSelectionChangedCallback}
+   */
+  this['onSelectionChanged'] = null;
+  /**
+   * @callback onLassoSelectionCallback
+   * @param  {Dataset} dataset
+   * @param  {Array<number>} selection Array of indices of all selected points
+   * @param  {{l: number, t: number, r: number, b: number}|Array<Array<number>>} lassoArea
+   * Rectangle or list of 2D points of the area selected by the lasso relative to the location of the plot
+   */
+  /**
+   * This event is fired with `selection == []` if no points lie inside the lasso area.
+   * @summary Event handler that gets fired everytime a lasso selection was made
+   * @member
+   * @alias onLassoSelection
+   * @memberof GlobalView
+   * @type {onLassoSelectionCallback}
+   */
+  this['onLassoSelection'] = null;
+  /**
+   * @callback onThumbnailSelectionChangedCallback
+   * @param  {Dataset} dataset
+   * @param  {Array<Thumbnail>} selection Array of all selected images
+   */
+  /**
+   * When the selection is cleared, this event is raised with `selection == []`.
+   * @summary Event handler that gets fired everytime the collection of selected images is altered
+   * @member
+   * @alias onThumbnailSelectionChanged
+   * @memberof GlobalView
+   * @type {onThumbnailSelectionChangedCallback}
+   */
+  this['onThumbnailSelectionChanged'] = null;
+  var ctrlPressed = false,
+      shiftPressed = false;
+  var CTRL = navigator.appVersion.indexOf("Mac") == -1 ? 17 : 224;
+  libUtility.addKeyDownHandler(function (event) {
+    if (event.keyCode === CTRL) ctrlPressed = true;else if (event.keyCode === 16) shiftPressed = true;
+  });
+  libUtility.addKeyUpHandler(function (event) {
+    if (event.which === CTRL) ctrlPressed = false;else if (event.keyCode === 16) shiftPressed = false;
+  });
+  canvas.oncontextmenu = function () {
+    return false;
+  }; // Disable canvas context menu
+  canvas.onmousedown = function (event) {
+    if (tf === null || offscreenRendering !== null) return;
+
+    // Compute mousepos in canvas space -> p
+    var canvasBounds = canvas.getBoundingClientRect();
+    var p = new Float32Array([event.clientX - canvasBounds.left, event.clientY - canvasBounds.top, event.clientY - canvasBounds.top]);
+
+    // Fire mouse-down handler
+    this['onMouseDown'](event);
+
+    if (event['viewDragging']) // If mouse-down handler set ['viewDragging'] property to a truthy value
+      {
+        if (p[0] > plotBounds.x + plotBounds.width) {
+          viewDragX = viewDragY = false;
+          viewDragZ = colormap.visible;
+        } else {
+          viewDragX = p[0] >= plotBounds.x;
+          viewDragY = p[1] <= plotBounds.y + plotBounds.height;
+          viewDragZ = false;
+        }
+
+        // Transform mousepos from canvas space to device coordinates
+        p[0] = 2 * p[0] / canvasBounds.width - 1;
+        p[1] = 1 - 2 * p[1] / canvasBounds.height;
+        p[2] = 1 - (p[2] - plotBounds.y) / plotBounds.height;
+
+        if (viewDragX || viewDragY || viewDragZ) viewDragStartPos = p; // Initiate view dragging
+        return; // Prevent other mouse-down events
+      } else {
+      // Transform mousepos from canvas space to device coordinates
+      p[0] = 2 * p[0] / canvasBounds.width - 1;
+      p[1] = 1 - 2 * p[1] / canvasBounds.height;
+    }
+
+    var selectedImage = imageViewer.imageFromPoint(tf, p);
+    if (!shiftPressed && !ctrlPressed && imageDragImages.length !== 0 && (selectedImage === null || imageDragImages.indexOf(selectedImage) === -1)) {
+      // Deselect images
+      imageDragImages.forEach(function (image) {
+        return image.highlighted = false;
+      });
+      imageDragImages = [];
+      this.invalidate();
+      if (this['onThumbnailSelectionChanged'] !== null) this['onThumbnailSelectionChanged'](dataset, []);
+    }
+    if (selectedImage !== null) {
+      selectedImage.highlighted = true;
+      if (imageDragImages.indexOf(selectedImage) === -1) imageDragImages.push(selectedImage);
+      if (options['enableThumbnailDragging']) imageDragStartPos = p; // Initiate image dragging
+      this.invalidate();
+      if (event['pointSelection'] && this['onSelectionChanged'] !== null) this['onSelectionChanged'](dataset, []);
+      if (this['onThumbnailSelectionChanged'] !== null) this['onThumbnailSelectionChanged'](dataset, imageDragImages);
+      return; // Prevent other mouse-down events
+    }
+
+    // Transform p from device coordinates to dataset coordinates
+    tf.deviceCoordToDatasetCoord(p, p);
+
+    var closest = Number.MAX_VALUE,
+        closestIndex = -1,
+        sqDist;
+    var sqscl0 = tf.getScale(0) * tf.getScale(0),
+        sqscl1 = tf.getScale(1) * tf.getScale(1);
+    var v0 = dataset.dataVectors[activeInputs[0]],
+        v1 = dataset.dataVectors[activeInputs[1]];
+    pointViewer.points.forEach(function (i) {
+      sqDist = sqscl0 * Math.pow(p[0] - v0.getValue(i), 2) + sqscl1 * Math.pow(p[1] - v1.getValue(i), 2);
+      if (sqDist < closest) {
+        closest = sqDist;
+        closestIndex = i;
+      }
+    });
+
+    // Get closest dataset coordinates in dataset coordinates -> dp
+    var dp = new Float32Array([v0.getValue(closestIndex), v1.getValue(closestIndex)]);
+
+    // Transform dp from dataset coordinates to canvas coordinates
+    tf.datasetCoordToDeviceCoord(dp, dp);
+    dp[0] = (0.5 + 0.5 * dp[0]) * canvasBounds.width;
+    dp[1] = (0.5 - 0.5 * dp[1]) * canvasBounds.height;
+
+    sqDist = Math.pow(event.clientX - canvasBounds.left - dp[0], 2) + Math.pow(event.clientY - canvasBounds.top - dp[1], 2);
+    if (sqDist > Math.pow(options['pointSize'] / 2.0, 2)) {
+      if ((event['lassoSelection'] || event['polygonLassoSelection']) && this['onLassoSelection'] !== null) {
+        if (event['polygonLassoSelection']) mousePolygon = [];else mouseRect = { x: event.clientX - canvasBounds.left, y: event.clientY - canvasBounds.top, width: 0, height: 0 };
+      }
+      if (event['pointSelection'] && this['onSelectionChanged'] !== null) this['onSelectionChanged'](dataset, []);
+    } else {
+      if (event['pointDragging']) pointDragDownPos = [dp[0], dp[1], closestIndex]; // (This makes sure pointDragDownPos is centered on the selected datapoint)
+      if (event['pointSelection'] && this['onSelectionChanged'] !== null) this['onSelectionChanged'](dataset, [closestIndex]);
+    }
+  }.bind(this);
+  var onmousemove;
+  libUtility.addMouseMoveHandler(onmousemove = function (event) {
+    if (tf === null || offscreenRendering !== null || event.target !== canvas && pointDragDownPos === null && viewDragStartPos === null && imageDragStartPos === null && mouseRect === null && mousePolygon === null) return;
+
+    // Compute mousepos in canvas space -> p
+    var canvasBounds = canvas.getBoundingClientRect();
+    var p = new Float32Array([event.clientX - canvasBounds.left, event.clientY - canvasBounds.top, event.clientY - canvasBounds.top]);
+
+    // Resize mouse polygon
+    if (mousePolygon !== null) {
+      mousePolygon.push(p);
+      this.invalidate();
+      return;
+    }
+
+    // Resize mouse rect
+    if (mouseRect !== null) {
+      mouseRect.width = p[0] - mouseRect.x;
+      mouseRect.height = p[1] - mouseRect.y;
+      this.invalidate();
+      return;
+    }
+
+    if (pointDragDownPos) {
+      var scale = 1 / (dataset.dataVectors[activeInputs[3]].getValue(pointDragDownPos[2]) * tf.getScale(3)) + tf.getOffset(3);
+      //console.log(scale);
+
+      pointDrag = [scale * (p[0] - pointDragDownPos[0]), scale * (p[1] - pointDragDownPos[1])];
+      this.invalidate();
+      return;
+    }
+
+    if (this['onMouseOverAxisLabel']) {
+      var newMouseOverAxisLabel = coordSys.labelFromPoint(plotBounds, p);
+      if (newMouseOverAxisLabel !== mouseOverAxisLabel) {
+        if ((mouseOverAxisLabel = newMouseOverAxisLabel) !== null) this['onMouseOverAxisLabel'](dataset.dataVectors[activeInputs[mouseOverAxisLabel]], coordSys.getLabelBounds(plotBounds, mouseOverAxisLabel));else this['onMouseOverAxisLabel'](null, null);
+      }
+    }
+
+    // Transform mousepos from canvas space to device coordinates
+    p[0] = 2 * p[0] / canvasBounds.width - 1;
+    p[1] = 1 - 2 * p[1] / canvasBounds.height;
+    p[2] = 1 - (p[2] - plotBounds.y) / plotBounds.height;
+
+    var d0 = activeInputs[0],
+        d1 = activeInputs[1];
+
+    if (viewDragStartPos) {
+      var d2 = activeInputs[2];
+      var viewDelta = libGlMatrix.vec3.create();
+      tf.deviceDistToDatasetDist(viewDelta, libGlMatrix.vec3.subtract(viewDelta, p, viewDragStartPos));
+
+      if (viewDragX) tf.translate(d0, viewDelta[0]);
+      if (viewDragY) tf.translate(d1, viewDelta[1]);
+      if (viewDragZ) tf.translate(d2, viewDelta[2]);
+      viewDragStartPos = p;
+      return;
+    }
+
+    if (imageDragStartPos) {
+      var imageDelta = libGlMatrix.vec2.create();
+      tf.deviceDistToDatasetDist(imageDelta, libGlMatrix.vec2.subtract(imageDelta, p, imageDragStartPos));
+      imageDragImages.forEach(function (image) {
+        image.imagePos[activeInputs[0]] += imageDelta[0];
+        image.imagePos[activeInputs[1]] += imageDelta[1];
+      });
+      imageDragStartPos = p;
+      this.invalidate();
+      return;
+    }
+
+    if (mouseOverImage != null && imageDragImages.indexOf(mouseOverImage) === -1) {
+      mouseOverImage.highlighted = false;
+      this.invalidate();
+      mouseOverImage = null;
+    }
+    mouseOverImage = imageViewer.imageFromPoint(tf, p);
+    if (mouseOverImage != null) {
+      if (imageDragImages.indexOf(mouseOverImage) === -1) {
+        mouseOverImage.highlighted = true;
+        this.invalidate();
+      }
+      if (mouseOverDatapoint !== -1) {
+        mouseOverDatapoint = -1;
+        if (this['onMouseOverDatapoint'] !== null) this['onMouseOverDatapoint'](dataset, mouseOverDatapoint);
+      }
+      return;
+    }
+
+    // Transform p from device coordinates to dataset coordinates
+    tf.deviceCoordToDatasetCoord(p, p);
+
+    var closest = Number.MAX_VALUE,
+        closestIndex = -1,
+        sqDist;
+    var sqscl0 = tf.getScale(0) * tf.getScale(0),
+        sqscl1 = tf.getScale(1) * tf.getScale(1);
+    var v0 = dataset.dataVectors[d0],
+        v1 = dataset.dataVectors[d1];
+    pointViewer.points.forEach(function (i) {
+      sqDist = sqscl0 * Math.pow(p[0] - v0.getValue(i), 2) + sqscl1 * Math.pow(p[1] - v1.getValue(i), 2);
+      if (sqDist < closest) {
+        closest = sqDist;
+        closestIndex = i;
+      }
+    });
+
+    // Get closest dataset coordinates in dataset coordinates -> dp
+    var dp = new Float32Array([v0.getValue(closestIndex), v1.getValue(closestIndex)]);
+
+    // Transform dp from dataset coordinates to canvas coordinates
+    tf.datasetCoordToDeviceCoord(dp, dp);
+    dp[0] = (0.5 + 0.5 * dp[0]) * canvasBounds.width;
+    dp[1] = (0.5 - 0.5 * dp[1]) * canvasBounds.height;
+
+    sqDist = Math.pow(event.clientX - canvasBounds.left - dp[0], 2) + Math.pow(event.clientY - canvasBounds.top - dp[1], 2);
+    if (sqDist > Math.pow(options['pointSize'] / 2.0, 2)) {
+      if (mouseOverDatapoint !== -1) {
+        mouseOverDatapoint = -1;
+        if (this['onMouseOverDatapoint'] !== null) this['onMouseOverDatapoint'](dataset, mouseOverDatapoint);
+      }
+    } else {
+      if (mouseOverDatapoint !== closestIndex) {
+        mouseOverDatapoint = closestIndex;
+        if (this['onMouseOverDatapoint'] !== null) this['onMouseOverDatapoint'](dataset, mouseOverDatapoint);
+      }
+    }
+  }.bind(this));
+  libUtility.addMouseUpHandler(function (event) {
+    if (tf === null || offscreenRendering !== null || event.target !== canvas && pointDragDownPos === null && viewDragStartPos === null && mouseRect === null) return;
+
+    var invalidate = false;
+    if (pointDragDownPos !== null) {
+      pointDragDownPos = pointDrag = null;
+      invalidate = true;
+    }
+    viewDragStartPos = imageDragStartPos = null;
+    if (mousePolygon !== null) {
+      if (this['onSelectionChanged'] !== null && mousePolygon.length >= 3) {
+        //TODO: Find points within mousePolygon -> selection
+
+        // Transform mousePolygon from canvas space to dataset coordinates
+        for (var i = 0; i < mousePolygon.length; ++i) {
+          var p = mousePolygon[i];
+
+          // Transform p from canvas space to device coordinates
+          p[0] = 2 * p[0] / canvas.width - 1;
+          p[1] = 1 - 2 * p[1] / canvas.height;
+
+          // Transform p from device coordinates to dataset coordinates
+          tf.deviceCoordToDatasetCoord(p, p);
+
+          mousePolygon[i] = p;
+        }
+
+        // Close polygon
+        mousePolygon.push(mousePolygon[0]);
+
+        var px,
+            py,
+            selection = [];
+        var v0 = dataset.dataVectors[activeInputs[0]],
+            v1 = dataset.dataVectors[activeInputs[1]];
+        pointViewer.points.forEach(function (i) {
+          px = v0.getValue(i);
+          py = v1.getValue(i);
+          ;
+          if (libAlgorithm.pointInsidePolygon([px, py], mousePolygon)) selection.push(i);
+        });
+        this['onLassoSelection'](dataset, selection, mousePolygon);
+      }
+
+      mousePolygon = null;
+      invalidate = true;
+    }
+    if (mouseRect !== null) {
+      if (this['onSelectionChanged'] !== null && mouseRect.width != 0 && mouseRect.height != 0) {
+        // Normalize mouseRect (make sure width/height are positive)
+        if (mouseRect.width < 0) {
+          mouseRect.x += mouseRect.width;
+          mouseRect.width = -mouseRect.width;
+        }
+        if (mouseRect.height < 0) {
+          mouseRect.y += mouseRect.height;
+          mouseRect.height = -mouseRect.height;
+        }
+
+        // Transform mouseRect from canvas space to device coordinates
+        mouseRect.l = 2 * mouseRect.x / canvas.width - 1;
+        mouseRect.r = 2 * (mouseRect.x + mouseRect.width) / canvas.width - 1;
+        mouseRect.t = 1 - 2 * (mouseRect.y + mouseRect.height) / canvas.height;
+        mouseRect.b = 1 - 2 * mouseRect.y / canvas.height;
+
+        // Transform mouseRect from device coordinates to dataset coordinates
+        var p = new Float32Array([mouseRect.l, mouseRect.t]);
+        tf.deviceCoordToDatasetCoord(p, p);
+        mouseRect.l = p[0];mouseRect.t = p[1];
+        p = new Float32Array([mouseRect.r, mouseRect.b]);
+        tf.deviceCoordToDatasetCoord(p, p);
+        mouseRect.r = p[0];mouseRect.b = p[1];
+
+        var px,
+            py,
+            selection = [];
+        var v0 = dataset.dataVectors[activeInputs[0]],
+            v1 = dataset.dataVectors[activeInputs[1]];
+        pointViewer.points.forEach(function (i) {
+          px = v0.getValue(i);
+          py = v1.getValue(i);
+          if (px >= mouseRect.l && px < mouseRect.r && py >= mouseRect.t && py < mouseRect.b) selection.push(i);
+        });
+        this['onLassoSelection'](dataset, selection, mouseRect);
+      }
+
+      mouseRect = null;
+      invalidate = true;
+    }
+    if (invalidate) {
+      this.invalidate();
+      onmousemove(event);
+    }
+  }.bind(this));
+  canvas.onmouseleave = function (event) {
+    if (mouseOverImage != null && imageDragImages.indexOf(mouseOverImage) === -1) {
+      mouseOverImage.highlighted = false;
+      this.invalidate();
+      mouseOverImage = null;
+    }
+    if (this['onMouseOverAxisLabel'] && mouseOverAxisLabel !== null) {
+      this['onMouseOverAxisLabel'](null, null);
+      mouseOverAxisLabel = null;
+    }
+
+    if (this['onMouseOverDatapoint'] !== null && mouseOverDatapoint !== -1) this['onMouseOverDatapoint'](dataset, mouseOverDatapoint = -1);
+  }.bind(this);
+  libUtility.addMouseWheelHandler(function (event) {
+    if (event.target !== canvas || !options['enableScrolling']) return;
+    var deltaZ = event.wheelDelta == null ? event.detail : -event.wheelDelta / 20.0;
+    event.preventDefault();
+
+    // Compute mousepos in canvas space -> p
+    var canvasBounds = canvas.getBoundingClientRect();
+    var p = new Float32Array([event.clientX - canvasBounds.left, event.clientY - canvasBounds.top, event.clientY - canvasBounds.top]);
+
+    var scrollX, scrollY, scrollZ;
+    if (p[0] > plotBounds.x + plotBounds.width) {
+      scrollX = scrollY = false;
+      scrollZ = true;
+    } else {
+      scrollX = p[0] >= plotBounds.x;
+      scrollY = p[1] < canvas.height - plotBounds.y;
+      scrollZ = false;
+    }
+
+    // Transform mousepos from canvas space to device coordinates
+    p[0] = 2 * p[0] / canvasBounds.width - 1;
+    p[1] = 1 - 2 * p[1] / canvasBounds.height;
+    p[2] = 1 - (p[2] - plotBounds.y) / plotBounds.height;
+
+    var d0 = activeInputs[0],
+        d1 = activeInputs[1],
+        d2 = activeInputs[2];
+
+    // Transform p from device coordinates to dataset coordinates
+    tf.deviceCoordToDatasetCoord(p, p);
+
+    // Zoom towards mouse position
+    var zoom = 1.0 - deltaZ / 50.0;
+    libGlMatrix.vec3.scaleAndAdd(p, p, p, -zoom); // Offset is difference between p in current zoom level and p after zooming
+    if (scrollX) {
+      tf.translate(d0, p[0]);
+      tf.scale(d0, zoom);
+    }
+    if (scrollY) {
+      tf.translate(d1, p[1]);
+      tf.scale(d1, zoom);
+    }
+    if (scrollZ) {
+      tf.translate(d2, p[2]);
+      tf.scale(d2, zoom);
+    }
+  }.bind(this));
+
+  this['ondragover'] = null;
+  canvas.ondragover = function (event) {
+    if (this['ondragover'] !== null) this['ondragover'](event);
+  }.bind(this);
+  this['ondrop'] = null;
+  canvas.ondrop = function (event) {
+    if (this['ondrop'] !== null) this['ondrop'](event);
+  }.bind(this);
+
+  // >>> Offscreen Rendering
+
+  var offscreenRendering = null;
+  this['enableOffscreenRendering'] = this.enableOffscreenRendering = function (width, height) {
+    if (offscreenRendering !== null) return;
+    offscreenRendering = {};
+
+    gl.width = canvas.width = width;
+    gl.height = canvas.height = height;
+
+    trc.enableOffscreenRendering(width, height);
+
+    // Disable continuous rendering
+    offscreenRendering.enableContinuousRendering = options['enableContinuousRendering'];
+    if (offscreenRendering['enableContinuousRendering']) this.setOption('enableContinuousRendering', false);
+
+    // Create render target texture
+    offscreenRendering.rttTexture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, offscreenRendering.rttTexture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+
+    // Create render target framebuffer -> offscreenRendering.rttFramebuffer
+    offscreenRendering.rttFramebuffer = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, offscreenRendering.rttFramebuffer);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+
+    /* // Create depth buffer -> offscreenRendering.rttRenderbuffer
+    offscreenRendering.rttRenderbuffer = gl.createRenderbuffer();
+    gl.bindRenderbuffer(gl.RENDERBUFFER, offscreenRendering.rttRenderbuffer);
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);*/
+
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, offscreenRendering.rttTexture, 0); // Bind framebuffer
+    //gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, offscreenRendering.rttRenderbuffer); // Bind depth buffer
+
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+
+    // Set viewport
+    gl.viewportWidth = width;
+    gl.viewportHeight = height;
+    gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+
+    if (options['padding']) setPlotBounds(options['padding']);
+  };
+  this['disableOffscreenRendering'] = this.disableOffscreenRendering = function () {
+    if (offscreenRendering === null) return;
+
+    trc.disableOffscreenRendering();
+
+    // Remove framebuffer
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.deleteFramebuffer(offscreenRendering.rttFramebuffer);
+
+    // Restore viewport
+    gl.viewportWidth = canvas.width;
+    gl.viewportHeight = canvas.height;
+    gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+
+    //if (options['padding'])
+    //  setPlotBounds(options['padding']);
+
+    // Reenable continuous rendering
+    if (offscreenRendering['enableContinuousRendering']) this.setOption('enableContinuousRendering', true);
+
+    offscreenRendering = null;
+
+    onresize();
+  };
+  this['renderOffscreenBuffer'] = this.renderOffscreenBuffer = function () {
+    // Render scene
+    render(true);
+    gl.finish();
+  };
+  this['saveOffscreenBuffer'] = this.saveOffscreenBuffer = function () {
+    // Read pixels
+    var data = new Uint8Array(gl.viewportWidth * gl.viewportHeight * 4);
+    gl.readPixels(0, 0, gl.viewportWidth, gl.viewportHeight, gl.RGBA, gl.UNSIGNED_BYTE, data);
+
+    // Create a temporary 2D canvas to store the result -> tempCanvas
+    var tempCanvas = document.createElement('canvas');
+    tempCanvas.width = gl.viewportWidth;
+    tempCanvas.height = gl.viewportHeight;
+    var tempContext = tempCanvas.getContext('2d');
+
+    // Copy the pixels to the 2D canvas
+    var imageData = tempContext.createImageData(tempCanvas.width, tempCanvas.height);
+    imageData.data.set(data);
+    tempContext.putImageData(imageData, 0, 0);
+    tempContext.drawImage(trc.getCanvas(), 0, 0);
+    var dataURL = tempCanvas.toDataURL();
+
+    // Free tempCanvas
+    tempCanvas = null;
+
+    return dataURL;
+  };
+
+  // >>> Initialize global view
+
+  gl.disable(gl.CULL_FACE);
+  gl.enable(gl.BLEND);
+  gl.blendEquationSeparate(gl.FUNC_ADD, gl.FUNC_ADD);
+  gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE);
+  gl.clearColor.apply(gl, gl.backColor);
+
+  // Hook to window-resize event and fire once for initial setup
+  window.addEventListener('resize', onresize, false);
+  onresize();
+
+  // Set unset options to default values
+  this.setDefaultOptions();
+  this.setOptions(startupOptions);
 }
 
 /**
@@ -8385,8 +8374,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
  * of your display but will stop rendering if your app is not
  * visible.
  */
-
-/* eslint-disable */
 
 var WebGLUtils = function () {
 
@@ -8499,8 +8486,6 @@ function requestAnimFrame(callback) {
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["TextRenderContext"] = TextRenderContext;
-/* eslint-disable */
-
 /**
  * A helper class that attaches a 2D canvas to the parent div of the given WebGL canvas.
  * This 2D canvas is used to draw text.
@@ -8510,190 +8495,190 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
  * @param {HTMLCanvasElement} canvas
  */
 function TextRenderContext(gl, canvas) {
-	var textCanvas = document.createElement('canvas');
-	textCanvas.style.backgroundColor = 'transparent';
-	textCanvas.style.pointerEvents = 'none';
-	textCanvas.style.zIndex = canvas.style.zIndex + 1;
-	textCanvas.style.position = "static"; //"absolute";
-	//textCanvas.style.left = textCanvas.style.top = "0px";
-	textCanvas.style.width = textCanvas.style.height = "100%";
-	canvas.parentElement.appendChild(textCanvas);
-	var ctx = textCanvas.getContext("2d");
-	var _font = ctx.font;
-	var fontHeight = ctx.measureText('M').width;
+  var textCanvas = document.createElement('canvas');
+  textCanvas.style.backgroundColor = 'transparent';
+  textCanvas.style.pointerEvents = 'none';
+  textCanvas.style.zIndex = canvas.style.zIndex + 1;
+  textCanvas.style.position = "static"; //"absolute";
+  //textCanvas.style.left = textCanvas.style.top = "0px";
+  textCanvas.style.width = textCanvas.style.height = "100%";
+  canvas.parentElement.appendChild(textCanvas);
+  var ctx = textCanvas.getContext("2d");
+  var _font = ctx.font;
+  var fontHeight = ctx.measureText('M').width;
 
-	this.clear = function () {
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		ctx.strokeStyle = ctx.fillStyle = gl.foreColorString;
-	};
+  this.clear = function () {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.strokeStyle = ctx.fillStyle = gl.foreColorString;
+  };
 
-	gl.drawText = function (str, x, y, anchor, rotation, color) {
-		x = Math.floor(x);
-		y = Math.floor(y);
+  gl.drawText = function (str, x, y, anchor, rotation, color) {
+    x = Math.floor(x);
+    y = Math.floor(y);
 
-		if (color) ctx.fillStyle = color;
+    if (color) ctx.fillStyle = color;
 
-		var offsetV;
-		switch (anchor) {
-			default:
-				// 'topleft'
-				ctx.textAlign = "left";
-				offsetV = fontHeight;
-				break;
-			case 'topcenter':
-				ctx.textAlign = "center";
-				offsetV = fontHeight;
-				break;
-			case 'topright':
-				ctx.textAlign = "right";
-				offsetV = fontHeight;
-				break;
-			case 'middleleft':
-				ctx.textAlign = "left";
-				offsetV = fontHeight * 0.53;
-				break;
-			case 'middlecenter':
-				ctx.textAlign = "center";
-				offsetV = fontHeight * 0.53;
-				break;
-			case 'middleright':
-				ctx.textAlign = "right";
-				offsetV = fontHeight * 0.53;
-				break;
-			case 'bottomleft':
-				ctx.textAlign = "left";
-				offsetV = 0;
-				break;
-			case 'bottomcenter':
-				ctx.textAlign = "center";
-				offsetV = 0;
-				break;
-			case 'bottomright':
-				ctx.textAlign = "right";
-				offsetV = 0;
-				break;
-		}
-		if (rotation == 0) ctx.fillText(str, x, y + offsetV);else {
-			ctx.save();
-			ctx.translate(x, y);
-			ctx.rotate(rotation);
-			ctx.translate(0, offsetV);
-			ctx.fillText(str, 0, 0);
-			ctx.restore();
-		}
+    var offsetV;
+    switch (anchor) {
+      default:
+        // 'topleft'
+        ctx.textAlign = "left";
+        offsetV = fontHeight;
+        break;
+      case 'topcenter':
+        ctx.textAlign = "center";
+        offsetV = fontHeight;
+        break;
+      case 'topright':
+        ctx.textAlign = "right";
+        offsetV = fontHeight;
+        break;
+      case 'middleleft':
+        ctx.textAlign = "left";
+        offsetV = fontHeight * 0.53;
+        break;
+      case 'middlecenter':
+        ctx.textAlign = "center";
+        offsetV = fontHeight * 0.53;
+        break;
+      case 'middleright':
+        ctx.textAlign = "right";
+        offsetV = fontHeight * 0.53;
+        break;
+      case 'bottomleft':
+        ctx.textAlign = "left";
+        offsetV = 0;
+        break;
+      case 'bottomcenter':
+        ctx.textAlign = "center";
+        offsetV = 0;
+        break;
+      case 'bottomright':
+        ctx.textAlign = "right";
+        offsetV = 0;
+        break;
+    }
+    if (rotation == 0) ctx.fillText(str, x, y + offsetV);else {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rotation);
+      ctx.translate(0, offsetV);
+      ctx.fillText(str, 0, 0);
+      ctx.restore();
+    }
 
-		if (color) ctx.fillStyle = gl.foreColorString;
-	};
-	gl.measureTextWidth = function (str) {
-		return ctx.measureText(str).width;
-	};
-	gl.measureTextHeight = function () {
-		return fontHeight;
-	};
+    if (color) ctx.fillStyle = gl.foreColorString;
+  };
+  gl.measureTextWidth = function (str) {
+    return ctx.measureText(str).width;
+  };
+  gl.measureTextHeight = function () {
+    return fontHeight;
+  };
 
-	gl.drawRect = function (x, y, width, height) {
-		if (width < 0) {
-			x += width;
-			width = -width;
-		}
-		if (height < 0) {
-			y += height;
-			height = -height;
-		}
+  gl.drawRect = function (x, y, width, height) {
+    if (width < 0) {
+      x += width;
+      width = -width;
+    }
+    if (height < 0) {
+      y += height;
+      height = -height;
+    }
 
-		x = Math.floor(x) + 0.5;
-		y = Math.floor(y) + 0.5;
-		width = Math.floor(width);
-		height = Math.floor(height);
+    x = Math.floor(x) + 0.5;
+    y = Math.floor(y) + 0.5;
+    width = Math.floor(width);
+    height = Math.floor(height);
 
-		//ctx.strokeStyle = gl.foreColorString;
-		ctx.strokeRect(x, y, width, height);
-	};
+    //ctx.strokeStyle = gl.foreColorString;
+    ctx.strokeRect(x, y, width, height);
+  };
 
-	gl.drawPolygon = function (points, color) {
-		if (points.length < 2) return;
+  gl.drawPolygon = function (points, color) {
+    if (points.length < 2) return;
 
-		if (color) ctx.fillStyle = color;
-		ctx.beginPath();
-		ctx.moveTo(points[0][0], points[0][1]);
-		for (var i = 1; i < points.length; ++i) {
-			ctx.lineTo(points[i][0], points[i][1]);
-		}ctx.closePath();
-		ctx.stroke();
-		if (color) ctx.fillStyle = gl.foreColorString;
-	};
-	gl.fillPolygon = function (points, color) {
-		if (points.length < 2) return;
+    if (color) ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(points[0][0], points[0][1]);
+    for (var i = 1; i < points.length; ++i) {
+      ctx.lineTo(points[i][0], points[i][1]);
+    }ctx.closePath();
+    ctx.stroke();
+    if (color) ctx.fillStyle = gl.foreColorString;
+  };
+  gl.fillPolygon = function (points, color) {
+    if (points.length < 2) return;
 
-		if (color) ctx.fillStyle = color;
-		ctx.beginPath();
-		ctx.moveTo(points[0][0], points[0][1]);
-		for (var i = 1; i < points.length; ++i) {
-			ctx.lineTo(points[i][0], points[i][1]);
-		}ctx.closePath();
-		ctx.fill();
-		if (color) ctx.fillStyle = gl.foreColorString;
-	};
+    if (color) ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(points[0][0], points[0][1]);
+    for (var i = 1; i < points.length; ++i) {
+      ctx.lineTo(points[i][0], points[i][1]);
+    }ctx.closePath();
+    ctx.fill();
+    if (color) ctx.fillStyle = gl.foreColorString;
+  };
 
-	this.setFont = function (font) {
-		ctx.font = _font = font;
+  this.setFont = function (font) {
+    ctx.font = _font = font;
 
-		// Compute fontHeight (Source: http://stackoverflow.com/a/7462767)
-		var body = document.getElementsByTagName("body")[0];
-		var dummy = document.createElement("div");
-		var dummyText = document.createTextNode("M");
-		dummy.appendChild(dummyText);
-		dummy.style.font = font;
-		body.appendChild(dummy);
-		fontHeight = dummy.offsetHeight * 0.62;
-		body.removeChild(dummy);
-	};
+    // Compute fontHeight (Source: http://stackoverflow.com/a/7462767)
+    var body = document.getElementsByTagName("body")[0];
+    var dummy = document.createElement("div");
+    var dummyText = document.createTextNode("M");
+    dummy.appendChild(dummyText);
+    dummy.style.font = font;
+    body.appendChild(dummy);
+    fontHeight = dummy.offsetHeight * 0.62;
+    body.removeChild(dummy);
+  };
 
-	this.onResize = function () {
-		/*var canvasBounds = canvas.getBoundingClientRect();
-  textCanvas.style.left = canvasBounds.left;
-  textCanvas.style.top = canvasBounds.top;
-  textCanvas.style.width = textCanvas.width = canvasBounds.width;
-  textCanvas.style.height = textCanvas.height = canvasBounds.height;*/
+  this.onResize = function () {
+    /*var canvasBounds = canvas.getBoundingClientRect();
+    textCanvas.style.left = canvasBounds.left;
+    textCanvas.style.top = canvasBounds.top;
+    textCanvas.style.width = textCanvas.width = canvasBounds.width;
+    textCanvas.style.height = textCanvas.height = canvasBounds.height;*/
 
-		if (offscreenRendering !== null) {
-			textCanvas.width = offscreenRendering.width;
-			textCanvas.height = offscreenRendering.height;
-		} else {
-			var rect = textCanvas.getBoundingClientRect();
-			textCanvas.style.marginTop = -(rect.bottom - rect.top) + "px";
-			textCanvas.width = rect.right - rect.left;
-			textCanvas.height = rect.bottom - rect.top;
-		}
-		this.setFont(_font); // Reset canvas font
-	};
+    if (offscreenRendering !== null) {
+      textCanvas.width = offscreenRendering.width;
+      textCanvas.height = offscreenRendering.height;
+    } else {
+      var rect = textCanvas.getBoundingClientRect();
+      textCanvas.style.marginTop = -(rect.bottom - rect.top) + "px";
+      textCanvas.width = rect.right - rect.left;
+      textCanvas.height = rect.bottom - rect.top;
+    }
+    this.setFont(_font); // Reset canvas font
+  };
 
-	var offscreenRendering = null;
-	this.enableOffscreenRendering = function (width, height) {
-		if (offscreenRendering !== null) return;
-		offscreenRendering = {};
+  var offscreenRendering = null;
+  this.enableOffscreenRendering = function (width, height) {
+    if (offscreenRendering !== null) return;
+    offscreenRendering = {};
 
-		offscreenRendering.width = width;
-		offscreenRendering.height = height;
-		offscreenRendering.oldCanvas = textCanvas;
-		offscreenRendering.oldContext = ctx;
-		textCanvas = document.createElement('canvas');
-		ctx = textCanvas.getContext("2d");
-		this.onResize();
-	};
-	this.disableOffscreenRendering = function () {
-		if (offscreenRendering === null) return;
+    offscreenRendering.width = width;
+    offscreenRendering.height = height;
+    offscreenRendering.oldCanvas = textCanvas;
+    offscreenRendering.oldContext = ctx;
+    textCanvas = document.createElement('canvas');
+    ctx = textCanvas.getContext("2d");
+    this.onResize();
+  };
+  this.disableOffscreenRendering = function () {
+    if (offscreenRendering === null) return;
 
-		textCanvas = offscreenRendering.oldCanvas;
-		ctx = offscreenRendering.oldContext;
-		offscreenRendering = null;
-		//this.onResize();
-	};
-	this.getCanvas = function () {
-		return textCanvas;
-	};
+    textCanvas = offscreenRendering.oldCanvas;
+    ctx = offscreenRendering.oldContext;
+    offscreenRendering = null;
+    //this.onResize();
+  };
+  this.getCanvas = function () {
+    return textCanvas;
+  };
 
-	this.onResize();
+  this.onResize();
 }
 
 /***/ }),
@@ -8703,8 +8688,6 @@ function TextRenderContext(gl, canvas) {
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["PointViewer"] = PointViewer;
-/* eslint-disable */
-
 var libUtility = __webpack_require__(0);
 var libGraphics = __webpack_require__(2);
 var libShaders = __webpack_require__(4);
@@ -8720,416 +8703,416 @@ var libGlMatrix = __webpack_require__(3);
  * @param {Object} globalView // {GlobalView}
  */
 function PointViewer(gl, globalView) {
-	var _dataset;
-	var meshDataPoints = null;
+  var _dataset;
+  var meshDataPoints = null;
 
-	var _pointOpacity = 1.0;
-	/*var highlightTexture = libGraphics.LoadTextureFromByteArray(gl, new Uint8Array([255, 255, 0, 255]), 1, 1);
- var selectionTexture = libGraphics.LoadTextureFromByteArray(gl, new Uint8Array([255, 0, 0, 255]), 1, 1);
- var representativeTexture = libGraphics.LoadTextureFromByteArray(gl, new Uint8Array([0, 255, 0, 255]), 1, 1);*/
+  var _pointOpacity = 1.0;
+  /*var highlightTexture = libGraphics.LoadTextureFromByteArray(gl, new Uint8Array([255, 255, 0, 255]), 1, 1);
+  var selectionTexture = libGraphics.LoadTextureFromByteArray(gl, new Uint8Array([255, 0, 0, 255]), 1, 1);
+  var representativeTexture = libGraphics.LoadTextureFromByteArray(gl, new Uint8Array([0, 255, 0, 255]), 1, 1);*/
 
-	/**
-  * A renderable set of points
-  * @constructor
-  * @package
-  * @extends {HashSet}
-  */
-	function PointGroup() {
-		function onchange() {
-			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxbuffer);
-			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.get(), gl.STATIC_DRAW);
-			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+  /**
+   * A renderable set of points
+   * @constructor
+   * @package
+   * @extends {HashSet}
+   */
+  function PointGroup() {
+    function onchange() {
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxbuffer);
+      gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.get(), gl.STATIC_DRAW);
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 
-			globalView.invalidate();
-		}
+      globalView.invalidate();
+    }
 
-		libUtility.HashSet.call(this, onchange);
-		var idxbuffer = gl.createBuffer();
+    libUtility.HashSet.call(this, onchange);
+    var idxbuffer = gl.createBuffer();
 
-		this.render = function (texture) {
-			if (this.size() === _dataset.length) meshDataPoints.draw(texture, 0, _dataset.length);else if (this.size() !== 0) meshDataPoints.drawIndexed(texture, idxbuffer, this.size());
-		};
-		this.renderLines = function (texture, pointDrag) {
-			if (this.size() === _dataset.length) meshDataPoints.drawLines(texture, pointDrag, 0, _dataset.length);else if (this.size() !== 0) {
-				// drawLines doesn't support index buffers
-				// Therefore, draw point group as continuous index sequences
-				var startIndex = 0,
-				    lastIndex = -1,
-				    count = 0;
-				this.forEach(function (index) {
-					if (index === lastIndex + 1) ++count;else {
-						if (count !== 0) meshDataPoints.drawLines(texture, pointDrag, startIndex, count);
-						startIndex = index;
-						count = 1;
-					}
-					lastIndex = index;
-				});
-				if (count !== 0) meshDataPoints.drawLines(texture, pointDrag, startIndex, count);
-			}
-		};
+    this.render = function (texture) {
+      if (this.size() === _dataset.length) meshDataPoints.draw(texture, 0, _dataset.length);else if (this.size() !== 0) meshDataPoints.drawIndexed(texture, idxbuffer, this.size());
+    };
+    this.renderLines = function (texture, pointDrag) {
+      if (this.size() === _dataset.length) meshDataPoints.drawLines(texture, pointDrag, 0, _dataset.length);else if (this.size() !== 0) {
+        // drawLines doesn't support index buffers
+        // Therefore, draw point group as continuous index sequences
+        var startIndex = 0,
+            lastIndex = -1,
+            count = 0;
+        this.forEach(function (index) {
+          if (index === lastIndex + 1) ++count;else {
+            if (count !== 0) meshDataPoints.drawLines(texture, pointDrag, startIndex, count);
+            startIndex = index;
+            count = 1;
+          }
+          lastIndex = index;
+        });
+        if (count !== 0) meshDataPoints.drawLines(texture, pointDrag, startIndex, count);
+      }
+    };
 
-		this.free = function () {
-			if (idxbuffer !== -1) {
-				gl.deleteBuffer(idxbuffer);
-				idxbuffer = -1;
-			}
-		};
-	}
+    this.free = function () {
+      if (idxbuffer !== -1) {
+        gl.deleteBuffer(idxbuffer);
+        idxbuffer = -1;
+      }
+    };
+  }
 
-	var pointSets = [this.points = new PointGroup()];
-	/**
-  * Create a subset of points that can be rendered independently
-  * Optional parameters color and opacity overwrite the default values
-  * @param  {Object=} color
-  * @param  {number=} opacity
-  * @return {HashSet}
-  */
-	this.createPointSet = function (color, opacity) {
-		var pointSet = new PointGroup();
-		if (color) {
-			var validationResult;
-			if ((validationResult = libColormap.validateColormap(color)) === true) {
-				var c = libColormap.parseColormap(color);
-				if (c) pointSet.colormap = libGraphics.LoadTextureFromByteArray(gl, c, c.length / 4, 1);
-			} else {
-				console.warn("GlobalView warning: Invalid value for point set color: " + color);
-				if (libUtility.isString(validationResult)) console.warn("                    " + validationResult);
-			}
-		}
-		pointSet.opacity = opacity;
-		pointSets.push(pointSet);
-		return pointSet;
-	};
-	/**
-  * Remove point subset
-  * (This does not remove any of the points)
-  * @param  {HashSet} pointSet
-  */
-	this.removePointSet = function (pointSet) {
-		var index = pointSets.indexOf(pointSet);
-		if (index !== -1) pointSets.splice(index, 1);
-	};
+  var pointSets = [this.points = new PointGroup()];
+  /**
+   * Create a subset of points that can be rendered independently
+   * Optional parameters color and opacity overwrite the default values
+   * @param  {Object=} color
+   * @param  {number=} opacity
+   * @return {HashSet}
+   */
+  this.createPointSet = function (color, opacity) {
+    var pointSet = new PointGroup();
+    if (color) {
+      var validationResult;
+      if ((validationResult = libColormap.validateColormap(color)) === true) {
+        var c = libColormap.parseColormap(color);
+        if (c) pointSet.colormap = libGraphics.LoadTextureFromByteArray(gl, c, c.length / 4, 1);
+      } else {
+        console.warn("GlobalView warning: Invalid value for point set color: " + color);
+        if (libUtility.isString(validationResult)) console.warn("                    " + validationResult);
+      }
+    }
+    pointSet.opacity = opacity;
+    pointSets.push(pointSet);
+    return pointSet;
+  };
+  /**
+   * Remove point subset
+   * (This does not remove any of the points)
+   * @param  {HashSet} pointSet
+   */
+  this.removePointSet = function (pointSet) {
+    var index = pointSets.indexOf(pointSet);
+    if (index !== -1) pointSets.splice(index, 1);
+  };
 
-	this.render = function (flipY, tf, colormapTexture, pointDrag) {
-		if (meshDataPoints === null) return;
+  this.render = function (flipY, tf, colormapTexture, pointDrag) {
+    if (meshDataPoints === null) return;
 
-		meshDataPoints.sdr.bind();
-		meshDataPoints.sdr.offsets.apply(meshDataPoints.sdr, tf.getOffsets());
-		meshDataPoints.sdr.scales.apply(meshDataPoints.sdr, tf.getScales());
-		meshDataPoints.sdr.animatedScales.apply(meshDataPoints.sdr, tf.getAnimatedScales());
-		meshDataPoints.sdr.flipY(flipY ? 1 : 0);
-		pointSets.forEach(function (pointSet) {
-			meshDataPoints.sdr.pointOpacity(pointSet.opacity ? pointSet.opacity : _pointOpacity);
-			pointSet.render(pointSet.colormap ? pointSet.colormap : colormapTexture);
-		});
+    meshDataPoints.sdr.bind();
+    meshDataPoints.sdr.offsets.apply(meshDataPoints.sdr, tf.getOffsets());
+    meshDataPoints.sdr.scales.apply(meshDataPoints.sdr, tf.getScales());
+    meshDataPoints.sdr.animatedScales.apply(meshDataPoints.sdr, tf.getAnimatedScales());
+    meshDataPoints.sdr.flipY(flipY ? 1 : 0);
+    pointSets.forEach(function (pointSet) {
+      meshDataPoints.sdr.pointOpacity(pointSet.opacity ? pointSet.opacity : _pointOpacity);
+      pointSet.render(pointSet.colormap ? pointSet.colormap : colormapTexture);
+    });
 
-		if (pointDrag) {
-			meshDataPoints.sdrLine.bind();
-			meshDataPoints.sdrLine.offsets.apply(meshDataPoints.sdrLine, tf.getOffsets());
-			meshDataPoints.sdrLine.scales.apply(meshDataPoints.sdrLine, tf.getScales());
-			meshDataPoints.sdrLine.animatedScales.apply(meshDataPoints.sdrLine, tf.getAnimatedScales());
-			meshDataPoints.sdrLine.flipY(flipY ? 1 : 0);
-			pointSets.forEach(function (pointSet) {
-				meshDataPoints.sdrLine.pointOpacity(pointSet.opacity ? pointSet.opacity : Math.max(0.1, _pointOpacity / 2.0));
-				pointSet.renderLines(pointSet.colormap ? pointSet.colormap : colormapTexture, pointDrag);
-			});
-		}
-	};
+    if (pointDrag) {
+      meshDataPoints.sdrLine.bind();
+      meshDataPoints.sdrLine.offsets.apply(meshDataPoints.sdrLine, tf.getOffsets());
+      meshDataPoints.sdrLine.scales.apply(meshDataPoints.sdrLine, tf.getScales());
+      meshDataPoints.sdrLine.animatedScales.apply(meshDataPoints.sdrLine, tf.getAnimatedScales());
+      meshDataPoints.sdrLine.flipY(flipY ? 1 : 0);
+      pointSets.forEach(function (pointSet) {
+        meshDataPoints.sdrLine.pointOpacity(pointSet.opacity ? pointSet.opacity : Math.max(0.1, _pointOpacity / 2.0));
+        pointSet.renderLines(pointSet.colormap ? pointSet.colormap : colormapTexture, pointDrag);
+      });
+    }
+  };
 
-	this.setDataset = function (dataset, options) {
-		// Remove old mesh
-		if (meshDataPoints != null) meshDataPoints.free();
-		pointSets.forEach(function (pointSet) {
-			return pointSet.clear();
-		});
+  this.setDataset = function (dataset, options) {
+    // Remove old mesh
+    if (meshDataPoints != null) meshDataPoints.free();
+    pointSets.forEach(function (pointSet) {
+      return pointSet.clear();
+    });
 
-		_dataset = dataset;
-		_pointOpacity = options['pointOpacity'];
+    _dataset = dataset;
+    _pointOpacity = options['pointOpacity'];
 
-		// Validate numvertices
-		if (dataset.fdata.length !== dataset.length * dataset.numColumns) {
-			alert("'dataset.fdata.length !== dataset.length * dataset.numColumns'");
-			return;
-		}
+    // Validate numvertices
+    if (dataset.fdata.length !== dataset.length * dataset.numColumns) {
+      alert("'dataset.fdata.length !== dataset.length * dataset.numColumns'");
+      return;
+    }
 
-		// Create position buffer
-		var posbuffer;
-		if (dataset.numColumns) {
-			posbuffer = gl.createBuffer();
-			gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(dataset.fdata), gl.STATIC_DRAW);
-		} else posbuffer = null;
-		this.getPosBuffer = function () {
-			return posbuffer;
-		};
+    // Create position buffer
+    var posbuffer;
+    if (dataset.numColumns) {
+      posbuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(dataset.fdata), gl.STATIC_DRAW);
+    } else posbuffer = null;
+    this.getPosBuffer = function () {
+      return posbuffer;
+    };
 
-		meshDataPoints = new DataMesh(gl, posbuffer, dataset.length, dataset.numColumns, options);
+    meshDataPoints = new DataMesh(gl, posbuffer, dataset.length, dataset.numColumns, options);
 
-		this.points.assignRange(dataset.length);
-	};
+    this.points.assignRange(dataset.length);
+  };
 
-	this.onOptionsChanged = function (options, recompileShader) {
-		_pointOpacity = options['pointOpacity'];
-		if (meshDataPoints) {
-			if (recompileShader === true) meshDataPoints.recompileShader(options);else meshDataPoints.sdr.pointSize(options['pointSize']);
-		}
-	};
+  this.onOptionsChanged = function (options, recompileShader) {
+    _pointOpacity = options['pointOpacity'];
+    if (meshDataPoints) {
+      if (recompileShader === true) meshDataPoints.recompileShader(options);else meshDataPoints.sdr.pointSize(options['pointSize']);
+    }
+  };
 
-	var activeInputVectors = null,
-	    animatedInputVectors = null;
-	this.onInputChanged = function (activeInputs, animatedInputs, options) {
-		activeInputVectors = activeInputs.map(function (i) {
-			return _dataset.dataVectors[i];
-		});
-		animatedInputVectors = animatedInputs.map(function (animatedInput) {
-			return _dataset.dataVectors[animatedInput.origin];
-		});
-		if (meshDataPoints != null) meshDataPoints.recompileShader(options);
-	};
+  var activeInputVectors = null,
+      animatedInputVectors = null;
+  this.onInputChanged = function (activeInputs, animatedInputs, options) {
+    activeInputVectors = activeInputs.map(function (i) {
+      return _dataset.dataVectors[i];
+    });
+    animatedInputVectors = animatedInputs.map(function (animatedInput) {
+      return _dataset.dataVectors[animatedInput.origin];
+    });
+    if (meshDataPoints != null) meshDataPoints.recompileShader(options);
+  };
 
-	this.onPlotBoundsChanged = function (plotBounds) {};
+  this.onPlotBoundsChanged = function (plotBounds) {};
 
-	/**
-  * A renderable WebGL mesh of ndim-dimensional points
-  * @constructor
-  * @package
-  * @param {Object} gl // {WebGLRenderingContext}
-  * @param {WebGLBuffer} posbuffer
-  * @param {number} numvertices
-  * @param {number} ndim
-  * @param {Object} options
-  */
-	function DataMesh(gl, posbuffer, numvertices, ndim, options) {
-		// Create line buffer
-		var linebuffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, linebuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, -1, 0, 1, 2, 1, 2, -1]), gl.STATIC_DRAW);
+  /**
+   * A renderable WebGL mesh of ndim-dimensional points
+   * @constructor
+   * @package
+   * @param {Object} gl // {WebGLRenderingContext}
+   * @param {WebGLBuffer} posbuffer
+   * @param {number} numvertices
+   * @param {number} ndim
+   * @param {Object} options
+   */
+  function DataMesh(gl, posbuffer, numvertices, ndim, options) {
+    // Create line buffer
+    var linebuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, linebuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, -1, 0, 1, 2, 1, 2, -1]), gl.STATIC_DRAW);
 
-		// Create vertex ID buffer
-		var vertexIds = new Float32Array(numvertices);
-		for (var i = 0; i < numvertices; ++i) {
-			vertexIds[i] = i;
-		}var vidbuffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, vidbuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, vertexIds, gl.STATIC_DRAW);
+    // Create vertex ID buffer
+    var vertexIds = new Float32Array(numvertices);
+    for (var i = 0; i < numvertices; ++i) {
+      vertexIds[i] = i;
+    }var vidbuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vidbuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, vertexIds, gl.STATIC_DRAW);
 
-		this.getPosCode = function (forLineSdr) {
-			// Create shader code for getPos() function -> getPosCode
-			var getPosCode = '\n{0}\nuniform vec{1} offsets, scales, animatedScales;\nuniform float n;\n#define PI 3.14159265359\nvec{1} getPos()\n{\n\treturn offsets + vec{1}({2}) * scales + vec{1}({3}) * animatedScales;\n}\n';
-			var attrDeclCode = "",
-			    inputs = [/c(\d+)/g, "0.0"],
-			    inputCode = [],
-			    animatedInputCode = [];
-			for (var d = 0, i = 0; d < ndim; d += 4, ++i) {
-				var attrLen = Math.min(4, ndim - d);
-				attrDeclCode += "attribute " + (attrLen == 1 ? "float" : "vec" + attrLen) + " p" + i + ";\n";
-				for (var a = 0; a < attrLen; ++a) {
-					inputs.push("p" + i + (attrLen == 1 ? "" : "[" + a + "]"));
-				}
-			}
-			//HY:
-			var ND = 4; //todo: should use the globalView.ND
-			for (var d = 0; d < ND; ++d) {
-				inputCode.push(String.prototype.format2.apply(activeInputVectors[d] ? activeInputVectors[d].getValueCode : "0.0", inputs));
-				animatedInputCode.push(String.prototype.format2.apply(activeInputVectors[d] ? animatedInputVectors[d].getValueCode : "0.0", inputs));
-			}
-			attrDeclCode += "attribute float i;\n";
-			if (forLineSdr) getPosCode = getPosCode.format(attrDeclCode, 4, inputCode.slice(0, 4).join(", "), animatedInputCode.slice(0, 4).join(", "));else getPosCode = getPosCode.format(attrDeclCode, 3, inputCode.slice(0, 3).join(", "), animatedInputCode.slice(0, 3).join(", "));
+    this.getPosCode = function (forLineSdr) {
+      // Create shader code for getPos() function -> getPosCode
+      var getPosCode = '\n{0}\nuniform vec{1} offsets, scales, animatedScales;\nuniform float n;\n#define PI 3.14159265359\nvec{1} getPos()\n{\n  return offsets + vec{1}({2}) * scales + vec{1}({3}) * animatedScales;\n}\n';
+      var attrDeclCode = "",
+          inputs = [/c(\d+)/g, "0.0"],
+          inputCode = [],
+          animatedInputCode = [];
+      for (var d = 0, i = 0; d < ndim; d += 4, ++i) {
+        var attrLen = Math.min(4, ndim - d);
+        attrDeclCode += "attribute " + (attrLen == 1 ? "float" : "vec" + attrLen) + " p" + i + ";\n";
+        for (var a = 0; a < attrLen; ++a) {
+          inputs.push("p" + i + (attrLen == 1 ? "" : "[" + a + "]"));
+        }
+      }
+      //HY:
+      var ND = 4; //todo: should use the globalView.ND
+      for (var d = 0; d < ND; ++d) {
+        inputCode.push(String.prototype.format2.apply(activeInputVectors[d] ? activeInputVectors[d].getValueCode : "0.0", inputs));
+        animatedInputCode.push(String.prototype.format2.apply(activeInputVectors[d] ? animatedInputVectors[d].getValueCode : "0.0", inputs));
+      }
+      attrDeclCode += "attribute float i;\n";
+      if (forLineSdr) getPosCode = getPosCode.format(attrDeclCode, 4, inputCode.slice(0, 4).join(", "), animatedInputCode.slice(0, 4).join(", "));else getPosCode = getPosCode.format(attrDeclCode, 3, inputCode.slice(0, 3).join(", "), animatedInputCode.slice(0, 3).join(", "));
 
-			//console.log(getPosCode);
-			return getPosCode;
-		};
+      //console.log(getPosCode);
+      return getPosCode;
+    };
 
-		var posattr, lineattr;
-		this.sdr = null;
-		this.sdrLine = null;
-		this.recompileShader = function (options) {
-			// Free shaders
-			if (this.sdr !== null) this.sdr.free();
-			if (this.sdrLine !== null) this.sdrLine.free();
+    var posattr, lineattr;
+    this.sdr = null;
+    this.sdrLine = null;
+    this.recompileShader = function (options) {
+      // Free shaders
+      if (this.sdr !== null) this.sdr.free();
+      if (this.sdrLine !== null) this.sdrLine.free();
 
-			// Create shader code for opacityMap() function -> opacityMapCoe
-			var opacityMapCoe = "float opacityMap(in vec2 p) ";
-			switch (options['pointShape']) {
-				case "Circle":
-					opacityMapCoe += "{ return 1.0 - pow(p.x*p.x + p.y*p.y, pointSize / 4.0); }";
-					//opacityMapCoe += "{ return p.x*p.x + p.y*p.y < 1.0 ? 1.0 : 0.0; }";
-					break;
-				case "Cross":
-					opacityMapCoe += "{ return pointSize / 4.0 * (max(4.0 / pointSize - abs(p.x - p.y), 0.0) + max(4.0 / pointSize - abs(-p.x - p.y), 0.0)); }";
-					break;
-				case "Diamond":
-					opacityMapCoe += "{ return 1.0 - pow(abs(p.x) + abs(p.y), 2.0 + pointSize / 4.0); }";
-					break;
-				case "Gaussian":
-					//opacityMapCoe += "{ return exp({0} * (p.x*p.x + p.y*p.y)); }".format(Math.log(0.001));
-					opacityMapCoe += "{ return exp(-7.0 * (p.x*p.x + p.y*p.y)); }";
-					break;
-				case "Custom":
-					opacityMapCoe += options['customPointShape'];
-					break;
-				default:
-					opacityMapCoe += "{ return 1.0; }";
-					break;
-			}
+      // Create shader code for opacityMap() function -> opacityMapCoe
+      var opacityMapCoe = "float opacityMap(in vec2 p) ";
+      switch (options['pointShape']) {
+        case "Circle":
+          opacityMapCoe += "{ return 1.0 - pow(p.x*p.x + p.y*p.y, pointSize / 4.0); }";
+          //opacityMapCoe += "{ return p.x*p.x + p.y*p.y < 1.0 ? 1.0 : 0.0; }";
+          break;
+        case "Cross":
+          opacityMapCoe += "{ return pointSize / 4.0 * (max(4.0 / pointSize - abs(p.x - p.y), 0.0) + max(4.0 / pointSize - abs(-p.x - p.y), 0.0)); }";
+          break;
+        case "Diamond":
+          opacityMapCoe += "{ return 1.0 - pow(abs(p.x) + abs(p.y), 2.0 + pointSize / 4.0); }";
+          break;
+        case "Gaussian":
+          //opacityMapCoe += "{ return exp({0} * (p.x*p.x + p.y*p.y)); }".format(Math.log(0.001));
+          opacityMapCoe += "{ return exp(-7.0 * (p.x*p.x + p.y*p.y)); }";
+          break;
+        case "Custom":
+          opacityMapCoe += options['customPointShape'];
+          break;
+        default:
+          opacityMapCoe += "{ return 1.0; }";
+          break;
+      }
 
-			// Compile shaders
-			this.sdr = new libGraphics.Shader(gl, [this.getPosCode(false), libShaders.Shaders.vsDataPoint], ["precision highp float; uniform float pointSize;", opacityMapCoe, libShaders.Shaders.fsDataPoint]);
-			//this.sdr.transform = this.sdr.u1fv("transform");
-			this.sdr.offsets = this.sdr.u3f("offsets");
-			this.sdr.scales = this.sdr.u3f("scales");
-			this.sdr.animatedScales = this.sdr.u3f("animatedScales");
-			this.sdr.flipY = this.sdr.u1i("flipY");
-			this.sdr.quadsize = this.sdr.u2f("quadsize");
-			this.sdr.pointOpacity = this.sdr.u1f("pointOpacity");this.sdr.pointOpacity(options['pointOpacity']);
-			this.sdr.pointSize = this.sdr.u1f("pointSize");this.sdr.pointSize(options['pointSize']);
-			this.sdr.n = this.sdr.u1f("n");if (this.sdr.n) this.sdr.n(numvertices);
-			this.sdr.posattr = [this.sdr.getAttribLocation("p0"), this.sdr.getAttribLocation("p1"), this.sdr.getAttribLocation("p2"), this.sdr.getAttribLocation("p3")];
-			this.sdr.vidattr = this.sdr.getAttribLocation("i");
-			this.sdrLine = new libGraphics.Shader(gl, [this.getPosCode(true), libShaders.Shaders.vsDataLine], ["precision highp float; uniform float pointSize;", opacityMapCoe, libShaders.Shaders.fsDataLine]);
-			//this.sdrLine.transform = this.sdrLine.u1fv("transform");
-			this.sdrLine.offsets = this.sdrLine.u4f("offsets");
-			this.sdrLine.scales = this.sdrLine.u4f("scales");
-			this.sdrLine.animatedScales = this.sdrLine.u4f("animatedScales");
-			this.sdrLine.flipY = this.sdrLine.u1i("flipY");
-			this.sdrLine.quadsize = this.sdrLine.u2f("quadsize");
-			this.sdrLine.pointOpacity = this.sdrLine.u1f("pointOpacity");this.sdrLine.pointOpacity(options['pointOpacity']);
-			this.sdrLine.pointSize = this.sdrLine.u1f("pointSize");this.sdrLine.pointSize(options['pointSize']);
-			this.sdrLine.n = this.sdrLine.u1f("n");if (this.sdrLine.n) this.sdrLine.n(numvertices);
-			this.sdrLine.posattr = [this.sdrLine.getAttribLocation("p0"), this.sdrLine.getAttribLocation("p1"), this.sdrLine.getAttribLocation("p2"), this.sdrLine.getAttribLocation("p3")];
-			this.sdrLine.vidattr = this.sdrLine.getAttribLocation("i");
-			this.sdrLine.lineattr = this.sdrLine.getAttribLocation("lineOffset");
-			this.sdrLine.lineTransform = this.sdrLine.u2x2f("lineTransform");
-		};
-		if (activeInputVectors && animatedInputVectors) this.recompileShader(options);
+      // Compile shaders
+      this.sdr = new libGraphics.Shader(gl, [this.getPosCode(false), libShaders.Shaders.vsDataPoint], ["precision highp float; uniform float pointSize;", opacityMapCoe, libShaders.Shaders.fsDataPoint]);
+      //this.sdr.transform = this.sdr.u1fv("transform");
+      this.sdr.offsets = this.sdr.u3f("offsets");
+      this.sdr.scales = this.sdr.u3f("scales");
+      this.sdr.animatedScales = this.sdr.u3f("animatedScales");
+      this.sdr.flipY = this.sdr.u1i("flipY");
+      this.sdr.quadsize = this.sdr.u2f("quadsize");
+      this.sdr.pointOpacity = this.sdr.u1f("pointOpacity");this.sdr.pointOpacity(options['pointOpacity']);
+      this.sdr.pointSize = this.sdr.u1f("pointSize");this.sdr.pointSize(options['pointSize']);
+      this.sdr.n = this.sdr.u1f("n");if (this.sdr.n) this.sdr.n(numvertices);
+      this.sdr.posattr = [this.sdr.getAttribLocation("p0"), this.sdr.getAttribLocation("p1"), this.sdr.getAttribLocation("p2"), this.sdr.getAttribLocation("p3")];
+      this.sdr.vidattr = this.sdr.getAttribLocation("i");
+      this.sdrLine = new libGraphics.Shader(gl, [this.getPosCode(true), libShaders.Shaders.vsDataLine], ["precision highp float; uniform float pointSize;", opacityMapCoe, libShaders.Shaders.fsDataLine]);
+      //this.sdrLine.transform = this.sdrLine.u1fv("transform");
+      this.sdrLine.offsets = this.sdrLine.u4f("offsets");
+      this.sdrLine.scales = this.sdrLine.u4f("scales");
+      this.sdrLine.animatedScales = this.sdrLine.u4f("animatedScales");
+      this.sdrLine.flipY = this.sdrLine.u1i("flipY");
+      this.sdrLine.quadsize = this.sdrLine.u2f("quadsize");
+      this.sdrLine.pointOpacity = this.sdrLine.u1f("pointOpacity");this.sdrLine.pointOpacity(options['pointOpacity']);
+      this.sdrLine.pointSize = this.sdrLine.u1f("pointSize");this.sdrLine.pointSize(options['pointSize']);
+      this.sdrLine.n = this.sdrLine.u1f("n");if (this.sdrLine.n) this.sdrLine.n(numvertices);
+      this.sdrLine.posattr = [this.sdrLine.getAttribLocation("p0"), this.sdrLine.getAttribLocation("p1"), this.sdrLine.getAttribLocation("p2"), this.sdrLine.getAttribLocation("p3")];
+      this.sdrLine.vidattr = this.sdrLine.getAttribLocation("i");
+      this.sdrLine.lineattr = this.sdrLine.getAttribLocation("lineOffset");
+      this.sdrLine.lineTransform = this.sdrLine.u2x2f("lineTransform");
+    };
+    if (activeInputVectors && animatedInputVectors) this.recompileShader(options);
 
-		this.draw = function (texture, offset, count) {
-			// Default values
-			if (typeof offset === 'undefined') offset = 0;
-			if (typeof count === 'undefined') count = numvertices;
+    this.draw = function (texture, offset, count) {
+      // Default values
+      if (typeof offset === 'undefined') offset = 0;
+      if (typeof count === 'undefined') count = numvertices;
 
-			for (var i = 0; i < 16; i++) {
-				gl.disableVertexAttribArray(i);
-				if (gl.ext) gl.ext.vertexAttribDivisorANGLE(i, 0);
-			}
+      for (var i = 0; i < 16; i++) {
+        gl.disableVertexAttribArray(i);
+        if (gl.ext) gl.ext.vertexAttribDivisorANGLE(i, 0);
+      }
 
-			if (posbuffer) {
-				gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
-				for (var d = 0, i = 0; d < ndim; d += 4, ++i) {
-					if (this.sdr.posattr[i] !== -1) {
-						gl.enableVertexAttribArray(this.sdr.posattr[i]);
-						gl.vertexAttribPointer(this.sdr.posattr[i], Math.min(4, ndim - d), gl.FLOAT, false, ndim * 4, (offset * ndim + d) * 4);
-					}
-				}
-			}
+      if (posbuffer) {
+        gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
+        for (var d = 0, i = 0; d < ndim; d += 4, ++i) {
+          if (this.sdr.posattr[i] !== -1) {
+            gl.enableVertexAttribArray(this.sdr.posattr[i]);
+            gl.vertexAttribPointer(this.sdr.posattr[i], Math.min(4, ndim - d), gl.FLOAT, false, ndim * 4, (offset * ndim + d) * 4);
+          }
+        }
+      }
 
-			if (this.sdr.vidattr !== -1) {
-				gl.bindBuffer(gl.ARRAY_BUFFER, vidbuffer);
-				gl.enableVertexAttribArray(this.sdr.vidattr);
-				gl.vertexAttribPointer(this.sdr.vidattr, 1, gl.FLOAT, false, 4, offset * 4);
-			}
+      if (this.sdr.vidattr !== -1) {
+        gl.bindBuffer(gl.ARRAY_BUFFER, vidbuffer);
+        gl.enableVertexAttribArray(this.sdr.vidattr);
+        gl.vertexAttribPointer(this.sdr.vidattr, 1, gl.FLOAT, false, 4, offset * 4);
+      }
 
-			if (texture && this.sdr.samplerUniform) {
-				gl.activeTexture(gl.TEXTURE0);
-				gl.bindTexture(gl.TEXTURE_2D, texture);
-				gl.uniform1i(this.sdr.samplerUniform, 0);
-			}
+      if (texture && this.sdr.samplerUniform) {
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.uniform1i(this.sdr.samplerUniform, 0);
+      }
 
-			gl.drawArrays(gl.POINTS, 0, Math.min(count, numvertices - offset));
-		};
-		this.drawIndexed = function (texture, idxbuffer, count) {
-			for (var i = 0; i < 16; i++) {
-				gl.disableVertexAttribArray(i);
-				if (gl.ext) gl.ext.vertexAttribDivisorANGLE(i, 0);
-			}
+      gl.drawArrays(gl.POINTS, 0, Math.min(count, numvertices - offset));
+    };
+    this.drawIndexed = function (texture, idxbuffer, count) {
+      for (var i = 0; i < 16; i++) {
+        gl.disableVertexAttribArray(i);
+        if (gl.ext) gl.ext.vertexAttribDivisorANGLE(i, 0);
+      }
 
-			if (posbuffer) {
-				gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
-				for (var d = 0, i = 0; d < ndim; d += 4, ++i) {
-					if (this.sdr.posattr[i] !== -1) {
-						gl.enableVertexAttribArray(this.sdr.posattr[i]);
-						gl.vertexAttribPointer(this.sdr.posattr[i], Math.min(4, ndim - d), gl.FLOAT, false, ndim * 4, d * 4);
-					}
-				}
-			}
+      if (posbuffer) {
+        gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
+        for (var d = 0, i = 0; d < ndim; d += 4, ++i) {
+          if (this.sdr.posattr[i] !== -1) {
+            gl.enableVertexAttribArray(this.sdr.posattr[i]);
+            gl.vertexAttribPointer(this.sdr.posattr[i], Math.min(4, ndim - d), gl.FLOAT, false, ndim * 4, d * 4);
+          }
+        }
+      }
 
-			if (this.sdr.vidattr !== -1) {
-				gl.bindBuffer(gl.ARRAY_BUFFER, vidbuffer);
-				gl.enableVertexAttribArray(this.sdr.vidattr);
-				gl.vertexAttribPointer(this.sdr.vidattr, 1, gl.FLOAT, false, 4, 0);
-			}
+      if (this.sdr.vidattr !== -1) {
+        gl.bindBuffer(gl.ARRAY_BUFFER, vidbuffer);
+        gl.enableVertexAttribArray(this.sdr.vidattr);
+        gl.vertexAttribPointer(this.sdr.vidattr, 1, gl.FLOAT, false, 4, 0);
+      }
 
-			if (texture && this.sdr.samplerUniform) {
-				gl.activeTexture(gl.TEXTURE0);
-				gl.bindTexture(gl.TEXTURE_2D, texture);
-				gl.uniform1i(this.sdr.samplerUniform, 0);
-			}
+      if (texture && this.sdr.samplerUniform) {
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.uniform1i(this.sdr.samplerUniform, 0);
+      }
 
-			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxbuffer);
-			gl.drawElements(gl.POINTS, count, gl.UNSIGNED_INT, 0);
-		};
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxbuffer);
+      gl.drawElements(gl.POINTS, count, gl.UNSIGNED_INT, 0);
+    };
 
-		this.drawLines = function (texture, line, offset, count) {
-			// Default values
-			if (typeof offset === 'undefined') offset = 0;
-			if (typeof count === 'undefined') count = numvertices;
+    this.drawLines = function (texture, line, offset, count) {
+      // Default values
+      if (typeof offset === 'undefined') offset = 0;
+      if (typeof count === 'undefined') count = numvertices;
 
-			for (var i = 0; i < 16; i++) {
-				gl.disableVertexAttribArray(i);
-				gl.ext.vertexAttribDivisorANGLE(i, 0);
-			}
+      for (var i = 0; i < 16; i++) {
+        gl.disableVertexAttribArray(i);
+        gl.ext.vertexAttribDivisorANGLE(i, 0);
+      }
 
-			if (posbuffer) {
-				gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
-				for (var d = 0, i = 0; d < ndim; d += 4, ++i) {
-					if (this.sdrLine.posattr[i] !== -1) {
-						gl.enableVertexAttribArray(this.sdrLine.posattr[i]);
-						gl.vertexAttribPointer(this.sdrLine.posattr[i], Math.min(4, ndim - d), gl.FLOAT, false, ndim * 4, (offset * ndim + d) * 4);
-						gl.ext.vertexAttribDivisorANGLE(this.sdrLine.posattr[i], 1);
-					}
-				}
-			}
+      if (posbuffer) {
+        gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
+        for (var d = 0, i = 0; d < ndim; d += 4, ++i) {
+          if (this.sdrLine.posattr[i] !== -1) {
+            gl.enableVertexAttribArray(this.sdrLine.posattr[i]);
+            gl.vertexAttribPointer(this.sdrLine.posattr[i], Math.min(4, ndim - d), gl.FLOAT, false, ndim * 4, (offset * ndim + d) * 4);
+            gl.ext.vertexAttribDivisorANGLE(this.sdrLine.posattr[i], 1);
+          }
+        }
+      }
 
-			if (this.sdr.vidattr !== -1) {
-				gl.bindBuffer(gl.ARRAY_BUFFER, vidbuffer);
-				gl.enableVertexAttribArray(this.sdr.vidattr);
-				gl.vertexAttribPointer(this.sdrLine.vidattr, 1, gl.FLOAT, false, 4, offset * 4);
-				gl.ext.vertexAttribDivisorANGLE(this.sdrLine.vidattr, 1);
-			}
+      if (this.sdr.vidattr !== -1) {
+        gl.bindBuffer(gl.ARRAY_BUFFER, vidbuffer);
+        gl.enableVertexAttribArray(this.sdr.vidattr);
+        gl.vertexAttribPointer(this.sdrLine.vidattr, 1, gl.FLOAT, false, 4, offset * 4);
+        gl.ext.vertexAttribDivisorANGLE(this.sdrLine.vidattr, 1);
+      }
 
-			if (texture && this.sdrLine.samplerUniform) {
-				gl.activeTexture(gl.TEXTURE0);
-				gl.bindTexture(gl.TEXTURE_2D, texture);
-				gl.uniform1i(this.sdrLine.samplerUniform, 0);
-			}
+      if (texture && this.sdrLine.samplerUniform) {
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.uniform1i(this.sdrLine.samplerUniform, 0);
+      }
 
-			// Compute line vertices
-			var lineTransform = libGlMatrix.mat2.create();
-			libGlMatrix.mat2.scale(lineTransform, lineTransform, libGlMatrix.vec2.fromValues(Math.sqrt(line[0] * line[0] + line[1] * line[1]), Math.max(1, options['pointSize'] /*/ 10*/)));
-			libGlMatrix.mat2.rotate(lineTransform, lineTransform, Math.atan2(line[1], line[0]));
-			libGlMatrix.mat2.scale(lineTransform, lineTransform, libGlMatrix.vec2.fromValues(1 / gl.width, 1 / gl.height));
-			this.sdrLine.lineTransform(lineTransform);
+      // Compute line vertices
+      var lineTransform = libGlMatrix.mat2.create();
+      libGlMatrix.mat2.scale(lineTransform, lineTransform, libGlMatrix.vec2.fromValues(Math.sqrt(line[0] * line[0] + line[1] * line[1]), Math.max(1, options['pointSize'] /*/ 10*/)));
+      libGlMatrix.mat2.rotate(lineTransform, lineTransform, Math.atan2(line[1], line[0]));
+      libGlMatrix.mat2.scale(lineTransform, lineTransform, libGlMatrix.vec2.fromValues(1 / gl.width, 1 / gl.height));
+      this.sdrLine.lineTransform(lineTransform);
 
-			gl.bindBuffer(gl.ARRAY_BUFFER, linebuffer);
-			gl.enableVertexAttribArray(this.sdrLine.lineattr);
-			gl.vertexAttribPointer(this.sdrLine.lineattr, 2, gl.FLOAT, false, 0, 0);
-			gl.ext.vertexAttribDivisorANGLE(this.sdrLine.lineattr, 0);
+      gl.bindBuffer(gl.ARRAY_BUFFER, linebuffer);
+      gl.enableVertexAttribArray(this.sdrLine.lineattr);
+      gl.vertexAttribPointer(this.sdrLine.lineattr, 2, gl.FLOAT, false, 0, 0);
+      gl.ext.vertexAttribDivisorANGLE(this.sdrLine.lineattr, 0);
 
-			gl.ext.drawArraysInstancedANGLE(gl.TRIANGLE_FAN, 0, 4, Math.min(count, numvertices - offset));
-		};
+      gl.ext.drawArraysInstancedANGLE(gl.TRIANGLE_FAN, 0, 4, Math.min(count, numvertices - offset));
+    };
 
-		this.free = function () {
-			gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    this.free = function () {
+      gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
-			if (posbuffer) gl.deleteBuffer(posbuffer);
-			posbuffer = null;
+      if (posbuffer) gl.deleteBuffer(posbuffer);
+      posbuffer = null;
 
-			gl.deleteBuffer(linebuffer);
-			linebuffer = null;
+      gl.deleteBuffer(linebuffer);
+      linebuffer = null;
 
-			if (this.sdr != null) this.sdr.free();
-		};
-	}
+      if (this.sdr != null) this.sdr.free();
+    };
+  }
 }
 
 /***/ }),
@@ -13185,8 +13168,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LABEL_HEIGHT", function() { return LABEL_HEIGHT; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LABEL_WIDTH", function() { return LABEL_WIDTH; });
 /* harmony export (immutable) */ __webpack_exports__["ImageViewer"] = ImageViewer;
-/* eslint-disable */
-
 var libGraphics = __webpack_require__(2);
 var libShaders = __webpack_require__(4);
 var libAlgorithm = __webpack_require__(5);
@@ -13205,99 +13186,99 @@ var LABEL_TEXT_PADDING = 2;
  * @param {Object} globalView // {GlobalView}
  */
 function Thumbnail(globalView) {
-	/** @type {WebGLTexture} */this.tex = null;
-	/** @type {Array<number>} */this.imagePos = null;
-	/** @type {Array<number>} */this.refPos = null;
-	/** @type {Array<number>} */this.imageSize = null;
-	/** @type {Array<number>} */this.imageAnchor = null;
+  /** @type {WebGLTexture} */this.tex = null;
+  /** @type {Array<number>} */this.imagePos = null;
+  /** @type {Array<number>} */this.refPos = null;
+  /** @type {Array<number>} */this.imageSize = null;
+  /** @type {Array<number>} */this.imageAnchor = null;
 
-	/** @type {boolean} */this.highlighted = false;
+  /** @type {boolean} */this.highlighted = false;
 
-	/** @type {number} */this.refIndex = -1;
-	this['getPoint'] =
-	/**
-  * @summary Retrieve index of associated datapoint
-  * @return {number}
-  */
-	this.getPoint = function () {
-		return this.refIndex;
-	};
+  /** @type {number} */this.refIndex = -1;
+  this['getPoint'] =
+  /**
+   * @summary Retrieve index of associated datapoint
+   * @return {number}
+   */
+  this.getPoint = function () {
+    return this.refIndex;
+  };
 
-	/** @type {number} */this.borderWidth = null;
-	this['getBorderWidth'] =
-	/**
-  * @summary Retrieve width of the image border
-  * @return {number}
-  */
-	this.getBorderWidth = function () {
-		return this.borderWidth ? this.borderWidth.slice() : null;
-	};
-	this['setBorderWidth'] =
-	/**
-  * @summary Set width of the image border
-  * @param {number} width
-  */
-	this.setBorderWidth = function (width) {
-		this.borderWidth = width;
-		globalView.invalidate();
-	};
+  /** @type {number} */this.borderWidth = null;
+  this['getBorderWidth'] =
+  /**
+   * @summary Retrieve width of the image border
+   * @return {number}
+   */
+  this.getBorderWidth = function () {
+    return this.borderWidth ? this.borderWidth.slice() : null;
+  };
+  this['setBorderWidth'] =
+  /**
+   * @summary Set width of the image border
+   * @param {number} width
+   */
+  this.setBorderWidth = function (width) {
+    this.borderWidth = width;
+    globalView.invalidate();
+  };
 
-	/** @type {Array<number>} */this.borderColor = null;
-	this['getBorderColor'] =
-	/**
-  * @summary Retrieve color of the image border
-  * @return {Array<number>} Float array [red, green, blue, alpha] or null
-  */
-	this.getBorderColor = function () {
-		return this.borderColor ? this.borderColor.slice() : null;
-	};
-	this['setBorderColor'] =
-	/**
-  * @summary Set color of the image border
-  * @param {Array<number>} color Float array [red, green, blue, alpha] or null
-  */
-	this.setBorderColor = function (color) {
-		this.borderColor = color;
-		globalView.invalidate();
-	};
+  /** @type {Array<number>} */this.borderColor = null;
+  this['getBorderColor'] =
+  /**
+   * @summary Retrieve color of the image border
+   * @return {Array<number>} Float array [red, green, blue, alpha] or null
+   */
+  this.getBorderColor = function () {
+    return this.borderColor ? this.borderColor.slice() : null;
+  };
+  this['setBorderColor'] =
+  /**
+   * @summary Set color of the image border
+   * @param {Array<number>} color Float array [red, green, blue, alpha] or null
+   */
+  this.setBorderColor = function (color) {
+    this.borderColor = color;
+    globalView.invalidate();
+  };
 
-	/** @type {Array<number>} */this.lineColor = null;
-	this['getLineColor'] =
-	/**
-  * @summary Retrieve color of the image line
-  * @return {Array<number>} Float array [red, green, blue, alpha] or null
-  */
-	this.getLineColor = function () {
-		return this.lineColor ? this.lineColor.slice() : null;
-	};
-	this['setLineColor'] =
-	/**
-  * @summary Set color of the image line
-  * @param {Array<number>} color Float array [red, green, blue, alpha] or null
-  */
-	this.setLineColor = function (color) {
-		this.lineColor = color;
-		globalView.invalidate();
-	};
+  /** @type {Array<number>} */this.lineColor = null;
+  this['getLineColor'] =
+  /**
+   * @summary Retrieve color of the image line
+   * @return {Array<number>} Float array [red, green, blue, alpha] or null
+   */
+  this.getLineColor = function () {
+    return this.lineColor ? this.lineColor.slice() : null;
+  };
+  this['setLineColor'] =
+  /**
+   * @summary Set color of the image line
+   * @param {Array<number>} color Float array [red, green, blue, alpha] or null
+   */
+  this.setLineColor = function (color) {
+    this.lineColor = color;
+    globalView.invalidate();
+  };
 
-	/** @type {Array<number>} */this.labelColor = null;
-	this['getLabelColor'] =
-	/**
-  * @summary Retrieve color of the image label
-  * @return {Array<number>} Float array [red, green, blue, alpha] or null
-  */
-	this.getLabelColor = function () {
-		return this.labelColor ? this.labelColor.slice() : null;
-	};
-	this['setLabelColor'] =
-	/**
-  * @summary Set color of the image label
-  * @param {Array<number>} color Float array [red, green, blue, alpha] or null
-  */
-	this.setLabelColor = function (color) {
-		this.labelColor = color;
-		globalView.invalidate();
-	};
+  /** @type {Array<number>} */this.labelColor = null;
+  this['getLabelColor'] =
+  /**
+   * @summary Retrieve color of the image label
+   * @return {Array<number>} Float array [red, green, blue, alpha] or null
+   */
+  this.getLabelColor = function () {
+    return this.labelColor ? this.labelColor.slice() : null;
+  };
+  this['setLabelColor'] =
+  /**
+   * @summary Set color of the image label
+   * @param {Array<number>} color Float array [red, green, blue, alpha] or null
+   */
+  this.setLabelColor = function (color) {
+    this.labelColor = color;
+    globalView.invalidate();
+  };
 }
 
 /**
@@ -13309,347 +13290,347 @@ function Thumbnail(globalView) {
  * @param {Object} globalView // {GlobalView}
  */
 function ImageViewer(gl, globalView) {
-	var sdrImage = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured, libShaders.Shaders.fsTextured);
-	sdrImage.matWorldViewProj = sdrImage.u4x4f("matWorldViewProj");
+  var sdrImage = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured, libShaders.Shaders.fsTextured);
+  sdrImage.matWorldViewProj = sdrImage.u4x4f("matWorldViewProj");
 
-	var sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
-	sdrLine.color = sdrLine.u4f("color");
-	sdrLine.color.apply(sdrLine, gl.foreColor);
-	sdrLine.matWorldViewProj = sdrLine.u4x4f("matWorldViewProj");
+  var sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
+  sdrLine.color = sdrLine.u4f("color");
+  sdrLine.color.apply(sdrLine, gl.foreColor);
+  sdrLine.matWorldViewProj = sdrLine.u4x4f("matWorldViewProj");
 
-	// Create a 2D line mesh
-	var meshLine = new libGraphics.Mesh(gl, new Float32Array([
-	// Positions
-	0, 0, 0, 1, 0, 0]), null, null, null, null, null, gl.LINES);
+  // Create a 2D line mesh
+  var meshLine = new libGraphics.Mesh(gl, new Float32Array([
+  // Positions
+  0, 0, 0, 1, 0, 0]), null, null, null, null, null, gl.LINES);
 
-	// Create a 2D quad mesh
-	var meshQuad = new libGraphics.Mesh(gl, new Float32Array([
-	// Positions
-	0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0]), null, null, null, new Float32Array([
-	// Texture coordinates
-	0, 1, 0, 0, 1, 1, 1, 0]));
+  // Create a 2D quad mesh
+  var meshQuad = new libGraphics.Mesh(gl, new Float32Array([
+  // Positions
+  0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0]), null, null, null, new Float32Array([
+  // Texture coordinates
+  0, 1, 0, 0, 1, 1, 1, 0]));
 
-	// Create a 2D line quad mesh
-	var meshLineQuad = new libGraphics.Mesh(gl, new Float32Array([
-	// Positions
-	0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0]), null, null, null, null, null, gl.LINE_LOOP);
+  // Create a 2D line quad mesh
+  var meshLineQuad = new libGraphics.Mesh(gl, new Float32Array([
+  // Positions
+  0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0]), null, null, null, null, null, gl.LINE_LOOP);
 
-	// Create a 2D arrow mesh
-	LABEL_HEIGHT = gl.measureTextHeight() + 2 * LABEL_TEXT_PADDING;
-	LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
-	var meshLabel = new libGraphics.Mesh(gl, new Float32Array([
-	// Positions
-	0.0, 0.0, 0, 0.5 * LABEL_HEIGHT, 0.5 * LABEL_HEIGHT, 0, 0.5 * LABEL_HEIGHT + LABEL_WIDTH, 0.5 * LABEL_HEIGHT, 0, 0.5 * LABEL_HEIGHT + LABEL_WIDTH, -0.5 * LABEL_HEIGHT, 0, 0.5 * LABEL_HEIGHT, -0.5 * LABEL_HEIGHT, 0]), null, null, null, null, null, gl.TRIANGLE_FAN);
+  // Create a 2D arrow mesh
+  LABEL_HEIGHT = gl.measureTextHeight() + 2 * LABEL_TEXT_PADDING;
+  LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
+  var meshLabel = new libGraphics.Mesh(gl, new Float32Array([
+  // Positions
+  0.0, 0.0, 0, 0.5 * LABEL_HEIGHT, 0.5 * LABEL_HEIGHT, 0, 0.5 * LABEL_HEIGHT + LABEL_WIDTH, 0.5 * LABEL_HEIGHT, 0, 0.5 * LABEL_HEIGHT + LABEL_WIDTH, -0.5 * LABEL_HEIGHT, 0, 0.5 * LABEL_HEIGHT, -0.5 * LABEL_HEIGHT, 0]), null, null, null, null, null, gl.TRIANGLE_FAN);
 
-	// Create a 2D line arrow mesh
-	var meshLineLabel = new libGraphics.Mesh(gl, new Float32Array([
-	// Positions
-	0.0, 0.0, 0, 0.5 * LABEL_HEIGHT, 0.5 * LABEL_HEIGHT, 0, 0.5 * LABEL_HEIGHT + LABEL_WIDTH, 0.5 * LABEL_HEIGHT, 0, 0.5 * LABEL_HEIGHT + LABEL_WIDTH, -0.5 * LABEL_HEIGHT, 0, 0.5 * LABEL_HEIGHT, -0.5 * LABEL_HEIGHT, 0]), null, null, null, null, null, gl.LINE_LOOP);
+  // Create a 2D line arrow mesh
+  var meshLineLabel = new libGraphics.Mesh(gl, new Float32Array([
+  // Positions
+  0.0, 0.0, 0, 0.5 * LABEL_HEIGHT, 0.5 * LABEL_HEIGHT, 0, 0.5 * LABEL_HEIGHT + LABEL_WIDTH, 0.5 * LABEL_HEIGHT, 0, 0.5 * LABEL_HEIGHT + LABEL_WIDTH, -0.5 * LABEL_HEIGHT, 0, 0.5 * LABEL_HEIGHT, -0.5 * LABEL_HEIGHT, 0]), null, null, null, null, null, gl.LINE_LOOP);
 
-	/** @type Array<Thumbnail> */var images = [];
+  /** @type Array<Thumbnail> */var images = [];
 
-	var PixelAlignX = function PixelAlignX(x) {
-		return (Math.floor(x * gl.width / 2.0) + 0.5) * 2.0 / gl.width;
-	};
-	var PixelAlignY = function PixelAlignY(y) {
-		return (Math.floor(y * gl.height / 2.0) + 0.5) * 2.0 / gl.height;
-	};
+  var PixelAlignX = function PixelAlignX(x) {
+    return (Math.floor(x * gl.width / 2.0) + 0.5) * 2.0 / gl.width;
+  };
+  var PixelAlignY = function PixelAlignY(y) {
+    return (Math.floor(y * gl.height / 2.0) + 0.5) * 2.0 / gl.height;
+  };
 
-	this.render = function (flipY, tf) {
-		if (images.length === 0) return;
-		var mattrans = libGlMatrix.mat4.create();
-		var imagePos = libGlMatrix.vec2.create(),
-		    refPos = libGlMatrix.vec2.create(),
-		    imageSize = libGlMatrix.vec2.create();
+  this.render = function (flipY, tf) {
+    if (images.length === 0) return;
+    var mattrans = libGlMatrix.mat4.create();
+    var imagePos = libGlMatrix.vec2.create(),
+        refPos = libGlMatrix.vec2.create(),
+        imageSize = libGlMatrix.vec2.create();
 
-		//gl.disable(gl.SCISSOR_TEST);
+    //gl.disable(gl.SCISSOR_TEST);
 
-		if (options['labelThumbnails']) {
-			// Draw labels at image.refPos
-			var label = 1;
-			images.forEach(function (image) {
-				if (image.imagePos === image.refPos) return;
-				tf.transformPos(refPos, image.refPos);
+    if (options['labelThumbnails']) {
+      // Draw labels at image.refPos
+      var label = 1;
+      images.forEach(function (image) {
+        if (image.imagePos === image.refPos) return;
+        tf.transformPos(refPos, image.refPos);
 
-				sdrLine.bind();
-				libGlMatrix.mat4.identity(mattrans);
-				if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-				refPos[0] = PixelAlignX(refPos[0]);
-				refPos[1] = PixelAlignY(refPos[1]);
-				libGlMatrix.mat4.translate(mattrans, mattrans, [refPos[0], refPos[1], 0]);
-				libGlMatrix.mat4.scale(mattrans, mattrans, [2 / gl.width, 2 / gl.height, 1]);
-				sdrLine.matWorldViewProj(mattrans);
+        sdrLine.bind();
+        libGlMatrix.mat4.identity(mattrans);
+        if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+        refPos[0] = PixelAlignX(refPos[0]);
+        refPos[1] = PixelAlignY(refPos[1]);
+        libGlMatrix.mat4.translate(mattrans, mattrans, [refPos[0], refPos[1], 0]);
+        libGlMatrix.mat4.scale(mattrans, mattrans, [2 / gl.width, 2 / gl.height, 1]);
+        sdrLine.matWorldViewProj(mattrans);
 
-				sdrLine.color.apply(sdrLine, image.highlighted ? [1, 1, 0, 1] : image.labelColor ? image.labelColor : defaultImageLabelColor);
-				meshLabel.bind(sdrLine, null);
-				meshLabel.draw();
+        sdrLine.color.apply(sdrLine, image.highlighted ? [1, 1, 0, 1] : image.labelColor ? image.labelColor : defaultImageLabelColor);
+        meshLabel.bind(sdrLine, null);
+        meshLabel.draw();
 
-				sdrLine.color.apply(sdrLine, image.borderColor ? image.borderColor : defaultImageBorderColor);
-				meshLineLabel.bind(sdrLine, null);
-				meshLineLabel.draw();
+        sdrLine.color.apply(sdrLine, image.borderColor ? image.borderColor : defaultImageBorderColor);
+        meshLineLabel.bind(sdrLine, null);
+        meshLineLabel.draw();
 
-				refPos[0] = (1 + refPos[0]) * gl.width / 2;
-				refPos[1] = (1 - refPos[1]) * gl.height / 2;
-				refPos[0] += 0.5 * LABEL_HEIGHT + LABEL_WIDTH - LABEL_TEXT_PADDING; // Right-align label
-				refPos[1] -= 0.5 * LABEL_HEIGHT - LABEL_TEXT_PADDING; // Right-align label
-				gl.drawText(label++, refPos[0], refPos[1], 'topright');
-			});
-		} else {
-			// Draw lines between image.imagePos and image.refPos
-			sdrLine.bind();
-			meshLine.bind(sdrLine, null);
-			images.forEach(function (image) {
-				if (!image.imagePos || image.imagePos === image.refPos) return;
-				libGlMatrix.mat4.identity(mattrans);
-				if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-				tf.transformPos(imagePos, image.imagePos);
-				tf.transformPos(refPos, image.refPos);
-				libGlMatrix.mat4.translate(mattrans, mattrans, [imagePos[0], imagePos[1], 0.0]);
-				var dx = refPos[0] - imagePos[0],
-				    dy = refPos[1] - imagePos[1];
-				libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.atan2(dy, dx));
-				libGlMatrix.mat4.scale(mattrans, mattrans, [Math.sqrt(dx * dx + dy * dy), 1.0, 1.0]);
-				sdrLine.matWorldViewProj(mattrans);
-				sdrLine.color.apply(sdrLine, image.lineColor ? image.lineColor : defaultImageLineColor);
-				meshLine.draw();
-			});
-		}
+        refPos[0] = (1 + refPos[0]) * gl.width / 2;
+        refPos[1] = (1 - refPos[1]) * gl.height / 2;
+        refPos[0] += 0.5 * LABEL_HEIGHT + LABEL_WIDTH - LABEL_TEXT_PADDING; // Right-align label
+        refPos[1] -= 0.5 * LABEL_HEIGHT - LABEL_TEXT_PADDING; // Right-align label
+        gl.drawText(label++, refPos[0], refPos[1], 'topright');
+      });
+    } else {
+      // Draw lines between image.imagePos and image.refPos
+      sdrLine.bind();
+      meshLine.bind(sdrLine, null);
+      images.forEach(function (image) {
+        if (!image.imagePos || image.imagePos === image.refPos) return;
+        libGlMatrix.mat4.identity(mattrans);
+        if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+        tf.transformPos(imagePos, image.imagePos);
+        tf.transformPos(refPos, image.refPos);
+        libGlMatrix.mat4.translate(mattrans, mattrans, [imagePos[0], imagePos[1], 0.0]);
+        var dx = refPos[0] - imagePos[0],
+            dy = refPos[1] - imagePos[1];
+        libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.atan2(dy, dx));
+        libGlMatrix.mat4.scale(mattrans, mattrans, [Math.sqrt(dx * dx + dy * dy), 1.0, 1.0]);
+        sdrLine.matWorldViewProj(mattrans);
+        sdrLine.color.apply(sdrLine, image.lineColor ? image.lineColor : defaultImageLineColor);
+        meshLine.draw();
+      });
+    }
 
-		//gl.disable(gl.SCISSOR_TEST);
+    //gl.disable(gl.SCISSOR_TEST);
 
-		sdrImage.bind();
-		var label = 1;
-		images.forEach(function (image) {
-			if (!image.imagePos) return;
+    sdrImage.bind();
+    var label = 1;
+    images.forEach(function (image) {
+      if (!image.imagePos) return;
 
-			//var normalizedImagePos = vec2.create();
-			//tf.transformPos(normalizedImagePos, image.imagePos);
-			//if (normalizedImagePos[0] < 0.0 || normalizedImagePos[0] >= 1.0 || normalizedImagePos[1] < 0.0 || normalizedImagePos[1] >= 1.0)
-			//	return;
+      //var normalizedImagePos = vec2.create();
+      //tf.transformPos(normalizedImagePos, image.imagePos);
+      //if (normalizedImagePos[0] < 0.0 || normalizedImagePos[0] >= 1.0 || normalizedImagePos[1] < 0.0 || normalizedImagePos[1] >= 1.0)
+      //  return;
 
-			tf.transformPos(imagePos, image.imagePos);
+      tf.transformPos(imagePos, image.imagePos);
 
-			// Set image size
-			tf.transformNml2(imageSize, image.imageSize);
-			var w = image.tex.image.width,
-			    h = image.tex.image.height;
-			//imageSize[0] *= 2 / gl.width; imageSize[1] *= 2 / gl.height; // Transform imageSize from normalized space to device space
-			var scale;
-			if (Math.max(imageSize[0], imageSize[0] * h / w, 1.0) < Math.max(imageSize[1] * w / h, imageSize[1])) scale = [2 * Math.floor(imageSize[0]) / gl.width, 2 * Math.floor(imageSize[0] * h / w) / gl.height, 1];else scale = [2 * Math.floor(imageSize[1] * w / h) / gl.width, 2 * Math.floor(imageSize[1]) / gl.height, 1];
+      // Set image size
+      tf.transformNml2(imageSize, image.imageSize);
+      var w = image.tex.image.width,
+          h = image.tex.image.height;
+      //imageSize[0] *= 2 / gl.width; imageSize[1] *= 2 / gl.height; // Transform imageSize from normalized space to device space
+      var scale;
+      if (Math.max(imageSize[0], imageSize[0] * h / w, 1.0) < Math.max(imageSize[1] * w / h, imageSize[1])) scale = [2 * Math.floor(imageSize[0]) / gl.width, 2 * Math.floor(imageSize[0] * h / w) / gl.height, 1];else scale = [2 * Math.floor(imageSize[1] * w / h) / gl.width, 2 * Math.floor(imageSize[1]) / gl.height, 1];
 
-			var borderWidth = image.borderWidth ? image.borderWidth : defaultImageBorderWidth;
-			if (borderWidth > 0) {
-				scale[0] += 2 * borderWidth / gl.width;
-				scale[1] += 2 * borderWidth / gl.height;
+      var borderWidth = image.borderWidth ? image.borderWidth : defaultImageBorderWidth;
+      if (borderWidth > 0) {
+        scale[0] += 2 * borderWidth / gl.width;
+        scale[1] += 2 * borderWidth / gl.height;
 
-				meshQuad.bind(sdrLine);
-				libGlMatrix.mat4.identity(mattrans);
-				if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-				imagePos[0] = PixelAlignX(imagePos[0]);
-				libGlMatrix.mat4.translate(mattrans, mattrans, [imagePos[0], PixelAlignY(imagePos[1]), 0.0]);
-				libGlMatrix.mat4.scale(mattrans, mattrans, scale);
-				libGlMatrix.mat4.translate(mattrans, mattrans, image.imageAnchor); // Move anchor to imageAnchor
-				sdrLine.matWorldViewProj(mattrans);
-				sdrLine.color.apply(sdrLine, image.borderColor ? image.borderColor : defaultImageBorderColor);
-				meshQuad.draw();
+        meshQuad.bind(sdrLine);
+        libGlMatrix.mat4.identity(mattrans);
+        if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+        imagePos[0] = PixelAlignX(imagePos[0]);
+        libGlMatrix.mat4.translate(mattrans, mattrans, [imagePos[0], PixelAlignY(imagePos[1]), 0.0]);
+        libGlMatrix.mat4.scale(mattrans, mattrans, scale);
+        libGlMatrix.mat4.translate(mattrans, mattrans, image.imageAnchor); // Move anchor to imageAnchor
+        sdrLine.matWorldViewProj(mattrans);
+        sdrLine.color.apply(sdrLine, image.borderColor ? image.borderColor : defaultImageBorderColor);
+        meshQuad.draw();
 
-				scale[0] -= 2 * borderWidth / gl.width;
-				scale[1] -= 2 * borderWidth / gl.height;
-			}
+        scale[0] -= 2 * borderWidth / gl.width;
+        scale[1] -= 2 * borderWidth / gl.height;
+      }
 
-			meshQuad.bind(sdrImage, image.tex);
-			libGlMatrix.mat4.identity(mattrans);
-			if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-			imagePos[0] = PixelAlignX(imagePos[0]);
-			libGlMatrix.mat4.translate(mattrans, mattrans, [imagePos[0], PixelAlignY(imagePos[1]), 0.0]);
-			libGlMatrix.mat4.scale(mattrans, mattrans, scale);
-			libGlMatrix.mat4.translate(mattrans, mattrans, image.imageAnchor); // Move anchor to imageAnchor
-			sdrImage.matWorldViewProj(mattrans);
-			meshQuad.draw();
+      meshQuad.bind(sdrImage, image.tex);
+      libGlMatrix.mat4.identity(mattrans);
+      if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+      imagePos[0] = PixelAlignX(imagePos[0]);
+      libGlMatrix.mat4.translate(mattrans, mattrans, [imagePos[0], PixelAlignY(imagePos[1]), 0.0]);
+      libGlMatrix.mat4.scale(mattrans, mattrans, scale);
+      libGlMatrix.mat4.translate(mattrans, mattrans, image.imageAnchor); // Move anchor to imageAnchor
+      sdrImage.matWorldViewProj(mattrans);
+      meshQuad.draw();
 
-			if (options['labelThumbnails']) {
-				// Draw thumbnail label below thumbnail
-				libGlMatrix.mat4.identity(mattrans);
-				if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-				imagePos[0] += image.imageAnchor[0] * scale[0]; // Move stripe position depending on image anchor
-				imagePos[1] += image.imageAnchor[1] * scale[1]; // Move stripe position depending on image anchor
+      if (options['labelThumbnails']) {
+        // Draw thumbnail label below thumbnail
+        libGlMatrix.mat4.identity(mattrans);
+        if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+        imagePos[0] += image.imageAnchor[0] * scale[0]; // Move stripe position depending on image anchor
+        imagePos[1] += image.imageAnchor[1] * scale[1]; // Move stripe position depending on image anchor
 
-				libGlMatrix.mat4.translate(mattrans, mattrans, [imagePos[0], PixelAlignY(imagePos[1]), 0.0]);
-				scale[1] = 2 * LABEL_HEIGHT / gl.height;
-				scale[1] = PixelAlignY(scale[1]);
-				//scale[0] += 2 / gl.width; // Widen by 1 pixel
-				libGlMatrix.mat4.scale(mattrans, mattrans, scale);
-				libGlMatrix.mat4.translate(mattrans, mattrans, [-0.0, -1.0, 0.0]); // Move anchor to top of stripe
-				sdrLine.matWorldViewProj(mattrans);
+        libGlMatrix.mat4.translate(mattrans, mattrans, [imagePos[0], PixelAlignY(imagePos[1]), 0.0]);
+        scale[1] = 2 * LABEL_HEIGHT / gl.height;
+        scale[1] = PixelAlignY(scale[1]);
+        //scale[0] += 2 / gl.width; // Widen by 1 pixel
+        libGlMatrix.mat4.scale(mattrans, mattrans, scale);
+        libGlMatrix.mat4.translate(mattrans, mattrans, [-0.0, -1.0, 0.0]); // Move anchor to top of stripe
+        sdrLine.matWorldViewProj(mattrans);
 
-				sdrLine.color.apply(sdrLine, image.highlighted ? [1, 1, 0, 1] : image.labelColor ? image.labelColor : defaultImageLabelColor);
-				meshQuad.bind(sdrLine, null);
-				meshQuad.draw();
+        sdrLine.color.apply(sdrLine, image.highlighted ? [1, 1, 0, 1] : image.labelColor ? image.labelColor : defaultImageLabelColor);
+        meshQuad.bind(sdrLine, null);
+        meshQuad.draw();
 
-				sdrLine.color.apply(sdrLine, image.borderColor ? image.borderColor : defaultImageBorderColor);
-				meshLineQuad.bind(sdrLine, null);
-				meshLineQuad.draw();
+        sdrLine.color.apply(sdrLine, image.borderColor ? image.borderColor : defaultImageBorderColor);
+        meshLineQuad.bind(sdrLine, null);
+        meshLineQuad.draw();
 
-				imagePos[0] += 1.0 * scale[0] - LABEL_TEXT_PADDING * 2 / gl.width; // Right-align label (right-padding = 4)
-				imagePos[1] -= LABEL_TEXT_PADDING * 2 / gl.height; // Right-align label (top-padding = 5)
-				imagePos[1] = PixelAlignY(imagePos[1]);
-				gl.drawText(label++, gl.width * (1 + imagePos[0]) / 2, gl.height * (1 - imagePos[1]) / 2, 'topright');
-			}
-		});
+        imagePos[0] += 1.0 * scale[0] - LABEL_TEXT_PADDING * 2 / gl.width; // Right-align label (right-padding = 4)
+        imagePos[1] -= LABEL_TEXT_PADDING * 2 / gl.height; // Right-align label (top-padding = 5)
+        imagePos[1] = PixelAlignY(imagePos[1]);
+        gl.drawText(label++, gl.width * (1 + imagePos[0]) / 2, gl.height * (1 - imagePos[1]) / 2, 'topright');
+      }
+    });
 
-		//gl.enable(gl.SCISSOR_TEST);
-	};
+    //gl.enable(gl.SCISSOR_TEST);
+  };
 
-	var options = {},
-	    defaultImageBorderWidth = 1,
-	    defaultImageBorderColor = gl.foreColor,
-	    defaultImageLineColor = gl.foreColor,
-	    defaultImageLabelColor = gl.backColor;
-	this.setDataset = function (dataset, options) {};
-	this.onInputChanged = function (activeInputs, animatedInputs, options) {};
-	this.onOptionsChanged = function (_options) {
-		options = _options;
-		defaultImageBorderWidth = options['thumbnailBorderWidth'];
-		defaultImageBorderColor = options['thumbnailBorderColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailBorderColor'])).map(function (c) {
-			return c / 255.0;
-		}) : gl.foreColor;
-		defaultImageLineColor = options['thumbnailLineColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailLineColor'])).map(function (c) {
-			return c / 255.0;
-		}) : gl.foreColor;
-		defaultImageLabelColor = options['thumbnailLabelColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailLabelColor'])).map(function (c) {
-			return c / 255.0;
-		}) : gl.backColor;
-	};
-	this.onPlotBoundsChanged = function (plotBounds) {};
+  var options = {},
+      defaultImageBorderWidth = 1,
+      defaultImageBorderColor = gl.foreColor,
+      defaultImageLineColor = gl.foreColor,
+      defaultImageLabelColor = gl.backColor;
+  this.setDataset = function (dataset, options) {};
+  this.onInputChanged = function (activeInputs, animatedInputs, options) {};
+  this.onOptionsChanged = function (_options) {
+    options = _options;
+    defaultImageBorderWidth = options['thumbnailBorderWidth'];
+    defaultImageBorderColor = options['thumbnailBorderColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailBorderColor'])).map(function (c) {
+      return c / 255.0;
+    }) : gl.foreColor;
+    defaultImageLineColor = options['thumbnailLineColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailLineColor'])).map(function (c) {
+      return c / 255.0;
+    }) : gl.foreColor;
+    defaultImageLabelColor = options['thumbnailLabelColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailLabelColor'])).map(function (c) {
+      return c / 255.0;
+    }) : gl.backColor;
+  };
+  this.onPlotBoundsChanged = function (plotBounds) {};
 
-	/**
-  * @param  {string} imageFilename
-  * @param  {number} refIndex
-  * @param  {Array<number>} refPos
-  * @param  {Array<number>=} imagePos
-  * @param  {Array<number>=} imageSize
-  * @param  {string=} imageAnchor (default: 'middlecenter')
-  */
-	this.showImage = function (imageFilename, refIndex, refPos, imagePos, imageSize, imageAnchor) {
-		// Convert imageAnchor from string to vec3
-		var imageAnchorVector;
-		switch (imageAnchor) {
-			case 'topleft':
-				imageAnchorVector = [-0.0, -1.0, 0.0];break;
-			case 'topcenter':
-				imageAnchorVector = [-0.5, -1.0, 0.0];break;
-			case 'topright':
-				imageAnchorVector = [-1.0, -1.0, 0.0];break;
-			case 'middleleft':
-				imageAnchorVector = [-0.0, -0.5, 0.0];break;
-			default:
-				imageAnchorVector = [-0.5, -0.5, 0.0];break;
-			case 'middleright':
-				imageAnchorVector = [-1.0, -0.5, 0.0];break;
-			case 'bottomleft':
-				imageAnchorVector = [-0.0, -0.0, 0.0];break;
-			case 'bottomcenter':
-				imageAnchorVector = [-0.5, -0.0, 0.0];break;
-			case 'bottomright':
-				imageAnchorVector = [-1.0, -0.0, 0.0];break;
-		}
+  /**
+   * @param  {string} imageFilename
+   * @param  {number} refIndex
+   * @param  {Array<number>} refPos
+   * @param  {Array<number>=} imagePos
+   * @param  {Array<number>=} imageSize
+   * @param  {string=} imageAnchor (default: 'middlecenter')
+   */
+  this.showImage = function (imageFilename, refIndex, refPos, imagePos, imageSize, imageAnchor) {
+    // Convert imageAnchor from string to vec3
+    var imageAnchorVector;
+    switch (imageAnchor) {
+      case 'topleft':
+        imageAnchorVector = [-0.0, -1.0, 0.0];break;
+      case 'topcenter':
+        imageAnchorVector = [-0.5, -1.0, 0.0];break;
+      case 'topright':
+        imageAnchorVector = [-1.0, -1.0, 0.0];break;
+      case 'middleleft':
+        imageAnchorVector = [-0.0, -0.5, 0.0];break;
+      default:
+        imageAnchorVector = [-0.5, -0.5, 0.0];break;
+      case 'middleright':
+        imageAnchorVector = [-1.0, -0.5, 0.0];break;
+      case 'bottomleft':
+        imageAnchorVector = [-0.0, -0.0, 0.0];break;
+      case 'bottomcenter':
+        imageAnchorVector = [-0.5, -0.0, 0.0];break;
+      case 'bottomright':
+        imageAnchorVector = [-1.0, -0.0, 0.0];break;
+    }
 
-		var newImage = new Thumbnail(globalView);
-		newImage.tex = libGraphics.LoadTexture(gl, imageFilename, function () {
-			globalView.invalidate();
-		});
-		newImage.imagePos = imagePos;
-		newImage.refIndex = refIndex;
-		newImage.refPos = refPos;
-		newImage.imageSize = imageSize;
-		newImage.imageAnchor = imageAnchorVector;
-		newImage.borderColor = null;
-		images.push(newImage);
-	};
-	this.clearImages = function () {
-		images = [];
-	};
-	/**
-  * @return {Array<Thumbnail>}
-  */
-	this.getImages = function () {
-		return images;
-	};
+    var newImage = new Thumbnail(globalView);
+    newImage.tex = libGraphics.LoadTexture(gl, imageFilename, function () {
+      globalView.invalidate();
+    });
+    newImage.imagePos = imagePos;
+    newImage.refIndex = refIndex;
+    newImage.refPos = refPos;
+    newImage.imageSize = imageSize;
+    newImage.imageAnchor = imageAnchorVector;
+    newImage.borderColor = null;
+    images.push(newImage);
+  };
+  this.clearImages = function () {
+    images = [];
+  };
+  /**
+   * @return {Array<Thumbnail>}
+   */
+  this.getImages = function () {
+    return images;
+  };
 
-	this.resolveIntersections = function (tf) {
-		var a = libGlMatrix.vec2.create(),
-		    b = libGlMatrix.vec2.create(),
-		    c = libGlMatrix.vec2.create(),
-		    d = libGlMatrix.vec2.create();
-		for (var i = 1; i < images.length; ++i) {
-			if (images[i].imagePos) {
-				tf.transformPos(a, images[i].imagePos);
-				tf.transformPos(b, images[i].refPos);
-				for (var j = 0; j < i; ++j) {
-					if (images[j].imagePos) {
-						tf.transformPos(c, images[j].imagePos);
-						tf.transformPos(d, images[j].refPos);
+  this.resolveIntersections = function (tf) {
+    var a = libGlMatrix.vec2.create(),
+        b = libGlMatrix.vec2.create(),
+        c = libGlMatrix.vec2.create(),
+        d = libGlMatrix.vec2.create();
+    for (var i = 1; i < images.length; ++i) {
+      if (images[i].imagePos) {
+        tf.transformPos(a, images[i].imagePos);
+        tf.transformPos(b, images[i].refPos);
+        for (var j = 0; j < i; ++j) {
+          if (images[j].imagePos) {
+            tf.transformPos(c, images[j].imagePos);
+            tf.transformPos(d, images[j].refPos);
 
-						if (libGlMatrix.vec2.sqrDist(a, b) + libGlMatrix.vec2.sqrDist(c, d) > libGlMatrix.vec2.sqrDist(a, d) + libGlMatrix.vec2.sqrDist(c, b) && !libAlgorithm.linesIntersect(a, d, c, b)) {
-							//console.log("exchange {0} - {1}".format(i, j));
-							var tmp = images[j].imagePos;
-							images[j].imagePos = images[i].imagePos;
-							images[i].imagePos = tmp;
-							i = j = 0;break; //EDIT: How neccessary is this?
-						}
-					}
-				}
-			}
-		}for (var i = 1; i < images.length; ++i) {
-			if (images[i].imagePos) {
-				tf.transformPos(a, images[i].imagePos);
-				tf.transformPos(b, images[i].refPos);
-				for (var j = 0; j < i; ++j) {
-					if (images[j].imagePos) {
-						tf.transformPos(c, images[j].imagePos);
-						tf.transformPos(d, images[j].refPos);
+            if (libGlMatrix.vec2.sqrDist(a, b) + libGlMatrix.vec2.sqrDist(c, d) > libGlMatrix.vec2.sqrDist(a, d) + libGlMatrix.vec2.sqrDist(c, b) && !libAlgorithm.linesIntersect(a, d, c, b)) {
+              //console.log("exchange {0} - {1}".format(i, j));
+              var tmp = images[j].imagePos;
+              images[j].imagePos = images[i].imagePos;
+              images[i].imagePos = tmp;
+              i = j = 0;break; //EDIT: How neccessary is this?
+            }
+          }
+        }
+      }
+    }for (var i = 1; i < images.length; ++i) {
+      if (images[i].imagePos) {
+        tf.transformPos(a, images[i].imagePos);
+        tf.transformPos(b, images[i].refPos);
+        for (var j = 0; j < i; ++j) {
+          if (images[j].imagePos) {
+            tf.transformPos(c, images[j].imagePos);
+            tf.transformPos(d, images[j].refPos);
 
-						if (libAlgorithm.linesIntersect(a, b, c, d)) {
-							//console.log("intersection {0} - {1}".format(i, j));
-							var tmp = images[j].imagePos;
-							images[j].imagePos = images[i].imagePos;
-							images[i].imagePos = tmp;
-							i = j = 0;break; //EDIT: How neccessary is this?
-						}
-					}
-				}
-			}
-		}
-	};
+            if (libAlgorithm.linesIntersect(a, b, c, d)) {
+              //console.log("intersection {0} - {1}".format(i, j));
+              var tmp = images[j].imagePos;
+              images[j].imagePos = images[i].imagePos;
+              images[i].imagePos = tmp;
+              i = j = 0;break; //EDIT: How neccessary is this?
+            }
+          }
+        }
+      }
+    }
+  };
 
-	this.imageFromPoint = function (tf, p) {
-		var imagePos = libGlMatrix.vec2.create(),
-		    refPos = libGlMatrix.vec2.create(),
-		    imageSize = libGlMatrix.vec2.create();
+  this.imageFromPoint = function (tf, p) {
+    var imagePos = libGlMatrix.vec2.create(),
+        refPos = libGlMatrix.vec2.create(),
+        imageSize = libGlMatrix.vec2.create();
 
-		var selectedImage = null;
-		images.forEach(function (image) {
-			if (!image.imagePos) return;
+    var selectedImage = null;
+    images.forEach(function (image) {
+      if (!image.imagePos) return;
 
-			tf.transformPos(imagePos, image.imagePos);
+      tf.transformPos(imagePos, image.imagePos);
 
-			tf.transformNml2(imageSize, image.imageSize);
-			var w = image.tex.image.width,
-			    h = image.tex.image.height;
-			var size;
-			if (Math.max(imageSize[0], imageSize[0] * h / w, 1.0) < Math.max(imageSize[1] * w / h, imageSize[1])) size = [Math.floor(imageSize[0]) * 2 / gl.width, Math.floor(imageSize[0] * h / w) * 2 / gl.height, 1];else size = [Math.floor(imageSize[1] * w / h) * 2 / gl.width, Math.floor(imageSize[1]) * 2 / gl.height, 1];
-			var imageBounds = [imagePos[0] + image.imageAnchor[0] * size[0], imagePos[0] + (image.imageAnchor[0] + 1.0) * size[0], imagePos[1] + image.imageAnchor[1] * size[1], imagePos[1] + (image.imageAnchor[1] + 1.0) * size[1]];
+      tf.transformNml2(imageSize, image.imageSize);
+      var w = image.tex.image.width,
+          h = image.tex.image.height;
+      var size;
+      if (Math.max(imageSize[0], imageSize[0] * h / w, 1.0) < Math.max(imageSize[1] * w / h, imageSize[1])) size = [Math.floor(imageSize[0]) * 2 / gl.width, Math.floor(imageSize[0] * h / w) * 2 / gl.height, 1];else size = [Math.floor(imageSize[1] * w / h) * 2 / gl.width, Math.floor(imageSize[1]) * 2 / gl.height, 1];
+      var imageBounds = [imagePos[0] + image.imageAnchor[0] * size[0], imagePos[0] + (image.imageAnchor[0] + 1.0) * size[0], imagePos[1] + image.imageAnchor[1] * size[1], imagePos[1] + (image.imageAnchor[1] + 1.0) * size[1]];
 
-			if (options['labelThumbnails']) imageBounds[2] -= LABEL_HEIGHT * 2 / gl.height;
+      if (options['labelThumbnails']) imageBounds[2] -= LABEL_HEIGHT * 2 / gl.height;
 
-			if (p[0] >= imageBounds[0] && p[0] <= imageBounds[1] && p[1] >= imageBounds[2] && p[1] <= imageBounds[3]) {
-				selectedImage = image;
-				return;
-			}
-		});
+      if (p[0] >= imageBounds[0] && p[0] <= imageBounds[1] && p[1] >= imageBounds[2] && p[1] <= imageBounds[3]) {
+        selectedImage = image;
+        return;
+      }
+    });
 
-		return selectedImage;
-	};
+    return selectedImage;
+  };
 }
 
 /***/ }),
@@ -13659,8 +13640,6 @@ function ImageViewer(gl, globalView) {
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["DensityViewer"] = DensityViewer;
-/* eslint-disable */
-
 var libGraphics = __webpack_require__(2);
 var libShaders = __webpack_require__(4);
 var libAlgorithm = __webpack_require__(5);
@@ -13676,296 +13655,296 @@ var libUtility = __webpack_require__(0);
  * @param {Object} globalView // {GlobalView}
  */
 function DensityViewer(gl, globalView) {
-	var sdrDensityMap = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured2, libShaders.Shaders.fsViewDensityMap);
-	sdrDensityMap.matWorldViewProj = sdrDensityMap.u4x4f("matWorldViewProj");
-	sdrDensityMap.matTexCoordTransform = sdrDensityMap.u2x2f("matTexCoordTransform");
-	sdrDensityMap.scale = sdrDensityMap.u1f("scale");
-	sdrDensityMap.color = sdrDensityMap.u3f("color");
-	//var colormap = libGraphics.LoadTexture(gl, "cmDensityMap.png", function() { globalView.invalidate(); });
+  var sdrDensityMap = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured2, libShaders.Shaders.fsViewDensityMap);
+  sdrDensityMap.matWorldViewProj = sdrDensityMap.u4x4f("matWorldViewProj");
+  sdrDensityMap.matTexCoordTransform = sdrDensityMap.u2x2f("matTexCoordTransform");
+  sdrDensityMap.scale = sdrDensityMap.u1f("scale");
+  sdrDensityMap.color = sdrDensityMap.u3f("color");
+  //var colormap = libGraphics.LoadTexture(gl, "cmDensityMap.png", function() { globalView.invalidate(); });
 
-	var sdrClusterMap = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured2, libShaders.Shaders.fsTextured);
-	sdrClusterMap.matWorldViewProj = sdrClusterMap.u4x4f("matWorldViewProj");
-	sdrClusterMap.matTexCoordTransform = sdrClusterMap.u2x2f("matTexCoordTransform");
+  var sdrClusterMap = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured2, libShaders.Shaders.fsTextured);
+  sdrClusterMap.matWorldViewProj = sdrClusterMap.u4x4f("matWorldViewProj");
+  sdrClusterMap.matTexCoordTransform = sdrClusterMap.u2x2f("matTexCoordTransform");
 
-	// Create a 2D quad mesh
-	var meshQuad = new libGraphics.Mesh(gl, new Float32Array([
-	// Positions
-	0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0]), null, null, null, new Float32Array([
-	// Texture coordinates
-	0, 1, 0, 0, 1, 1, 1, 0]));
+  // Create a 2D quad mesh
+  var meshQuad = new libGraphics.Mesh(gl, new Float32Array([
+  // Positions
+  0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0]), null, null, null, new Float32Array([
+  // Texture coordinates
+  0, 1, 0, 0, 1, 1, 1, 0]));
 
-	var dataset = null;
+  var dataset = null;
 
-	var clusterMapOptions = new libAlgorithm.ClusterMapOptions();
-	this.setClusterMapThreshold = function (threshold) {
-		if (this.showDensityMap && clusterMapOptions.threshold !== threshold) {
-			clusterMapOptions.threshold = threshold;
-			dataset.requestClusterMap(globalView.getActiveColumn(0), globalView.getActiveColumn(1), clusterMapOptions, function () {
-				globalView.invalidate();
-			}); // Request clusterMap and redraw once it's computed
-		} else clusterMapOptions.threshold = threshold;
-	};
-	this.getClusterMapThreshold = function () {
-		return clusterMapOptions.threshold;
-	};
+  var clusterMapOptions = new libAlgorithm.ClusterMapOptions();
+  this.setClusterMapThreshold = function (threshold) {
+    if (this.showDensityMap && clusterMapOptions.threshold !== threshold) {
+      clusterMapOptions.threshold = threshold;
+      dataset.requestClusterMap(globalView.getActiveColumn(0), globalView.getActiveColumn(1), clusterMapOptions, function () {
+        globalView.invalidate();
+      }); // Request clusterMap and redraw once it's computed
+    } else clusterMapOptions.threshold = threshold;
+  };
+  this.getClusterMapThreshold = function () {
+    return clusterMapOptions.threshold;
+  };
 
-	this.showDensityMap = false;
-	this.showClusterMap = false;
-	this.render = function (flipY, tf, d0, d1) {
-		var pos = libGlMatrix.vec2.create();
+  this.showDensityMap = false;
+  this.showClusterMap = false;
+  this.render = function (flipY, tf, d0, d1) {
+    var pos = libGlMatrix.vec2.create();
 
-		if (this.showClusterMap) {
-			if (dataset && dataset.isClusterMapReady(d0, d1)) // If clusterMap is ready
-				{
-					var clusterMap = dataset.requestClusterMap(d0, d1, clusterMapOptions); // Retrieve clusterMap synchronously (since we already know it's ready)
-					if (clusterMap.width === 0 || clusterMap.height === 0) return;
+    if (this.showClusterMap) {
+      if (dataset && dataset.isClusterMapReady(d0, d1)) // If clusterMap is ready
+        {
+          var clusterMap = dataset.requestClusterMap(d0, d1, clusterMapOptions); // Retrieve clusterMap synchronously (since we already know it's ready)
+          if (clusterMap.width === 0 || clusterMap.height === 0) return;
 
-					// Create texture if it wasn't already created
-					var texture = this.showDensityMap ? clusterMap.dtex : clusterMap.tex;
-					if (!texture) {
-						var densityMap = this.showDensityMap ? dataset.requestDensityMap(d0, d1, undefined, undefined) : null; // Retrieve densityMap synchronously (since we already know it's ready)
-						var rgba = new Uint8Array(4 * clusterMap.data.length);
-						for (var i = 0; i < clusterMap.data.length; ++i) {
-							var c = clusterMap.data[i];
+          // Create texture if it wasn't already created
+          var texture = this.showDensityMap ? clusterMap.dtex : clusterMap.tex;
+          if (!texture) {
+            var densityMap = this.showDensityMap ? dataset.requestDensityMap(d0, d1, undefined, undefined) : null; // Retrieve densityMap synchronously (since we already know it's ready)
+            var rgba = new Uint8Array(4 * clusterMap.data.length);
+            for (var i = 0; i < clusterMap.data.length; ++i) {
+              var c = clusterMap.data[i];
 
-							if (c === 0) {
-								rgba[4 * i + 0] = 0;
-								rgba[4 * i + 1] = 0;
-								rgba[4 * i + 2] = 0;
-								rgba[4 * i + 3] = 0;
-							} else {
-								// Use random RGB color (deprecated)
-								/*var clr = [Math.sin(++c) * 10000, Math.sin(++c) * 10000, Math.sin(++c) * 10000];
-        clr[0] -= Math.floor(clr[0]);
-        clr[1] -= Math.floor(clr[1]);
-        clr[2] -= Math.floor(clr[2]);*/
+              if (c === 0) {
+                rgba[4 * i + 0] = 0;
+                rgba[4 * i + 1] = 0;
+                rgba[4 * i + 2] = 0;
+                rgba[4 * i + 3] = 0;
+              } else {
+                // Use random RGB color (deprecated)
+                /*var clr = [Math.sin(++c) * 10000, Math.sin(++c) * 10000, Math.sin(++c) * 10000];
+                clr[0] -= Math.floor(clr[0]);
+                clr[1] -= Math.floor(clr[1]);
+                clr[2] -= Math.floor(clr[2]);*/
 
-								// Use evenly spaced hues
-								--c; // --c ... ID to index
-								var d = densityMap ? (densityMap.data[i] - clusterMap.minDensities[c]) / (clusterMap.densities[c] - clusterMap.minDensities[c]) : 0.75;
-								if (d < 0.0) d = 0.0;
-								c = (c + 0.5) / clusterMap.n; // +0.5 ... Use off-hues
-								if (c > 1) c -= 1;
+                // Use evenly spaced hues
+                --c; // --c ... ID to index
+                var d = densityMap ? (densityMap.data[i] - clusterMap.minDensities[c]) / (clusterMap.densities[c] - clusterMap.minDensities[c]) : 0.75;
+                if (d < 0.0) d = 0.0;
+                c = (c + 0.5) / clusterMap.n; // +0.5 ... Use off-hues
+                if (c > 1) c -= 1;
 
-								var clr = [c, 0.5, 1]; // 0.5 ... Use 50% saturated colors
-								clr = libUtility.hsv2rgb(clr);
+                var clr = [c, 0.5, 1]; // 0.5 ... Use 50% saturated colors
+                clr = libUtility.hsv2rgb(clr);
 
-								rgba[4 * i + 0] = Math.floor(clr[0] * 255);
-								rgba[4 * i + 1] = Math.floor(clr[1] * 255);
-								rgba[4 * i + 2] = Math.floor(clr[2] * 255);
-								rgba[4 * i + 3] = Math.floor(d * 255);
-							}
-						}
-						//libUtility.download("clustermap.png", libUtility.imageUrlFromBytes(rgba, clusterMap.width, clusterMap.height));
-						texture = libGraphics.LoadTextureFromByteArray(gl, rgba, clusterMap.width, clusterMap.height);
-						if (this.showDensityMap) clusterMap.dtex = texture;else clusterMap.tex = texture;
-					}
+                rgba[4 * i + 0] = Math.floor(clr[0] * 255);
+                rgba[4 * i + 1] = Math.floor(clr[1] * 255);
+                rgba[4 * i + 2] = Math.floor(clr[2] * 255);
+                rgba[4 * i + 3] = Math.floor(d * 255);
+              }
+            }
+            //libUtility.download("clustermap.png", libUtility.imageUrlFromBytes(rgba, clusterMap.width, clusterMap.height));
+            texture = libGraphics.LoadTextureFromByteArray(gl, rgba, clusterMap.width, clusterMap.height);
+            if (this.showDensityMap) clusterMap.dtex = texture;else clusterMap.tex = texture;
+          }
 
-					sdrClusterMap.bind();
-					meshQuad.bind(sdrClusterMap, texture);
+          sdrClusterMap.bind();
+          meshQuad.bind(sdrClusterMap, texture);
 
-					var mattrans = libGlMatrix.mat4.create();
-					if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-					tf.datasetCoordToDeviceCoord(pos, d0 > d1 ? [clusterMap.invTransformY(0), clusterMap.invTransformX(0)] : [clusterMap.invTransformX(0), clusterMap.invTransformY(0)]);
-					libGlMatrix.mat4.translate(mattrans, mattrans, [pos[0], pos[1], 0.0]);
-					tf.datasetDistToDeviceDist(pos, d0 > d1 ? [clusterMap.height / clusterMap.transform[2], clusterMap.width / clusterMap.transform[0]] : [clusterMap.width / clusterMap.transform[0], clusterMap.height / clusterMap.transform[2]]);
-					libGlMatrix.mat4.scale(mattrans, mattrans, [pos[0], pos[1], 1.0]);
-					sdrClusterMap.matWorldViewProj(mattrans);
+          var mattrans = libGlMatrix.mat4.create();
+          if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+          tf.datasetCoordToDeviceCoord(pos, d0 > d1 ? [clusterMap.invTransformY(0), clusterMap.invTransformX(0)] : [clusterMap.invTransformX(0), clusterMap.invTransformY(0)]);
+          libGlMatrix.mat4.translate(mattrans, mattrans, [pos[0], pos[1], 0.0]);
+          tf.datasetDistToDeviceDist(pos, d0 > d1 ? [clusterMap.height / clusterMap.transform[2], clusterMap.width / clusterMap.transform[0]] : [clusterMap.width / clusterMap.transform[0], clusterMap.height / clusterMap.transform[2]]);
+          libGlMatrix.mat4.scale(mattrans, mattrans, [pos[0], pos[1], 1.0]);
+          sdrClusterMap.matWorldViewProj(mattrans);
 
-					sdrClusterMap.matTexCoordTransform(new Float32Array(d0 > d1 ? [0, 1, 1, 0] : [1, 0, 0, 1]));
-					meshQuad.draw();
-				} else // If clusterMap isn't ready yet
-				dataset.requestClusterMap(d0, d1, clusterMapOptions, function () {
-					globalView.invalidate();
-				}); // Request clusterMap and redraw once it's computed
-		} else if (this.showDensityMap) {
-			if (dataset && dataset.isDensityMapReady(d0, d1)) // If densityMap is ready
-				{
-					var densityMap = /** @type {DensityMap} */dataset.requestDensityMap(d0, d1, undefined, undefined); // Retrieve densityMap synchronously (since we already know it's ready)
-					if (densityMap.width === 0 || densityMap.height === 0) return;
-					//libUtility.download("densityMap.png", libUtility.imageUrlFromBytes(libUtility.F32toI24flipY(densityMap.data, [densityMap.minimum, densityMap.maximum], densityMap.width, densityMap.height), densityMap.width, densityMap.height));
+          sdrClusterMap.matTexCoordTransform(new Float32Array(d0 > d1 ? [0, 1, 1, 0] : [1, 0, 0, 1]));
+          meshQuad.draw();
+        } else // If clusterMap isn't ready yet
+        dataset.requestClusterMap(d0, d1, clusterMapOptions, function () {
+          globalView.invalidate();
+        }); // Request clusterMap and redraw once it's computed
+    } else if (this.showDensityMap) {
+      if (dataset && dataset.isDensityMapReady(d0, d1)) // If densityMap is ready
+        {
+          var densityMap = /** @type {DensityMap} */dataset.requestDensityMap(d0, d1, undefined, undefined); // Retrieve densityMap synchronously (since we already know it's ready)
+          if (densityMap.width === 0 || densityMap.height === 0) return;
+          //libUtility.download("densityMap.png", libUtility.imageUrlFromBytes(libUtility.F32toI24flipY(densityMap.data, [densityMap.minimum, densityMap.maximum], densityMap.width, densityMap.height), densityMap.width, densityMap.height));
 
-					// Create texture if it wasn't already created
-					if (!densityMap.texture) densityMap.texture = libGraphics.LoadTextureFromFloatArray(gl, densityMap.data, densityMap.width, densityMap.height);
+          // Create texture if it wasn't already created
+          if (!densityMap.texture) densityMap.texture = libGraphics.LoadTextureFromFloatArray(gl, densityMap.data, densityMap.width, densityMap.height);
 
-					sdrDensityMap.bind();
-					meshQuad.bind(sdrDensityMap, [densityMap.texture] /*colormap*/);
+          sdrDensityMap.bind();
+          meshQuad.bind(sdrDensityMap, [densityMap.texture] /*colormap*/);
 
-					var mattrans = libGlMatrix.mat4.create();
-					if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-					tf.datasetCoordToDeviceCoord(pos, d0 > d1 ? [densityMap.invTransformY(0), densityMap.invTransformX(0)] : [densityMap.invTransformX(0), densityMap.invTransformY(0)]);
-					libGlMatrix.mat4.translate(mattrans, mattrans, [pos[0], pos[1], 0.0]);
-					tf.datasetDistToDeviceDist(pos, d0 > d1 ? [densityMap.height / densityMap.transform[2], densityMap.width / densityMap.transform[0]] : [densityMap.width / densityMap.transform[0], densityMap.height / densityMap.transform[2]]);
-					libGlMatrix.mat4.scale(mattrans, mattrans, [pos[0], pos[1], 1.0]);
-					sdrDensityMap.matWorldViewProj(mattrans);
+          var mattrans = libGlMatrix.mat4.create();
+          if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+          tf.datasetCoordToDeviceCoord(pos, d0 > d1 ? [densityMap.invTransformY(0), densityMap.invTransformX(0)] : [densityMap.invTransformX(0), densityMap.invTransformY(0)]);
+          libGlMatrix.mat4.translate(mattrans, mattrans, [pos[0], pos[1], 0.0]);
+          tf.datasetDistToDeviceDist(pos, d0 > d1 ? [densityMap.height / densityMap.transform[2], densityMap.width / densityMap.transform[0]] : [densityMap.width / densityMap.transform[0], densityMap.height / densityMap.transform[2]]);
+          libGlMatrix.mat4.scale(mattrans, mattrans, [pos[0], pos[1], 1.0]);
+          sdrDensityMap.matWorldViewProj(mattrans);
 
-					sdrDensityMap.matTexCoordTransform(new Float32Array(d0 > d1 ? [0, 1, 1, 0] : [1, 0, 0, 1]));
-					sdrDensityMap.scale(1 / densityMap.maximum);
-					//sdrDensityMap.scale(0.5);
-					sdrDensityMap.color(gl.foreColor[0], gl.foreColor[1], gl.foreColor[2]);
-					meshQuad.draw();
-				} else // If densityMap isn't ready yet
-				dataset.requestDensityMap(d0, d1, undefined, undefined, function () {
-					globalView.invalidate();
-				}); // Request densityMap and redraw once it's computed
-		}
-	};
+          sdrDensityMap.matTexCoordTransform(new Float32Array(d0 > d1 ? [0, 1, 1, 0] : [1, 0, 0, 1]));
+          sdrDensityMap.scale(1 / densityMap.maximum);
+          //sdrDensityMap.scale(0.5);
+          sdrDensityMap.color(gl.foreColor[0], gl.foreColor[1], gl.foreColor[2]);
+          meshQuad.draw();
+        } else // If densityMap isn't ready yet
+        dataset.requestDensityMap(d0, d1, undefined, undefined, function () {
+          globalView.invalidate();
+        }); // Request densityMap and redraw once it's computed
+    }
+  };
 
-	this.setDataset = function (_dataset, options) {
-		dataset = _dataset;
-	};
-	this.onInputChanged = function (activeInputs, animatedInputs, options) {};
-	this.onOptionsChanged = function (options) {};
-	this.onPlotBoundsChanged = function (plotBounds) {};
+  this.setDataset = function (_dataset, options) {
+    dataset = _dataset;
+  };
+  this.onInputChanged = function (activeInputs, animatedInputs, options) {};
+  this.onOptionsChanged = function (options) {};
+  this.onPlotBoundsChanged = function (plotBounds) {};
 
-	this.updateImages = function (images, d0, d1) {
-		var densityMap = dataset.requestDensityMap(d0, d1, undefined, undefined);
-		if (densityMap.texture === null || d0 === d1) return;
+  this.updateImages = function (images, d0, d1) {
+    var densityMap = dataset.requestDensityMap(d0, d1, undefined, undefined);
+    if (densityMap.texture === null || d0 === d1) return;
 
-		var width = densityMap.width,
-		    height = densityMap.height,
-		    densityScale = densityMap.scale,
-		    densityOffset = -densityMap.offset;
+    var width = densityMap.width,
+        height = densityMap.height,
+        densityScale = densityMap.scale,
+        densityOffset = -densityMap.offset;
 
-		var xMin = 0,
-		    xMax = width;
-		var yMin = 0,
-		    yMax = height;
+    var xMin = 0,
+        xMax = width;
+    var yMin = 0,
+        yMax = height;
 
-		var bodies = images.map(function (image) {
-			var x = densityMap.transformX(image.imagePos[d0]);
-			var y = densityMap.transformY(image.imagePos[d1]);
-			var rx = densityMap.transformX(image.refPos[d0]);
-			var ry = densityMap.transformY(image.refPos[d1]);
-			return { x: x, y: y, rx: rx, ry: ry, vx: 0, vy: 0, fx: 0, fy: 0 };
-		});
+    var bodies = images.map(function (image) {
+      var x = densityMap.transformX(image.imagePos[d0]);
+      var y = densityMap.transformY(image.imagePos[d1]);
+      var rx = densityMap.transformX(image.refPos[d0]);
+      var ry = densityMap.transformY(image.refPos[d1]);
+      return { x: x, y: y, rx: rx, ry: ry, vx: 0, vy: 0, fx: 0, fy: 0 };
+    });
 
-		/*var repellPoint = function(body, point_x, point_y, magnitude, magnitude2)
-  {
-  	var dx = body.x - point_x, dy = body.y - point_y;
-  	var dist = Math.sqrt(dx*dx + dy*dy);
-  	var F = magnitude / (dist*dist*dist) + magnitude2 / dist;
-  	F = Math.max(-1e1, Math.min(1e1, F));
-  	body.fx += F * dx;
-  	body.fy += F * dy;
-  }*/
+    /*var repellPoint = function(body, point_x, point_y, magnitude, magnitude2)
+    {
+      var dx = body.x - point_x, dy = body.y - point_y;
+      var dist = Math.sqrt(dx*dx + dy*dy);
+      var F = magnitude / (dist*dist*dist) + magnitude2 / dist;
+      F = Math.max(-1e1, Math.min(1e1, F));
+      body.fx += F * dx;
+      body.fy += F * dy;
+    }*/
 
-		var repellPoint = function repellPoint(body, point_x, point_y, minDist, minDistMagnitude, maxDist, maxDistMagnitude) {
-			var dx = body.x - point_x,
-			    dy = body.y - point_y;
-			var dist = Math.sqrt(dx * dx + dy * dy);
+    var repellPoint = function repellPoint(body, point_x, point_y, minDist, minDistMagnitude, maxDist, maxDistMagnitude) {
+      var dx = body.x - point_x,
+          dy = body.y - point_y;
+      var dist = Math.sqrt(dx * dx + dy * dy);
 
-			if (dist < minDist) {
-				dist -= minDist;
-				var F = -minDistMagnitude * dist;
-				//if (dx < 1e-4 && dy < 1e-4) dx += 1e-4;
-				body.fx += F * dx;
-				body.fy += F * dy;
-			} else if (dist > maxDist) {
-				dist -= maxDist;
-				var F = -maxDistMagnitude * dist;
-				body.fx += F * dx;
-				body.fy += F * dy;
-			}
-		};
+      if (dist < minDist) {
+        dist -= minDist;
+        var F = -minDistMagnitude * dist;
+        //if (dx < 1e-4 && dy < 1e-4) dx += 1e-4;
+        body.fx += F * dx;
+        body.fy += F * dy;
+      } else if (dist > maxDist) {
+        dist -= maxDist;
+        var F = -maxDistMagnitude * dist;
+        body.fx += F * dx;
+        body.fy += F * dy;
+      }
+    };
 
-		for (var i = 0; i < bodies.length; ++i) {
-			/*for (var j = 0; j < bodies.length; ++j)
-   {
-   	if (i !== j)
-   	{
-   		repellPoint(bodies[i], bodies[j].x, bodies[j].y, 20.0, 1e-3, Number.MAX_VALUE, 0);
-   		repellPoint(bodies[i], bodies[j].rx, bodies[j].ry, 20.0, 1e-3, Number.MAX_VALUE, 0);
-   	}
-   }
-   repellPoint(bodies[i], bodies[i].rx, bodies[i].ry, 20.0, 1e-3, 20.0, 1e-4);*/
+    for (var i = 0; i < bodies.length; ++i) {
+      /*for (var j = 0; j < bodies.length; ++j)
+      {
+        if (i !== j)
+        {
+          repellPoint(bodies[i], bodies[j].x, bodies[j].y, 20.0, 1e-3, Number.MAX_VALUE, 0);
+          repellPoint(bodies[i], bodies[j].rx, bodies[j].ry, 20.0, 1e-3, Number.MAX_VALUE, 0);
+        }
+      }
+      repellPoint(bodies[i], bodies[i].rx, bodies[i].ry, 20.0, 1e-3, 20.0, 1e-4);*/
 
-			var sample_x = Math.floor(bodies[i].x),
-			    sample_y = Math.floor(bodies[i].y);
-			var density = densityMap[sample_x * width + sample_y];
-			var bestDir = null,
-			    lowestDensity = density;
-			[[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]].forEach(function (dir) {
-				var x = sample_x + dir[0];
-				var y = sample_y + dir[1];
-				if (x >= xMin && x < xMax && y >= yMin && y < yMax) {
-					var density = densityMap[y * width + x];
-					if (density < lowestDensity) {
-						lowestDensity = density;
-						bestDir = dir;
-					}
-				}
-			});
-			if (bestDir !== null) {
-				repellPoint(bodies[i], bodies[i].x + bestDir[0], bodies[i].y + bestDir[1], Number.MIN_VALUE, 0, 0.0, density);
-				console.log(density);
-			}
+      var sample_x = Math.floor(bodies[i].x),
+          sample_y = Math.floor(bodies[i].y);
+      var density = densityMap[sample_x * width + sample_y];
+      var bestDir = null,
+          lowestDensity = density;
+      [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]].forEach(function (dir) {
+        var x = sample_x + dir[0];
+        var y = sample_y + dir[1];
+        if (x >= xMin && x < xMax && y >= yMin && y < yMax) {
+          var density = densityMap[y * width + x];
+          if (density < lowestDensity) {
+            lowestDensity = density;
+            bestDir = dir;
+          }
+        }
+      });
+      if (bestDir !== null) {
+        repellPoint(bodies[i], bodies[i].x + bestDir[0], bodies[i].y + bestDir[1], Number.MIN_VALUE, 0, 0.0, density);
+        console.log(density);
+      }
 
-			/*for (var j = i + 1; j < bodies.length; ++j)
-   {
-   	var dx = bodies[i].x - bodies[j].x, dy = bodies[i].y - bodies[j].y;
-   	var dist = Math.sqrt(dx*dx + dy*dy);
-   	var F = 1e2 / (dist*dist*dist);
-   	bodies[i].fx += F * dx;
-   	bodies[i].fy += F * dy;
-   	bodies[j].fx -= F * dx;
-   	bodies[j].fy -= F * dy;
-   }
-   
-   for (var j = 0; j < bodies.length; ++j)
-   	if (i !== j)
-   	{
-   		var dx = bodies[i].x - bodies[j].rx, dy = bodies[i].y - bodies[j].ry;
-   		var dist = Math.sqrt(dx*dx + dy*dy);
-   		var F = 1e2 / (dist*dist*dist);
-   		bodies[i].fx += F * dx;
-   		bodies[i].fy += F * dy;
-   	}
-   
-   var dx = bodies[i].x - bodies[i].rx, dy = bodies[i].y - bodies[i].ry;
-   var dist = Math.sqrt(dx*dx + dy*dy);
-   var F = -1e2 / (dist*dist*dist);
-   bodies[i].fx += F * dx;
-   bodies[i].fy += F * dy;*/
-		}
+      /*for (var j = i + 1; j < bodies.length; ++j)
+      {
+        var dx = bodies[i].x - bodies[j].x, dy = bodies[i].y - bodies[j].y;
+        var dist = Math.sqrt(dx*dx + dy*dy);
+        var F = 1e2 / (dist*dist*dist);
+        bodies[i].fx += F * dx;
+        bodies[i].fy += F * dy;
+        bodies[j].fx -= F * dx;
+        bodies[j].fy -= F * dy;
+      }
+      
+      for (var j = 0; j < bodies.length; ++j)
+        if (i !== j)
+        {
+          var dx = bodies[i].x - bodies[j].rx, dy = bodies[i].y - bodies[j].ry;
+          var dist = Math.sqrt(dx*dx + dy*dy);
+          var F = 1e2 / (dist*dist*dist);
+          bodies[i].fx += F * dx;
+          bodies[i].fy += F * dy;
+        }
+      
+      var dx = bodies[i].x - bodies[i].rx, dy = bodies[i].y - bodies[i].ry;
+      var dist = Math.sqrt(dx*dx + dy*dy);
+      var F = -1e2 / (dist*dist*dist);
+      bodies[i].fx += F * dx;
+      bodies[i].fy += F * dy;*/
+    }
 
-		for (var i = 0; i < bodies.length; ++i) {
-			bodies[i].x += bodies[i].fx;
-			bodies[i].y += bodies[i].fy;
+    for (var i = 0; i < bodies.length; ++i) {
+      bodies[i].x += bodies[i].fx;
+      bodies[i].y += bodies[i].fy;
 
-			images[i].imagePos[d0] = densityMap.invTransformX(bodies[i].x);
-			images[i].imagePos[d1] = densityMap.invTransformY(bodies[i].y);
-		}
+      images[i].imagePos[d0] = densityMap.invTransformX(bodies[i].x);
+      images[i].imagePos[d1] = densityMap.invTransformY(bodies[i].y);
+    }
 
-		/*images.forEach(function(image) {
-  	var p0 = Math.floor(densityMap.transformX(image.imagePos[d0]));
-  	var p1 = Math.floor(densityMap.transformY(image.imagePos[d1]));
-  	
-  	var bestDir = null, bestDensity = densityMap[p1 * width + p0];
-  	[[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]].forEach(function(dir) {
-  		var x = p0 + dir[0];
-  		var y = p1 + dir[1];
-  		if (x >= xMin && x < xMax && y >= yMin && y < yMax)
-  		{
-  			//var sqDensity = Math.pow(densityOffset + densityMap[y * width + x] * densityScale, 2);
-  			var density = densityMap[y * width + x];
-  			if (density < bestDensity)
-  			{
-  				bestDensity = density;
-  				bestDir = dir;
-  			}
-  		}
-  	});
-  	if (bestDir !== null)
-  	{
-  		p0 += bestDir[0];
-  		p1 += bestDir[1];
-  		
-  		image.imagePos[d0] = densityMap.invTransformX(p0);
-  		image.imagePos[d1] = densityMap.invTransformY(p1);
-  	}
-  });*/
-	};
+    /*images.forEach(function(image) {
+      var p0 = Math.floor(densityMap.transformX(image.imagePos[d0]));
+      var p1 = Math.floor(densityMap.transformY(image.imagePos[d1]));
+      
+      var bestDir = null, bestDensity = densityMap[p1 * width + p0];
+      [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]].forEach(function(dir) {
+        var x = p0 + dir[0];
+        var y = p1 + dir[1];
+        if (x >= xMin && x < xMax && y >= yMin && y < yMax)
+        {
+          //var sqDensity = Math.pow(densityOffset + densityMap[y * width + x] * densityScale, 2);
+          var density = densityMap[y * width + x];
+          if (density < bestDensity)
+          {
+            bestDensity = density;
+            bestDir = dir;
+          }
+        }
+      });
+      if (bestDir !== null)
+      {
+        p0 += bestDir[0];
+        p1 += bestDir[1];
+        
+        image.imagePos[d0] = densityMap.invTransformX(p0);
+        image.imagePos[d1] = densityMap.invTransformY(p1);
+      }
+    });*/
+  };
 }
 
 /***/ }),
@@ -13975,8 +13954,6 @@ function DensityViewer(gl, globalView) {
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["HistogramViewer"] = HistogramViewer;
-/* eslint-disable */
-
 var libGraphics = __webpack_require__(2);
 var libShaders = __webpack_require__(4);
 var libAlgorithm = __webpack_require__(5);
@@ -13992,202 +13969,202 @@ var libGlMatrix = __webpack_require__(3);
  * @param {Object} globalView // {GlobalView}
  */
 function HistogramViewer(gl, globalView) {
-	var sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
-	sdrLine.color = sdrLine.u4f("color");
-	sdrLine.color.apply(sdrLine, gl.foreColor);
-	sdrLine.matWorldViewProj = sdrLine.u4x4f("matWorldViewProj");
+  var sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
+  sdrLine.color = sdrLine.u4f("color");
+  sdrLine.color.apply(sdrLine, gl.foreColor);
+  sdrLine.matWorldViewProj = sdrLine.u4x4f("matWorldViewProj");
 
-	/*this.updateColorSchema = function() {
- 	sdrLine.color.apply(sdrLine, gl.foreColor);
- }*/
+  /*this.updateColorSchema = function() {
+    sdrLine.color.apply(sdrLine, gl.foreColor);
+  }*/
 
-	// Create a 2D line mesh
-	var meshLine = new libGraphics.Mesh(gl, new Float32Array([
-	// Positions
-	0, 0, 0, 1, 0, 0]), null, null, null, null, null, gl.LINES);
+  // Create a 2D line mesh
+  var meshLine = new libGraphics.Mesh(gl, new Float32Array([
+  // Positions
+  0, 0, 0, 1, 0, 0]), null, null, null, null, null, gl.LINES);
 
-	var dataset = null,
-	    activeInputs = null,
-	    options = {};
-	var axes = [{ histogram: null, d: -1, meshHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.TRIANGLES), meshLineHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP) }, { histogram: null, d: -1, meshHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.TRIANGLES), meshLineHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP) }, { histogram: null, d: -1, meshHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.TRIANGLES), meshLineHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP) }];
+  var dataset = null,
+      activeInputs = null,
+      options = {};
+  var axes = [{ histogram: null, d: -1, meshHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.TRIANGLES), meshLineHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP) }, { histogram: null, d: -1, meshHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.TRIANGLES), meshLineHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP) }, { histogram: null, d: -1, meshHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.TRIANGLES), meshLineHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP) }];
 
-	this.render = function (flipY, tf, plotBounds) {
-		var mattrans = libGlMatrix.mat4.create();
+  this.render = function (flipY, tf, plotBounds) {
+    var mattrans = libGlMatrix.mat4.create();
 
-		var pos = libGlMatrix.vec3.create(),
-		    scl = libGlMatrix.vec3.create();
-		tf.datasetCoordToDeviceCoord(pos, [axes[0].histogram ? axes[0].histogram.invTransformX(0) : 0.0, axes[1].histogram ? axes[1].histogram.invTransformX(0) : 0.0, axes[2].histogram ? axes[2].histogram.invTransformX(0) : 0.0]);
-		tf.datasetDistToDeviceDist(scl, [axes[0].histogram ? axes[0].histogram.width / axes[0].histogram.transform[0] : 1.0, axes[1].histogram ? axes[1].histogram.width / axes[1].histogram.transform[0] : 1.0, axes[2].histogram ? axes[2].histogram.width / axes[2].histogram.transform[0] : 1.0]);
+    var pos = libGlMatrix.vec3.create(),
+        scl = libGlMatrix.vec3.create();
+    tf.datasetCoordToDeviceCoord(pos, [axes[0].histogram ? axes[0].histogram.invTransformX(0) : 0.0, axes[1].histogram ? axes[1].histogram.invTransformX(0) : 0.0, axes[2].histogram ? axes[2].histogram.invTransformX(0) : 0.0]);
+    tf.datasetDistToDeviceDist(scl, [axes[0].histogram ? axes[0].histogram.width / axes[0].histogram.transform[0] : 1.0, axes[1].histogram ? axes[1].histogram.width / axes[1].histogram.transform[0] : 1.0, axes[2].histogram ? axes[2].histogram.width / axes[2].histogram.transform[0] : 1.0]);
 
-		// Transform color-dimension from [0 ... 1] to [plotBounds.y .. plotBounds.y + plotBounds.height] in device y-space -> pos[2], scl[2]
-		pos[2] = (plotBounds.y + plotBounds.height * pos[2]) * 2 / gl.height - 1;
-		scl[2] = plotBounds.height * scl[2] * 2 / gl.height;
+    // Transform color-dimension from [0 ... 1] to [plotBounds.y .. plotBounds.y + plotBounds.height] in device y-space -> pos[2], scl[2]
+    pos[2] = (plotBounds.y + plotBounds.height * pos[2]) * 2 / gl.height - 1;
+    scl[2] = plotBounds.height * scl[2] * 2 / gl.height;
 
-		// Draw x-axis histogram
-		if (options['showXAxisHistogram'] && axes[0].histogram) {
-			var axis = axes[0];
-			gl.enable(gl.SCISSOR_TEST);
-			gl.scissor(plotBounds.x, 0.0, plotBounds.width, gl.height);
+    // Draw x-axis histogram
+    if (options['showXAxisHistogram'] && axes[0].histogram) {
+      var axis = axes[0];
+      gl.enable(gl.SCISSOR_TEST);
+      gl.scissor(plotBounds.x, 0.0, plotBounds.width, gl.height);
 
-			sdrLine.bind();
-			meshLine.bind(sdrLine, null);
-			libGlMatrix.mat4.identity(mattrans);
-			if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-			libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5) / gl.width - 1, 2 * (plotBounds.y + 0.5 - 64) / gl.height - 1, 0]); // 0.5 ... center inside pixel
-			libGlMatrix.mat4.scale(mattrans, mattrans, [2 * plotBounds.width / gl.width, 1, 1]);
-			sdrLine.matWorldViewProj(mattrans);
-			meshLine.draw();
+      sdrLine.bind();
+      meshLine.bind(sdrLine, null);
+      libGlMatrix.mat4.identity(mattrans);
+      if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+      libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5) / gl.width - 1, 2 * (plotBounds.y + 0.5 - 64) / gl.height - 1, 0]); // 0.5 ... center inside pixel
+      libGlMatrix.mat4.scale(mattrans, mattrans, [2 * plotBounds.width / gl.width, 1, 1]);
+      sdrLine.matWorldViewProj(mattrans);
+      meshLine.draw();
 
-			libGlMatrix.mat4.identity(mattrans);
-			if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-			libGlMatrix.mat4.translate(mattrans, mattrans, [pos[0] + 0.5 * 2 / gl.width, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0.0]); // 0.5 ... center inside pixel
-			libGlMatrix.mat4.scale(mattrans, mattrans, [scl[0], -64 * 2 / gl.height, 1.0]);
+      libGlMatrix.mat4.identity(mattrans);
+      if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+      libGlMatrix.mat4.translate(mattrans, mattrans, [pos[0] + 0.5 * 2 / gl.width, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0.0]); // 0.5 ... center inside pixel
+      libGlMatrix.mat4.scale(mattrans, mattrans, [scl[0], -64 * 2 / gl.height, 1.0]);
 
-			sdrLine.bind();
-			sdrLine.matWorldViewProj(mattrans);
-			sdrLine.color.apply(sdrLine, [gl.foreColor[0], gl.foreColor[1], gl.foreColor[2], 0.5]);
-			axis.meshHistogram.bind(sdrLine, null);
-			axis.meshHistogram.draw();
+      sdrLine.bind();
+      sdrLine.matWorldViewProj(mattrans);
+      sdrLine.color.apply(sdrLine, [gl.foreColor[0], gl.foreColor[1], gl.foreColor[2], 0.5]);
+      axis.meshHistogram.bind(sdrLine, null);
+      axis.meshHistogram.draw();
 
-			sdrLine.color.apply(sdrLine, gl.foreColor);
-			axis.meshLineHistogram.bind(sdrLine, null);
-			axis.meshLineHistogram.draw();
+      sdrLine.color.apply(sdrLine, gl.foreColor);
+      axis.meshLineHistogram.bind(sdrLine, null);
+      axis.meshLineHistogram.draw();
 
-			gl.disable(gl.SCISSOR_TEST);
-		}
+      gl.disable(gl.SCISSOR_TEST);
+    }
 
-		// Draw y-axis histogram
-		if (options['showYAxisHistogram'] && axes[1].histogram) {
-			var axis = axes[1];
-			gl.enable(gl.SCISSOR_TEST);
-			gl.scissor(0.0, flipY ? gl.height - plotBounds.y - plotBounds.height : plotBounds.y, gl.width, plotBounds.height);
+    // Draw y-axis histogram
+    if (options['showYAxisHistogram'] && axes[1].histogram) {
+      var axis = axes[1];
+      gl.enable(gl.SCISSOR_TEST);
+      gl.scissor(0.0, flipY ? gl.height - plotBounds.y - plotBounds.height : plotBounds.y, gl.width, plotBounds.height);
 
-			sdrLine.bind();
-			meshLine.bind(sdrLine, null);
-			libGlMatrix.mat4.identity(mattrans);
-			if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-			libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5 - 64) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
-			libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
-			libGlMatrix.mat4.scale(mattrans, mattrans, [2 * plotBounds.height / gl.height, 1, 1]);
-			sdrLine.matWorldViewProj(mattrans);
-			meshLine.draw();
+      sdrLine.bind();
+      meshLine.bind(sdrLine, null);
+      libGlMatrix.mat4.identity(mattrans);
+      if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+      libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5 - 64) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
+      libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
+      libGlMatrix.mat4.scale(mattrans, mattrans, [2 * plotBounds.height / gl.height, 1, 1]);
+      sdrLine.matWorldViewProj(mattrans);
+      meshLine.draw();
 
-			libGlMatrix.mat4.identity(mattrans);
-			if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-			libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5) / gl.width - 1, pos[1] + 0.5 * 2 / gl.height, 0.0]); // 0.5 ... center inside pixel
-			libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
-			libGlMatrix.mat4.scale(mattrans, mattrans, [scl[1], 64 * 2 / gl.width, 1.0]);
+      libGlMatrix.mat4.identity(mattrans);
+      if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+      libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5) / gl.width - 1, pos[1] + 0.5 * 2 / gl.height, 0.0]); // 0.5 ... center inside pixel
+      libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
+      libGlMatrix.mat4.scale(mattrans, mattrans, [scl[1], 64 * 2 / gl.width, 1.0]);
 
-			sdrLine.bind();
-			sdrLine.matWorldViewProj(mattrans);
-			sdrLine.color.apply(sdrLine, [gl.foreColor[0], gl.foreColor[1], gl.foreColor[2], 0.5]);
-			axis.meshHistogram.bind(sdrLine, null);
-			axis.meshHistogram.draw();
+      sdrLine.bind();
+      sdrLine.matWorldViewProj(mattrans);
+      sdrLine.color.apply(sdrLine, [gl.foreColor[0], gl.foreColor[1], gl.foreColor[2], 0.5]);
+      axis.meshHistogram.bind(sdrLine, null);
+      axis.meshHistogram.draw();
 
-			sdrLine.color.apply(sdrLine, gl.foreColor);
-			axis.meshLineHistogram.bind(sdrLine, null);
-			axis.meshLineHistogram.draw();
+      sdrLine.color.apply(sdrLine, gl.foreColor);
+      axis.meshLineHistogram.bind(sdrLine, null);
+      axis.meshLineHistogram.draw();
 
-			gl.disable(gl.SCISSOR_TEST);
-		}
+      gl.disable(gl.SCISSOR_TEST);
+    }
 
-		// Draw color-axis histogram
-		if (options['showColormapHistogram'] && axes[2].histogram) {
-			var axis = axes[2];
-			gl.enable(gl.SCISSOR_TEST);
-			gl.scissor(0.0, flipY ? gl.height - plotBounds.y - plotBounds.height : plotBounds.y, gl.width, plotBounds.height);
+    // Draw color-axis histogram
+    if (options['showColormapHistogram'] && axes[2].histogram) {
+      var axis = axes[2];
+      gl.enable(gl.SCISSOR_TEST);
+      gl.scissor(0.0, flipY ? gl.height - plotBounds.y - plotBounds.height : plotBounds.y, gl.width, plotBounds.height);
 
-			sdrLine.bind();
-			meshLine.bind(sdrLine, null);
-			libGlMatrix.mat4.identity(mattrans);
-			if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-			libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + plotBounds.width + libColormap.COLORMAP_WIDTH + 0.5 + 64) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
-			libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
-			libGlMatrix.mat4.scale(mattrans, mattrans, [2 * plotBounds.height / gl.height, 1, 1]);
-			sdrLine.matWorldViewProj(mattrans);
-			meshLine.draw();
+      sdrLine.bind();
+      meshLine.bind(sdrLine, null);
+      libGlMatrix.mat4.identity(mattrans);
+      if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+      libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + plotBounds.width + libColormap.COLORMAP_WIDTH + 0.5 + 64) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
+      libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
+      libGlMatrix.mat4.scale(mattrans, mattrans, [2 * plotBounds.height / gl.height, 1, 1]);
+      sdrLine.matWorldViewProj(mattrans);
+      meshLine.draw();
 
-			libGlMatrix.mat4.identity(mattrans);
-			if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-			libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + plotBounds.width + libColormap.COLORMAP_WIDTH + 0.5) / gl.width - 1, pos[2] + 0.5 * 2 / gl.height, 0.0]); // 0.5 ... center inside pixel
-			libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
-			libGlMatrix.mat4.scale(mattrans, mattrans, [scl[2], -64 * 2 / gl.width, 1.0]);
+      libGlMatrix.mat4.identity(mattrans);
+      if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+      libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + plotBounds.width + libColormap.COLORMAP_WIDTH + 0.5) / gl.width - 1, pos[2] + 0.5 * 2 / gl.height, 0.0]); // 0.5 ... center inside pixel
+      libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
+      libGlMatrix.mat4.scale(mattrans, mattrans, [scl[2], -64 * 2 / gl.width, 1.0]);
 
-			sdrLine.bind();
-			sdrLine.matWorldViewProj(mattrans);
-			sdrLine.color.apply(sdrLine, [gl.foreColor[0], gl.foreColor[1], gl.foreColor[2], 0.5]);
-			axis.meshHistogram.bind(sdrLine, null);
-			axis.meshHistogram.draw();
+      sdrLine.bind();
+      sdrLine.matWorldViewProj(mattrans);
+      sdrLine.color.apply(sdrLine, [gl.foreColor[0], gl.foreColor[1], gl.foreColor[2], 0.5]);
+      axis.meshHistogram.bind(sdrLine, null);
+      axis.meshHistogram.draw();
 
-			sdrLine.color.apply(sdrLine, gl.foreColor);
-			axis.meshLineHistogram.bind(sdrLine, null);
-			axis.meshLineHistogram.draw();
+      sdrLine.color.apply(sdrLine, gl.foreColor);
+      axis.meshLineHistogram.bind(sdrLine, null);
+      axis.meshLineHistogram.draw();
 
-			gl.disable(gl.SCISSOR_TEST);
-		}
-	};
+      gl.disable(gl.SCISSOR_TEST);
+    }
+  };
 
-	this.setDataset = function (_dataset, options) {
-		dataset = _dataset;
-		recreateHistograms();
-	};
+  this.setDataset = function (_dataset, options) {
+    dataset = _dataset;
+    recreateHistograms();
+  };
 
-	this.onOptionsChanged = function (_options, recompileShader) {
-		options = _options;
-		recreateHistograms();
-	};
+  this.onOptionsChanged = function (_options, recompileShader) {
+    options = _options;
+    recreateHistograms();
+  };
 
-	this.onInputChanged = function (_activeInputs, animatedInputs, options) {
-		activeInputs = _activeInputs;
-		recreateHistograms();
-	};
+  this.onInputChanged = function (_activeInputs, animatedInputs, options) {
+    activeInputs = _activeInputs;
+    recreateHistograms();
+  };
 
-	this.onPlotBoundsChanged = function (plotBounds) {};
+  this.onPlotBoundsChanged = function (plotBounds) {};
 
-	function recreateHistograms() {
-		if (dataset && options['histogramHeight'] > 0) {
-			var numBins = options['numHistogramBins'];
-			if (options['showXAxisHistogram']) createHistogram(axes[0], dataset, activeInputs[0], numBins);
-			if (options['showYAxisHistogram']) createHistogram(axes[1], dataset, activeInputs[1], numBins);
-			if (options['showColormapHistogram']) createHistogram(axes[2], dataset, activeInputs[2], numBins);
-		}
-	}
-	function createHistogram(axis, dataset, d, numBins) {
-		if (d < 0 || d >= dataset.dataVectors.length) return; // Validate inputs
-		if (axis.histogram && axis.histogram.width === numBins && axis.d === d) return; // Requested histogram already exists
+  function recreateHistograms() {
+    if (dataset && options['histogramHeight'] > 0) {
+      var numBins = options['numHistogramBins'];
+      if (options['showXAxisHistogram']) createHistogram(axes[0], dataset, activeInputs[0], numBins);
+      if (options['showYAxisHistogram']) createHistogram(axes[1], dataset, activeInputs[1], numBins);
+      if (options['showColormapHistogram']) createHistogram(axes[2], dataset, activeInputs[2], numBins);
+    }
+  }
+  function createHistogram(axis, dataset, d, numBins) {
+    if (d < 0 || d >= dataset.dataVectors.length) return; // Validate inputs
+    if (axis.histogram && axis.histogram.width === numBins && axis.d === d) return; // Requested histogram already exists
 
-		axis.histogram = libAlgorithm.computeHistogram(dataset, axis.d = d, numBins);
-		libAlgorithm.addTransformFunctions(axis.histogram);
-		//console.log(axis.histogram);
+    axis.histogram = libAlgorithm.computeHistogram(dataset, axis.d = d, numBins);
+    libAlgorithm.addTransformFunctions(axis.histogram);
+    //console.log(axis.histogram);
 
-		var positions = new Float32Array(6 * numBins * 3);
-		var v3_set = function v3_set(i, x, y) {
-			i *= 3;positions[i++] = x;positions[i++] = y;positions[i++] = 0.0;
-		};
-		for (var b = 0, i = -1, x_scale = 1 / numBins; b < numBins; ++b) {
-			var y = axis.histogram.data[b] / axis.histogram.maximum;
+    var positions = new Float32Array(6 * numBins * 3);
+    var v3_set = function v3_set(i, x, y) {
+      i *= 3;positions[i++] = x;positions[i++] = y;positions[i++] = 0.0;
+    };
+    for (var b = 0, i = -1, x_scale = 1 / numBins; b < numBins; ++b) {
+      var y = axis.histogram.data[b] / axis.histogram.maximum;
 
-			v3_set(++i, (b + 0) * x_scale, 0);
-			v3_set(++i, (b + 1) * x_scale, 0);
-			v3_set(++i, (b + 1) * x_scale, y);
+      v3_set(++i, (b + 0) * x_scale, 0);
+      v3_set(++i, (b + 1) * x_scale, 0);
+      v3_set(++i, (b + 1) * x_scale, y);
 
-			v3_set(++i, (b + 1) * x_scale, y);
-			v3_set(++i, (b + 0) * x_scale, y);
-			v3_set(++i, (b + 0) * x_scale, 0);
-		}
-		axis.meshHistogram.reset(positions, null, null, null, null, null, gl.TRIANGLES);
+      v3_set(++i, (b + 1) * x_scale, y);
+      v3_set(++i, (b + 0) * x_scale, y);
+      v3_set(++i, (b + 0) * x_scale, 0);
+    }
+    axis.meshHistogram.reset(positions, null, null, null, null, null, gl.TRIANGLES);
 
-		positions = new Float32Array((3 * numBins + 1) * 3);
-		v3_set(0, 0, 0);
-		for (var b = 0, i = 0, x_scale = 1 / numBins; b < numBins;) {
-			var y = axis.histogram.data[b] / axis.histogram.maximum;
+    positions = new Float32Array((3 * numBins + 1) * 3);
+    v3_set(0, 0, 0);
+    for (var b = 0, i = 0, x_scale = 1 / numBins; b < numBins;) {
+      var y = axis.histogram.data[b] / axis.histogram.maximum;
 
-			v3_set(++i, b * x_scale, y);
-			v3_set(++i, ++b * x_scale, y);
-			v3_set(++i, b * x_scale, 0);
-		}
-		axis.meshLineHistogram.reset(positions, null, null, null, null, null, gl.LINE_STRIP);
-	}
+      v3_set(++i, b * x_scale, y);
+      v3_set(++i, ++b * x_scale, y);
+      v3_set(++i, b * x_scale, 0);
+    }
+    axis.meshLineHistogram.reset(positions, null, null, null, null, null, gl.LINE_STRIP);
+  }
 }
 
 /***/ }),
@@ -14197,7 +14174,6 @@ function HistogramViewer(gl, globalView) {
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["CoordinateSystem"] = CoordinateSystem;
-/* eslint-disable */
 var libGraphics = __webpack_require__(2);
 var libShaders = __webpack_require__(4);
 var libGlMatrix = __webpack_require__(3);
@@ -14211,249 +14187,249 @@ var libGlMatrix = __webpack_require__(3);
  * @param {Object} globalView // {GlobalView}
  */
 function CoordinateSystem(gl, globalView) {
-	var TICK_LENGTH = 6; // [pixel]
-	var NUM_TICKS = 10;
+  var TICK_LENGTH = 6; // [pixel]
+  var NUM_TICKS = 10;
 
-	var sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
-	sdrLine.color = sdrLine.u4f("color");
-	sdrLine.color.apply(sdrLine, gl.foreColor);
-	sdrLine.matWorldViewProj = sdrLine.u4x4f("matWorldViewProj");
-	this.updateColorSchema = function () {
-		sdrLine.color.apply(sdrLine, gl.foreColor);
-	};
+  var sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
+  sdrLine.color = sdrLine.u4f("color");
+  sdrLine.color.apply(sdrLine, gl.foreColor);
+  sdrLine.matWorldViewProj = sdrLine.u4x4f("matWorldViewProj");
+  this.updateColorSchema = function () {
+    sdrLine.color.apply(sdrLine, gl.foreColor);
+  };
 
-	// Create a 2D line mesh
-	var meshLine = new libGraphics.Mesh(gl, new Float32Array([
-	// Positions
-	0, 0, 0, 1, 0, 0]), null, null, null, null, null, gl.LINES);
+  // Create a 2D line mesh
+  var meshLine = new libGraphics.Mesh(gl, new Float32Array([
+  // Positions
+  0, 0, 0, 1, 0, 0]), null, null, null, null, null, gl.LINES);
 
-	var axes = [{ minimum: 0, maximum: 100, values: null, tickOffset: 0, tickDistance: 10, tickCount: 11, tickLength: TICK_LENGTH }, { minimum: 0, maximum: 100, values: null, tickOffset: 0, tickDistance: 10, tickCount: 11, tickLength: TICK_LENGTH }];
+  var axes = [{ minimum: 0, maximum: 100, values: null, tickOffset: 0, tickDistance: 10, tickCount: 11, tickLength: TICK_LENGTH }, { minimum: 0, maximum: 100, values: null, tickOffset: 0, tickDistance: 10, tickCount: 11, tickLength: TICK_LENGTH }];
 
-	/** @type {number} */var xTickLabel_top = 0;
-	/** @type {number} */var yTickLabel_left = 0;
+  /** @type {number} */var xTickLabel_top = 0;
+  /** @type {number} */var yTickLabel_left = 0;
 
-	this.visible = [true, true];
-	this.render = function (flipY, plotBounds) {
-		var mattrans = libGlMatrix.mat4.create();
+  this.visible = [true, true];
+  this.render = function (flipY, plotBounds) {
+    var mattrans = libGlMatrix.mat4.create();
 
-		// >>> Draw axes
+    // >>> Draw axes
 
-		sdrLine.bind();
-		meshLine.bind(sdrLine, null);
-		// Draw x-axis
-		if (this.visible[0]) {
-			libGlMatrix.mat4.identity(mattrans);
-			if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-			libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
-			libGlMatrix.mat4.scale(mattrans, mattrans, [2 * plotBounds.width / gl.width, 1, 1]);
-			sdrLine.matWorldViewProj(mattrans);
-			meshLine.draw();
-		}
-		// Draw y-axis
-		if (this.visible[1]) {
-			libGlMatrix.mat4.identity(mattrans);
-			if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-			libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
-			libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
-			libGlMatrix.mat4.scale(mattrans, mattrans, [2 * plotBounds.height / gl.height, 1, 1]);
-			sdrLine.matWorldViewProj(mattrans);
-			meshLine.draw();
-		}
+    sdrLine.bind();
+    meshLine.bind(sdrLine, null);
+    // Draw x-axis
+    if (this.visible[0]) {
+      libGlMatrix.mat4.identity(mattrans);
+      if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+      libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
+      libGlMatrix.mat4.scale(mattrans, mattrans, [2 * plotBounds.width / gl.width, 1, 1]);
+      sdrLine.matWorldViewProj(mattrans);
+      meshLine.draw();
+    }
+    // Draw y-axis
+    if (this.visible[1]) {
+      libGlMatrix.mat4.identity(mattrans);
+      if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+      libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
+      libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
+      libGlMatrix.mat4.scale(mattrans, mattrans, [2 * plotBounds.height / gl.height, 1, 1]);
+      sdrLine.matWorldViewProj(mattrans);
+      meshLine.draw();
+    }
 
-		// >>> Draw ticks and tick labels
+    // >>> Draw ticks and tick labels
 
-		// Draw x-axis ticks and tick labels
-		xTickLabel_top = 0;
-		if (this.visible[0]) {
-			var axis = axes[0];
-			libGlMatrix.mat4.identity(mattrans);
-			if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-			libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
-			libGlMatrix.mat4.rotateZ(mattrans, mattrans, -Math.PI / 2.0);
-			libGlMatrix.mat4.scale(mattrans, mattrans, [2 * axis.tickLength / gl.height, 2 * plotBounds.width / gl.width, 1]);
-			sdrLine.matWorldViewProj(mattrans);
-			meshLine.draw();
-			libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, 1.0, 0.0]);
-			sdrLine.matWorldViewProj(mattrans);
-			meshLine.draw();
-			libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -1.0, 0.0]);
-			for (var i = 0; i < axis.tickCount; ++i) {
-				var x = axis.tickOffset + i * axis.tickDistance;
-				var tickPos = (x - axis.minimum) / (axis.maximum - axis.minimum);
+    // Draw x-axis ticks and tick labels
+    xTickLabel_top = 0;
+    if (this.visible[0]) {
+      var axis = axes[0];
+      libGlMatrix.mat4.identity(mattrans);
+      if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+      libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
+      libGlMatrix.mat4.rotateZ(mattrans, mattrans, -Math.PI / 2.0);
+      libGlMatrix.mat4.scale(mattrans, mattrans, [2 * axis.tickLength / gl.height, 2 * plotBounds.width / gl.width, 1]);
+      sdrLine.matWorldViewProj(mattrans);
+      meshLine.draw();
+      libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, 1.0, 0.0]);
+      sdrLine.matWorldViewProj(mattrans);
+      meshLine.draw();
+      libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -1.0, 0.0]);
+      for (var i = 0; i < axis.tickCount; ++i) {
+        var x = axis.tickOffset + i * axis.tickDistance;
+        var tickPos = (x - axis.minimum) / (axis.maximum - axis.minimum);
 
-				libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, tickPos, 0.0]);
-				sdrLine.matWorldViewProj(mattrans);
-				meshLine.draw();
-				libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -tickPos, 0.0]);
+        libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, tickPos, 0.0]);
+        sdrLine.matWorldViewProj(mattrans);
+        meshLine.draw();
+        libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -tickPos, 0.0]);
 
-				var tickLabel = axis.values ? axis.values[x] : x.toPrecision(6) / 1;
-				gl.drawText(tickLabel, plotBounds.x + plotBounds.width * tickPos, gl.height - plotBounds.y + axis.tickLength + 2, 'topcenter');
-			}
-			xTickLabel_top = gl.height - plotBounds.y + axis.tickLength + 10 + gl.measureTextHeight();
-		}
-		// Draw y-axis ticks and tick labels
-		yTickLabel_left = 0;
-		if (this.visible[1]) {
-			var axis = axes[1];
-			libGlMatrix.mat4.identity(mattrans);
-			if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-			libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
-			libGlMatrix.mat4.scale(mattrans, mattrans, [-2 * axis.tickLength / gl.width, 2 * plotBounds.height / gl.height, 1]);
-			sdrLine.matWorldViewProj(mattrans);
-			meshLine.draw();
-			libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, 1.0, 0.0]);
-			sdrLine.matWorldViewProj(mattrans);
-			meshLine.draw();
-			libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -1.0, 0.0]);
-			for (var i = 0; i < axis.tickCount; ++i) {
-				var y = axis.tickOffset + i * axis.tickDistance;
-				var tickPos = (y - axis.minimum) / (axis.maximum - axis.minimum);
+        var tickLabel = axis.values ? axis.values[x] : x.toPrecision(6) / 1;
+        gl.drawText(tickLabel, plotBounds.x + plotBounds.width * tickPos, gl.height - plotBounds.y + axis.tickLength + 2, 'topcenter');
+      }
+      xTickLabel_top = gl.height - plotBounds.y + axis.tickLength + 10 + gl.measureTextHeight();
+    }
+    // Draw y-axis ticks and tick labels
+    yTickLabel_left = 0;
+    if (this.visible[1]) {
+      var axis = axes[1];
+      libGlMatrix.mat4.identity(mattrans);
+      if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+      libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
+      libGlMatrix.mat4.scale(mattrans, mattrans, [-2 * axis.tickLength / gl.width, 2 * plotBounds.height / gl.height, 1]);
+      sdrLine.matWorldViewProj(mattrans);
+      meshLine.draw();
+      libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, 1.0, 0.0]);
+      sdrLine.matWorldViewProj(mattrans);
+      meshLine.draw();
+      libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -1.0, 0.0]);
+      for (var i = 0; i < axis.tickCount; ++i) {
+        var y = axis.tickOffset + i * axis.tickDistance;
+        var tickPos = (y - axis.minimum) / (axis.maximum - axis.minimum);
 
-				libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, tickPos, 0.0]);
-				sdrLine.matWorldViewProj(mattrans);
-				meshLine.draw();
-				libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -tickPos, 0.0]);
+        libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, tickPos, 0.0]);
+        sdrLine.matWorldViewProj(mattrans);
+        meshLine.draw();
+        libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -tickPos, 0.0]);
 
-				var tickLabel = axis.values ? axis.values[y] : y.toPrecision(6) / 1;
-				yTickLabel_left = Math.max(yTickLabel_left, gl.measureTextWidth(tickLabel));
-				gl.drawText(tickLabel, plotBounds.x - axis.tickLength - 2, gl.height - plotBounds.y - plotBounds.height * tickPos, 'middleright');
-			}
-			yTickLabel_left = Math.ceil(plotBounds.x - axis.tickLength - 10 - yTickLabel_left);
-		}
+        var tickLabel = axis.values ? axis.values[y] : y.toPrecision(6) / 1;
+        yTickLabel_left = Math.max(yTickLabel_left, gl.measureTextWidth(tickLabel));
+        gl.drawText(tickLabel, plotBounds.x - axis.tickLength - 2, gl.height - plotBounds.y - plotBounds.height * tickPos, 'middleright');
+      }
+      yTickLabel_left = Math.ceil(plotBounds.x - axis.tickLength - 10 - yTickLabel_left);
+    }
 
-		// >>> Draw axis labels
+    // >>> Draw axis labels
 
-		// Draw x-axis label
-		if (this.visible[0] && axes[0].label) gl.drawText(axes[0].label, plotBounds.x + plotBounds.width / 2, xTickLabel_top, 'topcenter');
-		if (this.visible[1] && axes[1].label) gl.drawText(axes[1].label, yTickLabel_left, gl.height - plotBounds.y - plotBounds.height / 2, 'bottomcenter', -Math.PI / 2);
-	};
+    // Draw x-axis label
+    if (this.visible[0] && axes[0].label) gl.drawText(axes[0].label, plotBounds.x + plotBounds.width / 2, xTickLabel_top, 'topcenter');
+    if (this.visible[1] && axes[1].label) gl.drawText(axes[1].label, yTickLabel_left, gl.height - plotBounds.y - plotBounds.height / 2, 'bottomcenter', -Math.PI / 2);
+  };
 
-	function checkOverlap(d) {
-		var MIN_TICK_LABEL_DISTANCE = gl.measureTextWidth('  '); // Minimum distance between tick labels in pixel
-		switch (d) {
-			case 0:
-				var axis = axes[0],
-				    overlap = Number.MIN_VALUE,
-				    plotBounds = globalView.getPlotBounds();
-				for (var i = 0; i < axis.tickCount; ++i) {
-					var x = axis.tickOffset + i * axis.tickDistance;
-					var tickPos = (x - axis.minimum) / (axis.maximum - axis.minimum);
+  function checkOverlap(d) {
+    var MIN_TICK_LABEL_DISTANCE = gl.measureTextWidth('  '); // Minimum distance between tick labels in pixel
+    switch (d) {
+      case 0:
+        var axis = axes[0],
+            overlap = Number.MIN_VALUE,
+            plotBounds = globalView.getPlotBounds();
+        for (var i = 0; i < axis.tickCount; ++i) {
+          var x = axis.tickOffset + i * axis.tickDistance;
+          var tickPos = (x - axis.minimum) / (axis.maximum - axis.minimum);
 
-					var tickLabel = axis.values ? axis.values[x] : x.toPrecision(6) / 1;
+          var tickLabel = axis.values ? axis.values[x] : x.toPrecision(6) / 1;
 
-					var labelWidth = gl.measureTextWidth(tickLabel);
-					var leftLabelBound = plotBounds.x + plotBounds.width * tickPos - labelWidth / 2;
-					if (leftLabelBound < overlap + MIN_TICK_LABEL_DISTANCE) return false;
+          var labelWidth = gl.measureTextWidth(tickLabel);
+          var leftLabelBound = plotBounds.x + plotBounds.width * tickPos - labelWidth / 2;
+          if (leftLabelBound < overlap + MIN_TICK_LABEL_DISTANCE) return false;
 
-					overlap = leftLabelBound + labelWidth;
-				}
-				return true;
+          overlap = leftLabelBound + labelWidth;
+        }
+        return true;
 
-			case 1:
-				var axis = axes[1],
-				    plotBounds = globalView.getPlotBounds();
-				return plotBounds.height * axis.tickDistance / (axis.maximum - axis.minimum) >= gl.measureTextHeight() + MIN_TICK_LABEL_DISTANCE;
+      case 1:
+        var axis = axes[1],
+            plotBounds = globalView.getPlotBounds();
+        return plotBounds.height * axis.tickDistance / (axis.maximum - axis.minimum) >= gl.measureTextHeight() + MIN_TICK_LABEL_DISTANCE;
 
-			default:
-				return true;
-		}
-	}
+      default:
+        return true;
+    }
+  }
 
-	/**
-  * @param  {number} d
-  * @param  {number} minimum
-  * @param  {number} maximum
-  * @param  {boolean=} changeTickDistance=true
-  */
-	this.setNumericRange = function (d, minimum, maximum, changeTickDistance) {
-		var axis = axes[d];
-		axis.minimum = minimum;
-		axis.maximum = maximum;
-		axis.values = null;
+  /**
+   * @param  {number} d
+   * @param  {number} minimum
+   * @param  {number} maximum
+   * @param  {boolean=} changeTickDistance=true
+   */
+  this.setNumericRange = function (d, minimum, maximum, changeTickDistance) {
+    var axis = axes[d];
+    axis.minimum = minimum;
+    axis.maximum = maximum;
+    axis.values = null;
 
-		for (var numTicks = NUM_TICKS; numTicks >= 0; --numTicks) {
-			if (changeTickDistance === false) {
-				axis.tickOffset = Math.ceil(minimum / axis.tickDistance) * axis.tickDistance;
-				axis.tickCount = Math.floor((maximum - axis.tickOffset) / axis.tickDistance) + 1;
-			} else {
-				axis.tickDistance = (maximum - minimum) / numTicks;
-				var exp = Math.ceil(Math.log(axis.tickDistance) / Math.log(10)); // Compute power-of-10 just above tickDistance -> pow(10, exp)
+    for (var numTicks = NUM_TICKS; numTicks >= 0; --numTicks) {
+      if (changeTickDistance === false) {
+        axis.tickOffset = Math.ceil(minimum / axis.tickDistance) * axis.tickDistance;
+        axis.tickCount = Math.floor((maximum - axis.tickOffset) / axis.tickDistance) + 1;
+      } else {
+        axis.tickDistance = (maximum - minimum) / numTicks;
+        var exp = Math.ceil(Math.log(axis.tickDistance) / Math.log(10)); // Compute power-of-10 just above tickDistance -> pow(10, exp)
 
-				// Try less aggressive rounding in each iteration until break condition is met
-				for (var i = 0; i < 10; ++i) // Maximum 10 iterations
-				{
-					axis.tickDistance = (maximum - minimum) / numTicks;
-					var base = Math.pow(10, exp--);
-					axis.tickDistance = Math.round(axis.tickDistance / base) * base; // Round tickDistance to base
-					axis.tickOffset = Math.ceil(minimum / axis.tickDistance) * axis.tickDistance;
-					axis.tickCount = Math.floor((maximum - axis.tickOffset) / axis.tickDistance) + 1;
-					if (axis.tickCount >= numTicks - 2 && axis.tickCount <= numTicks + 2) // Condition: numTicks - 2 <= tickCount <= numTicks + 2
-						break;
-				}
-			}
+        // Try less aggressive rounding in each iteration until break condition is met
+        for (var i = 0; i < 10; ++i) // Maximum 10 iterations
+        {
+          axis.tickDistance = (maximum - minimum) / numTicks;
+          var base = Math.pow(10, exp--);
+          axis.tickDistance = Math.round(axis.tickDistance / base) * base; // Round tickDistance to base
+          axis.tickOffset = Math.ceil(minimum / axis.tickDistance) * axis.tickDistance;
+          axis.tickCount = Math.floor((maximum - axis.tickOffset) / axis.tickDistance) + 1;
+          if (axis.tickCount >= numTicks - 2 && axis.tickCount <= numTicks + 2) // Condition: numTicks - 2 <= tickCount <= numTicks + 2
+            break;
+        }
+      }
 
-			if (checkOverlap(d)) break;
-		}
-	};
-	this.setEnumRange = function (d, minimum, maximum, values) {
-		var axis = axes[d];
-		axis.minimum = minimum -= 0.5; // 0.5 ... Move to center of value-bin
-		axis.maximum = maximum -= 0.5; // 0.5 ... Move to center of value-bin
-		axis.values = values;
+      if (checkOverlap(d)) break;
+    }
+  };
+  this.setEnumRange = function (d, minimum, maximum, values) {
+    var axis = axes[d];
+    axis.minimum = minimum -= 0.5; // 0.5 ... Move to center of value-bin
+    axis.maximum = maximum -= 0.5; // 0.5 ... Move to center of value-bin
+    axis.values = values;
 
-		axis.tickDistance = 1;
-		axis.tickOffset = Math.max(0, Math.ceil(minimum / axis.tickDistance) * axis.tickDistance);
-		axis.tickCount = Math.min(values.length - axis.tickOffset, Math.floor((maximum - axis.tickOffset + 1) / axis.tickDistance));
-	};
-	this.setLabel = function (d, label) {
-		axes[d].label = label;
-	};
+    axis.tickDistance = 1;
+    axis.tickOffset = Math.max(0, Math.ceil(minimum / axis.tickDistance) * axis.tickDistance);
+    axis.tickCount = Math.min(values.length - axis.tickOffset, Math.floor((maximum - axis.tickOffset + 1) / axis.tickDistance));
+  };
+  this.setLabel = function (d, label) {
+    axes[d].label = label;
+  };
 
-	this.setDataset = function (dataset, options) {};
-	this.onInputChanged = function (activeInputs, animatedInputs, options) {};
-	this.onOptionsChanged = function (options) {
-		axes[0].tickLength = TICK_LENGTH + (options['showXAxisHistogram'] ? options['histogramHeight'] : 0);
-		axes[1].tickLength = TICK_LENGTH + (options['showYAxisHistogram'] ? options['histogramHeight'] : 0);
-	};
-	this.onPlotBoundsChanged = function (plotBounds) {
-		for (var i = 0; i < 2; ++i) {
-			axes[i].values === null ? this.setNumericRange(i, axes[i].minimum, axes[i].maximum, true) : this.setEnumRange(i, axes[i].minimum + 0.5, axes[i].maximum + 0.5, axes[i].values);
-		}
-	};
+  this.setDataset = function (dataset, options) {};
+  this.onInputChanged = function (activeInputs, animatedInputs, options) {};
+  this.onOptionsChanged = function (options) {
+    axes[0].tickLength = TICK_LENGTH + (options['showXAxisHistogram'] ? options['histogramHeight'] : 0);
+    axes[1].tickLength = TICK_LENGTH + (options['showYAxisHistogram'] ? options['histogramHeight'] : 0);
+  };
+  this.onPlotBoundsChanged = function (plotBounds) {
+    for (var i = 0; i < 2; ++i) {
+      axes[i].values === null ? this.setNumericRange(i, axes[i].minimum, axes[i].maximum, true) : this.setEnumRange(i, axes[i].minimum + 0.5, axes[i].maximum + 0.5, axes[i].values);
+    }
+  };
 
-	this.labelFromPoint = function (plotBounds, p) {
-		if (this.visible[0]) {
-			var halfTextWidth = gl.measureTextWidth(axes[0].label) / 2;
-			var plotCenter = plotBounds.x + plotBounds.width / 2;
-			if (p[0] >= plotCenter - halfTextWidth && p[0] < plotCenter + halfTextWidth && p[1] >= xTickLabel_top && p[1] <= xTickLabel_top + gl.measureTextHeight() + 2) return 0;
-		}
-		if (this.visible[1]) {
-			var halfTextWidth = gl.measureTextWidth(axes[1].label) / 2;
-			var plotCenter = gl.height - plotBounds.y - plotBounds.height / 2;
-			if (p[0] >= yTickLabel_left - gl.measureTextHeight() && p[0] <= yTickLabel_left + 2 && p[1] >= plotCenter - halfTextWidth && p[1] < plotCenter + halfTextWidth) return 1;
-		}
-		return null;
-	};
-	this.getLabelBounds = function (plotBounds, d) {
-		switch (d) {
-			case 0:
-				if (!this.visible[0]) return null;
-				var halfTextWidth = gl.measureTextWidth(axes[0].label) / 2;
-				var plotCenter = plotBounds.x + plotBounds.width / 2;
-				return { 'l': plotCenter - halfTextWidth, 'r': plotCenter + halfTextWidth, 't': xTickLabel_top, 'b': xTickLabel_top + gl.measureTextHeight() + 2 };
+  this.labelFromPoint = function (plotBounds, p) {
+    if (this.visible[0]) {
+      var halfTextWidth = gl.measureTextWidth(axes[0].label) / 2;
+      var plotCenter = plotBounds.x + plotBounds.width / 2;
+      if (p[0] >= plotCenter - halfTextWidth && p[0] < plotCenter + halfTextWidth && p[1] >= xTickLabel_top && p[1] <= xTickLabel_top + gl.measureTextHeight() + 2) return 0;
+    }
+    if (this.visible[1]) {
+      var halfTextWidth = gl.measureTextWidth(axes[1].label) / 2;
+      var plotCenter = gl.height - plotBounds.y - plotBounds.height / 2;
+      if (p[0] >= yTickLabel_left - gl.measureTextHeight() && p[0] <= yTickLabel_left + 2 && p[1] >= plotCenter - halfTextWidth && p[1] < plotCenter + halfTextWidth) return 1;
+    }
+    return null;
+  };
+  this.getLabelBounds = function (plotBounds, d) {
+    switch (d) {
+      case 0:
+        if (!this.visible[0]) return null;
+        var halfTextWidth = gl.measureTextWidth(axes[0].label) / 2;
+        var plotCenter = plotBounds.x + plotBounds.width / 2;
+        return { 'l': plotCenter - halfTextWidth, 'r': plotCenter + halfTextWidth, 't': xTickLabel_top, 'b': xTickLabel_top + gl.measureTextHeight() + 2 };
 
-			case 1:
-				if (!this.visible[1]) return null;
-				var halfTextWidth = gl.measureTextWidth(axes[1].label) / 2;
-				var plotCenter = gl.height - plotBounds.y - plotBounds.height / 2;
-				return { 'l': yTickLabel_left - gl.measureTextHeight(), 'r': yTickLabel_left + 2, 't': plotCenter - halfTextWidth, 'b': plotCenter + halfTextWidth };
-		}
-		return null;
-	};
+      case 1:
+        if (!this.visible[1]) return null;
+        var halfTextWidth = gl.measureTextWidth(axes[1].label) / 2;
+        var plotCenter = gl.height - plotBounds.y - plotBounds.height / 2;
+        return { 'l': yTickLabel_left - gl.measureTextHeight(), 'r': yTickLabel_left + 2, 't': plotCenter - halfTextWidth, 'b': plotCenter + halfTextWidth };
+    }
+    return null;
+  };
 
-	this.free = function () {
-		meshLine.free();
-	};
+  this.free = function () {
+    meshLine.free();
+  };
 }
 
 /***/ }),
@@ -14465,7 +14441,6 @@ function CoordinateSystem(gl, globalView) {
 /* harmony export (immutable) */ __webpack_exports__["c"] = Dataset;
 /* harmony export (immutable) */ __webpack_exports__["d"] = RandomDataset;
 /* harmony export (immutable) */ __webpack_exports__["a"] = CsvDataset;
-/* eslint-disable */
 var libUtility = __webpack_require__(0);
 var libAlgorithm = __webpack_require__(5);
 var libFormulaCompiler = __webpack_require__(26);
@@ -14480,9 +14455,9 @@ __webpack_require__(33);
 /* alternative: add the following to webpack.config.js (https://github.com/fronteed/icheck/issues/322):
 plugins: [
   new webpack.ProvidePlugin({
-		$: "jquery",
-		jQuery: "jquery"
-	})
+    $: "jquery",
+    jQuery: "jquery"
+  })
 ]
 */
 
@@ -14497,69 +14472,69 @@ plugins: [
  * @param {number|string} source Either a column index into the dataset, or a formula
  */
 function DataVector(dataset, source) {
-	var nc = dataset.numColumns;
+  var nc = dataset.numColumns;
 
-	if (libUtility.isNumber(source)) {
-		var c = Math.round(source);
-		this['getValue'] = this.getValue = function (i) {
-			//return Math.log(dataset.fdata[i * nc + c]);
-			return dataset.fdata[i * nc + c];
-		};
+  if (libUtility.isNumber(source)) {
+    var c = Math.round(source);
+    this['getValue'] = this.getValue = function (i) {
+      //return Math.log(dataset.fdata[i * nc + c]);
+      return dataset.fdata[i * nc + c];
+    };
 
-		//this.getValueCode = "log(c{0})".format(c);
-		this.getValueCode = "c" + c; //"{" + c + "}";
+    //this.getValueCode = "log(c{0})".format(c);
+    this.getValueCode = "c" + c; //"{" + c + "}";
 
-		var column = dataset.columns[c];
-		this['minimum'] = this.minimum = column.minimum;
-		this['maximum'] = this.maximum = column.maximum;
-		this.offset = -column.minimum * (this.scale = 1 / (column.maximum - column.minimum));
-		this['values'] = this.values = column.values;
-		this['label'] = this.label = column.label;
-	} else {
-		var stack = new Array(16);
-		var globalTypes = {
-			'n': libFormulaCompiler.FormulaCompiler.types.float,
-			'PI': libFormulaCompiler.FormulaCompiler.types.float,
-			'i': libFormulaCompiler.FormulaCompiler.types.float
-		};
-		for (var c = 0; c < nc; ++c) {
-			globalTypes['c' + c] = libFormulaCompiler.FormulaCompiler.types.float;
-		}var globals = {
-			'n': dataset.length,
-			'PI': Math.PI
-		};
+    var column = dataset.columns[c];
+    this['minimum'] = this.minimum = column.minimum;
+    this['maximum'] = this.maximum = column.maximum;
+    this.offset = -column.minimum * (this.scale = 1 / (column.maximum - column.minimum));
+    this['values'] = this.values = column.values;
+    this['label'] = this.label = column.label;
+  } else {
+    var stack = new Array(16);
+    var globalTypes = {
+      'n': libFormulaCompiler.FormulaCompiler.types.float,
+      'PI': libFormulaCompiler.FormulaCompiler.types.float,
+      'i': libFormulaCompiler.FormulaCompiler.types.float
+    };
+    for (var c = 0; c < nc; ++c) {
+      globalTypes['c' + c] = libFormulaCompiler.FormulaCompiler.types.float;
+    }var globals = {
+      'n': dataset.length,
+      'PI': Math.PI
+    };
 
-		var code = libFormulaCompiler.FormulaCompiler.compile(source + ";", globalTypes);
-		if (libUtility.isString(code)) {
-			console.error("GlobalView error: Error while parsing data vector formula '{0}'".format(source));
-			console.error("                  " + code);
-			return;
-		}
-		var formula = source;
-		this.getValueCode = formula;
+    var code = libFormulaCompiler.FormulaCompiler.compile(source + ";", globalTypes);
+    if (libUtility.isString(code)) {
+      console.error("GlobalView error: Error while parsing data vector formula '{0}'".format(source));
+      console.error("                  " + code);
+      return;
+    }
+    var formula = source;
+    this.getValueCode = formula;
 
-		this['getValue'] = this.getValue = function (i) {
-			globals['i'] = i;
-			for (var c = 0; c < nc; ++c) {
-				globals['c' + c] = dataset.fdata[i * nc + c];
-			}return libFormulaCompiler.FormulaCompiler.run(code, stack, globals);
-		};
+    this['getValue'] = this.getValue = function (i) {
+      globals['i'] = i;
+      for (var c = 0; c < nc; ++c) {
+        globals['c' + c] = dataset.fdata[i * nc + c];
+      }return libFormulaCompiler.FormulaCompiler.run(code, stack, globals);
+    };
 
-		this.minimum = Number.MAX_VALUE;
-		this.maximum = Number.MIN_VALUE;
-		for (var i = 0, n = dataset.length; i < n; ++i) {
-			var value = this.getValue(i);
-			this.minimum = Math.min(this.minimum, value);
-			this.maximum = Math.max(this.maximum, value);
-		}
-		this['minimum'] = this.minimum;
-		this['maximum'] = this.maximum;
-		//console.log([this.minimum, this.maximum]);
-		this.scale = this.maximum - this.minimum;
-		if (this.scale > -1e-5 && this.scale < 1e-5) this.offset = 0.5 - 0.5 * (this.minimum + this.maximum) * (this.scale = 0.5);else this.offset = -this.minimum * (this.scale = 1 / this.scale);
-		this['values'] = this.values = null;
-		this['label'] = this.label = formula;
-	}
+    this.minimum = Number.MAX_VALUE;
+    this.maximum = Number.MIN_VALUE;
+    for (var i = 0, n = dataset.length; i < n; ++i) {
+      var value = this.getValue(i);
+      this.minimum = Math.min(this.minimum, value);
+      this.maximum = Math.max(this.maximum, value);
+    }
+    this['minimum'] = this.minimum;
+    this['maximum'] = this.maximum;
+    //console.log([this.minimum, this.maximum]);
+    this.scale = this.maximum - this.minimum;
+    if (this.scale > -1e-5 && this.scale < 1e-5) this.offset = 0.5 - 0.5 * (this.minimum + this.maximum) * (this.scale = 0.5);else this.offset = -this.minimum * (this.scale = 1 / this.scale);
+    this['values'] = this.values = null;
+    this['label'] = this.label = formula;
+  }
 }
 
 /**
@@ -14569,395 +14544,395 @@ function DataVector(dataset, source) {
  * @export
  */
 function Dataset() {
-	/**
-  * @summary Number of columns in the {@link Dataset#data} table
-  * @type {number}
+  /**
+   * @summary Number of columns in the {@link Dataset#data} table
+   * @type {number}
+   */
+  this.numColumns = this['numColumns'] = 0;
+  /**
+   * Note: Each dataVector has exactly 'length' elements
+   * @summary Number of rows in the {@link Dataset#data} table
+   * @type {number}
+   */
+  this.length = this['length'] = 0;
+  /**
+   * @summary Metadata about one column of data in the {@link Dataset#data} table
+   * @type {Object}
+   * @deprecated Use {@link Dataset#dataVectors} for access to metadata instead
+   */
+  this.columns = this['columns'] = [];
+  /**
+   * An input dimension to the plot.
+   * A data vector doesn't physically contain data.
+   * Instead it holds meta data and a transfer function that produces data based on zero or more columns from the {@link Dataset#fdata} table
+   * @summary A logical vector of data
+   * @type {Array<DataVector>}
+   */
+  this.dataVectors = this['dataVectors'] = [];
+  /**
+   * The data matrix isn't limited to numeric data.
+   * Categorical columns are stored as strings.
+   * {@link Dataset#dataVectors} access the numeric version of this matrix ({@link Dataset#fdata}).
+   * It is of size {@link Dataset#numColumns} by {@link Dataset#length}.
+   * @summary A matrix of data
+   * @type {Float32Array|Array}
+   */
+  this.data = this['data'] = [];
+  /**
+   * This matrix is the numeric version of {@link Dataset#data}.
+   * Categorical columns are stored as 0-based indices.
+   * @summary A matrix of numeric data for the {@link Dataset#dataVectors}
+   * @type {Float32Array}
+   */
+  this.fdata = this['fdata'] = new Float32Array(0);
+  /**
+   * This vector is of length {@link Dataset#length}.
+   * @summary A vector of data point names
+   * @type {Array<string>}
+   */
+  this.names = this['names'] = null;
+  /**
+   * This vector is of length {@link Dataset#length}.
+   * @summary A vector of data point image URLs.
+   * @type {Array<string>}
+   */
+  this.imageFilenames = this['imageFilenames'] = null;
+
+  /**
+   * @type {Array<Array<Object>>}
+   */
+  var _densityMaps = [];
+  /**
+   * @type {Array<Array<Object>>}
   */
-	this.numColumns = this['numColumns'] = 0;
-	/**
-  * Note: Each dataVector has exactly 'length' elements
-  * @summary Number of rows in the {@link Dataset#data} table
-  * @type {number}
-  */
-	this.length = this['length'] = 0;
-	/**
-  * @summary Metadata about one column of data in the {@link Dataset#data} table
-  * @type {Object}
-  * @deprecated Use {@link Dataset#dataVectors} for access to metadata instead
-  */
-	this.columns = this['columns'] = [];
-	/**
-  * An input dimension to the plot.
-  * A data vector doesn't physically contain data.
-  * Instead it holds meta data and a transfer function that produces data based on zero or more columns from the {@link Dataset#fdata} table
-  * @summary A logical vector of data
-  * @type {Array<DataVector>}
-  */
-	this.dataVectors = this['dataVectors'] = [];
-	/**
-  * The data matrix isn't limited to numeric data.
-  * Categorical columns are stored as strings.
-  * {@link Dataset#dataVectors} access the numeric version of this matrix ({@link Dataset#fdata}).
-  * It is of size {@link Dataset#numColumns} by {@link Dataset#length}.
-  * @summary A matrix of data
-  * @type {Float32Array|Array}
-  */
-	this.data = this['data'] = [];
-	/**
-  * This matrix is the numeric version of {@link Dataset#data}.
-  * Categorical columns are stored as 0-based indices.
-  * @summary A matrix of numeric data for the {@link Dataset#dataVectors}
-  * @type {Float32Array}
-  */
-	this.fdata = this['fdata'] = new Float32Array(0);
-	/**
-  * This vector is of length {@link Dataset#length}.
-  * @summary A vector of data point names
-  * @type {Array<string>}
-  */
-	this.names = this['names'] = null;
-	/**
-  * This vector is of length {@link Dataset#length}.
-  * @summary A vector of data point image URLs.
-  * @type {Array<string>}
-  */
-	this.imageFilenames = this['imageFilenames'] = null;
+  var _clusterMaps = [];
 
-	/**
-  * @type {Array<Array<Object>>}
-  */
-	var _densityMaps = [];
-	/**
-  * @type {Array<Array<Object>>}
- */
-	var _clusterMaps = [];
+  this['isDensityMapReady'] =
+  /**
+   * Checks if a density map on dimensions d0 and d1 is available.
+   * Hint: d0 and d1 can't be identical. The order of d0 and d1 is ignored.
+   * @param  {number!} d0
+   * @param  {number!} d1
+   * @return {boolean!} True, if a densitymap for dimensions d0, d1 has been computed
+   */
+  this.isDensityMapReady = function (d0, d1) {
+    // Validate inputs
+    if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) return false;
 
-	this['isDensityMapReady'] =
-	/**
-  * Checks if a density map on dimensions d0 and d1 is available.
-  * Hint: d0 and d1 can't be identical. The order of d0 and d1 is ignored.
-  * @param  {number!} d0
-  * @param  {number!} d1
-  * @return {boolean!} True, if a densitymap for dimensions d0, d1 has been computed
-  */
-	this.isDensityMapReady = function (d0, d1) {
-		// Validate inputs
-		if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) return false;
+    // Assure d0 < d1
+    if (d0 === d1) return false;
+    if (d1 < d0) {
+      // Swap d0 <-> d1
+      var temp = d0;
+      d0 = d1;
+      d1 = temp;
+    }
 
-		// Assure d0 < d1
-		if (d0 === d1) return false;
-		if (d1 < d0) {
-			// Swap d0 <-> d1
-			var temp = d0;
-			d0 = d1;
-			d1 = temp;
-		}
+    return _densityMaps.length > d0 && _densityMaps[d0].length > d1 && _densityMaps[d0][d1] && (libUtility.isUndefined(_densityMaps[d0][d1].pending) || _densityMaps[d0][d1].old);
+  };
 
-		return _densityMaps.length > d0 && _densityMaps[d0].length > d1 && _densityMaps[d0][d1] && (libUtility.isUndefined(_densityMaps[d0][d1].pending) || _densityMaps[d0][d1].old);
-	};
+  this['iterateDensityMaps'] =
+  /**
+   * Calls the given function for each computed density map
+   * @param  {function(DensityMap!)!} callback
+   */
+  this.iterateDensityMaps = function (callback) {
+    _densityMaps.forEach(function (_densityMaps) {
+      return _densityMaps.forEach(function (densityMap) {
+        return densityMap && (libUtility.isUndefined(densityMap.pending) || densityMap.old) ? callback(densityMap.old || densityMap) : null;
+      });
+    });
+  };
 
-	this['iterateDensityMaps'] =
-	/**
-  * Calls the given function for each computed density map
-  * @param  {function(DensityMap!)!} callback
-  */
-	this.iterateDensityMaps = function (callback) {
-		_densityMaps.forEach(function (_densityMaps) {
-			return _densityMaps.forEach(function (densityMap) {
-				return densityMap && (libUtility.isUndefined(densityMap.pending) || densityMap.old) ? callback(densityMap.old || densityMap) : null;
-			});
-		});
-	};
+  this['requestDensityMap'] =
+  /**
+   * This function returns a density map for the given dimensions. If the density map doesn't exist it is computed.
+   * When a function is passed to ondone, the density map is computed by a background worker, otherwise it is computed on the current thread.
+   * After the worker has finished all ondone events for calls to this function are fired.
+   * Hint: d0 and d1 can't be identical. The order of d0 and d1 is ignored.
+   * @summary Returns a density map for dimensions d0 and d1.
+   * @param  {!number} d0
+   * @param  {!number} d1
+   * @param  {number=} size=1024 The width and height of the density map
+   * @param  {DensityMapOptions=} options
+   * @param  {function(DensityMap)=} ondone A function to be called when the density map is ready
+   * @return {DensityMap}
+   */
+  this.requestDensityMap = function (d0, d1, size, options, ondone) {
+    // Validate inputs
+    if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) {
+      console.warn("GlobalView warning: Requesting density map for dimensions {0}, {1} on a dataset with only {2} data vectors".format(d0, d1, this.dataVectors.length));
+      return null;
+    }
+    var isAsync = libUtility.isFunction(ondone); //&& !/Firefox/i.test(navigator.userAgent);// Firefox tends to crash with Parallel.js
 
-	this['requestDensityMap'] =
-	/**
-  * This function returns a density map for the given dimensions. If the density map doesn't exist it is computed.
-  * When a function is passed to ondone, the density map is computed by a background worker, otherwise it is computed on the current thread.
-  * After the worker has finished all ondone events for calls to this function are fired.
-  * Hint: d0 and d1 can't be identical. The order of d0 and d1 is ignored.
-  * @summary Returns a density map for dimensions d0 and d1.
-  * @param  {!number} d0
-  * @param  {!number} d1
-  * @param  {number=} size=1024 The width and height of the density map
-  * @param  {DensityMapOptions=} options
-  * @param  {function(DensityMap)=} ondone A function to be called when the density map is ready
-  * @return {DensityMap}
-  */
-	this.requestDensityMap = function (d0, d1, size, options, ondone) {
-		// Validate inputs
-		if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) {
-			console.warn("GlobalView warning: Requesting density map for dimensions {0}, {1} on a dataset with only {2} data vectors".format(d0, d1, this.dataVectors.length));
-			return null;
-		}
-		var isAsync = libUtility.isFunction(ondone); //&& !/Firefox/i.test(navigator.userAgent);// Firefox tends to crash with Parallel.js
+    // Assure d0 < d1
+    if (d0 === d1) return null;
+    if (d1 < d0) {
+      // Swap d0 <-> d1
+      var temp = d0;
+      d0 = d1;
+      d1 = temp;
+    }
 
-		// Assure d0 < d1
-		if (d0 === d1) return null;
-		if (d1 < d0) {
-			// Swap d0 <-> d1
-			var temp = d0;
-			d0 = d1;
-			d1 = temp;
-		}
+    while (_densityMaps.length <= d0) {
+      _densityMaps.push([]);
+    }while (_densityMaps[d0].length <= d1) {
+      _densityMaps[d0].push(null);
+    }var densityMap = _densityMaps[d0][d1];
 
-		while (_densityMaps.length <= d0) {
-			_densityMaps.push([]);
-		}while (_densityMaps[d0].length <= d1) {
-			_densityMaps[d0].push(null);
-		}var densityMap = _densityMaps[d0][d1];
+    if (!size) size = 1024;
 
-		if (!size) size = 1024;
+    if (densityMap && options && densityMap.options && !libAlgorithm.DensityMapOptions.equals(options, densityMap.options)) // If options changed
+      densityMap = null; // Recompute density map
 
-		if (densityMap && options && densityMap.options && !libAlgorithm.DensityMapOptions.equals(options, densityMap.options)) // If options changed
-			densityMap = null; // Recompute density map
+    if (isAsync) // If async
+      {
+        if (!densityMap) // If _densityMaps[d0][d1] isn't computed or being computed yet
+          {
+            // While we compute _densityMaps[d0][d1], replace it with an array of functions to execute when it is ready
+            _densityMaps[d0][d1] = { pending: [ondone], old: _densityMaps[d0][d1] };
 
-		if (isAsync) // If async
-			{
-				if (!densityMap) // If _densityMaps[d0][d1] isn't computed or being computed yet
-					{
-						// While we compute _densityMaps[d0][d1], replace it with an array of functions to execute when it is ready
-						_densityMaps[d0][d1] = { pending: [ondone], old: _densityMaps[d0][d1] };
+            // Compute histogram synchronously
+            var histogram = libAlgorithm.computeHistogram2D(this, d0, d1, size, size);
 
-						// Compute histogram synchronously
-						var histogram = libAlgorithm.computeHistogram2D(this, d0, d1, size, size);
+            // Execute an asynchronous worker that computes _densityMaps[d0][d1]
+            var p = new Parallel([libUtility.makeCloneable(histogram), new libAlgorithm.DensityMapOptions(options)], { evalPath: 'eval.js' });
+            p.require(libAlgorithm.DensityMap);
+            p.require(libAlgorithm.computeDensityMap);
+            p.spawn(function (params) {
+              // the following code will be evaled from a blob in Parallel. so no need for libAlgorithm. 
+              return computeDensityMap.apply(null, params);
+            }).then(function (densityMap) {
+              densityMap = new libAlgorithm.DensityMap(densityMap);
+              // Free histogram
+              histogram = null;
 
-						// Execute an asynchronous worker that computes _densityMaps[d0][d1]
-						var p = new Parallel([libUtility.makeCloneable(histogram), new libAlgorithm.DensityMapOptions(options)], { evalPath: 'eval.js' });
-						p.require(libAlgorithm.DensityMap);
-						p.require(libAlgorithm.computeDensityMap);
-						p.spawn(function (params) {
-							// the following code will be evaled from a blob in Parallel. so no need for libAlgorithm. 
-							return computeDensityMap.apply(null, params);
-						}).then(function (densityMap) {
-							densityMap = new libAlgorithm.DensityMap(densityMap);
-							// Free histogram
-							histogram = null;
+              // Set _densityMaps[d0][d1]
+              _densityMaps[d0][d1].old = null;
+              var pending = _densityMaps[d0][d1].pending;
+              _densityMaps[d0][d1] = densityMap;
 
-							// Set _densityMaps[d0][d1]
-							_densityMaps[d0][d1].old = null;
-							var pending = _densityMaps[d0][d1].pending;
-							_densityMaps[d0][d1] = densityMap;
+              if (_clusterMaps.length > d0 && _clusterMaps[d0].length > d1 && _clusterMaps[d0][d1] && libUtility.isUndefined(_clusterMaps[d0][d1].pending)) _clusterMaps[d0][d1] = null;
 
-							if (_clusterMaps.length > d0 && _clusterMaps[d0].length > d1 && _clusterMaps[d0][d1] && libUtility.isUndefined(_clusterMaps[d0][d1].pending)) _clusterMaps[d0][d1] = null;
+              // Execute queued 'ondone' functions
+              pending.forEach(function (ondone) {
+                ondone(densityMap);
+              });
+            });
+          } else if (!libUtility.isUndefined(densityMap.pending)) // If _densityMaps[d0][d1] is currently being computed asynchronously
+          {
+            if (densityMap.old && (!options || libAlgorithm.DensityMapOptions.equals(densityMap.old.options, options))) // If the deprecated densityMap satisfies our requested options
+              ondone( /** @type {DensityMap} */densityMap.old);else densityMap.pending.push(ondone);
+          } else // If _densityMaps[d0][d1] is available
+          ondone( /** @type {DensityMap} */densityMap);
+        return null;
+      } else {
+      if (!densityMap) // If _densityMaps[d0][d1] isn't computed or being computed yet
+        {
+          //var tStart = performance.now();
+          var histogram = libAlgorithm.computeHistogram2D(this, d0, d1, size, size);
+          _densityMaps[d0][d1] = densityMap = new libAlgorithm.DensityMap(libAlgorithm.computeDensityMap(histogram, new libAlgorithm.DensityMapOptions(options)));
+          histogram = null; // Free histogram
+          //console.log(performance.now() - tStart + "ms");
+        } else if (densityMap.old && (!options || libAlgorithm.DensityMapOptions.equals(densityMap.old.options, options))) // If the deprecated densityMap satisfies our requested options
+        densityMap = densityMap.old;else while (!libUtility.isUndefined(_densityMaps[d0][d1].pending)) {} // Wait while _densityMaps[d0][d1] is being computed asynchronously
 
-							// Execute queued 'ondone' functions
-							pending.forEach(function (ondone) {
-								ondone(densityMap);
-							});
-						});
-					} else if (!libUtility.isUndefined(densityMap.pending)) // If _densityMaps[d0][d1] is currently being computed asynchronously
-					{
-						if (densityMap.old && (!options || libAlgorithm.DensityMapOptions.equals(densityMap.old.options, options))) // If the deprecated densityMap satisfies our requested options
-							ondone( /** @type {DensityMap} */densityMap.old);else densityMap.pending.push(ondone);
-					} else // If _densityMaps[d0][d1] is available
-					ondone( /** @type {DensityMap} */densityMap);
-				return null;
-			} else {
-			if (!densityMap) // If _densityMaps[d0][d1] isn't computed or being computed yet
-				{
-					//var tStart = performance.now();
-					var histogram = libAlgorithm.computeHistogram2D(this, d0, d1, size, size);
-					_densityMaps[d0][d1] = densityMap = new libAlgorithm.DensityMap(libAlgorithm.computeDensityMap(histogram, new libAlgorithm.DensityMapOptions(options)));
-					histogram = null; // Free histogram
-					//console.log(performance.now() - tStart + "ms");
-				} else if (densityMap.old && (!options || libAlgorithm.DensityMapOptions.equals(densityMap.old.options, options))) // If the deprecated densityMap satisfies our requested options
-				densityMap = densityMap.old;else while (!libUtility.isUndefined(_densityMaps[d0][d1].pending)) {} // Wait while _densityMaps[d0][d1] is being computed asynchronously
+      if (libUtility.isFunction(ondone)) ondone( /** @type {DensityMap} */densityMap);
+      return (/** @type {DensityMap} */densityMap
+      );
+    }
+  };
 
-			if (libUtility.isFunction(ondone)) ondone( /** @type {DensityMap} */densityMap);
-			return (/** @type {DensityMap} */densityMap
-			);
-		}
-	};
+  this['isClusterMapReady'] = this.isClusterMapReady = function (d0, d1) {
+    // Validate inputs
+    if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) return false;
 
-	this['isClusterMapReady'] = this.isClusterMapReady = function (d0, d1) {
-		// Validate inputs
-		if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) return false;
+    // Assure d0 < d1
+    if (d0 === d1) return false;
+    if (d1 < d0) {
+      // Swap d0 <-> d1
+      var temp = d0;
+      d0 = d1;
+      d1 = temp;
+    }
 
-		// Assure d0 < d1
-		if (d0 === d1) return false;
-		if (d1 < d0) {
-			// Swap d0 <-> d1
-			var temp = d0;
-			d0 = d1;
-			d1 = temp;
-		}
+    return _clusterMaps.length > d0 && _clusterMaps[d0].length > d1 && _clusterMaps[d0][d1] && (libUtility.isUndefined(_clusterMaps[d0][d1].pending) || _clusterMaps[d0][d1].old);
+  };
+  this['requestClusterMap'] = this.requestClusterMap = function (d0, d1, options, ondone) {
+    // Validate inputs
+    if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) {
+      console.warn("GlobalView warning: Requesting cluster map for dimensions {0}, {1} on a dataset with only {2} data vectors".format(d0, d1, this.dataVectors.length));
+      return null;
+    }
+    var isAsync = libUtility.isFunction(ondone); //&& !/Firefox/i.test(navigator.userAgent);// Firefox tends to crash with Parallel.js
 
-		return _clusterMaps.length > d0 && _clusterMaps[d0].length > d1 && _clusterMaps[d0][d1] && (libUtility.isUndefined(_clusterMaps[d0][d1].pending) || _clusterMaps[d0][d1].old);
-	};
-	this['requestClusterMap'] = this.requestClusterMap = function (d0, d1, options, ondone) {
-		// Validate inputs
-		if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) {
-			console.warn("GlobalView warning: Requesting cluster map for dimensions {0}, {1} on a dataset with only {2} data vectors".format(d0, d1, this.dataVectors.length));
-			return null;
-		}
-		var isAsync = libUtility.isFunction(ondone); //&& !/Firefox/i.test(navigator.userAgent);// Firefox tends to crash with Parallel.js
+    // Assure d0 < d1
+    if (d0 === d1) return;
+    if (d1 < d0) {
+      // Swap d0 <-> d1
+      var temp = d0;
+      d0 = d1;
+      d1 = temp;
+    }
 
-		// Assure d0 < d1
-		if (d0 === d1) return;
-		if (d1 < d0) {
-			// Swap d0 <-> d1
-			var temp = d0;
-			d0 = d1;
-			d1 = temp;
-		}
+    while (_clusterMaps.length <= d0) {
+      _clusterMaps.push([]);
+    }while (_clusterMaps[d0].length <= d1) {
+      _clusterMaps[d0].push(null);
+    }var clusterMap = _clusterMaps[d0][d1];
 
-		while (_clusterMaps.length <= d0) {
-			_clusterMaps.push([]);
-		}while (_clusterMaps[d0].length <= d1) {
-			_clusterMaps[d0].push(null);
-		}var clusterMap = _clusterMaps[d0][d1];
+    if (clusterMap && options && clusterMap.options && !libAlgorithm.ClusterMapOptions.equals(options, clusterMap.options)) // If options changed
+      clusterMap = null; // Recompute density map
 
-		if (clusterMap && options && clusterMap.options && !libAlgorithm.ClusterMapOptions.equals(options, clusterMap.options)) // If options changed
-			clusterMap = null; // Recompute density map
+    if (isAsync) // If async
+      {
+        if (!clusterMap) // If _clusterMaps[d0][d1] isn't computed or being computed yet
+          {
+            // While we compute _clusterMaps[d0][d1], replace it with an array of functions to execute when it is ready
+            _clusterMaps[d0][d1] = { pending: [ondone] };
 
-		if (isAsync) // If async
-			{
-				if (!clusterMap) // If _clusterMaps[d0][d1] isn't computed or being computed yet
-					{
-						// While we compute _clusterMaps[d0][d1], replace it with an array of functions to execute when it is ready
-						_clusterMaps[d0][d1] = { pending: [ondone] };
+            this.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
+              // Execute an asynchronous worker that computes _clusterMaps[d0][d1]
+              var p = new Parallel([libUtility.makeCloneable(densityMap), d0, d1, new libAlgorithm.ClusterMapOptions(options)], { evalPath: 'eval.js' });
+              p.require(libAlgorithm.computeClusterMap_method3);
+              p.require(libUtility.ForwardList);
+              p.require(libUtility.PriorityQueue);
+              p.spawn(function (params) {
+                // the following code will be evaled from a blob in Parallel. so no need for libAlgorithm. 
+                return computeClusterMap_method3.apply(null, params);
+              }).then(function (clusterMap) {
+                clusterMap = new libAlgorithm.ClusterMap(clusterMap);
+                // Set _clusterMaps[d0][d1]
+                var pending = _clusterMaps[d0][d1].pending;
+                _clusterMaps[d0][d1] = clusterMap;
 
-						this.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
-							// Execute an asynchronous worker that computes _clusterMaps[d0][d1]
-							var p = new Parallel([libUtility.makeCloneable(densityMap), d0, d1, new libAlgorithm.ClusterMapOptions(options)], { evalPath: 'eval.js' });
-							p.require(libAlgorithm.computeClusterMap_method3);
-							p.require(libUtility.ForwardList);
-							p.require(libUtility.PriorityQueue);
-							p.spawn(function (params) {
-								// the following code will be evaled from a blob in Parallel. so no need for libAlgorithm. 
-								return computeClusterMap_method3.apply(null, params);
-							}).then(function (clusterMap) {
-								clusterMap = new libAlgorithm.ClusterMap(clusterMap);
-								// Set _clusterMaps[d0][d1]
-								var pending = _clusterMaps[d0][d1].pending;
-								_clusterMaps[d0][d1] = clusterMap;
+                // Execute queued 'ondone' functions
+                pending.forEach(function (ondone) {
+                  ondone(clusterMap);
+                });
+              });
+            });
+          } else if (!libUtility.isUndefined(clusterMap.pending)) // If _clusterMaps[d0][d1] is currently being computed asynchronously
+          {
+            if (clusterMap.old && (!options || libAlgorithm.ClusterMapOptions.equals(clusterMap.old.options, options))) // If the deprecated clusterMap satisfies our requested options
+              ondone( /** @type {ClusterMap} */clusterMap.old);else clusterMap.pending.push(ondone);
+          } else // If _clusterMaps[d0][d1] is available
+          ondone(clusterMap);
+      } else {
+      if (!clusterMap) // If _clusterMaps[d0][d1] isn't computed or being computed yet
+        {
+          var densityMap = this.requestDensityMap(d0, d1, undefined, undefined);
+          if (densityMap) {
+            //var tStart = performance.now();
+            _clusterMaps[d0][d1] = clusterMap = new libAlgorithm.ClusterMap(libAlgorithm.computeClusterMap_method3(densityMap, d0, d1, new libAlgorithm.ClusterMapOptions(options)));
+            //console.log(performance.now() - tStart + "ms");
+          } else _clusterMaps[d0][d1] = clusterMap = null;
+        } else if (clusterMap.old && (!options || libAlgorithm.ClusterMapOptions.equals(clusterMap.old.options, options))) // If the deprecated clusterMap satisfies our requested options
+        clusterMap = clusterMap.old;else while (!libUtility.isUndefined(clusterMap.pending)) {} // Wait while _clusterMaps[d0][d1] is being computed asynchronously
 
-								// Execute queued 'ondone' functions
-								pending.forEach(function (ondone) {
-									ondone(clusterMap);
-								});
-							});
-						});
-					} else if (!libUtility.isUndefined(clusterMap.pending)) // If _clusterMaps[d0][d1] is currently being computed asynchronously
-					{
-						if (clusterMap.old && (!options || libAlgorithm.ClusterMapOptions.equals(clusterMap.old.options, options))) // If the deprecated clusterMap satisfies our requested options
-							ondone( /** @type {ClusterMap} */clusterMap.old);else clusterMap.pending.push(ondone);
-					} else // If _clusterMaps[d0][d1] is available
-					ondone(clusterMap);
-			} else {
-			if (!clusterMap) // If _clusterMaps[d0][d1] isn't computed or being computed yet
-				{
-					var densityMap = this.requestDensityMap(d0, d1, undefined, undefined);
-					if (densityMap) {
-						//var tStart = performance.now();
-						_clusterMaps[d0][d1] = clusterMap = new libAlgorithm.ClusterMap(libAlgorithm.computeClusterMap_method3(densityMap, d0, d1, new libAlgorithm.ClusterMapOptions(options)));
-						//console.log(performance.now() - tStart + "ms");
-					} else _clusterMaps[d0][d1] = clusterMap = null;
-				} else if (clusterMap.old && (!options || libAlgorithm.ClusterMapOptions.equals(clusterMap.old.options, options))) // If the deprecated clusterMap satisfies our requested options
-				clusterMap = clusterMap.old;else while (!libUtility.isUndefined(clusterMap.pending)) {} // Wait while _clusterMaps[d0][d1] is being computed asynchronously
+      if (libUtility.isFunction(ondone)) ondone(clusterMap);
+      return clusterMap;
+    }
+  };
 
-			if (libUtility.isFunction(ondone)) ondone(clusterMap);
-			return clusterMap;
-		}
-	};
+  this['inflate'] = this.inflate = function (factor, densityMapChain) {
+    var n = this.length,
+        n_inflated = Math.floor(factor * n),
+        nc = this.numColumns;
+    if (isNaN(n_inflated) || n_inflated <= n) return;
+    var fdata = this.fdata,
+        fdata_inflated = new Float32Array(n_inflated * nc);
+    var data = this.data,
+        data_inflated = new Array(n_inflated * nc);
 
-	this['inflate'] = this.inflate = function (factor, densityMapChain) {
-		var n = this.length,
-		    n_inflated = Math.floor(factor * n),
-		    nc = this.numColumns;
-		if (isNaN(n_inflated) || n_inflated <= n) return;
-		var fdata = this.fdata,
-		    fdata_inflated = new Float32Array(n_inflated * nc);
-		var data = this.data,
-		    data_inflated = new Array(n_inflated * nc);
+    for (var i = 0, len = n * nc; i < len; ++i) {
+      fdata_inflated[i] = fdata[i];
+    }for (var i = 0, len = n * nc; i < len; ++i) {
+      data_inflated[i] = data[i];
+    }var column,
+        samples,
+        sample,
+        sampleScale = 1 / densityMapChain[0].size;
+    for (var i, i_inflated = n, len = n * nc; i_inflated < n_inflated; ++i_inflated) {
+      i = i_inflated % n;
 
-		for (var i = 0, len = n * nc; i < len; ++i) {
-			fdata_inflated[i] = fdata[i];
-		}for (var i = 0, len = n * nc; i < len; ++i) {
-			data_inflated[i] = data[i];
-		}var column,
-		    samples,
-		    sample,
-		    sampleScale = 1 / densityMapChain[0].size;
-		for (var i, i_inflated = n, len = n * nc; i_inflated < n_inflated; ++i_inflated) {
-			i = i_inflated % n;
+      samples = libAlgorithm.sampleDensityMapChain(densityMapChain);
+      for (var c = 0; c < nc; ++c) {
+        column = this.columns[c];
+        sample = column.minimum + (column.maximum - column.minimum) * samples[c] * sampleScale;
 
-			samples = libAlgorithm.sampleDensityMapChain(densityMapChain);
-			for (var c = 0; c < nc; ++c) {
-				column = this.columns[c];
-				sample = column.minimum + (column.maximum - column.minimum) * samples[c] * sampleScale;
+        if (column.values) // If column is qualitative
+          {
+            fdata_inflated[i_inflated * nc + c] = sample = Math.max(0, Math.min(column.values.length - 1, Math.round(sample)));
+            data_inflated[i_inflated * nc + c] = column.values[sample];
+          } else // If column is numeric
+          {
+            fdata_inflated[i_inflated * nc + c] = sample;
+            data_inflated[i_inflated * nc + c] = sample;
+          }
+      }
+    }
+    this['fdata'] = this.fdata = fdata_inflated;
+    this['data'] = this.data = data_inflated;
 
-				if (column.values) // If column is qualitative
-					{
-						fdata_inflated[i_inflated * nc + c] = sample = Math.max(0, Math.min(column.values.length - 1, Math.round(sample)));
-						data_inflated[i_inflated * nc + c] = column.values[sample];
-					} else // If column is numeric
-					{
-						fdata_inflated[i_inflated * nc + c] = sample;
-						data_inflated[i_inflated * nc + c] = sample;
-					}
-			}
-		}
-		this['fdata'] = this.fdata = fdata_inflated;
-		this['data'] = this.data = data_inflated;
+    if (this.names !== null) {
+      var names = /** @type {Array<string>} */this.names,
+          names_inflated = new Array(n_inflated);
+      for (var i = 0, len = n; i < len; ++i) {
+        names_inflated[i] = names[i];
+      }for (var index = 0, i_inflated = n, len = n * nc; i_inflated < n_inflated; ++i_inflated) {
+        names_inflated[i_inflated] = "generated datapoint " + ++index;
+      }this['names'] = this.names = names_inflated;
+    }
 
-		if (this.names !== null) {
-			var names = /** @type {Array<string>} */this.names,
-			    names_inflated = new Array(n_inflated);
-			for (var i = 0, len = n; i < len; ++i) {
-				names_inflated[i] = names[i];
-			}for (var index = 0, i_inflated = n, len = n * nc; i_inflated < n_inflated; ++i_inflated) {
-				names_inflated[i_inflated] = "generated datapoint " + ++index;
-			}this['names'] = this.names = names_inflated;
-		}
+    if (this.imageFilenames !== null) {
+      var imageFilenames = /** @type {Array<string>} */this.imageFilenames,
+          imageFilenames_inflated = new Array(n_inflated);
+      for (var i = 0, len = n; i < len; ++i) {
+        imageFilenames_inflated[i] = imageFilenames[i];
+      }for (var i_inflated = n, len = n * nc; i_inflated < n_inflated; ++i_inflated) {
+        imageFilenames_inflated[i_inflated] = imageFilenames[i_inflated % n];
+      }this['imageFilenames'] = this.imageFilenames = imageFilenames_inflated;
+    }
 
-		if (this.imageFilenames !== null) {
-			var imageFilenames = /** @type {Array<string>} */this.imageFilenames,
-			    imageFilenames_inflated = new Array(n_inflated);
-			for (var i = 0, len = n; i < len; ++i) {
-				imageFilenames_inflated[i] = imageFilenames[i];
-			}for (var i_inflated = n, len = n * nc; i_inflated < n_inflated; ++i_inflated) {
-				imageFilenames_inflated[i_inflated] = imageFilenames[i_inflated % n];
-			}this['imageFilenames'] = this.imageFilenames = imageFilenames_inflated;
-		}
+    this['length'] = this.length = n_inflated;
+  };
 
-		this['length'] = this.length = n_inflated;
-	};
+  this['save'] = this.save = function (filename, nameColumn, nameColumnLabel) {
+    var nc = this.numColumns,
+        csv_nc;
+    if (this.names && !libUtility.isUndefined(nameColumn) && !libUtility.isUndefined(nameColumnLabel)) csv_nc = nc + 1;else {
+      nameColumn = -1;
+      csv_nc = nc;
+    }
 
-	this['save'] = this.save = function (filename, nameColumn, nameColumnLabel) {
-		var nc = this.numColumns,
-		    csv_nc;
-		if (this.names && !libUtility.isUndefined(nameColumn) && !libUtility.isUndefined(nameColumnLabel)) csv_nc = nc + 1;else {
-			nameColumn = -1;
-			csv_nc = nc;
-		}
+    var csv = new Array(this.length + 1); // +1 ... Header row
 
-		var csv = new Array(this.length + 1); // +1 ... Header row
+    // Create csv header array
+    var header = new Array(csv_nc);
+    for (var c = 0, ci = 0; c < csv_nc; ++c, ++ci) {
+      if (c === nameColumn) {
+        header[c] = nameColumnLabel;
+        --ci;
+      } else header[c] = this.columns[ci].label;
+    }
+    csv[0] = header;
 
-		// Create csv header array
-		var header = new Array(csv_nc);
-		for (var c = 0, ci = 0; c < csv_nc; ++c, ++ci) {
-			if (c === nameColumn) {
-				header[c] = nameColumnLabel;
-				--ci;
-			} else header[c] = this.columns[ci].label;
-		}
-		csv[0] = header;
+    // Create csv body arrays
+    for (var i = 0; i < this.length; ++i) {
+      var row = new Array(csv_nc);
+      for (var c = 0, ci = 0; c < csv_nc; ++c, ++ci) {
+        if (c === nameColumn) {
+          row[c] = this.names[i];
+          --ci;
+        } else row[c] = this.data[i * nc + ci];
+      }
+      csv[i + 1] = row; // +1 ... Header row
+    }
 
-		// Create csv body arrays
-		for (var i = 0; i < this.length; ++i) {
-			var row = new Array(csv_nc);
-			for (var c = 0, ci = 0; c < csv_nc; ++c, ++ci) {
-				if (c === nameColumn) {
-					row[c] = this.names[i];
-					--ci;
-				} else row[c] = this.data[i * nc + ci];
-			}
-			csv[i + 1] = row; // +1 ... Header row
-		}
-
-		libUtility.download(filename, "data:text/csv;charset=utf-8," + encodeURIComponent($.csv.fromArrays(csv)));
-	};
+    libUtility.download(filename, "data:text/csv;charset=utf-8," + encodeURIComponent($.csv.fromArrays(csv)));
+  };
 }
 
 // >>> Random dataset
@@ -14972,22 +14947,22 @@ function Dataset() {
  * @param {function(Dataset)} onload Event handler, called after the dataset was created
  */
 function RandomDataset(n, nc, onload) {
-	Dataset.call(this);
+  Dataset.call(this);
 
-	this['numColumns'] = this.numColumns = nc;
-	this['length'] = this.length = n;
-	for (var i = 0; i < nc; ++i) {
-		this.columns.push({ minimum: 0, maximum: 1, label: generateColumnName(i, nc) });
-		this.dataVectors.push(new DataVector(this, i));
-	}
+  this['numColumns'] = this.numColumns = nc;
+  this['length'] = this.length = n;
+  for (var i = 0; i < nc; ++i) {
+    this.columns.push({ minimum: 0, maximum: 1, label: generateColumnName(i, nc) });
+    this.dataVectors.push(new DataVector(this, i));
+  }
 
-	var nnc = n * nc;
-	this['fdata'] = this.fdata = new Float32Array(nnc);
-	for (var i = 0; i < nnc; ++i) {
-		this.fdata[i] = Math.random();
-	}this['data'] = this.data = this.fdata;
+  var nnc = n * nc;
+  this['fdata'] = this.fdata = new Float32Array(nnc);
+  for (var i = 0; i < nnc; ++i) {
+    this.fdata[i] = Math.random();
+  }this['data'] = this.data = this.fdata;
 
-	if (onload) onload(this);
+  if (onload) onload(this);
 }
 
 // >>> CSV dataset
@@ -15002,40 +14977,40 @@ function RandomDataset(n, nc, onload) {
  * }}
 */
 var CSV_DATASET_OPTIONS = {
-	/** When true, tries to infer other options based on the structure of the dataset (slow). */
-	'autoDetect': {
-		description: "When true, tries to infer other options based on the structure of the dataset (slow).",
-		default: false,
-		valid: [true, false]
-	},
+  /** When true, tries to infer other options based on the structure of the dataset (slow). */
+  'autoDetect': {
+    description: "When true, tries to infer other options based on the structure of the dataset (slow).",
+    default: false,
+    valid: [true, false]
+  },
 
-	/** When true, interprets the first row of the dataset as column labels. */
-	'hasHeader': {
-		description: "When true, interprets the first row of the dataset as column labels.",
-		default: false,
-		valid: [true, false]
-	},
+  /** When true, interprets the first row of the dataset as column labels. */
+  'hasHeader': {
+    description: "When true, interprets the first row of the dataset as column labels.",
+    default: false,
+    valid: [true, false]
+  },
 
-	/** Index of a column of the dataset that contains data point names. */
-	'nameColumn': {
-		description: "Index of a column of the dataset that contains data point names.",
-		default: null,
-		valid: null
-	},
+  /** Index of a column of the dataset that contains data point names. */
+  'nameColumn': {
+    description: "Index of a column of the dataset that contains data point names.",
+    default: null,
+    valid: null
+  },
 
-	/** An array of column labels, or a function that takes the column index as input and returns the column label. */
-	'columnLabels': {
-		description: "An array of column labels, or a function that takes the column index as input and returns the column label.",
-		default: null,
-		valid: null
-	},
+  /** An array of column labels, or a function that takes the column index as input and returns the column label. */
+  'columnLabels': {
+    description: "An array of column labels, or a function that takes the column index as input and returns the column label.",
+    default: null,
+    valid: null
+  },
 
-	/** An array of image URLs, or a function that takes a row of data and the row index as input and returns a URL to an image of the data point. */
-	'imageFilenames': {
-		description: "An array of image URLs, or a function that takes a row of data and the row index as input and returns a URL to an image of the data point.",
-		default: null,
-		valid: null
-	}
+  /** An array of image URLs, or a function that takes a row of data and the row index as input and returns a URL to an image of the data point. */
+  'imageFilenames': {
+    description: "An array of image URLs, or a function that takes a row of data and the row index as input and returns a URL to an image of the data point.",
+    default: null,
+    valid: null
+  }
 };
 
 /**
@@ -15048,248 +15023,248 @@ var CSV_DATASET_OPTIONS = {
  * @param {function(Dataset)} onload Event handler, called after the dataset was created
  */
 function CsvDataset(file, options, onload) {
-	Dataset.call(this);
+  Dataset.call(this);
 
-	// Validate options
-	for (var option in options) {
-		if (!options.hasOwnProperty(option)) continue;
+  // Validate options
+  for (var option in options) {
+    if (!options.hasOwnProperty(option)) continue;
 
-		// Validate option
-		if (!CSV_DATASET_OPTIONS.hasOwnProperty(option)) {
-			console.warn("CsvDataset warning: Unsupported option: " + option);
-			continue;
-		}
-		var optionDefinition = CSV_DATASET_OPTIONS[option];
+    // Validate option
+    if (!CSV_DATASET_OPTIONS.hasOwnProperty(option)) {
+      console.warn("CsvDataset warning: Unsupported option: " + option);
+      continue;
+    }
+    var optionDefinition = CSV_DATASET_OPTIONS[option];
 
-		// Validate value
-		var value = options[option];
-		if (optionDefinition.valid && optionDefinition.valid.indexOf(value) === -1 || optionDefinition.validRange && (value < optionDefinition.validRange[0] || value > optionDefinition.validRange[1])) {
-			console.warn("CsvDataset warning: Invalid value for option " + option + ": " + value);
-			delete options[option];
-			continue;
-		}
-	}
+    // Validate value
+    var value = options[option];
+    if (optionDefinition.valid && optionDefinition.valid.indexOf(value) === -1 || optionDefinition.validRange && (value < optionDefinition.validRange[0] || value > optionDefinition.validRange[1])) {
+      console.warn("CsvDataset warning: Invalid value for option " + option + ": " + value);
+      delete options[option];
+      continue;
+    }
+  }
 
-	// Load csv file
-	var dataset = this;
-	var parseCsv = function parseCsv(csv) {
-		var data = $.csv.toArrays(csv);
+  // Load csv file
+  var dataset = this;
+  var parseCsv = function parseCsv(csv) {
+    var data = $.csv.toArrays(csv);
 
-		if (options['autoDetect']) {
-			if (libUtility.isUndefined(options['hasHeader'])) {
-				// Assume no-header by default
-				options['hasHeader'] = false;
+    if (options['autoDetect']) {
+      if (libUtility.isUndefined(options['hasHeader'])) {
+        // Assume no-header by default
+        options['hasHeader'] = false;
 
-				var firstRowOnlyStrings = data[0].every(function (value) {
-					return isNaN(parseData(value));
-				});
-				var secondRowHasNumbers = data[1].some(function (value) {
-					return !isNaN(parseData(value));
-				});
+        var firstRowOnlyStrings = data[0].every(function (value) {
+          return isNaN(parseData(value));
+        });
+        var secondRowHasNumbers = data[1].some(function (value) {
+          return !isNaN(parseData(value));
+        });
 
-				// If the first row consists of only string values, but the second row has at least one numeric value, we can assume the first row is a header
-				if (firstRowOnlyStrings && secondRowHasNumbers) options['hasHeader'] = true;
-				console.log("Assuming hasHeader = " + options['hasHeader']);
-			}
-			if (libUtility.isUndefined(options['nameColumn'])) {
-				// Assume no name column by default
-				options['nameColumn'] = null;
+        // If the first row consists of only string values, but the second row has at least one numeric value, we can assume the first row is a header
+        if (firstRowOnlyStrings && secondRowHasNumbers) options['hasHeader'] = true;
+        console.log("Assuming hasHeader = " + options['hasHeader']);
+      }
+      if (libUtility.isUndefined(options['nameColumn'])) {
+        // Assume no name column by default
+        options['nameColumn'] = null;
 
-				// If any row consists of only unique strings, we can assume it contains data point names
-				for (var c = 0; c < data[0].length; ++c) {
-					var valueMap = {};
-					if (data.every(function (row) {
-						return row.length > c && isNaN(parseData(row[c])) && !(row[c] in valueMap) ? valueMap[row[c]] = true : false;
-					})) {
-						options['nameColumn'] = c;
-						break;
-					}
-				}
-				console.log("Assuming nameColumn = " + options['nameColumn']);
-			}
-		}
+        // If any row consists of only unique strings, we can assume it contains data point names
+        for (var c = 0; c < data[0].length; ++c) {
+          var valueMap = {};
+          if (data.every(function (row) {
+            return row.length > c && isNaN(parseData(row[c])) && !(row[c] in valueMap) ? valueMap[row[c]] = true : false;
+          })) {
+            options['nameColumn'] = c;
+            break;
+          }
+        }
+        console.log("Assuming nameColumn = " + options['nameColumn']);
+      }
+    }
 
-		var n = data.length,
-		    nc = data[0].length - (options['nameColumn'] ? 1 : 0),
-		    firstRow = options['hasHeader'] ? 1 : 0;
-		dataset['numColumns'] = dataset.numColumns = nc;
+    var n = data.length,
+        nc = data[0].length - (options['nameColumn'] ? 1 : 0),
+        firstRow = options['hasHeader'] ? 1 : 0;
+    dataset['numColumns'] = dataset.numColumns = nc;
 
-		// Generate column labels
-		var columnLabels;
-		if (libUtility.isFunction(options['columnLabels'])) {
-			columnLabels = new Array(n);
-			for (var c = 0, ci = 0; c < data[0].length; ++c, ++ci) {
-				if (c == options['nameColumn']) {
-					--ci;
-					continue;
-				}
+    // Generate column labels
+    var columnLabels;
+    if (libUtility.isFunction(options['columnLabels'])) {
+      columnLabels = new Array(n);
+      for (var c = 0, ci = 0; c < data[0].length; ++c, ++ci) {
+        if (c == options['nameColumn']) {
+          --ci;
+          continue;
+        }
 
-				columnLabels[ci] = options['columnLabels'](c);
-			}
-		} else if (libUtility.isArray(options['columnLabels'])) {
-			if (options['columnLabels'].length !== nc) {
-				console.warn("CsvDataset warning: Number of provided column labels (" + options['columnLabels'].length + ") differs from number of data columns in the dataset (" + nc + ")");
-				columnLabels = null;
-			} else columnLabels = options['columnLabels'];
-		} else columnLabels = null;
+        columnLabels[ci] = options['columnLabels'](c);
+      }
+    } else if (libUtility.isArray(options['columnLabels'])) {
+      if (options['columnLabels'].length !== nc) {
+        console.warn("CsvDataset warning: Number of provided column labels (" + options['columnLabels'].length + ") differs from number of data columns in the dataset (" + nc + ")");
+        columnLabels = null;
+      } else columnLabels = options['columnLabels'];
+    } else columnLabels = null;
 
-		dataset['data'] = dataset.data = new Array(nc * n);
-		dataset['fdata'] = dataset.fdata = new Float32Array(nc * n);
-		var i, di;
-		for (var c = 0, ci = 0; c < data[0].length; ++c, ++ci) {
-			if (c == options['nameColumn']) {
-				--ci;
-				continue;
-			}
+    dataset['data'] = dataset.data = new Array(nc * n);
+    dataset['fdata'] = dataset.fdata = new Float32Array(nc * n);
+    var i, di;
+    for (var c = 0, ci = 0; c < data[0].length; ++c, ++ci) {
+      if (c == options['nameColumn']) {
+        --ci;
+        continue;
+      }
 
-			// Loop through all values of column c -> value, fvalue, min, max
-			var min = Number.MAX_VALUE,
-			    max = Number.MIN_VALUE,
-			    isNumeric = true;
-			for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
-				// Skip blank lines
-				if (data[i].length === 1 && data[i][0] === "") {
-					--di;
-					continue;
-				}
+      // Loop through all values of column c -> value, fvalue, min, max
+      var min = Number.MAX_VALUE,
+          max = Number.MIN_VALUE,
+          isNumeric = true;
+      for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
+        // Skip blank lines
+        if (data[i].length === 1 && data[i][0] === "") {
+          --di;
+          continue;
+        }
 
-				var value = data[i][c];
-				var fvalue = parseData(value);
-				if (isNaN(fvalue)) {
-					isNumeric = false;
-					break;
-				}
+        var value = data[i][c];
+        var fvalue = parseData(value);
+        if (isNaN(fvalue)) {
+          isNumeric = false;
+          break;
+        }
 
-				dataset.data[di * nc + ci] = value;
-				dataset.fdata[di * nc + ci] = fvalue;
-				min = Math.min(min, fvalue);
-				max = Math.max(max, fvalue);
-			}
+        dataset.data[di * nc + ci] = value;
+        dataset.fdata[di * nc + ci] = fvalue;
+        min = Math.min(min, fvalue);
+        max = Math.max(max, fvalue);
+      }
 
-			var valueList = null;
-			if (!isNumeric) {
-				// Loop through all values of column c again, generating a value map -> value, fvalue, min, max
-				valueList = [];
-				var valueMap = {},
-				    valueIdx = 0;
-				for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
-					// Skip blank lines
-					if (data[i].length === 1 && data[i][0] === "") {
-						--di;
-						continue;
-					}
+      var valueList = null;
+      if (!isNumeric) {
+        // Loop through all values of column c again, generating a value map -> value, fvalue, min, max
+        valueList = [];
+        var valueMap = {},
+            valueIdx = 0;
+        for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
+          // Skip blank lines
+          if (data[i].length === 1 && data[i][0] === "") {
+            --di;
+            continue;
+          }
 
-					var value = data[i][c];
-					var cls = valueMap[value];
-					var fvalue;
-					if (typeof cls === 'undefined') {
-						valueList.push(value);
-						fvalue = valueMap[value] = valueIdx++;
-					} else fvalue = cls;
+          var value = data[i][c];
+          var cls = valueMap[value];
+          var fvalue;
+          if (typeof cls === 'undefined') {
+            valueList.push(value);
+            fvalue = valueMap[value] = valueIdx++;
+          } else fvalue = cls;
 
-					fvalue += 0.5;
+          fvalue += 0.5;
 
-					dataset.data[di * nc + ci] = value;
-					dataset.fdata[di * nc + ci] = fvalue;
-				}
-				min = 0;
-				max = valueList.length;
-			}
+          dataset.data[di * nc + ci] = value;
+          dataset.fdata[di * nc + ci] = fvalue;
+        }
+        min = 0;
+        max = valueList.length;
+      }
 
-			// Save column meta data
-			dataset.columns.push({ minimum: min, maximum: max, label: columnLabels ? columnLabels[ci] : options['hasHeader'] ? data[0][c] : generateColumnName(ci, nc), values: valueList });
-			dataset.dataVectors.push(new DataVector(dataset, ci));
-		}
+      // Save column meta data
+      dataset.columns.push({ minimum: min, maximum: max, label: columnLabels ? columnLabels[ci] : options['hasHeader'] ? data[0][c] : generateColumnName(ci, nc), values: valueList });
+      dataset.dataVectors.push(new DataVector(dataset, ci));
+    }
 
-		if (di !== n) // If some line were blank
-			{
-				di = n - di; // Set di to the number of skipped lines
-				n -= di; // Shrink n
-				di *= nc; // Set di to the number of skipped values
+    if (di !== n) // If some line were blank
+      {
+        di = n - di; // Set di to the number of skipped lines
+        n -= di; // Shrink n
+        di *= nc; // Set di to the number of skipped values
 
-				// Shrink dataset.data and dataset.fdata
-				dataset.data.splice(-di);
-				if (Float32Array.prototype.splice)
-					/** @type {{splice: Function}} */dataset.fdata.splice(-di);else if (Float32Array.prototype.slice) dataset['fdata'] = dataset.fdata = dataset.fdata.slice(0, -di);else {
-					var trimedFdata = new Float32Array(nc * n);
-					var len;
-					for (i = 0, len = trimedFdata.length; i < len; ++i) {
-						trimedFdata[i] = dataset.fdata[i];
-					}dataset['fdata'] = dataset.fdata = trimedFdata;
-				}
-			}
+        // Shrink dataset.data and dataset.fdata
+        dataset.data.splice(-di);
+        if (Float32Array.prototype.splice)
+          /** @type {{splice: Function}} */dataset.fdata.splice(-di);else if (Float32Array.prototype.slice) dataset['fdata'] = dataset.fdata = dataset.fdata.slice(0, -di);else {
+          var trimedFdata = new Float32Array(nc * n);
+          var len;
+          for (i = 0, len = trimedFdata.length; i < len; ++i) {
+            trimedFdata[i] = dataset.fdata[i];
+          }dataset['fdata'] = dataset.fdata = trimedFdata;
+        }
+      }
 
-		// Set number of data points
-		dataset['length'] = dataset.length = n;
+    // Set number of data points
+    dataset['length'] = dataset.length = n;
 
-		// Extract data point names
-		if (options['nameColumn']) {
-			var names = dataset['names'] = dataset.names = new Array(n);
-			var nameColumn = options['nameColumn'];
-			for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
-				// Skip blank lines
-				if (data[i].length === 1 && data[i][0] === "") {
-					--di;
-					continue;
-				}
+    // Extract data point names
+    if (options['nameColumn']) {
+      var names = dataset['names'] = dataset.names = new Array(n);
+      var nameColumn = options['nameColumn'];
+      for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
+        // Skip blank lines
+        if (data[i].length === 1 && data[i][0] === "") {
+          --di;
+          continue;
+        }
 
-				names[di] = data[i][nameColumn];
-			}
-		} else dataset['names'] = dataset.names = null;
+        names[di] = data[i][nameColumn];
+      }
+    } else dataset['names'] = dataset.names = null;
 
-		// Generate image filenames
-		if (libUtility.isFunction(options['imageFilenames'])) {
-			dataset['imageFilenames'] = dataset.imageFilenames = new Array(n);
-			for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
-				// Skip blank lines
-				if (data[i].length === 1 && data[i][0] === "") {
-					--di;
-					continue;
-				}
+    // Generate image filenames
+    if (libUtility.isFunction(options['imageFilenames'])) {
+      dataset['imageFilenames'] = dataset.imageFilenames = new Array(n);
+      for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
+        // Skip blank lines
+        if (data[i].length === 1 && data[i][0] === "") {
+          --di;
+          continue;
+        }
 
-				dataset.imageFilenames[di] = options['imageFilenames'](data[i], i);
-			}
-		} else if (libUtility.isArray(options['imageFilenames'])) {
-			if (options['imageFilenames'].length !== n) {
-				console.warn("CsvDataset warning: Number of provided image filenames (" + options['imageFilenames'].length + ") differs from number of data points (" + n + ")");
-				dataset['imageFilenames'] = dataset.imageFilenames = null;
-			} else dataset['imageFilenames'] = dataset.imageFilenames = options['imageFilenames'];
-		} else dataset['imageFilenames'] = dataset.imageFilenames = null;
+        dataset.imageFilenames[di] = options['imageFilenames'](data[i], i);
+      }
+    } else if (libUtility.isArray(options['imageFilenames'])) {
+      if (options['imageFilenames'].length !== n) {
+        console.warn("CsvDataset warning: Number of provided image filenames (" + options['imageFilenames'].length + ") differs from number of data points (" + n + ")");
+        dataset['imageFilenames'] = dataset.imageFilenames = null;
+      } else dataset['imageFilenames'] = dataset.imageFilenames = options['imageFilenames'];
+    } else dataset['imageFilenames'] = dataset.imageFilenames = null;
 
-		// Notify success
-		if (onload) onload(dataset);
-	};
+    // Notify success
+    if (onload) onload(dataset);
+  };
 
-	if (libUtility.isString(file))
-		//$.get(file, parseCsv, "text");
-		{
-			var request = new XMLHttpRequest();
-			request.onreadystatechange = function () {
-				if (this.readyState == 4 && this.status == 200) parseCsv(this.responseText);
-			};
-			request.open("GET", /** @type {string} */file, true);
-			request.overrideMimeType("text/csv; charset=utf8");
-			request.send();
-		} else {
-		var reader = new FileReader();
-		reader.onload = function (event) {
-			return parseCsv(reader.result);
-		};
-		reader.readAsText( /** @type {!Blob} */file);
-	}
+  if (libUtility.isString(file))
+    //$.get(file, parseCsv, "text");
+    {
+      var request = new XMLHttpRequest();
+      request.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) parseCsv(this.responseText);
+      };
+      request.open("GET", /** @type {string} */file, true);
+      request.overrideMimeType("text/csv; charset=utf8");
+      request.send();
+    } else {
+    var reader = new FileReader();
+    reader.onload = function (event) {
+      return parseCsv(reader.result);
+    };
+    reader.readAsText( /** @type {!Blob} */file);
+  }
 }
 
 // >>> Helper functions
 
 var generateColumnName = function generateColumnName(i, nc) {
-	var XYZW = ['x', 'y', 'z', 'w'];
-	if (nc <= XYZW.length) return XYZW[i]; // x, y, z, w
-	else if (nc <= 26) return String.fromCharCode(65 + i); // A, B, C, ...
-		else return 'c' + (i + 1); // c1, c2, c3, ...
+  var XYZW = ['x', 'y', 'z', 'w'];
+  if (nc <= XYZW.length) return XYZW[i]; // x, y, z, w
+  else if (nc <= 26) return String.fromCharCode(65 + i); // A, B, C, ...
+    else return 'c' + (i + 1); // c1, c2, c3, ...
 };
 
 function parseData(input) {
-	return parseFloat(input);
+  return parseFloat(input);
 }
 
 /***/ }),
@@ -15299,710 +15274,709 @@ function parseData(input) {
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FormulaCompiler", function() { return FormulaCompiler; });
-/* eslint-disable */
 var libUtility = __webpack_require__(0);
 
 var FormulaCompiler = {
-	compile: function compile(formula, symbolTypes) {
-		/*// Parse case-insensitive
-  formula = formula.toLowerCase();*/
+  compile: function compile(formula, symbolTypes) {
+    /*// Parse case-insensitive
+    formula = formula.toLowerCase();*/
 
-		// Error handler
-		var err = null;
-		function error(msg) {
-			err = msg;
-			return null;
-		}
+    // Error handler
+    var err = null;
+    function error(msg) {
+      err = msg;
+      return null;
+    }
 
-		// >>> Types
+    // >>> Types
 
-		FormulaCompiler.types.vec3.memberTypes = {
-			x: FormulaCompiler.types.float,
-			y: FormulaCompiler.types.float,
-			z: FormulaCompiler.types.float
-			/**
-    * An enum, mapping function signatures to return types
-    * @enum {Object}
-    */
-		};var functionsReturnTypes = {
-			'float = float': FormulaCompiler.types.float,
-			'float += float': FormulaCompiler.types.float,
-			'float -= float': FormulaCompiler.types.float,
-			'float *= float': FormulaCompiler.types.float,
-			'float /= float': FormulaCompiler.types.float,
-			'float + float': FormulaCompiler.types.float,
-			'float - float': FormulaCompiler.types.float,
-			'float * float': FormulaCompiler.types.float,
-			'float / float': FormulaCompiler.types.float,
+    FormulaCompiler.types.vec3.memberTypes = {
+      x: FormulaCompiler.types.float,
+      y: FormulaCompiler.types.float,
+      z: FormulaCompiler.types.float
+      /**
+       * An enum, mapping function signatures to return types
+       * @enum {Object}
+       */
+    };var functionsReturnTypes = {
+      'float = float': FormulaCompiler.types.float,
+      'float += float': FormulaCompiler.types.float,
+      'float -= float': FormulaCompiler.types.float,
+      'float *= float': FormulaCompiler.types.float,
+      'float /= float': FormulaCompiler.types.float,
+      'float + float': FormulaCompiler.types.float,
+      'float - float': FormulaCompiler.types.float,
+      'float * float': FormulaCompiler.types.float,
+      'float / float': FormulaCompiler.types.float,
 
-			'vec3(float, float, float)': FormulaCompiler.types.vec3,
-			'vec3 = vec3': FormulaCompiler.types.vec3,
-			'vec3 + vec3': FormulaCompiler.types.vec3,
-			'vec3 * float': FormulaCompiler.types.vec3,
+      'vec3(float, float, float)': FormulaCompiler.types.vec3,
+      'vec3 = vec3': FormulaCompiler.types.vec3,
+      'vec3 + vec3': FormulaCompiler.types.vec3,
+      'vec3 * float': FormulaCompiler.types.vec3,
 
-			'sin(float)': FormulaCompiler.types.float,
-			'cos(float)': FormulaCompiler.types.float,
-			'tan(float)': FormulaCompiler.types.float,
-			'asin(float)': FormulaCompiler.types.float,
-			'acos(float)': FormulaCompiler.types.float,
-			'atan(float)': FormulaCompiler.types.float,
-			/*'pow': FormulaCompiler.types.float,
-   'exp': FormulaCompiler.types.float,
-   'log': FormulaCompiler.types.float,
-   'exp2': FormulaCompiler.types.float,
-   'log2': FormulaCompiler.types.float,
-   'sqrt': FormulaCompiler.types.float,
-   'inversesqrt': FormulaCompiler.types.float,
-   'abs': FormulaCompiler.types.float,
-   'sign': FormulaCompiler.types.float,
-   'floor': FormulaCompiler.types.float,
-   'ceil': FormulaCompiler.types.float,
-   'fract': FormulaCompiler.types.float,
-   'mod': FormulaCompiler.types.float,*/
-			'min(float, float)': FormulaCompiler.types.float,
-			'max(float, float)': FormulaCompiler.types.float
-			/*'clamp': FormulaCompiler.types.float,
-   'mix': FormulaCompiler.types.float,
-   'step': FormulaCompiler.types.float,
-   'smoothstep': FormulaCompiler.types.float,
-   'length': FormulaCompiler.types.float,
-   'distance': FormulaCompiler.types.float,
-   'dot': FormulaCompiler.types.float,
-   'cross': FormulaCompiler.types.float,
-   'normalize': FormulaCompiler.types.float,*/
+      'sin(float)': FormulaCompiler.types.float,
+      'cos(float)': FormulaCompiler.types.float,
+      'tan(float)': FormulaCompiler.types.float,
+      'asin(float)': FormulaCompiler.types.float,
+      'acos(float)': FormulaCompiler.types.float,
+      'atan(float)': FormulaCompiler.types.float,
+      /*'pow': FormulaCompiler.types.float,
+      'exp': FormulaCompiler.types.float,
+      'log': FormulaCompiler.types.float,
+      'exp2': FormulaCompiler.types.float,
+      'log2': FormulaCompiler.types.float,
+      'sqrt': FormulaCompiler.types.float,
+      'inversesqrt': FormulaCompiler.types.float,
+      'abs': FormulaCompiler.types.float,
+      'sign': FormulaCompiler.types.float,
+      'floor': FormulaCompiler.types.float,
+      'ceil': FormulaCompiler.types.float,
+      'fract': FormulaCompiler.types.float,
+      'mod': FormulaCompiler.types.float,*/
+      'min(float, float)': FormulaCompiler.types.float,
+      'max(float, float)': FormulaCompiler.types.float
+      /*'clamp': FormulaCompiler.types.float,
+      'mix': FormulaCompiler.types.float,
+      'step': FormulaCompiler.types.float,
+      'smoothstep': FormulaCompiler.types.float,
+      'length': FormulaCompiler.types.float,
+      'distance': FormulaCompiler.types.float,
+      'dot': FormulaCompiler.types.float,
+      'cross': FormulaCompiler.types.float,
+      'normalize': FormulaCompiler.types.float,*/
 
 
-			// >>> Tokenizer
+      // >>> Tokenizer
 
-		};var chrPos = 0,
-		    chr = formula.charAt(0),
-		    curTok = null,
-		    curVal;
-		function getch() {
-			return chr = formula.charAt(++chrPos);
-		}
-		function getTok() {
-			var sign = 1,
-			    repeat = false;
-			do {
-				repeat = false;
-				switch (chr) {
-					case '':
-						curTok = null; // End
-						return true;
-					case '+':
-						switch (getch()) {
-							case '+':
-								getch();curTok = '++';return true;
-							case '=':
-								getch();curTok = '+=';return true;
-							default:
-								curTok = '+';return true;
-						}
-					case '-':
-						switch (getch()) {
-							case '-':
-								getch();curTok = '--';return true;
-							case '=':
-								getch();curTok = '-=';return true;
-							default:
-								if (chr >= '0' && chr <= '9') {
-									sign = -1;break;
-								} else {
-									curTok = '-';return true;
-								}
-						}
-					case '*':
-						switch (getch()) {
-							case '=':
-								getch();curTok = '*=';return true;
-							default:
-								curTok = '*';return true;
-						}
-					case '/':
-						switch (getch()) {
-							case '=':
-								getch();curTok = '/=';return true;
-							default:
-								curTok = '/';return true;
-						}
-					case '(':case ')':case ',':case '=':case ';':case '.':
-						// Misc. recognized characters
-						curTok = chr;
-						getch();
-						return true;
-					case ' ':case '\t':case '\r':case '\n':
-						// Ignored characters
-						getch();
-						repeat = true;
-				}
-			} while (repeat);
+    };var chrPos = 0,
+        chr = formula.charAt(0),
+        curTok = null,
+        curVal;
+    function getch() {
+      return chr = formula.charAt(++chrPos);
+    }
+    function getTok() {
+      var sign = 1,
+          repeat = false;
+      do {
+        repeat = false;
+        switch (chr) {
+          case '':
+            curTok = null; // End
+            return true;
+          case '+':
+            switch (getch()) {
+              case '+':
+                getch();curTok = '++';return true;
+              case '=':
+                getch();curTok = '+=';return true;
+              default:
+                curTok = '+';return true;
+            }
+          case '-':
+            switch (getch()) {
+              case '-':
+                getch();curTok = '--';return true;
+              case '=':
+                getch();curTok = '-=';return true;
+              default:
+                if (chr >= '0' && chr <= '9') {
+                  sign = -1;break;
+                } else {
+                  curTok = '-';return true;
+                }
+            }
+          case '*':
+            switch (getch()) {
+              case '=':
+                getch();curTok = '*=';return true;
+              default:
+                curTok = '*';return true;
+            }
+          case '/':
+            switch (getch()) {
+              case '=':
+                getch();curTok = '/=';return true;
+              default:
+                curTok = '/';return true;
+            }
+          case '(':case ')':case ',':case '=':case ';':case '.':
+            // Misc. recognized characters
+            curTok = chr;
+            getch();
+            return true;
+          case ' ':case '\t':case '\r':case '\n':
+            // Ignored characters
+            getch();
+            repeat = true;
+        }
+      } while (repeat);
 
-			if (chr >= '0' && chr <= '9') {
-				var numberString = chr,
-				    hasDot = false;
-				while (getch() !== '') {
-					if (chr >= '0' && chr <= '9') numberString += chr;else if (chr !== '.') break;else if (hasDot) return error("Unexpected character: " + chr); // More than one '.' inside number string
-					else {
-							hasDot = true;
-							numberString += chr;
-						}
-				}
-				if (hasDot) {
-					curTok = 'float';
-					curVal = sign * Number.parseFloat(numberString);
-				} else {
-					curTok = 'int';
-					curVal = sign * Number.parseInt(numberString, 10);
-				}
-				return true;
-			}
-
-			if (chr >= 'a' && chr <= 'z' || chr >= 'A' && chr <= 'Z') {
-				var str = chr;
-				while (getch() !== '') {
-					if (chr >= 'a' && chr <= 'z' || chr >= 'A' && chr <= 'Z' || chr >= '0' && chr <= '9' || chr === '_') str += chr;else break;
-				}
-				curTok = 'identifier';
-				curVal = str;
-				return true;
-			}
-
-			return error("Unexpected character: " + chr);
-		}
-		function getOperatorPrecedence(tok) {
-			switch (tok) {
-				case '=':
-					return 10; // lowest
-				case '+=':
-					return 10;
-				case '-=':
-					return 10;
-				case '*=':
-					return 10;
-				case '/=':
-					return 10;
-				case '?':
-					return 20;
-				case '||':
-					return 30;
-				case '&&':
-					return 40;
-				case '==':
-					return 50;
-				case '<':
-					return 60;
-				case '>':
-					return 60;
-				case '+':
-					return 70;
-				case '-':
-					return 70;
-				case '*':
-					return 80;
-				case '/':
-					return 80;
-				case '%':
-					return 80; // highest.
-				default:
-					return -1; // Not an operator
-			}
-		}
-
-		// >>> Abstract Syntax Tree builder
-
-		function buildAST() {
-			var scope = symbolTypes ? symbolTypes : {};
-
-			function prefixOpAST(op) {
-				if (!libUtility.isString(curTok)) return error("Expected variable after prefix operator '" + op + "'");
-
-				return [op, curTok];
-			}
-			function bineryOpAST(exprPrec, lhs) {
-				// If this is a binop, find its precedence.
-				while (true) {
-					var tokPrec = getOperatorPrecedence(curTok);
-
-					// If this is an operator that binds at least as tightly as the current binop, consume it, otherwise return lhs
-					if (tokPrec < exprPrec) return lhs;
-					// curTok is an operator
-
-					var binOp = curTok;
-					if (!getTok()) return null; // eat binop
-
-					if (binOp == '?') {
-						/*var ifExpr = primaryAST();
-      if (ifExpr == null)
-      	return null;
-      	if (CurTok != ':')
-      	return error("Expected ':'");
-      if (!getTok()) return null;  // eat ':'
-      	var elseExpr = primaryAST();
-      if (elseExpr == null)
-      	return null;
-      	// If '?' binds less tightly with elseExpr than the operator after elseExpr, let the pending operator take elseExpr as its lhs
-      var nextPrec = getOperatorPrecedence(curTok);
-      if (tokPrec < nextPrec)
-      {
-      	elseExpr = bineryOpAST(tokPrec + 1, elseExpr);
-      	if (elseExpr == null)
-      		return null;
+      if (chr >= '0' && chr <= '9') {
+        var numberString = chr,
+            hasDot = false;
+        while (getch() !== '') {
+          if (chr >= '0' && chr <= '9') numberString += chr;else if (chr !== '.') break;else if (hasDot) return error("Unexpected character: " + chr); // More than one '.' inside number string
+          else {
+              hasDot = true;
+              numberString += chr;
+            }
+        }
+        if (hasDot) {
+          curTok = 'float';
+          curVal = sign * Number.parseFloat(numberString);
+        } else {
+          curTok = 'int';
+          curVal = sign * Number.parseInt(numberString, 10);
+        }
+        return true;
       }
-      	//lhs = new ChoiceExprAST(new MpuSharp.Segment(lhs.source.begin, elseExpr.source.end), lhs, ifExpr, elseExpr);
-      lhs = lhs.concat(ifExpr, elseExpr); lhs.push('?');*/
-					} else {
-						// Parse the expression after the binary operator.
-						var rhs = exprAST(tokPrec);
-						if (rhs == null) return null;
 
-						// If binOp binds less tightly with rhs than the operator after rhs, let the pending operator take rhs as its lhs.
-						var nextPrec = getOperatorPrecedence(curTok);
-						if (tokPrec < nextPrec) {
-							rhs = bineryOpAST(tokPrec + 1, rhs);
-							if (rhs == null) return null;
-						}
+      if (chr >= 'a' && chr <= 'z' || chr >= 'A' && chr <= 'Z') {
+        var str = chr;
+        while (getch() !== '') {
+          if (chr >= 'a' && chr <= 'z' || chr >= 'A' && chr <= 'Z' || chr >= '0' && chr <= '9' || chr === '_') str += chr;else break;
+        }
+        curTok = 'identifier';
+        curVal = str;
+        return true;
+      }
 
-						// Create operator function signature from operator name and argument FormulaCompiler.types
-						var funcSignature = lhs.type.name + " " + binOp + " " + rhs.type.name;
+      return error("Unexpected character: " + chr);
+    }
+    function getOperatorPrecedence(tok) {
+      switch (tok) {
+        case '=':
+          return 10; // lowest
+        case '+=':
+          return 10;
+        case '-=':
+          return 10;
+        case '*=':
+          return 10;
+        case '/=':
+          return 10;
+        case '?':
+          return 20;
+        case '||':
+          return 30;
+        case '&&':
+          return 40;
+        case '==':
+          return 50;
+        case '<':
+          return 60;
+        case '>':
+          return 60;
+        case '+':
+          return 70;
+        case '-':
+          return 70;
+        case '*':
+          return 80;
+        case '/':
+          return 80;
+        case '%':
+          return 80; // highest.
+        default:
+          return -1; // Not an operator
+      }
+    }
 
-						// Lookup operator function and return type
-						var returnType = functionsReturnTypes[funcSignature];
-						if (libUtility.isUndefined(returnType)) return error("Undefined operator " + binOp + " on FormulaCompiler.types " + lhs.type.name + " and " + rhs.type.name);
+    // >>> Abstract Syntax Tree builder
 
-						// Merge lhs/rhs.
-						if (tokPrec === 10) // If binOp is '=', '+=' or '-='
-							{
-								var lastOp = lhs.code.pop();
-								if (lastOp !== '@' && lastOp !== '@[]') return error("Cannot assign to non-variable");
+    function buildAST() {
+      var scope = symbolTypes ? symbolTypes : {};
 
-								// Store as rhs, lhs, funcSignature
-								lhs.type = returnType;
-								lhs.code = rhs.code.concat(lhs.code);
-								lhs.code.push(funcSignature);
-							} else {
-							// Store as lhs, rhs, funcSignature
-							lhs.type = returnType;
-							lhs.code = lhs.code.concat(rhs.code);
-							lhs.code.push(funcSignature);
-						}
-					}
-				}
-			}
-			function identifierAST() {
-				var identifier = curVal;
-				var variable = [identifier];
-				if (!getTok()) return null; // eat identifier
+      function prefixOpAST(op) {
+        if (!libUtility.isString(curTok)) return error("Expected variable after prefix operator '" + op + "'");
 
-				// Query variable type from scope
-				var type = scope[identifier];
+        return [op, curTok];
+      }
+      function bineryOpAST(exprPrec, lhs) {
+        // If this is a binop, find its precedence.
+        while (true) {
+          var tokPrec = getOperatorPrecedence(curTok);
 
-				while (curTok === '.') {
-					if (!getTok()) return null; // eat '.'
+          // If this is an operator that binds at least as tightly as the current binop, consume it, otherwise return lhs
+          if (tokPrec < exprPrec) return lhs;
+          // curTok is an operator
 
-					if (libUtility.isUndefined(type)) return error("Undefined variable: " + identifier);
-					var parentType = type;
-					var member = type.members[curVal];
-					if (libUtility.isUndefined(member)) return error(parentType.name + " does not contain a member: " + curVal);
-					type = member.type;
+          var binOp = curTok;
+          if (!getTok()) return null; // eat binop
 
-					variable.push('.');
-					variable.push(member.index);
+          if (binOp == '?') {
+            /*var ifExpr = primaryAST();
+            if (ifExpr == null)
+              return null;
+             if (CurTok != ':')
+              return error("Expected ':'");
+            if (!getTok()) return null;  // eat ':'
+             var elseExpr = primaryAST();
+            if (elseExpr == null)
+              return null;
+             // If '?' binds less tightly with elseExpr than the operator after elseExpr, let the pending operator take elseExpr as its lhs
+            var nextPrec = getOperatorPrecedence(curTok);
+            if (tokPrec < nextPrec)
+            {
+              elseExpr = bineryOpAST(tokPrec + 1, elseExpr);
+              if (elseExpr == null)
+                return null;
+            }
+             //lhs = new ChoiceExprAST(new MpuSharp.Segment(lhs.source.begin, elseExpr.source.end), lhs, ifExpr, elseExpr);
+            lhs = lhs.concat(ifExpr, elseExpr); lhs.push('?');*/
+          } else {
+            // Parse the expression after the binary operator.
+            var rhs = exprAST(tokPrec);
+            if (rhs == null) return null;
 
-					if (!getTok()) return null; // eat identifier
-				}
+            // If binOp binds less tightly with rhs than the operator after rhs, let the pending operator take rhs as its lhs.
+            var nextPrec = getOperatorPrecedence(curTok);
+            if (tokPrec < nextPrec) {
+              rhs = bineryOpAST(tokPrec + 1, rhs);
+              if (rhs == null) return null;
+            }
 
-				if (curTok === '(') {
-					if (variable.length !== 1) return error('Member functions not suported');
-					return functionAST(identifier); // Function call
-				}
+            // Create operator function signature from operator name and argument FormulaCompiler.types
+            var funcSignature = lhs.type.name + " " + binOp + " " + rhs.type.name;
 
-				if (curTok === 'identifier') {
-					if (variable.length !== 1) return error('Hierarchical FormulaCompiler.types not suported');
-					return varDeclAST(variable, identifier); // Variable declaration
-				}
+            // Lookup operator function and return type
+            var returnType = functionsReturnTypes[funcSignature];
+            if (libUtility.isUndefined(returnType)) return error("Undefined operator " + binOp + " on FormulaCompiler.types " + lhs.type.name + " and " + rhs.type.name);
 
-				/*if (curTok === '[') // Array access
-    {
-    	if (!getTok()) return null; // Eat '['
-    	if (curTok === ']') // Array type
-    	{
-    		if (!getTok()) return null; // Eat ']'
-    		//return new VariableExprAST(getLineNumber(), enclosingScopes, true);
-    		variable.IsArray = true;
-    		return variable;
-    	}
-    	
-    	var index = ParseExpression();
-    	if (index != null)
-    	{
-    		if (CurTok != ']')
-    			return Error("Expected ']' after expression");
-    		if (!getTok()) return null; // Eat ']'
-    		return new IndexExprAST(getLineNumber(), variable, index);
-    	}
-    	else
-    		return null;
-    }*/
+            // Merge lhs/rhs.
+            if (tokPrec === 10) // If binOp is '=', '+=' or '-='
+              {
+                var lastOp = lhs.code.pop();
+                if (lastOp !== '@' && lastOp !== '@[]') return error("Cannot assign to non-variable");
 
-				if (libUtility.isUndefined(type)) return error("Undefined variable: " + identifier);
+                // Store as rhs, lhs, funcSignature
+                lhs.type = returnType;
+                lhs.code = rhs.code.concat(lhs.code);
+                lhs.code.push(funcSignature);
+              } else {
+              // Store as lhs, rhs, funcSignature
+              lhs.type = returnType;
+              lhs.code = lhs.code.concat(rhs.code);
+              lhs.code.push(funcSignature);
+            }
+          }
+        }
+      }
+      function identifierAST() {
+        var identifier = curVal;
+        var variable = [identifier];
+        if (!getTok()) return null; // eat identifier
 
-				variable.push(type === FormulaCompiler.types.float ? '@' : '@[]');
-				return { code: variable, type: type }; // Variable reference
-			}
-			function identifierAndPostAST() {
-				var identifier = identifierAST();
-				if (!identifier) return null;
+        // Query variable type from scope
+        var type = scope[identifier];
 
-				/*switch (curTok)
-    {
-    case '++': case '--':
-    	if (!getTok()) return null;  // Eat '++' or '--'
-    	identifier.push('post' + curTok);
-    }*/
+        while (curTok === '.') {
+          if (!getTok()) return null; // eat '.'
 
-				return identifier;
-			}
-			function numberAST() {
-				var number = curVal;
-				if (!getTok()) return null; // Eat number
-				return { code: [number], type: FormulaCompiler.types.float };
-			}
-			function varDeclAST(type, typeName) {
-				type = FormulaCompiler.types[typeName];
-				if (libUtility.isUndefined(type)) return error("Unsupported type: " + typeName);
+          if (libUtility.isUndefined(type)) return error("Undefined variable: " + identifier);
+          var parentType = type;
+          var member = type.members[curVal];
+          if (libUtility.isUndefined(member)) return error(parentType.name + " does not contain a member: " + curVal);
+          type = member.type;
 
-				// Update scope
-				var prev = scope[curVal];
-				if (!libUtility.isUndefined(prev)) return error("Redefinition of variable: " + curVal);
-				scope[curVal] = type; // Store variable type in scope
+          variable.push('.');
+          variable.push(member.index);
 
-				var variable = [curVal];
-				if (!getTok()) return null; // eat identifier
+          if (!getTok()) return null; // eat identifier
+        }
 
-				/*var decl = [type].concat(variable);
-    decl.push('#');
-    return { code: decl, type: type };*/
-				variable.push(type === FormulaCompiler.types.float ? '@' : '@[]');
-				return { code: variable, type: type };
-			}
-			function functionAST(funcName) {
-				if (!getTok()) return null; // Eat '('
+        if (curTok === '(') {
+          if (variable.length !== 1) return error('Member functions not suported');
+          return functionAST(identifier); // Function call
+        }
 
-				var args = listAST(')');
-				if (!args) return null;
-				var numArgs = args.type.length;
+        if (curTok === 'identifier') {
+          if (variable.length !== 1) return error('Hierarchical FormulaCompiler.types not suported');
+          return varDeclAST(variable, identifier); // Variable declaration
+        }
 
-				// Create function signature from function name and argument FormulaCompiler.types
-				var argTypeNames = args.type.map(function (type) {
-					return type.name;
-				}).join(", ");
-				var funcSignature = funcName + "(" + argTypeNames + ")";
+        /*if (curTok === '[') // Array access
+        {
+          if (!getTok()) return null; // Eat '['
+          if (curTok === ']') // Array type
+          {
+            if (!getTok()) return null; // Eat ']'
+            //return new VariableExprAST(getLineNumber(), enclosingScopes, true);
+            variable.IsArray = true;
+            return variable;
+          }
+          
+          var index = ParseExpression();
+          if (index != null)
+          {
+            if (CurTok != ']')
+              return Error("Expected ']' after expression");
+            if (!getTok()) return null; // Eat ']'
+            return new IndexExprAST(getLineNumber(), variable, index);
+          }
+          else
+            return null;
+        }*/
 
-				// Lookup function and return type
-				var returnType = functionsReturnTypes[funcSignature];
-				if (libUtility.isUndefined(returnType)) return error("Undefined function " + funcSignature);
+        if (libUtility.isUndefined(type)) return error("Undefined variable: " + identifier);
 
-				// Store as args, funcSignature
-				var funcCode = args.code;
-				funcCode.push(funcSignature);
-				return { code: funcCode, type: returnType };
-			}
-			function listAST(termTok) {
-				if (curTok === termTok) {
-					if (!getTok()) return null; // Eat termTok
-					return [0]; // List of length 0
-				}
+        variable.push(type === FormulaCompiler.types.float ? '@' : '@[]');
+        return { code: variable, type: type }; // Variable reference
+      }
+      function identifierAndPostAST() {
+        var identifier = identifierAST();
+        if (!identifier) return null;
 
-				var code = [],
-				    typeList = [],
-				    len = 1;
-				while (true) {
-					var expr = exprAST();
-					if (!expr) return null;
-					code = code.concat(expr.code);
-					typeList.push(expr.type);
+        /*switch (curTok)
+        {
+        case '++': case '--':
+          if (!getTok()) return null;  // Eat '++' or '--'
+          identifier.push('post' + curTok);
+        }*/
 
-					if (curTok === termTok) break;else if (curTok !== ',') return error("Expected ',' or '" + termTok + "' after list element");
-					if (!getTok()) return null; // Eat ','
-					++len;
-				}
-				if (!getTok()) return null; // Eat termTok
-				return { code: code, type: typeList };
-			}
-			function primaryAST() {
-				switch (curTok) {
-					case 'identifier':
-						return identifierAndPostAST();
-					case 'float':case 'int':
-						return numberAST();
-					default:
-						return error("unknown token '{0}' when expecting an expression".format(curTok));
-					/*case (int)Lexer.Token.tok_int: return ParseIntExpr();
-     case (int)Lexer.Token.tok_float: return ParseFloatExpr();
-     case (int)Lexer.Token.tok_string: return ParseStringExpr();
-     case (int)Lexer.Token.tok_bool: return ParseBooleanExpr();
-     case '(': return ParseParenExpr();
-     case '[': return ParseArrayExpr('[', ']');
-     case (int)Lexer.Token.tok_return: return ParseReturnExpr();
-     case (int)Lexer.Token.tok_new: return ParseNewExpr();
-     case (int)Lexer.Token.tok_pp:
-     	Position ppBegin = getTokenStartPosition();
-     	if (!getTok()) return null; // eat '++'
-     	VAR = ParseIdentifierExpr();
-     	if (VAR == null) return null;
-     	if (!(VAR is VariableExprAST || VAR is IndexExprAST)) return Error("Expected variable after prefix increment operator");
-     	return new PrefixIncrementExprAST(new Segment(ppBegin, VAR.source.end), VAR);
-     case (int)Lexer.Token.tok_mm:
-     	Position mmBegin = getTokenStartPosition();
-     	if (!getTok()) return null; // eat '--'
-     	VAR = ParseIdentifierExpr();
-     	if (VAR == null) return null;
-     	if (!(VAR is VariableExprAST || VAR is IndexExprAST)) return Error("Expected variable after prefix decrement operator");
-     	return new PrefixDecrementExprAST(new Segment(mmBegin, VAR.source.end), VAR);*/
-				}
-			}
-			/**
-    * @param  {number=} exprPrec=0
-    */
-			function exprAST(exprPrec) {
-				if (libUtility.isUndefined(exprPrec)) exprPrec = 0;
+        return identifier;
+      }
+      function numberAST() {
+        var number = curVal;
+        if (!getTok()) return null; // Eat number
+        return { code: [number], type: FormulaCompiler.types.float };
+      }
+      function varDeclAST(type, typeName) {
+        type = FormulaCompiler.types[typeName];
+        if (libUtility.isUndefined(type)) return error("Unsupported type: " + typeName);
 
-				var lhs = primaryAST();
-				if (!lhs) return null;
+        // Update scope
+        var prev = scope[curVal];
+        if (!libUtility.isUndefined(prev)) return error("Redefinition of variable: " + curVal);
+        scope[curVal] = type; // Store variable type in scope
 
-				/*if (curTok === '=' || curTok === '+=')
-    {
-    	var op = curTok;
-    	if (!getTok()) return null; // Eat op
-    	var rhs = exprAST();
-    	if (!rhs) return null;
-    	return lhs.concat(rhs, [op]);
-    }*/
+        var variable = [curVal];
+        if (!getTok()) return null; // eat identifier
 
-				return bineryOpAST(exprPrec, lhs);
-			}
-			function topLevelAST() {
-				var code = [];
-				if (!getTok()) return null; // Get first token
-				while (curTok !== null) {
-					var lhs = primaryAST();
-					if (!lhs) return null;
+        /*var decl = [type].concat(variable);
+        decl.push('#');
+        return { code: decl, type: type };*/
+        variable.push(type === FormulaCompiler.types.float ? '@' : '@[]');
+        return { code: variable, type: type };
+      }
+      function functionAST(funcName) {
+        if (!getTok()) return null; // Eat '('
 
-					var binOp = bineryOpAST(0, lhs);
-					if (!binOp) return null;
+        var args = listAST(')');
+        if (!args) return null;
+        var numArgs = args.type.length;
 
-					if (curTok !== ';') return error("Missing ';' after expression");
-					if (!getTok()) return null; // Eat ';'
+        // Create function signature from function name and argument FormulaCompiler.types
+        var argTypeNames = args.type.map(function (type) {
+          return type.name;
+        }).join(", ");
+        var funcSignature = funcName + "(" + argTypeNames + ")";
 
-					code = code.concat(binOp.code);
-					code.push(';'); // Clear operation
-				}
+        // Lookup function and return type
+        var returnType = functionsReturnTypes[funcSignature];
+        if (libUtility.isUndefined(returnType)) return error("Undefined function " + funcSignature);
 
-				if (code.length !== 0) code.pop(); // Don't clear after last operation. Result of last operation is return value
+        // Store as args, funcSignature
+        var funcCode = args.code;
+        funcCode.push(funcSignature);
+        return { code: funcCode, type: returnType };
+      }
+      function listAST(termTok) {
+        if (curTok === termTok) {
+          if (!getTok()) return null; // Eat termTok
+          return [0]; // List of length 0
+        }
 
-				return code;
-			}
+        var code = [],
+            typeList = [],
+            len = 1;
+        while (true) {
+          var expr = exprAST();
+          if (!expr) return null;
+          code = code.concat(expr.code);
+          typeList.push(expr.type);
 
-			var expr = topLevelAST();
-			return expr ? expr : err;
-		}
+          if (curTok === termTok) break;else if (curTok !== ',') return error("Expected ',' or '" + termTok + "' after list element");
+          if (!getTok()) return null; // Eat ','
+          ++len;
+        }
+        if (!getTok()) return null; // Eat termTok
+        return { code: code, type: typeList };
+      }
+      function primaryAST() {
+        switch (curTok) {
+          case 'identifier':
+            return identifierAndPostAST();
+          case 'float':case 'int':
+            return numberAST();
+          default:
+            return error("unknown token '{0}' when expecting an expression".format(curTok));
+          /*case (int)Lexer.Token.tok_int: return ParseIntExpr();
+          case (int)Lexer.Token.tok_float: return ParseFloatExpr();
+          case (int)Lexer.Token.tok_string: return ParseStringExpr();
+          case (int)Lexer.Token.tok_bool: return ParseBooleanExpr();
+          case '(': return ParseParenExpr();
+          case '[': return ParseArrayExpr('[', ']');
+          case (int)Lexer.Token.tok_return: return ParseReturnExpr();
+          case (int)Lexer.Token.tok_new: return ParseNewExpr();
+          case (int)Lexer.Token.tok_pp:
+            Position ppBegin = getTokenStartPosition();
+            if (!getTok()) return null; // eat '++'
+            VAR = ParseIdentifierExpr();
+            if (VAR == null) return null;
+            if (!(VAR is VariableExprAST || VAR is IndexExprAST)) return Error("Expected variable after prefix increment operator");
+            return new PrefixIncrementExprAST(new Segment(ppBegin, VAR.source.end), VAR);
+          case (int)Lexer.Token.tok_mm:
+            Position mmBegin = getTokenStartPosition();
+            if (!getTok()) return null; // eat '--'
+            VAR = ParseIdentifierExpr();
+            if (VAR == null) return null;
+            if (!(VAR is VariableExprAST || VAR is IndexExprAST)) return Error("Expected variable after prefix decrement operator");
+            return new PrefixDecrementExprAST(new Segment(mmBegin, VAR.source.end), VAR);*/
+        }
+      }
+      /**
+       * @param  {number=} exprPrec=0
+       */
+      function exprAST(exprPrec) {
+        if (libUtility.isUndefined(exprPrec)) exprPrec = 0;
 
-		return buildAST();
-	},
-	run: function run(code, stack, global) {
-		var IP = -1; // Instruction pointer
-		var SP = 0; // Stack pointer
-		var scope = global;
+        var lhs = primaryAST();
+        if (!lhs) return null;
 
-		var postOpScope;
-		while (++IP < code.length) {
-			postOpScope = global; // By default, reset scope after operation
-			switch (code[IP]) {
-				case 'float = float':
-					scope[stack[--SP]] = stack[SP - 1];break;
-				case 'float += float':
-					scope[stack[--SP]] += stack[--SP];break;
-				case 'float -= float':
-					scope[stack[--SP]] -= stack[--SP];break;
-				case 'float *= float':
-					scope[stack[--SP]] *= stack[--SP];break;
-				case 'float /= float':
-					scope[stack[--SP]] /= stack[--SP];break;
-				case 'float + float':
-					stack[SP - 2] += stack[--SP];break;
-				case 'float * float':
-					stack[SP - 2] *= stack[--SP];break;
-				case 'float / float':
-					stack[SP - 2] /= stack[--SP];break;
+        /*if (curTok === '=' || curTok === '+=')
+        {
+          var op = curTok;
+          if (!getTok()) return null; // Eat op
+          var rhs = exprAST();
+          if (!rhs) return null;
+          return lhs.concat(rhs, [op]);
+        }*/
 
-				case 'sin(float)':
-					stack[SP - 1] = Math.sin(stack[SP - 1]);break;
-				case 'cos(float)':
-					stack[SP - 1] = Math.cos(stack[SP - 1]);break;
-				case 'tan(float)':
-					stack[SP - 1] = Math.tan(stack[SP - 1]);break;
-				case 'asin(float)':
-					stack[SP - 1] = Math.asin(stack[SP - 1]);break;
-				case 'acos(float)':
-					stack[SP - 1] = Math.acos(stack[SP - 1]);break;
-				case 'atan(float)':
-					stack[SP - 1] = Math.atan(stack[SP - 1]);break;
-				/*case 'pow': FormulaCompiler.types.float,
-    case 'exp': FormulaCompiler.types.float,
-    case 'log': FormulaCompiler.types.float,
-    case 'exp2': FormulaCompiler.types.float,
-    case 'log2': FormulaCompiler.types.float,
-    case 'sqrt': FormulaCompiler.types.float,
-    case 'inversesqrt': FormulaCompiler.types.float,
-    case 'abs': FormulaCompiler.types.float,
-    case 'sign': FormulaCompiler.types.float,
-    case 'floor': FormulaCompiler.types.float,
-    case 'ceil': FormulaCompiler.types.float,
-    case 'fract': FormulaCompiler.types.float,
-    case 'mod': FormulaCompiler.types.float,*/
-				case 'min(float, float)':
-					stack[SP - 2] = Math.min(stack[SP - 2], stack[--SP]);break;
-				case 'max(float, float)':
-					stack[SP - 2] = Math.max(stack[SP - 2], stack[--SP]);break;
-				/*case 'clamp': FormulaCompiler.types.float,
-    case 'mix': FormulaCompiler.types.float,
-    case 'step': FormulaCompiler.types.float,
-    case 'smoothstep': FormulaCompiler.types.float,
-    case 'length': FormulaCompiler.types.float,
-    case 'distance': FormulaCompiler.types.float,
-    case 'dot': FormulaCompiler.types.float,
-    case 'cross': FormulaCompiler.types.float,
-    case 'normalize': FormulaCompiler.types.float,*/
+        return bineryOpAST(exprPrec, lhs);
+      }
+      function topLevelAST() {
+        var code = [];
+        if (!getTok()) return null; // Get first token
+        while (curTok !== null) {
+          var lhs = primaryAST();
+          if (!lhs) return null;
 
-				case 'vec3(float, float, float)':
-					/*Nothing to do*/break;
-				case 'vec3 = vec3':
-					scope[stack[--SP]] = [stack[SP - 3], stack[SP - 2], stack[SP - 1]];break;
-				case 'vec3 + vec3':
-					stack[SP - 6] += stack[SP - 3];stack[SP - 5] += stack[SP - 2];stack[SP - 4] += stack[SP - 1];SP -= 3;break;
-				case 'vec3 * float':
-					var f = stack[--SP];stack[SP - 3] *= f;stack[SP - 2] *= f;stack[SP - 1] *= f;break;
+          var binOp = bineryOpAST(0, lhs);
+          if (!binOp) return null;
 
-				case '@':
-					stack[SP - 1] = scope[stack[SP - 1]];break; // Load scalar from scope
-				case '@[]':
-					// Load array from scope
-					var variable = scope[stack[--SP]];
-					for (var i = 0; i < variable.length; ++i) {
-						stack[SP++] = variable[i];
-					}break;
-				case '.':
-					scope = scope[stack[--SP]]; // Dereference member
-					postOpScope = scope; // Don't reset scope after operation
-					break;
-				case ';':
-					SP = 0;break;
+          if (curTok !== ';') return error("Missing ';' after expression");
+          if (!getTok()) return null; // Eat ';'
 
-				default:
-					stack[SP++] = code[IP];
-					postOpScope = scope; // Don't reset scope after operation
-			}
-			scope = postOpScope;
-		}
-		return SP === 0 ? null : SP === 1 ? stack[0] : stack.slice(0, SP);
-	}
+          code = code.concat(binOp.code);
+          code.push(';'); // Clear operation
+        }
+
+        if (code.length !== 0) code.pop(); // Don't clear after last operation. Result of last operation is return value
+
+        return code;
+      }
+
+      var expr = topLevelAST();
+      return expr ? expr : err;
+    }
+
+    return buildAST();
+  },
+  run: function run(code, stack, global) {
+    var IP = -1; // Instruction pointer
+    var SP = 0; // Stack pointer
+    var scope = global;
+
+    var postOpScope;
+    while (++IP < code.length) {
+      postOpScope = global; // By default, reset scope after operation
+      switch (code[IP]) {
+        case 'float = float':
+          scope[stack[--SP]] = stack[SP - 1];break;
+        case 'float += float':
+          scope[stack[--SP]] += stack[--SP];break;
+        case 'float -= float':
+          scope[stack[--SP]] -= stack[--SP];break;
+        case 'float *= float':
+          scope[stack[--SP]] *= stack[--SP];break;
+        case 'float /= float':
+          scope[stack[--SP]] /= stack[--SP];break;
+        case 'float + float':
+          stack[SP - 2] += stack[--SP];break;
+        case 'float * float':
+          stack[SP - 2] *= stack[--SP];break;
+        case 'float / float':
+          stack[SP - 2] /= stack[--SP];break;
+
+        case 'sin(float)':
+          stack[SP - 1] = Math.sin(stack[SP - 1]);break;
+        case 'cos(float)':
+          stack[SP - 1] = Math.cos(stack[SP - 1]);break;
+        case 'tan(float)':
+          stack[SP - 1] = Math.tan(stack[SP - 1]);break;
+        case 'asin(float)':
+          stack[SP - 1] = Math.asin(stack[SP - 1]);break;
+        case 'acos(float)':
+          stack[SP - 1] = Math.acos(stack[SP - 1]);break;
+        case 'atan(float)':
+          stack[SP - 1] = Math.atan(stack[SP - 1]);break;
+        /*case 'pow': FormulaCompiler.types.float,
+        case 'exp': FormulaCompiler.types.float,
+        case 'log': FormulaCompiler.types.float,
+        case 'exp2': FormulaCompiler.types.float,
+        case 'log2': FormulaCompiler.types.float,
+        case 'sqrt': FormulaCompiler.types.float,
+        case 'inversesqrt': FormulaCompiler.types.float,
+        case 'abs': FormulaCompiler.types.float,
+        case 'sign': FormulaCompiler.types.float,
+        case 'floor': FormulaCompiler.types.float,
+        case 'ceil': FormulaCompiler.types.float,
+        case 'fract': FormulaCompiler.types.float,
+        case 'mod': FormulaCompiler.types.float,*/
+        case 'min(float, float)':
+          stack[SP - 2] = Math.min(stack[SP - 2], stack[--SP]);break;
+        case 'max(float, float)':
+          stack[SP - 2] = Math.max(stack[SP - 2], stack[--SP]);break;
+        /*case 'clamp': FormulaCompiler.types.float,
+        case 'mix': FormulaCompiler.types.float,
+        case 'step': FormulaCompiler.types.float,
+        case 'smoothstep': FormulaCompiler.types.float,
+        case 'length': FormulaCompiler.types.float,
+        case 'distance': FormulaCompiler.types.float,
+        case 'dot': FormulaCompiler.types.float,
+        case 'cross': FormulaCompiler.types.float,
+        case 'normalize': FormulaCompiler.types.float,*/
+
+        case 'vec3(float, float, float)':
+          /*Nothing to do*/break;
+        case 'vec3 = vec3':
+          scope[stack[--SP]] = [stack[SP - 3], stack[SP - 2], stack[SP - 1]];break;
+        case 'vec3 + vec3':
+          stack[SP - 6] += stack[SP - 3];stack[SP - 5] += stack[SP - 2];stack[SP - 4] += stack[SP - 1];SP -= 3;break;
+        case 'vec3 * float':
+          var f = stack[--SP];stack[SP - 3] *= f;stack[SP - 2] *= f;stack[SP - 1] *= f;break;
+
+        case '@':
+          stack[SP - 1] = scope[stack[SP - 1]];break; // Load scalar from scope
+        case '@[]':
+          // Load array from scope
+          var variable = scope[stack[--SP]];
+          for (var i = 0; i < variable.length; ++i) {
+            stack[SP++] = variable[i];
+          }break;
+        case '.':
+          scope = scope[stack[--SP]]; // Dereference member
+          postOpScope = scope; // Don't reset scope after operation
+          break;
+        case ';':
+          SP = 0;break;
+
+        default:
+          stack[SP++] = code[IP];
+          postOpScope = scope; // Don't reset scope after operation
+      }
+      scope = postOpScope;
+    }
+    return SP === 0 ? null : SP === 1 ? stack[0] : stack.slice(0, SP);
+  }
 };
 FormulaCompiler.types = {
-	float: { name: "float" },
-	vec3: { name: "vec3" }
+  float: { name: "float" },
+  vec3: { name: "vec3" }
 };
 FormulaCompiler.types.vec3.members = {
-	x: { index: 0, type: FormulaCompiler.types.float },
-	y: { index: 1, type: FormulaCompiler.types.float },
-	z: { index: 2, type: FormulaCompiler.types.float }
+  x: { index: 0, type: FormulaCompiler.types.float },
+  y: { index: 1, type: FormulaCompiler.types.float },
+  z: { index: 2, type: FormulaCompiler.types.float }
 };
 
 function verboseTest(formula, symbols, symbolTypes) {
-	var code = FormulaCompiler.compile(formula, symbolTypes ? symbolTypes : {});
+  var code = FormulaCompiler.compile(formula, symbolTypes ? symbolTypes : {});
 
-	console.log("formula: " + formula);
-	if (libUtility.isString(code)) console.log("err: " + code);else {
-		var globalScope = symbols ? symbols : {};
-		console.log("code: " + code.map(function (c) {
-			return libUtility.isString(c) ? '"' + c + '"' : c;
-		}).join(" "));
-		console.log("result: " + FormulaCompiler.run(code, new Array(16), globalScope));
-		console.log("locals: " + JSON.stringify(globalScope));
-	}
+  console.log("formula: " + formula);
+  if (libUtility.isString(code)) console.log("err: " + code);else {
+    var globalScope = symbols ? symbols : {};
+    console.log("code: " + code.map(function (c) {
+      return libUtility.isString(c) ? '"' + c + '"' : c;
+    }).join(" "));
+    console.log("result: " + FormulaCompiler.run(code, new Array(16), globalScope));
+    console.log("locals: " + JSON.stringify(globalScope));
+  }
 }
 
 function verify(formula, result) {
-	var code = FormulaCompiler.compile(formula);
-	if (libUtility.isString(code)) console.log("Formula '{0}' failed with error '{1}'".format(formula, code));else {
-		var computedResult = FormulaCompiler.run(code, new Array(16), {});
+  var code = FormulaCompiler.compile(formula);
+  if (libUtility.isString(code)) console.log("Formula '{0}' failed with error '{1}'".format(formula, code));else {
+    var computedResult = FormulaCompiler.run(code, new Array(16), {});
 
-		var match;
-		if (libUtility.isArray(result) && libUtility.isArray(computedResult) && result.length === computedResult.length) {
-			match = true;
-			for (var i = 0; i < result.length; ++i) {
-				if (computedResult[i] !== result[i]) {
-					match = false;
-					break;
-				}
-			}
-		} else match = computedResult === result;
+    var match;
+    if (libUtility.isArray(result) && libUtility.isArray(computedResult) && result.length === computedResult.length) {
+      match = true;
+      for (var i = 0; i < result.length; ++i) {
+        if (computedResult[i] !== result[i]) {
+          match = false;
+          break;
+        }
+      }
+    } else match = computedResult === result;
 
-		if (!match) console.log("Formula '{0}' returned '{1}', instead of '{2}'".format(formula, computedResult, result));
-	}
-	return true;
+    if (!match) console.log("Formula '{0}' returned '{1}', instead of '{2}'".format(formula, computedResult, result));
+  }
+  return true;
 }
 
 function benchmark(nIter, javascriptCode, formulaCode, evalCode) {
-	var sum, tStart;
+  var sum, tStart;
 
-	sum = 0.0;
-	tStart = performance.now();
-	for (var i = 0; i < nIter; ++i) {
-		sum += javascriptCode();
-	}console.log(sum);
-	console.log(performance.now() - tStart + "ms");
+  sum = 0.0;
+  tStart = performance.now();
+  for (var i = 0; i < nIter; ++i) {
+    sum += javascriptCode();
+  }console.log(sum);
+  console.log(performance.now() - tStart + "ms");
 
-	sum = 0.0;
-	tStart = performance.now();
-	var code = FormulaCompiler.compile(formulaCode);
-	var stack = new Array(16);
-	for (var i = 0; i < nIter; ++i) {
-		sum += FormulaCompiler.run(code, stack, {});
-	}console.log(sum);
-	console.log(performance.now() - tStart + "ms");
+  sum = 0.0;
+  tStart = performance.now();
+  var code = FormulaCompiler.compile(formulaCode);
+  var stack = new Array(16);
+  for (var i = 0; i < nIter; ++i) {
+    sum += FormulaCompiler.run(code, stack, {});
+  }console.log(sum);
+  console.log(performance.now() - tStart + "ms");
 
-	sum = 0.0;
-	tStart = performance.now();
-	for (var i = 0; i < nIter; ++i) {
-		sum += eval(evalCode);
-	}console.log(sum);
-	console.log(performance.now() - tStart + "ms");
+  sum = 0.0;
+  tStart = performance.now();
+  for (var i = 0; i < nIter; ++i) {
+    sum += eval(evalCode);
+  }console.log(sum);
+  console.log(performance.now() - tStart + "ms");
 }
 
 /*benchmark(1000000, function() {
-	var a = 3;
-	var b = 4;
-	return a * b / 2;
+  var a = 3;
+  var b = 4;
+  return a * b / 2;
 }, `
-	float a = 3;
-	float b = 4;
-	a * b / 2;
+  float a = 3;
+  float b = 4;
+  a * b / 2;
 `, `
-	var a = 3;
-	var b = 4;
-	a * b / 2;
+  var a = 3;
+  var b = 4;
+  a * b / 2;
 `);*/
 
 /*benchmark(10000, function() {
-	var v = [4, 5, 6];
-	return v[1];
+  var v = [4, 5, 6];
+  return v[1];
 }, `
-	vec3 v = vec3(4, 5, 6);
-	v.y;
+  vec3 v = vec3(4, 5, 6);
+  v.y;
 `, `
-	var v = [4, 5, 6];
-	v[1];
+  var v = [4, 5, 6];
+  v[1];
 `);*/
 
 //verboseTest("vec3 a = vec3(1, 2, 3);");
@@ -16016,20 +15990,20 @@ verify("vec3 a = vec3(1, 2, 3); a.y;", 2);
 verify("vec3 a = vec3(1, 2, 3); a.y *= 3; a;", [1, 6, 3]);
 verify("vec3 a = vec3(1, 2, 3); a = a * 3; a;", [3, 6, 9]);
 verify(`
-	vec3 a = vec3(5, 5, 5);
-	vec3 b = vec3(1, 2, 3);
-	vec3 c = a + b;
-	c;
+  vec3 a = vec3(5, 5, 5);
+  vec3 b = vec3(1, 2, 3);
+  vec3 c = a + b;
+  c;
 `, [6, 7, 8]);
 verify(`
-	vec3 a = vec3(0, 1, 2);
-	a.x = a.y;
-	a;
+  vec3 a = vec3(0, 1, 2);
+  a.x = a.y;
+  a;
 `, [1, 1, 2]);
 verify(`
-	float a = 3;
-	float b = 4;
-	a * b / 2;
+  float a = 3;
+  float b = 4;
+  a * b / 2;
 `, 6);
 
 verboseTest("i;", {i: 123.5}, {i: FormulaCompiler.types.float});*/
