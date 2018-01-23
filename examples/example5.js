@@ -53,8 +53,7 @@ domready(function () {
       plot.showImages(plot.referencePoints, 'lowDensity');
     });
     
-    for (var i = 0, nc = dataset.numColumns; i < dataset.length; ++i)
-    {
+    for (var i = 0, nc = dataset.numColumns; i < dataset.length; ++i) {
       var protein = dataset.data[i * nc + 0];
       var proteinPoints = pointsByProtein[protein];
       if (!proteinPoints)
@@ -85,30 +84,25 @@ function addAllEventListeners() {
   document.getElementById("cbYAxis").addEventListener("change", function () {cbYAxis_onChange(document.getElementById("cbYAxis"))});
 }
 
-function cmdSelectAll_onClick(sender)
-{
+function cmdSelectAll_onClick(sender) {
   var elements = document.querySelectorAll("input[type='checkbox']");
   for (var i = 0; i < elements.length; ++i)
-    if (elements[i].checked === false)
-    {
+    if (elements[i].checked === false) {
       elements[i].checked = true;
       cbProtein_onChange(elements[i]);
     }
 }
 
-function cmdDeselectAll_onClick(sender)
-{
+function cmdDeselectAll_onClick(sender) {
   var elements = document.querySelectorAll("input[type='checkbox']");
   for (var i = 0; i < elements.length; ++i)
-    if (elements[i].checked === true)
-    {
+    if (elements[i].checked === true) {
       elements[i].checked = false;
       cbProtein_onChange(elements[i]);
     }
 }
 
-function cbProtein_onChange(sender)
-{
+function cbProtein_onChange(sender) {
   var protein = sender.id;
   var proteinPoints = pointsByProtein[protein];
   if (sender.checked)
@@ -117,22 +111,18 @@ function cbProtein_onChange(sender)
     plot.points.remove(proteinPoints);
 }
 
-function cbXAxis_onChange(sender)
-{
+function cbXAxis_onChange(sender) {
   var columnIndex = COLUMN_NAMES.indexOf(sender.options[sender.selectedIndex].innerText);
   plot.setActiveColumn(0, columnIndex);
 }
 
-function cbYAxis_onChange(sender)
-{
+function cbYAxis_onChange(sender) {
   var columnIndex = COLUMN_NAMES.indexOf(sender.options[sender.selectedIndex].innerText);
   plot.setActiveColumn(1, columnIndex);
 }
 
-function plot_onMouseDown(event)
-{
-  switch (event.button)
-  {
+function plot_onMouseDown(event) {
+  switch (event.button) {
     // On left mouse button: Enable point and lasso selection
     case 0: event.pointSelection = true; event.lassoSelection = true; break;
     
@@ -144,12 +134,10 @@ function plot_onMouseDown(event)
   }
 }
 
-function plot_onMouseOverDatapoint(dataset, index)
-{
+function plot_onMouseOverDatapoint(dataset, index) {
   if (index === -1)
     plot.highlightedPoints.clear();
-  else
-  {
+  else {
     plot.highlightedPoints.set(index);
     document.getElementById('imgCell').src = dataset.imageFilenames[index];
     
@@ -169,11 +157,9 @@ Tagged Protein: {1}
   }
 }
 
-function plot_onMouseOverAxisLabel(dataVector, labelRect)
-{
+function plot_onMouseOverAxisLabel(dataVector, labelRect) {
   var tooltip = document.getElementsByClassName('tooltip')[0];
-  if (dataVector)
-  {
+  if (dataVector) {
     tooltip.innerHTML = dataVector.hint;
     
     var plotRect = document.getElementById('divPlot').getBoundingClientRect();
@@ -183,26 +169,21 @@ function plot_onMouseOverAxisLabel(dataVector, labelRect)
     tooltip.style.visibility = 'visible';
     tooltip.style.transition = '';
     tooltip.style.opacity = 1;
-  }
-  else
-  {
+  } else {
     //tooltip.style.visibility = 'hidden';
     tooltip.style.transition = 'opacity 1s';
     tooltip.style.opacity = 0;
   }
 }
 
-function plot_onSelectionChanged(dataset, selection)
-{
-  if (selection.length !== 0)
-  {
+function plot_onSelectionChanged(dataset, selection) {
+  if (selection.length !== 0) {
     plot.referencePoints.append(selection);
     plot.showImages(selection, 'lowDensity');
   }
 }
 
-function plot_onLassoSelection(dataset, selection, mouseRect)
-{
+function plot_onLassoSelection(dataset, selection, mouseRect) {
   plot.zoomRect(mouseRect);
 }
 

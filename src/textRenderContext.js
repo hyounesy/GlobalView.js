@@ -6,8 +6,7 @@
  * @param {Object} gl // {WebGLRenderingContext}
  * @param {HTMLCanvasElement} canvas
  */
-export function TextRenderContext(gl, canvas)
-{
+export function TextRenderContext(gl, canvas) {
   var textCanvas = document.createElement('canvas');
   textCanvas.style.backgroundColor = 'transparent';
   textCanvas.style.pointerEvents = 'none';
@@ -21,14 +20,12 @@ export function TextRenderContext(gl, canvas)
   var fontHeight = ctx.measureText('M').width;
   
   
-  this.clear = function ()
-  {
+  this.clear = function () {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.strokeStyle = ctx.fillStyle = gl.foreColorString;
   }
   
-  gl.drawText = function (str, x, y, anchor, rotation, color)
-  {
+  gl.drawText = function (str, x, y, anchor, rotation, color) {
     x = Math.floor(x);
     y = Math.floor(y);
     
@@ -36,8 +33,7 @@ export function TextRenderContext(gl, canvas)
       ctx.fillStyle = color;
     
     var offsetV;
-    switch (anchor)
-    {
+    switch (anchor) {
     default: // 'topleft'
       ctx.textAlign = "left";
       offsetV = fontHeight;
@@ -77,8 +73,7 @@ export function TextRenderContext(gl, canvas)
     }
     if (rotation == 0)
       ctx.fillText(str, x, y + offsetV);
-    else
-    {
+    else {
       ctx.save();
       ctx.translate(x, y);
       ctx.rotate(rotation);
@@ -90,24 +85,19 @@ export function TextRenderContext(gl, canvas)
     if (color)
       ctx.fillStyle = gl.foreColorString;
   }
-  gl.measureTextWidth = function (str)
-  {
+  gl.measureTextWidth = function (str) {
     return ctx.measureText(str).width;
   }
-  gl.measureTextHeight = function ()
-  {
+  gl.measureTextHeight = function () {
     return fontHeight;
   }
   
-  gl.drawRect = function (x, y, width, height)
-  {
-    if (width < 0)
-    {
+  gl.drawRect = function (x, y, width, height) {
+    if (width < 0) {
       x += width;
       width = -width;
     }
-    if (height < 0)
-    {
+    if (height < 0) {
       y += height;
       height = -height;
     }
@@ -121,8 +111,7 @@ export function TextRenderContext(gl, canvas)
     ctx.strokeRect(x, y, width, height);
   }
   
-  gl.drawPolygon = function (points, color)
-  {
+  gl.drawPolygon = function (points, color) {
     if (points.length < 2)
       return;
     
@@ -137,8 +126,7 @@ export function TextRenderContext(gl, canvas)
     if (color)
       ctx.fillStyle = gl.foreColorString;
   }
-  gl.fillPolygon = function (points, color)
-  {
+  gl.fillPolygon = function (points, color) {
     if (points.length < 2)
       return;
     
@@ -154,8 +142,7 @@ export function TextRenderContext(gl, canvas)
       ctx.fillStyle = gl.foreColorString;
   }
   
-  this.setFont = function (font)
-  {
+  this.setFont = function (font) {
     ctx.font = _font = font;
     
     // Compute fontHeight (Source: http://stackoverflow.com/a/7462767)
@@ -169,21 +156,17 @@ export function TextRenderContext(gl, canvas)
     body.removeChild(dummy);
   }
   
-  this.onResize = function ()
-  {
+  this.onResize = function () {
     /*var canvasBounds = canvas.getBoundingClientRect();
     textCanvas.style.left = canvasBounds.left;
     textCanvas.style.top = canvasBounds.top;
     textCanvas.style.width = textCanvas.width = canvasBounds.width;
     textCanvas.style.height = textCanvas.height = canvasBounds.height;*/
     
-    if (offscreenRendering !== null)
-    {
+    if (offscreenRendering !== null) {
       textCanvas.width = offscreenRendering.width;
       textCanvas.height = offscreenRendering.height;
-    }
-    else
-    {
+    } else {
       var rect = textCanvas.getBoundingClientRect();
       textCanvas.style.marginTop = -(rect.bottom - rect.top) + "px";
       textCanvas.width = rect.right - rect.left;
@@ -193,8 +176,7 @@ export function TextRenderContext(gl, canvas)
   }
   
   var offscreenRendering = null;
-  this.enableOffscreenRendering = function (width, height)
-  {
+  this.enableOffscreenRendering = function (width, height) {
     if (offscreenRendering !== null)
       return;
     offscreenRendering = {};
@@ -207,8 +189,7 @@ export function TextRenderContext(gl, canvas)
     ctx = textCanvas.getContext("2d");
     this.onResize();
   }
-  this.disableOffscreenRendering = function ()
-  {
+  this.disableOffscreenRendering = function () {
     if (offscreenRendering === null)
       return;
     
@@ -217,8 +198,7 @@ export function TextRenderContext(gl, canvas)
     offscreenRendering = null;
     //this.onResize();
   }
-  this.getCanvas = function ()
-  {
+  this.getCanvas = function () {
     return textCanvas;
   }
   

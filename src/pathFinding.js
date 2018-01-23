@@ -1,5 +1,4 @@
-function DepthFirstSearch(problem)
-{
+function DepthFirstSearch(problem) {
   var fringe = [];
   var closed = {};
   var result = null;
@@ -11,12 +10,10 @@ function DepthFirstSearch(problem)
     return node.state; // Start state is goal
   closed[problem.computeHash(node.state)] = node.state;
   
-  while (true)
-  {
+  while (true) {
     problem.forEachSuccessor(node.state, function (successor) {
       // Test for goal state (before-push)
-      if (problem.isGoalState(successor))
-      {
+      if (problem.isGoalState(successor)) {
         // Goal found
         result = successor; 
         return;
@@ -24,8 +21,7 @@ function DepthFirstSearch(problem)
 
       // Avoid already pushed states (graph search)
       var successor_hash = problem.computeHash(successor);
-      if (libUtility.isUndefined(closed[successor_hash]))
-      {
+      if (libUtility.isUndefined(closed[successor_hash])) {
         fringe.push({state: successor});
         closed[successor_hash] = successor;
       }
@@ -42,8 +38,7 @@ function DepthFirstSearch(problem)
   }
 }
 
-function BreadthFirstSearch(problem)
-{
+function BreadthFirstSearch(problem) {
   var fringe = [];
   var closed = {};
   
@@ -53,12 +48,10 @@ function BreadthFirstSearch(problem)
     return node.state; // Start state is goal
   closed[problem.computeHash(node.state)] = node.state;
   
-  while (true)
-  {
+  while (true) {
     problem.forEachSuccessor(node.state, function (successor) {
       var successor_hash = problem.computeHash(successor);
-      if (libUtility.isUndefined(closed[successor_hash]))
-      {
+      if (libUtility.isUndefined(closed[successor_hash])) {
         fringe.push({state: successor});
         closed[successor_hash] = successor;
       }
@@ -67,16 +60,14 @@ function BreadthFirstSearch(problem)
     if (fringe.length === 0)
       return null; // Goal not found
     node = fringe.shift();
-    if (problem.isGoalState(node.state))
-    {
+    if (problem.isGoalState(node.state)) {
       fringe = null;
       return node.state; // Goal found
     }
   }
 }
 
-function UniformCostSearch(problem)
-{
+function UniformCostSearch(problem) {
   var fringe = new libUtility.PriorityQueue('cost');
   var closed = {};
 
@@ -86,12 +77,10 @@ function UniformCostSearch(problem)
     return node.state; // Start state is goal
   closed[problem.computeHash(node.state)] = {state: node.state, prevCost: node.cost};
 
-  while (true)
-  {
+  while (true) {
     problem.forEachSuccessor(node.state, function (successor, successor_cost) {
       var successor_hash = problem.computeHash(successor), _successor;
-      if (libUtility.isUndefined(_successor = closed[successor_hash]) || node.cost + successor_cost < _successor.prevCost)
-      {
+      if (libUtility.isUndefined(_successor = closed[successor_hash]) || node.cost + successor_cost < _successor.prevCost) {
         fringe.push({state: successor, cost: node.cost + successor_cost});
         closed[successor_hash] = {state: successor, prevCost: node.cost + successor_cost};
       }
@@ -100,15 +89,13 @@ function UniformCostSearch(problem)
     if (fringe.length == 0)
       return null; // Goal not found
     node = fringe.pop();
-    if (problem.isGoalState(node.state))
-    {
+    if (problem.isGoalState(node.state)) {
       fringe = null;
       return node.state; // Goal found
     }
   }
 }
-function SimpleUniformCostSearch(problem)
-{
+function SimpleUniformCostSearch(problem) {
   var fringe = new libUtility.PriorityQueue('cost');
   var closed = {};
 
@@ -118,12 +105,10 @@ function SimpleUniformCostSearch(problem)
     return node.state; // Start state is goal
   closed[problem.computeHash(node.state)] = node.state;
 
-  while (true)
-  {
+  while (true) {
     problem.forEachSuccessor(node.state, function (successor, successor_cost) {
       var successor_hash = problem.computeHash(successor);
-      if (libUtility.isUndefined(closed[successor_hash]))
-      {
+      if (libUtility.isUndefined(closed[successor_hash])) {
         fringe.push({state: successor, cost: successor_cost});
         closed[successor_hash] = successor;
       }
@@ -132,16 +117,14 @@ function SimpleUniformCostSearch(problem)
     if (fringe.length == 0)
       return null; // Goal not found
     node = fringe.pop();
-    if (problem.isGoalState(node.state))
-    {
+    if (problem.isGoalState(node.state)) {
       fringe = null;
       return node.state; // Goal found
     }
   }
 }
 
-function SimpleAStarSearch(problem, heuristic)
-{
+function SimpleAStarSearch(problem, heuristic) {
   var fringe = new libUtility.PriorityQueue('cost');
   var closed = {};
 
@@ -153,16 +136,14 @@ function SimpleAStarSearch(problem, heuristic)
     return node.state; // Start state is goal
   closed[problem.computeHash(node.state)] = node.state;
 
-  while (true)
-  {
+  while (true) {
     problem.forEachSuccessor(node.state, function (successor, successor_cost) {
       var h = problem.heuristic(successor);
       var g = successor_cost;
       if (CHECK_CONSISTENCY && g + h < node.f)
         throw "Inconsistency found in A*-search heuristic";
       var successor_hash = problem.computeHash(successor);
-      if (libUtility.isUndefined(closed[successor_hash]))
-      {
+      if (libUtility.isUndefined(closed[successor_hash])) {
         fringe.push({state: successor, f: g + h, g: g});
         closed[successor_hash] = successor;
       }
@@ -171,28 +152,24 @@ function SimpleAStarSearch(problem, heuristic)
     if (fringe.length == 0)
       return null; // Goal not found
     node = fringe.pop();
-    if (problem.isGoalState(node.state))
-    {
+    if (problem.isGoalState(node.state)) {
       fringe = null;
       return node.state; // Goal found
     }
   }
 }
 
-function SimpleGreedySearch(problem)
-{
+function SimpleGreedySearch(problem) {
   var startstate = problem.getStartState();
   var state = startstate;
   if (problem.isGoalState(state))
     return state; // Start state is goal
   
   var cheapestCost = Number.MAX_VALUE, cheapestSuccessor;
-  while (true)
-  {
+  while (true) {
     cheapestSuccessor = null;
     problem.forEachSuccessor(state, function (successor, successor_cost) {
-      if (successor_cost < cheapestCost)
-      {
+      if (successor_cost < cheapestCost) {
         cheapestCost = successor_cost;
         cheapestSuccessor = successor;
       }

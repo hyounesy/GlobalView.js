@@ -215,8 +215,7 @@ function BenchmarkDialog() {
       zip.generateAsync({ type: "base64" }).then(function (base64) {
         libUtility.download("benchmark.zip", "data:application/zip;base64," + base64);
       });
-    }
-    else
+    } else
       libUtility.download("benchmark.csv", "data:text/csv;charset=utf-8," + encodeURIComponent($.csv.fromArrays(csv)));
   }
 }

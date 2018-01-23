@@ -12,8 +12,7 @@ const libGlMatrix = require('gl-matrix');
  * @param {Object} gl // {WebGLRenderingContext}
  * @param {Object} globalView // {GlobalView}
  */
-export function HistogramViewer(gl, globalView)
-{
+export function HistogramViewer(gl, globalView) {
   var sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
   sdrLine.color = sdrLine.u4f("color");
   sdrLine.color.apply(sdrLine, gl.foreColor);
@@ -37,8 +36,7 @@ export function HistogramViewer(gl, globalView)
     {histogram: null, d: -1, meshHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.TRIANGLES), meshLineHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP)}
   ];
   
-  this.render = function (flipY, tf, plotBounds)
-  {
+  this.render = function (flipY, tf, plotBounds) {
     var mattrans = libGlMatrix.mat4.create();
     
     var pos = libGlMatrix.vec3.create(), scl = libGlMatrix.vec3.create();
@@ -58,8 +56,7 @@ export function HistogramViewer(gl, globalView)
     scl[2] = (plotBounds.height * scl[2]) * 2 / gl.height;
     
     // Draw x-axis histogram
-    if (options['showXAxisHistogram'] && axes[0].histogram)
-    {
+    if (options['showXAxisHistogram'] && axes[0].histogram) {
       var axis = axes[0];
       gl.enable(gl.SCISSOR_TEST);
       gl.scissor(plotBounds.x, 0.0, plotBounds.width, gl.height);
@@ -94,8 +91,7 @@ export function HistogramViewer(gl, globalView)
     }
     
     // Draw y-axis histogram
-    if (options['showYAxisHistogram'] && axes[1].histogram)
-    {
+    if (options['showYAxisHistogram'] && axes[1].histogram) {
       var axis = axes[1];
       gl.enable(gl.SCISSOR_TEST);
       gl.scissor(0.0, flipY ? gl.height - plotBounds.y - plotBounds.height : plotBounds.y, gl.width, plotBounds.height);
@@ -132,8 +128,7 @@ export function HistogramViewer(gl, globalView)
     }
     
     // Draw color-axis histogram
-    if (options['showColormapHistogram'] && axes[2].histogram)
-    {
+    if (options['showColormapHistogram'] && axes[2].histogram) {
       var axis = axes[2];
       gl.enable(gl.SCISSOR_TEST);
       gl.scissor(0.0, flipY ? gl.height - plotBounds.y - plotBounds.height : plotBounds.y, gl.width, plotBounds.height);
@@ -170,30 +165,25 @@ export function HistogramViewer(gl, globalView)
     }
   }
   
-  this.setDataset = function (_dataset, options)
-  {
+  this.setDataset = function (_dataset, options) {
     dataset = _dataset;
     recreateHistograms();
   }
   
-  this.onOptionsChanged = function (_options, recompileShader)
-  {
+  this.onOptionsChanged = function (_options, recompileShader) {
     options = _options;
     recreateHistograms();
   }
   
-  this.onInputChanged = function (_activeInputs, animatedInputs, options)
-  {
+  this.onInputChanged = function (_activeInputs, animatedInputs, options) {
     activeInputs = _activeInputs;
     recreateHistograms();
   }
   
   this.onPlotBoundsChanged = function (plotBounds) {}
   
-  function recreateHistograms()
-  {
-    if (dataset && options['histogramHeight'] > 0)
-    {
+  function recreateHistograms() {
+    if (dataset && options['histogramHeight'] > 0) {
       var numBins = options['numHistogramBins'];
       if (options['showXAxisHistogram'])
         createHistogram(axes[0], dataset, activeInputs[0], numBins);
@@ -203,8 +193,7 @@ export function HistogramViewer(gl, globalView)
         createHistogram(axes[2], dataset, activeInputs[2], numBins);
     }
   }
-  function createHistogram(axis, dataset, d, numBins)
-  {
+  function createHistogram(axis, dataset, d, numBins) {
     if (d < 0 || d >= dataset.dataVectors.length)
       return; // Validate inputs
     if (axis.histogram && axis.histogram.width === numBins && axis.d === d)
@@ -216,8 +205,7 @@ export function HistogramViewer(gl, globalView)
     
     var positions = new Float32Array((6 * numBins) * 3);
     var v3_set = function (i, x, y) { i *= 3; positions[i++] = x; positions[i++] = y; positions[i++] = 0.0; };
-    for (var b = 0, i = -1, x_scale = 1 / numBins; b < numBins; ++b)
-    {
+    for (var b = 0, i = -1, x_scale = 1 / numBins; b < numBins; ++b) {
       var y = axis.histogram.data[b] / axis.histogram.maximum;
       
       v3_set(++i, (b + 0) * x_scale, 0);
@@ -232,8 +220,7 @@ export function HistogramViewer(gl, globalView)
     
     positions = new Float32Array((3 * numBins + 1) * 3);
     v3_set(0, 0, 0);
-    for (var b = 0, i = 0, x_scale = 1 / numBins; b < numBins;)
-    {
+    for (var b = 0, i = 0, x_scale = 1 / numBins; b < numBins;) {
       var y = axis.histogram.data[b] / axis.histogram.maximum;
       
       v3_set(++i, b * x_scale, y);

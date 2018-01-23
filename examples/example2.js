@@ -20,26 +20,20 @@ domready(function () {
   document.getElementById('taOptions').addEventListener('input', function () {tOptions_onChange(document.getElementById('taOptions'))});
 });
 
-function tOptions_onChange(sender)
-{
+function tOptions_onChange(sender) {
   var options;
   
-  try
-  {
+  try {
     options = JSON.parse(taOptions.value)
-  }
-  catch (exception)
-  {
+  } catch (exception) {
     preStatus.innerText = exception.message;
     return;
   }
   
   var err;
-  if ((err = plot.validateOptions(options)) === true)
-  {
+  if ((err = plot.validateOptions(options)) === true) {
     plot.setOptions(options);
     preStatus.innerText = "";
-  }
-  else
+  } else
     preStatus.innerText = err;
 }

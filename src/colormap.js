@@ -14,8 +14,7 @@ export const COLORMAP_WIDTH = 10; // [pixel]
  * @param {Object} gl // {WebGLRenderingContext}
  * @param {Object} globalView // {GlobalView}
  */
-export function Colormap(gl, globalView)
-{
+export function Colormap(gl, globalView) {
   const TICK_LENGTH = 6; // [pixel]
   const NUM_TICKS = 10;
   
@@ -71,8 +70,7 @@ var texColormap = colormaps.exhue;
   var axis = {minimum: 0, maximum: 100, values: null, tickOffset: 0, tickDistance: 10, tickCount: 11, tickLength: TICK_LENGTH};
   
   this.visible = true;
-  this.render = function (flipY, plotBounds)
-  {
+  this.render = function (flipY, plotBounds) {
     if (!this.visible)
       return;
     
@@ -113,8 +111,7 @@ var texColormap = colormaps.exhue;
     sdrLine.matWorldViewProj(mattrans);
     meshLine.draw();
     libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -1.0, 0.0]);
-    for (var i = 0; i < axis.tickCount; ++i)
-    {
+    for (var i = 0; i < axis.tickCount; ++i) {
       var y = axis.tickOffset + i * axis.tickDistance;
       var tickPos = (y - axis.minimum) / (axis.maximum - axis.minimum);
       
@@ -135,8 +132,7 @@ var texColormap = colormaps.exhue;
       gl.drawText(axis.label, tickLabel_left, gl.height - plotBounds.y - plotBounds.height / 2, 'topcenter', -Math.PI / 2);
   }
   
-  function checkOverlap()
-  {
+  function checkOverlap() {
     const MIN_TICK_LABEL_DISTANCE = gl.measureTextWidth('  '); // Minimum distance between tick labels in pixel
     var plotBounds = globalView.getPlotBounds();
     return plotBounds.height * axis.tickDistance / (axis.maximum - axis.minimum) >= gl.measureTextHeight() + MIN_TICK_LABEL_DISTANCE;
@@ -147,27 +143,22 @@ var texColormap = colormaps.exhue;
    * @param  {number} maximum
    * @param  {boolean=} changeTickDistance=true
    */
-  this.setNumericRange = function (minimum, maximum, changeTickDistance)
-  {
+  this.setNumericRange = function (minimum, maximum, changeTickDistance) {
     axis.minimum = minimum;
     axis.maximum = maximum;
     axis.values = null;
     
-    for (var numTicks = NUM_TICKS; numTicks >= 0; --numTicks)
-    {
-      if (changeTickDistance === false)
-      {
+    for (var numTicks = NUM_TICKS; numTicks >= 0; --numTicks) {
+      if (changeTickDistance === false) {
         axis.tickOffset = Math.ceil(minimum / axis.tickDistance) * axis.tickDistance;
         axis.tickCount = Math.floor((maximum - axis.tickOffset) / axis.tickDistance) + 1;
-      }
-      else
-      {
+      } else {
         axis.tickDistance = (maximum - minimum) / numTicks;
         var exp = Math.ceil(Math.log(axis.tickDistance) / Math.log(10)); // Compute power-of-10 just above tickDistance -> pow(10, exp)
         
         // Try less aggressive rounding in each iteration until break condition is met
-        for (var i = 0; i < 10; ++i) // Maximum 10 iterations
-        {
+        for (var i = 0; i < 10; ++i) {
+          // Maximum 10 iterations
           axis.tickDistance = (maximum - minimum) / numTicks;
           var base = Math.pow(10, exp--);
           axis.tickDistance = Math.round(axis.tickDistance / base) * base; // Round tickDistance to base
@@ -182,8 +173,7 @@ var texColormap = colormaps.exhue;
         break;
     }
   }
-  this.setEnumRange = function (minimum, maximum, values)
-  {
+  this.setEnumRange = function (minimum, maximum, values) {
     axis.minimum = minimum -= 0.5; // 0.5 ... Move to center of value-bin
     axis.maximum = maximum -= 0.5; // 0.5 ... Move to center of value-bin
     axis.values = values;
@@ -192,53 +182,44 @@ var texColormap = colormaps.exhue;
     axis.tickOffset = Math.max(0, Math.ceil(minimum / axis.tickDistance) * axis.tickDistance);
     axis.tickCount = Math.min(values.length - axis.tickOffset, Math.floor((maximum - axis.tickOffset + 1) / axis.tickDistance));
   }
-  this.setLabel = function (label)
-  {
+  this.setLabel = function (label) {
     axis.label = label;
   }
   
   var pointColor = null;
   this.setDataset = function (dataset, options) {}
   this.onInputChanged = function (activeInputs, animatedInputs, options) {}
-  this.onOptionsChanged = function (options)
-  {
+  this.onOptionsChanged = function (options) {
     axis.tickLength = TICK_LENGTH + (options['showColormapHistogram'] ? options['histogramHeight'] : 0);
-    if (options['pointColor'] !== pointColor)
-    {
+    if (options['pointColor'] !== pointColor) {
       pointColor = options['pointColor'];
       
 if (pointColor === null)
 texColormap = colormaps.exhue;
-else
-{
+else {
       var c = parseColormap(pointColor);
       if (c)
         texColormap = libGraphics.LoadTextureFromByteArray(gl, c, c.length / 4, 1);
 }
     }
   }
-  this.onPlotBoundsChanged = function (plotBounds)
-  {
+  this.onPlotBoundsChanged = function (plotBounds) {
     axis.values === null ?
       this.setNumericRange(axis.minimum, axis.maximum, true) :
       this.setEnumRange(axis.minimum + 0.5, axis.maximum + 0.5, axis.values);
   }
   
-  this.getTexture = function ()
-  {
+  this.getTexture = function () {
     return texColormap;
   }
   
-  this.free = function ()
-  {
+  this.free = function () {
     meshLine.free();
   }
 }
 
-export function validateColor(color)
-{
-  if (libUtility.isString(color))
-  {
+export function validateColor(color) {
+  if (libUtility.isString(color)) {
     if (!libUtility.isUndefined(libUtility.colorNameToHex(color)))
       return true; // color is known color name
     var rgb;
@@ -250,8 +231,7 @@ export function validateColor(color)
     return "Unknown color " + color;
   }
   
-  if (libUtility.isArray(color))
-  {
+  if (libUtility.isArray(color)) {
     if (color.length !== 4)
       return "Color array needs to have 4 components (RGBA).";
     return true;
@@ -260,10 +240,8 @@ export function validateColor(color)
   return "Unknown color " + color;
 }
 
-export function parseColor(color)
-{
-  if (libUtility.isString(color))
-  {
+export function parseColor(color) {
+  if (libUtility.isString(color)) {
     var hex = libUtility.colorNameToHex(color);
     var rgb = libUtility.hexToRgb(hex ? hex : color);
     return rgb ? new Uint8Array([rgb.r, rgb.g, rgb.b, 255]) : null;
@@ -275,26 +253,21 @@ export function parseColor(color)
   return null;
 }
 
-export function validateColormap(colormap)
-{
+export function validateColormap(colormap) {
 if (colormap === null) return true;
   if (libUtility.isString(colormap))
     return validateColor(colormap);
   
-  if (libUtility.isArray(colormap))
-  {
+  if (libUtility.isArray(colormap)) {
     if (colormap.length === 0)
       return "Colormap array cannot be empty.";
-    if (libUtility.isString(colormap[0]))
-    {
+    if (libUtility.isString(colormap[0])) {
       var err;
       for (var i = 0; i < colormap.length; ++i)
         if ((err = validateColor(colormap[i])) !== true)
           return err;
       return true;
-    }
-    else
-    {
+    } else {
       if (colormap.length % 4 !== 0)
         return "Colormap array length must be multiple of 4.";
       for (var i = 0; i < colormap.length; ++i)
@@ -307,17 +280,14 @@ if (colormap === null) return true;
   return "Unknown colormap " + colormap;
 }
 
-export function parseColormap(colormap)
-{
+export function parseColormap(colormap) {
   if (libUtility.isString(colormap))
     return parseColor(colormap);
   
-  if (libUtility.isArray(colormap))
-  {
+  if (libUtility.isArray(colormap)) {
     if (colormap.length === 0)
       return null;
-    if (libUtility.isString(colormap[0]))
-    {
+    if (libUtility.isString(colormap[0])) {
       var array = [], color;
       for (var i = 0; i < colormap.length; ++i)
         if ((color = parseColor(colormap[i])))
@@ -325,8 +295,7 @@ export function parseColormap(colormap)
         else
           return null;
       return new Uint8Array(array);
-    }
-    else if(libUtility.isNumber(colormap[0]))
+    } else if(libUtility.isNumber(colormap[0]))
       return new Uint8Array(colormap);
   }
   

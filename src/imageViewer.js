@@ -15,8 +15,7 @@ const LABEL_TEXT_PADDING = 2;
  * @export
  * @param {Object} globalView // {GlobalView}
  */
-function Thumbnail(globalView)
-{
+function Thumbnail(globalView) {
   /** @type {WebGLTexture} */ this.tex = null;
   /** @type {Array<number>} */ this.imagePos = null;
   /** @type {Array<number>} */ this.refPos = null;
@@ -31,8 +30,7 @@ function Thumbnail(globalView)
    * @summary Retrieve index of associated datapoint
    * @return {number}
    */
-  this.getPoint = function ()
-  {
+  this.getPoint = function () {
     return this.refIndex;
   }
   
@@ -42,8 +40,7 @@ function Thumbnail(globalView)
    * @summary Retrieve width of the image border
    * @return {number}
    */
-  this.getBorderWidth = function ()
-  {
+  this.getBorderWidth = function () {
     return this.borderWidth ? this.borderWidth.slice() : null;
   }
   this['setBorderWidth'] =
@@ -51,8 +48,7 @@ function Thumbnail(globalView)
    * @summary Set width of the image border
    * @param {number} width
    */
-  this.setBorderWidth = function (width)
-  {
+  this.setBorderWidth = function (width) {
     this.borderWidth = width;
     globalView.invalidate();
   }
@@ -63,8 +59,7 @@ function Thumbnail(globalView)
    * @summary Retrieve color of the image border
    * @return {Array<number>} Float array [red, green, blue, alpha] or null
    */
-  this.getBorderColor = function ()
-  {
+  this.getBorderColor = function () {
     return this.borderColor ? this.borderColor.slice() : null;
   }
   this['setBorderColor'] =
@@ -72,8 +67,7 @@ function Thumbnail(globalView)
    * @summary Set color of the image border
    * @param {Array<number>} color Float array [red, green, blue, alpha] or null
    */
-  this.setBorderColor = function (color)
-  {
+  this.setBorderColor = function (color) {
     this.borderColor = color;
     globalView.invalidate();
   }
@@ -84,8 +78,7 @@ function Thumbnail(globalView)
    * @summary Retrieve color of the image line
    * @return {Array<number>} Float array [red, green, blue, alpha] or null
    */
-  this.getLineColor = function ()
-  {
+  this.getLineColor = function () {
     return this.lineColor ? this.lineColor.slice() : null;
   }
   this['setLineColor'] =
@@ -93,8 +86,7 @@ function Thumbnail(globalView)
    * @summary Set color of the image line
    * @param {Array<number>} color Float array [red, green, blue, alpha] or null
    */
-  this.setLineColor = function (color)
-  {
+  this.setLineColor = function (color) {
     this.lineColor = color;
     globalView.invalidate();
   }
@@ -105,8 +97,7 @@ function Thumbnail(globalView)
    * @summary Retrieve color of the image label
    * @return {Array<number>} Float array [red, green, blue, alpha] or null
    */
-  this.getLabelColor = function ()
-  {
+  this.getLabelColor = function () {
     return this.labelColor ? this.labelColor.slice() : null;
   }
   this['setLabelColor'] =
@@ -114,8 +105,7 @@ function Thumbnail(globalView)
    * @summary Set color of the image label
    * @param {Array<number>} color Float array [red, green, blue, alpha] or null
    */
-  this.setLabelColor = function (color)
-  {
+  this.setLabelColor = function (color) {
     this.labelColor = color;
     globalView.invalidate();
   }
@@ -129,8 +119,7 @@ function Thumbnail(globalView)
  * @param {Object} gl // {WebGLRenderingContext}
  * @param {Object} globalView // {GlobalView}
  */
-export function ImageViewer(gl, globalView)
-{
+export function ImageViewer(gl, globalView) {
   var sdrImage = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured, libShaders.Shaders.fsTextured);
   sdrImage.matWorldViewProj = sdrImage.u4x4f("matWorldViewProj");
   
@@ -197,8 +186,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
   var PixelAlignX = x => (Math.floor(x * gl.width / 2.0) + 0.5) * 2.0 / gl.width;
   var PixelAlignY = y => (Math.floor(y * gl.height / 2.0) + 0.5) * 2.0 / gl.height;
   
-  this.render = function (flipY, tf)
-  {
+  this.render = function (flipY, tf) {
     if (images.length === 0)
       return;
     var mattrans = libGlMatrix.mat4.create();
@@ -206,8 +194,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
     
     //gl.disable(gl.SCISSOR_TEST);
     
-    if (options['labelThumbnails'])
-    {
+    if (options['labelThumbnails']) {
       // Draw labels at image.refPos
       var label = 1;
       images.forEach(function (image) {
@@ -239,9 +226,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
         refPos[1] -= 0.5 * LABEL_HEIGHT - LABEL_TEXT_PADDING; // Right-align label
         gl.drawText(label++, refPos[0], refPos[1], 'topright');
       });
-    }
-    else
-    {
+    } else {
       // Draw lines between image.imagePos and image.refPos
       sdrLine.bind();
       meshLine.bind(sdrLine, null);
@@ -289,8 +274,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
         scale = [2 * Math.floor(imageSize[1] * w / h) / gl.width, 2 * Math.floor(imageSize[1]) / gl.height, 1];
       
       var borderWidth = image.borderWidth ? image.borderWidth : defaultImageBorderWidth;
-      if (borderWidth > 0)
-      {
+      if (borderWidth > 0) {
         scale[0] += 2 * borderWidth / gl.width;
         scale[1] += 2 * borderWidth / gl.height;
         
@@ -321,8 +305,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
       sdrImage.matWorldViewProj(mattrans);
       meshQuad.draw();
       
-      if (options['labelThumbnails'])
-      {
+      if (options['labelThumbnails']) {
         // Draw thumbnail label below thumbnail
         libGlMatrix.mat4.identity(mattrans);
         if (flipY === true)
@@ -359,8 +342,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
   var options = {}, defaultImageBorderWidth = 1, defaultImageBorderColor = gl.foreColor, defaultImageLineColor = gl.foreColor, defaultImageLabelColor = gl.backColor;
   this.setDataset = function (dataset, options) {}
   this.onInputChanged = function (activeInputs, animatedInputs, options) {}
-  this.onOptionsChanged = function (_options)
-  {
+  this.onOptionsChanged = function (_options) {
     options = _options;
     defaultImageBorderWidth = options['thumbnailBorderWidth'];
     defaultImageBorderColor = options['thumbnailBorderColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailBorderColor'])).map(c => c / 255.0) : gl.foreColor;
@@ -377,12 +359,10 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
    * @param  {Array<number>=} imageSize
    * @param  {string=} imageAnchor (default: 'middlecenter')
    */
-  this.showImage = function (imageFilename, refIndex, refPos, imagePos, imageSize, imageAnchor)
-  {
+  this.showImage = function (imageFilename, refIndex, refPos, imagePos, imageSize, imageAnchor) {
     // Convert imageAnchor from string to vec3
     var imageAnchorVector;
-    switch(imageAnchor)
-    {
+    switch(imageAnchor) {
     case 'topleft':      imageAnchorVector = [-0.0, -1.0, 0.0]; break;
     case 'topcenter':    imageAnchorVector = [-0.5, -1.0, 0.0]; break;
     case 'topright':     imageAnchorVector = [-1.0, -1.0, 0.0]; break;
@@ -404,34 +384,28 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
     newImage.borderColor = null;
     images.push(newImage);
   }
-  this.clearImages = function ()
-  {
+  this.clearImages = function () {
     images = [];
   }
   /**
    * @return {Array<Thumbnail>}
    */
-  this.getImages = function ()
-  {
+  this.getImages = function () {
     return images;
   }
   
-  this.resolveIntersections = function (tf)
-  {
+  this.resolveIntersections = function (tf) {
     var a = libGlMatrix.vec2.create(), b = libGlMatrix.vec2.create(), c = libGlMatrix.vec2.create(), d = libGlMatrix.vec2.create();
     for (var i = 1; i < images.length; ++i)
-      if (images[i].imagePos)
-      {
+      if (images[i].imagePos) {
         tf.transformPos(a, images[i].imagePos);
         tf.transformPos(b, images[i].refPos);
         for (var j = 0; j < i; ++j)
-          if (images[j].imagePos)
-          {
+          if (images[j].imagePos) {
             tf.transformPos(c, images[j].imagePos);
             tf.transformPos(d, images[j].refPos);
             
-            if (libGlMatrix.vec2.sqrDist(a, b) + libGlMatrix.vec2.sqrDist(c, d) > libGlMatrix.vec2.sqrDist(a, d) + libGlMatrix.vec2.sqrDist(c, b) && !libAlgorithm.linesIntersect(a, d, c, b))
-            {
+            if (libGlMatrix.vec2.sqrDist(a, b) + libGlMatrix.vec2.sqrDist(c, d) > libGlMatrix.vec2.sqrDist(a, d) + libGlMatrix.vec2.sqrDist(c, b) && !libAlgorithm.linesIntersect(a, d, c, b)) {
               //console.log("exchange {0} - {1}".format(i, j));
               var tmp = images[j].imagePos;
               images[j].imagePos = images[i].imagePos;
@@ -441,18 +415,15 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
           }
       }
     for (var i = 1; i < images.length; ++i)
-      if (images[i].imagePos)
-      {
+      if (images[i].imagePos) {
         tf.transformPos(a, images[i].imagePos);
         tf.transformPos(b, images[i].refPos);
         for (var j = 0; j < i; ++j)
-          if (images[j].imagePos)
-          {
+          if (images[j].imagePos) {
             tf.transformPos(c, images[j].imagePos);
             tf.transformPos(d, images[j].refPos);
             
-            if (libAlgorithm.linesIntersect(a, b, c, d))
-            {
+            if (libAlgorithm.linesIntersect(a, b, c, d)) {
               //console.log("intersection {0} - {1}".format(i, j));
               var tmp = images[j].imagePos;
               images[j].imagePos = images[i].imagePos;
@@ -463,8 +434,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
       }
   }
   
-  this.imageFromPoint = function (tf, p)
-  {
+  this.imageFromPoint = function (tf, p) {
     var imagePos = libGlMatrix.vec2.create(), refPos = libGlMatrix.vec2.create(), imageSize = libGlMatrix.vec2.create();
     
     var selectedImage = null;
@@ -491,8 +461,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
         imageBounds[2] -= LABEL_HEIGHT * 2 / gl.height;
       
       if (p[0] >= imageBounds[0] && p[0] <= imageBounds[1] &&
-        p[1] >= imageBounds[2] && p[1] <= imageBounds[3])
-      {
+        p[1] >= imageBounds[2] && p[1] <= imageBounds[3]) {
         selectedImage = image;
         return;
       }

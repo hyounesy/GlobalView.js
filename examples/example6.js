@@ -1,8 +1,7 @@
 const globalView = require('../dist/global-view.js');
 const domready = require("domready");
 
-function EmptyDataset(n)
-{
+function EmptyDataset(n) {
   globalView.Dataset.call(this);
   this.length = n;
 }
