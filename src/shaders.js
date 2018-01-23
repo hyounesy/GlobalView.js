@@ -1,5 +1,5 @@
 /**
- * Blocks of GLSL shader code. Blocks starting with vs... are vertex shaders, 
+ * Blocks of GLSL shader code. Blocks starting with vs... are vertex shaders,
  * blocks starting with fs... are fragment shaders
  * @summary Vertex- and fragment shader code
  * @package

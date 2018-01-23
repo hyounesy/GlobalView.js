@@ -52,7 +52,7 @@ domready(function () {
       plot.referencePoints.assign(characteristicPoints);
       plot.showImages(plot.referencePoints, 'lowDensity');
     });
-    
+
     for (var i = 0, nc = dataset.numColumns; i < dataset.length; ++i) {
       var protein = dataset.data[i * nc + 0];
       var proteinPoints = pointsByProtein[protein];
@@ -60,7 +60,7 @@ domready(function () {
         pointsByProtein[protein] = proteinPoints = new globalView.HashSet();
       proteinPoints.push(i);
     }
-    
+
     for (var i = 0; i < COLUMN_HINTS.length; ++i)
       dataset.dataVectors[i].hint = COLUMN_HINTS[i];
   });
@@ -125,10 +125,10 @@ function plot_onMouseDown(event) {
   switch (event.button) {
     // On left mouse button: Enable point and lasso selection
     case 0: event.pointSelection = true; event.lassoSelection = true; break;
-    
+
     // On middle mouse button: Initiate view dragging
     case 1: event.viewDragging = true; break;
-    
+
     // On right mouse button: Reset zoom
     case 2: plot.zoomFit2D(); break;
   }
@@ -140,7 +140,7 @@ function plot_onMouseOverDatapoint(dataset, index) {
   else {
     plot.highlightedPoints.set(index);
     document.getElementById('imgCell').src = dataset.imageFilenames[index];
-    
+
     var nc = dataset.numColumns;
     var xAxisColumn = plot.getActiveColumn(0), yAxisColumn = plot.getActiveColumn(1);
     document.getElementById('pCellDesc').innerText = `Cell Name: {0}
@@ -161,7 +161,7 @@ function plot_onMouseOverAxisLabel(dataVector, labelRect) {
   var tooltip = document.getElementsByClassName('tooltip')[0];
   if (dataVector) {
     tooltip.innerHTML = dataVector.hint;
-    
+
     var plotRect = document.getElementById('divPlot').getBoundingClientRect();
     var tooltipRect = tooltip.getBoundingClientRect();
     tooltip.style.top = plotRect.top + labelRect.t - (tooltipRect.bottom - tooltipRect.top) - 20 + 'px';

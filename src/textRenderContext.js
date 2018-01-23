@@ -18,20 +18,20 @@ export function TextRenderContext(gl, canvas) {
   var ctx = textCanvas.getContext("2d");
   var _font = ctx.font;
   var fontHeight = ctx.measureText('M').width;
-  
-  
+
+
   this.clear = function () {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.strokeStyle = ctx.fillStyle = gl.foreColorString;
   }
-  
+
   gl.drawText = function (str, x, y, anchor, rotation, color) {
     x = Math.floor(x);
     y = Math.floor(y);
-    
+
     if (color)
       ctx.fillStyle = color;
-    
+
     var offsetV;
     switch (anchor) {
     default: // 'topleft'
@@ -81,7 +81,7 @@ export function TextRenderContext(gl, canvas) {
       ctx.fillText(str, 0, 0);
       ctx.restore();
     }
-    
+
     if (color)
       ctx.fillStyle = gl.foreColorString;
   }
@@ -91,7 +91,7 @@ export function TextRenderContext(gl, canvas) {
   gl.measureTextHeight = function () {
     return fontHeight;
   }
-  
+
   gl.drawRect = function (x, y, width, height) {
     if (width < 0) {
       x += width;
@@ -101,20 +101,20 @@ export function TextRenderContext(gl, canvas) {
       y += height;
       height = -height;
     }
-    
+
     x = Math.floor(x) + 0.5;
     y = Math.floor(y) + 0.5;
     width = Math.floor(width);
     height = Math.floor(height);
-    
+
     //ctx.strokeStyle = gl.foreColorString;
     ctx.strokeRect(x, y, width, height);
   }
-  
+
   gl.drawPolygon = function (points, color) {
     if (points.length < 2)
       return;
-    
+
     if (color)
       ctx.fillStyle = color;
     ctx.beginPath();
@@ -129,7 +129,7 @@ export function TextRenderContext(gl, canvas) {
   gl.fillPolygon = function (points, color) {
     if (points.length < 2)
       return;
-    
+
     if (color)
       ctx.fillStyle = color;
     ctx.beginPath();
@@ -141,10 +141,10 @@ export function TextRenderContext(gl, canvas) {
     if (color)
       ctx.fillStyle = gl.foreColorString;
   }
-  
+
   this.setFont = function (font) {
     ctx.font = _font = font;
-    
+
     // Compute fontHeight (Source: http://stackoverflow.com/a/7462767)
     var body = document.getElementsByTagName("body")[0];
     var dummy = document.createElement("div");
@@ -155,14 +155,14 @@ export function TextRenderContext(gl, canvas) {
     fontHeight = dummy.offsetHeight * 0.62;
     body.removeChild(dummy);
   }
-  
+
   this.onResize = function () {
     /*var canvasBounds = canvas.getBoundingClientRect();
     textCanvas.style.left = canvasBounds.left;
     textCanvas.style.top = canvasBounds.top;
     textCanvas.style.width = textCanvas.width = canvasBounds.width;
     textCanvas.style.height = textCanvas.height = canvasBounds.height;*/
-    
+
     if (offscreenRendering !== null) {
       textCanvas.width = offscreenRendering.width;
       textCanvas.height = offscreenRendering.height;
@@ -174,13 +174,13 @@ export function TextRenderContext(gl, canvas) {
     }
     this.setFont(_font); // Reset canvas font
   }
-  
+
   var offscreenRendering = null;
   this.enableOffscreenRendering = function (width, height) {
     if (offscreenRendering !== null)
       return;
     offscreenRendering = {};
-    
+
     offscreenRendering.width = width;
     offscreenRendering.height = height;
     offscreenRendering.oldCanvas = textCanvas;
@@ -192,7 +192,7 @@ export function TextRenderContext(gl, canvas) {
   this.disableOffscreenRendering = function () {
     if (offscreenRendering === null)
       return;
-    
+
     textCanvas = offscreenRendering.oldCanvas;
     ctx = offscreenRendering.oldContext;
     offscreenRendering = null;
@@ -201,6 +201,6 @@ export function TextRenderContext(gl, canvas) {
   this.getCanvas = function () {
     return textCanvas;
   }
-  
+
   this.onResize();
 }

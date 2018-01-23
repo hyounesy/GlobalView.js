@@ -15,7 +15,7 @@ domready(function () {
       preResults.innerText += phase + ": " + (time * 1e6) + " nanoseconds\n";
     tStart = performance.now();
   }, tStart = performance.now();
-  
+
   var plot = new globalView.GlobalView(document.getElementById('divGlobalView'), {
     pointSize: 1,
     pointOpacity: 1,
@@ -23,10 +23,10 @@ domready(function () {
     pointShape: "Rectangle"
   });
   measureTime("Initialization", 1);
-  
+
   new globalView.RandomDataset(1e6, 2, function (dataset) { plot.load(dataset, 0, 1, 1, 1); });
   measureTime("Random dataset generation", 1);
-  
+
   for (var frames = 0; performance.now() - tStart < 1000; ++frames)
     plot.renderOffscreenBuffer();
   measureTime("Render time", frames);

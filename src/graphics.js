@@ -19,7 +19,7 @@ export function Shader(gl, vs, fs, debug) {
     console.log(vs);
     console.log(fs);
   }
-  
+
   // Compile vertex shader -> vertexShader
   var vertexShader = gl.createShader(gl.VERTEX_SHADER);
   gl.shaderSource(vertexShader, vs);
@@ -29,7 +29,7 @@ export function Shader(gl, vs, fs, debug) {
     alert(gl.getShaderInfoLog(vertexShader));
     return null;
   }
-  
+
   // Compile frament shader -> fragmentShader
   var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
   gl.shaderSource(fragmentShader, fs);
@@ -39,7 +39,7 @@ export function Shader(gl, vs, fs, debug) {
     alert(gl.getShaderInfoLog(fragmentShader));
     return null;
   }
-  
+
   // Link shader program -> sdr
   var sdr = gl.createProgram();
   gl.attachShader(sdr, vertexShader);
@@ -51,12 +51,12 @@ export function Shader(gl, vs, fs, debug) {
     alert(gl.getProgramInfoLog(sdr));
     return null;
   }
-  
+
   /* // Print active uniforms
   var count = gl.getProgramParameter(sdr, gl.ACTIVE_UNIFORMS);
   for (var i = 0; i < count; ++i)
     console.log(gl.getActiveUniform(sdr, i).name);*/
-  
+
 this.vertexPositionAttribute = gl.getAttribLocation(sdr, "vpos");
 this.vertexNormalAttribute = gl.getAttribLocation(sdr, "vnml");
 this.vertexTangentAttribute = gl.getAttribLocation(sdr, "vtng");
@@ -64,14 +64,14 @@ this.vertexBinormalAttribute = gl.getAttribLocation(sdr, "vbnml");
 this.VertexTexCoordAttribute = gl.getAttribLocation(sdr, "vtexcoord");
 this.samplerUniform = gl.getUniformLocation(sdr, "uSampler");
 this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
-  
+
   this.bind = function () {
     if (currentShader !== this) {
       currentShader = this;
       gl.useProgram(sdr);
     }
   }
-  
+
   this.u1i = function (uniformString) {
     this.bind();
     var uniform = gl.getUniformLocation(sdr, uniformString);
@@ -189,13 +189,13 @@ this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
     else
       return debug ? f => console.log("Passing value to unused uniform " + uniformString) : null;
   }
-  
+
   this.getAttribLocation = function (attributeName) { return gl.getAttribLocation(sdr, attributeName); }
-  
+
   this.free = function () {
     if (vertexShader != null || fragmentShader != null || sdr != null)
       gl.useProgram(null);
-    
+
     if (vertexShader != null) {
       gl.deleteShader(vertexShader);
       vertexShader = null;
@@ -305,15 +305,15 @@ export function Mesh(_gl, positions, normals, tangents, binormals, texcoords, in
   this.bind = function (sdr, texture) {
     if(!posbuffer) // Mesh without vertex positions can't be rendered
       return;
-    
+
     sdr.bind();
-    
+
     for(var i = 0; i < 16; i++) {
       gl.disableVertexAttribArray(i);
       if (gl.ext)
         gl.ext.vertexAttribDivisorANGLE(i, 0);
     }
-    
+
     gl.enableVertexAttribArray(sdr.vertexPositionAttribute);
     gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
     gl.vertexAttribPointer(sdr.vertexPositionAttribute, ndim, gl.FLOAT, false, 0, 0);
@@ -412,7 +412,7 @@ function handleLoadedTexture(gl, texture, onload) {
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   gl.bindTexture(gl.TEXTURE_2D, null);
-  
+
   if(typeof(onload) == 'function')
     onload(texture);
 }

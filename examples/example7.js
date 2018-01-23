@@ -27,17 +27,17 @@ domready(function () {
   };
   const NUM_THUMBNAILS = 16;
   const DENSITY_RATIO = 0.5;
-  
+
   var divPlots = document.createElement("div");
   divPlots.style.position = "fixed";
   divPlots.style.left = divPlots.style.top = "0px";
   divPlots.style.width = divPlots.style.height = PLOT_SIZE + "px";
   divPlots.style.fontSize = FONT_SIZE;
   document.body.appendChild(divPlots);
-  
+
   const csvPath = "datasets/AICS_Cell-feature-analysis_v1.5.csv"; //'http://homepage.univie.ac.at/a0929188/GlobalView/AICS_Cell-feature-analysis_v1.5.csv"
   const imagesPath = "datasets/AICS_Cell-feature-analysis_v1.5_images/"; //'http://homepage.univie.ac.at/a0929188/GlobalView/images/"
-  
+
   new globalView.CsvDataset(csvPath, {
     hasHeader: true,
     nameColumn: 1,
@@ -48,17 +48,17 @@ domready(function () {
     var subPlotWidth = PLOT_SIZE / ndim, subPlotHeight = subPlotWidth;
     plots = Array.create(ndim * ndim, function (d) {
       var x = d % ndim, y = Math.floor(d / ndim);
-      
+
       OPTIONS.padding = [y * subPlotHeight, (ndim - x - 1) * subPlotWidth, (ndim - y - 1) * subPlotHeight, x * subPlotWidth];
-      
+
       // Adjust indices, since we don't plot dataVectors[0] (tagged protein)
       ++x;
       ++y;
-      
+
       var thumbnailWidth = OPTIONS.thumbnailSize * (dataset.dataVectors[x].maximum - dataset.dataVectors[x].minimum) / (PLOT_SIZE - OPTIONS.padding[1] - OPTIONS.padding[3]);
       var thumbnailHeight = OPTIONS.thumbnailSize * (dataset.dataVectors[y].maximum - dataset.dataVectors[y].minimum) / (PLOT_SIZE - OPTIONS.padding[0] - OPTIONS.padding[2]);
       console.log(thumbnailWidth, thumbnailHeight);
-      
+
       var plot = new globalView.GlobalView(divPlots, OPTIONS);
       plot.load(dataset, x, y, 0, 0);
       plot.zoomRect({
@@ -68,12 +68,12 @@ domready(function () {
         b: dataset.dataVectors[y].maximum + thumbnailHeight
       });
       plot.selectedPoints = plot.createPointSet("red", 1);
-      
+
       plot.getCharacteristicPoints(NUM_THUMBNAILS, DENSITY_RATIO, function (characteristicPoints) {
         plot.selectedPoints.assign(characteristicPoints);
         plot.showImages_lowDensity(plot.selectedPoints);
       });
-      
+
       return plot;
     });
   });

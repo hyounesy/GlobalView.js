@@ -13,7 +13,7 @@ domready(function () {
   cbColumnY = document.getElementById("cbColumnY");
   cbColumnC = document.getElementById("cbColumnC");
   cbColumnS = document.getElementById("cbColumnS");
-  
+
   const DATASETS = [
     {name: "10 random points", create: () => new libGlobalView.RandomDataset(10, 3, dataset_onLoad)},
     {name: "100 random points", create: () => new libGlobalView.RandomDataset(100, 3, dataset_onLoad)},
@@ -28,7 +28,7 @@ domready(function () {
     // {name: "allencell x10", url: "datasets/AICS_Cell-feature-analysis_v1.5_x10.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x10.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
     // {name: "allencell x100", url: "datasets/AICS_Cell-feature-analysis_v1.5_x100.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x100.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
   ];
-  
+
   var divGlobalView = document.getElementById('divGlobalView');
   globalView = new libGlobalView.GlobalView(divGlobalView, {
     //showXAxisHistogram: true,
@@ -49,12 +49,12 @@ domready(function () {
       else
         event['polygonLassoSelection'] = true;
       break;
-      
+
       // On middle mouse button: Initiate view dragging
     case 1:
       event['viewDragging'] = true;
       break;
-      
+
       // On right mouse button: Do nothing
     case 2:
       break;
@@ -71,14 +71,14 @@ domready(function () {
   globalView.highlightedPoints = globalView.createPointSet("yellow", 1);
   globalView.selectedPoints = globalView.createPointSet("red", 1);
   onResize();
-  
+
   // Set defaults
   rNumThumbnails_onChange(document.getElementById("rNumThumbnails"));
   rDensityRatio_onChange(document.getElementById("rDensityRatio"));
-  
+
   document.onkeydown = handleKeyDown;
   document.onkeyup = handleKeyUp;
-  
+
   // Fill cbDataset
   DATASETS.forEach(function (dataset) {
     if (typeof dataset.url === 'undefined') {
@@ -115,7 +115,7 @@ addAllEventListeners();
 
 function addAllEventListeners() {
   window.addEventListener('resize', onResize);
-  
+
   document.getElementById("cbDataset").addEventListener("change", function () {cbDataset_onChange()});
   document.getElementById("cbColumnX").addEventListener("change", function () {cbColumnX_onChange()});
   document.getElementById("cbColumnY").addEventListener("change", function () {cbColumnY_onChange()});
@@ -164,7 +164,7 @@ function dataset_onLoad(_dataset) {
     alert("Invalid dataset\nDataset has " + dataset.columns.length + " column(s) (at least 2 required).");
     return;
   }
-  
+
   // Update active-column comboboxes
   for(var i = cbColumnX.options.length - 1; i >= 0 ; --i) cbColumnX.remove(i);
   for(var i = cbColumnY.options.length - 1; i >= 0 ; --i) cbColumnY.remove(i);
@@ -204,7 +204,7 @@ if (dataset.numColumns > 3) {
   cbColumnY.selectedIndex = Math.max(0, Math.min(dataset.numColumns - 1, activeColumnY !== null && activeColumnY < dataset.numColumns ? activeColumnY : 1));
   cbColumnC.selectedIndex = Math.max(0, Math.min(dataset.numColumns - 1, activeColumnC !== null && activeColumnC < dataset.numColumns ? activeColumnC : 2));
   cbColumnS.selectedIndex = Math.max(0, Math.min(dataset.numColumns - 1, activeColumnS !== null && activeColumnS < dataset.numColumns ? activeColumnS : 3));
-  
+
   // Show dataset
   globalView.load(dataset, cbColumnX.selectedIndex, cbColumnY.selectedIndex, cbColumnC.selectedIndex, cbColumnS.selectedIndex);
 }
@@ -259,7 +259,7 @@ function cbShowHistograms_onChange(sender) {
   padding[2] += (sender.checked ? 64 : 0) - (globalView.getOption('showXAxisHistogram') ? 64 : 0);
   padding[3] += (sender.checked ? 64 : 0) - (globalView.getOption('showYAxisHistogram') ? 64 : 0);
   padding[1] += (sender.checked ? 64 : 0) - (globalView.getOption('showColormapHistogram') ? 64 : 0);
-  
+
   globalView.setOptions({
     showXAxisHistogram: sender.checked,
     showYAxisHistogram: sender.checked,
@@ -284,7 +284,7 @@ function requestVariance(variance, fast) {
   } else {
     densityMapOptions.shrinkToFit = true;
   }
-  
+
   densityMapOptions.gaussScale = variance;
   dataset.requestDensityMap(globalView.getActiveColumn(0), globalView.getActiveColumn(1), fast ? 64 : null, densityMapOptions, function (densityMap) {
     if (densityMapOptions.gaussScale === variance) {
@@ -307,7 +307,7 @@ String.prototype.replaceAll = function (oldstr, newstr) {
       var dir = name.split('_')[0];
       wgetstr += "wget http://cellviewer.allencell.org/aics/thumbnails/2017_03_08_Struct_First_Pass_Seg/" + dir + "/" + name + ".png\n";
     });
-    
+
     var data = new Blob([wgetstr.replace(/\n/g, "\r\n")], {type: 'text/plain'});
     download("wget.sh", window.URL.createObjectURL(data));
   });
@@ -340,7 +340,7 @@ function onMouseOverAxisLabel(dataVector, labelRect) {
   var tooltip = document.getElementsByClassName('tooltip')[0];
   if (dataVector) {
     tooltip.innerText = "tooltip of " + dataVector.label;
-    
+
     var tooltipRect = tooltip.getBoundingClientRect();
     tooltip.style.top = labelRect.t - (tooltipRect.bottom - tooltipRect.top) - 10 + 'px';
     tooltip.style.left = (labelRect.l + labelRect.r) / 2 - (tooltipRect.right - tooltipRect.left) * 0.1 + 'px';
@@ -361,9 +361,9 @@ function onMouseOverDatapoint(dataset, index) {
     pDataPoint.innerText =  "";
   } else {
     globalView.highlightedPoints.set(index);
-    
+
     imgDataPoint.src = dataset.imageFilenames && dataset.imageFilenames[index] ? dataset.imageFilenames[index] : "";
-    
+
     if (dataset.data) {
       var nc = dataset.numColumns;
       pDataPoint.innerText = dataset.dataVectors.map(dataVector =>
@@ -393,7 +393,7 @@ function ondragenter(event) {
   console.log('ondragenter');
   if (!dragOverCanvas) {
     const padding = globalView.getOption('padding');
-    
+
     dragOverCanvas = document.createElement("canvas");
     dragOverCanvas.style.pointerEvents = 'none';
     dragOverCanvas.style.zIndex = 100000;
@@ -402,8 +402,8 @@ function ondragenter(event) {
     dragOverCanvas.style.backgroundColor = "green";
     dragOverCanvas.style.opacity = 0.1;
     document.getElementById('divGlobalView').appendChild(dragOverCanvas);
-    
-    
+
+
     var rect = dragOverCanvas.getBoundingClientRect();
     dragOverCanvas.style.marginTop = -(rect.bottom - rect.top - padding[0]) + "px";
     dragOverCanvas.style.marginLeft = padding[3] + "px";
@@ -430,7 +430,7 @@ function ondrop(event) {
     var eventX = event.clientX - targetRect.left;
     var eventY = event.clientY - targetRect.top;
     var fileExt = files[0].name;*/
-    
+
     new CsvDataset(files[0], {autoDetect: true}, dataset_onLoad);
   }
 }
@@ -442,13 +442,13 @@ function handleKeyDown(event) {
     ctrlPressed = true;
   else if(event.keyCode === 16)
     shiftPressed = true;
-  
+
   switch(event.keyCode) {
   case 46: // DELETE key
     globalView.points.remove(globalView.selectedPoints.get());
     globalView.selectedPoints.clear();
     break;
-    
+
   case 36: // HOME key
     globalView.enableOffscreenRendering(1024, 1024);
     globalView.renderOffscreenBuffer();

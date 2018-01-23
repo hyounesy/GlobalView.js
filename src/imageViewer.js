@@ -21,9 +21,9 @@ function Thumbnail(globalView) {
   /** @type {Array<number>} */ this.refPos = null;
   /** @type {Array<number>} */ this.imageSize = null;
   /** @type {Array<number>} */ this.imageAnchor = null;
-  
+
   /** @type {boolean} */ this.highlighted = false;
-  
+
   /** @type {number} */ this.refIndex = -1;
   this['getPoint'] =
   /**
@@ -33,7 +33,7 @@ function Thumbnail(globalView) {
   this.getPoint = function () {
     return this.refIndex;
   }
-  
+
   /** @type {number} */ this.borderWidth = null;
   this['getBorderWidth'] =
   /**
@@ -52,7 +52,7 @@ function Thumbnail(globalView) {
     this.borderWidth = width;
     globalView.invalidate();
   }
-  
+
   /** @type {Array<number>} */ this.borderColor = null;
   this['getBorderColor'] =
   /**
@@ -71,7 +71,7 @@ function Thumbnail(globalView) {
     this.borderColor = color;
     globalView.invalidate();
   }
-  
+
   /** @type {Array<number>} */ this.lineColor = null;
   this['getLineColor'] =
   /**
@@ -90,7 +90,7 @@ function Thumbnail(globalView) {
     this.lineColor = color;
     globalView.invalidate();
   }
-  
+
   /** @type {Array<number>} */ this.labelColor = null;
   this['getLabelColor'] =
   /**
@@ -122,19 +122,19 @@ function Thumbnail(globalView) {
 export function ImageViewer(gl, globalView) {
   var sdrImage = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured, libShaders.Shaders.fsTextured);
   sdrImage.matWorldViewProj = sdrImage.u4x4f("matWorldViewProj");
-  
+
   var sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
   sdrLine.color = sdrLine.u4f("color");
   sdrLine.color.apply(sdrLine, gl.foreColor);
   sdrLine.matWorldViewProj = sdrLine.u4x4f("matWorldViewProj");
-  
+
   // Create a 2D line mesh
   var meshLine = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
     0, 0, 0,
     1, 0, 0
   ]), null, null, null, null, null, gl.LINES);
-  
+
   // Create a 2D quad mesh
   var meshQuad = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
@@ -149,7 +149,7 @@ export function ImageViewer(gl, globalView) {
     1, 1,
     1, 0
   ]));
-  
+
   // Create a 2D line quad mesh
   var meshLineQuad = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
@@ -158,7 +158,7 @@ export function ImageViewer(gl, globalView) {
     1, 1, 0,
     1, 0, 0
   ]), null, null, null, null, null, gl.LINE_LOOP);
-  
+
   // Create a 2D arrow mesh
 LABEL_HEIGHT = gl.measureTextHeight() + 2 * LABEL_TEXT_PADDING;
 LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
@@ -170,7 +170,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
     0.5 * LABEL_HEIGHT + LABEL_WIDTH, -0.5 * LABEL_HEIGHT, 0,
     0.5 * LABEL_HEIGHT, -0.5 * LABEL_HEIGHT, 0
   ]), null, null, null, null, null, gl.TRIANGLE_FAN);
-  
+
   // Create a 2D line arrow mesh
   var meshLineLabel = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
@@ -180,20 +180,20 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
     0.5 * LABEL_HEIGHT + LABEL_WIDTH, -0.5 * LABEL_HEIGHT, 0,
     0.5 * LABEL_HEIGHT, -0.5 * LABEL_HEIGHT, 0
   ]), null, null, null, null, null, gl.LINE_LOOP);
-  
+
   /** @type Array<Thumbnail> */ var images = [];
-  
+
   var PixelAlignX = x => (Math.floor(x * gl.width / 2.0) + 0.5) * 2.0 / gl.width;
   var PixelAlignY = y => (Math.floor(y * gl.height / 2.0) + 0.5) * 2.0 / gl.height;
-  
+
   this.render = function (flipY, tf) {
     if (images.length === 0)
       return;
     var mattrans = libGlMatrix.mat4.create();
     var imagePos = libGlMatrix.vec2.create(), refPos = libGlMatrix.vec2.create(), imageSize = libGlMatrix.vec2.create();
-    
+
     //gl.disable(gl.SCISSOR_TEST);
-    
+
     if (options['labelThumbnails']) {
       // Draw labels at image.refPos
       var label = 1;
@@ -201,7 +201,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
         if (image.imagePos === image.refPos)
           return;
         tf.transformPos(refPos, image.refPos);
-        
+
         sdrLine.bind();
         libGlMatrix.mat4.identity(mattrans);
         if (flipY === true)
@@ -211,15 +211,15 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
         libGlMatrix.mat4.translate(mattrans, mattrans, [refPos[0], refPos[1], 0]);
         libGlMatrix.mat4.scale(mattrans, mattrans, [2 / gl.width, 2 / gl.height, 1]);
         sdrLine.matWorldViewProj(mattrans);
-        
+
         sdrLine.color.apply(sdrLine, image.highlighted ? [1, 1, 0, 1] : (image.labelColor ? image.labelColor : defaultImageLabelColor));
         meshLabel.bind(sdrLine, null);
         meshLabel.draw();
-        
+
         sdrLine.color.apply(sdrLine, image.borderColor ? image.borderColor : defaultImageBorderColor);
         meshLineLabel.bind(sdrLine, null);
         meshLineLabel.draw();
-        
+
         refPos[0] = (1 + refPos[0]) * gl.width / 2;
         refPos[1] = (1 - refPos[1]) * gl.height / 2;
         refPos[0] += 0.5 * LABEL_HEIGHT + LABEL_WIDTH - LABEL_TEXT_PADDING; // Right-align label
@@ -247,22 +247,22 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
         meshLine.draw();
       });
     }
-    
+
     //gl.disable(gl.SCISSOR_TEST);
-    
+
     sdrImage.bind();
     var label = 1;
     images.forEach(function (image) {
       if (!image.imagePos)
         return;
-      
+
       //var normalizedImagePos = vec2.create();
       //tf.transformPos(normalizedImagePos, image.imagePos);
       //if (normalizedImagePos[0] < 0.0 || normalizedImagePos[0] >= 1.0 || normalizedImagePos[1] < 0.0 || normalizedImagePos[1] >= 1.0)
       //  return;
-      
+
       tf.transformPos(imagePos, image.imagePos);
-      
+
       // Set image size
       tf.transformNml2(imageSize, image.imageSize);
       var w = image.tex.image.width, h = image.tex.image.height;
@@ -272,12 +272,12 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
         scale = [2 * Math.floor(imageSize[0]) / gl.width, 2 * Math.floor(imageSize[0] * h / w) / gl.height, 1];
       else
         scale = [2 * Math.floor(imageSize[1] * w / h) / gl.width, 2 * Math.floor(imageSize[1]) / gl.height, 1];
-      
+
       var borderWidth = image.borderWidth ? image.borderWidth : defaultImageBorderWidth;
       if (borderWidth > 0) {
         scale[0] += 2 * borderWidth / gl.width;
         scale[1] += 2 * borderWidth / gl.height;
-        
+
         meshQuad.bind(sdrLine);
         libGlMatrix.mat4.identity(mattrans);
         if (flipY === true)
@@ -289,11 +289,11 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
         sdrLine.matWorldViewProj(mattrans);
         sdrLine.color.apply(sdrLine, image.borderColor ? image.borderColor : defaultImageBorderColor);
         meshQuad.draw();
-        
+
         scale[0] -= 2 * borderWidth / gl.width;
         scale[1] -= 2 * borderWidth / gl.height;
       }
-      
+
       meshQuad.bind(sdrImage, image.tex);
       libGlMatrix.mat4.identity(mattrans);
       if (flipY === true)
@@ -304,7 +304,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
       libGlMatrix.mat4.translate(mattrans, mattrans, image.imageAnchor); // Move anchor to imageAnchor
       sdrImage.matWorldViewProj(mattrans);
       meshQuad.draw();
-      
+
       if (options['labelThumbnails']) {
         // Draw thumbnail label below thumbnail
         libGlMatrix.mat4.identity(mattrans);
@@ -312,7 +312,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
           libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
         imagePos[0] += image.imageAnchor[0] * scale[0]; // Move stripe position depending on image anchor
         imagePos[1] += image.imageAnchor[1] * scale[1]; // Move stripe position depending on image anchor
-        
+
         libGlMatrix.mat4.translate(mattrans, mattrans, [imagePos[0], PixelAlignY(imagePos[1]), 0.0]);
         scale[1] = 2 * LABEL_HEIGHT / gl.height;
         scale[1] = PixelAlignY(scale[1]);
@@ -320,25 +320,25 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
         libGlMatrix.mat4.scale(mattrans, mattrans, scale);
         libGlMatrix.mat4.translate(mattrans, mattrans, [-0.0, -1.0, 0.0]); // Move anchor to top of stripe
         sdrLine.matWorldViewProj(mattrans);
-        
+
         sdrLine.color.apply(sdrLine, image.highlighted ? [1, 1, 0, 1] : (image.labelColor ? image.labelColor : defaultImageLabelColor));
         meshQuad.bind(sdrLine, null);
         meshQuad.draw();
-        
+
         sdrLine.color.apply(sdrLine, image.borderColor ? image.borderColor : defaultImageBorderColor);
         meshLineQuad.bind(sdrLine, null);
         meshLineQuad.draw();
-        
+
         imagePos[0] += 1.0 * scale[0] - LABEL_TEXT_PADDING * 2 / gl.width; // Right-align label (right-padding = 4)
         imagePos[1] -= LABEL_TEXT_PADDING * 2 / gl.height; // Right-align label (top-padding = 5)
         imagePos[1] = PixelAlignY(imagePos[1]);
         gl.drawText(label++, gl.width * (1 + imagePos[0]) / 2, gl.height * (1 - imagePos[1]) / 2, 'topright');
       }
     });
-    
+
     //gl.enable(gl.SCISSOR_TEST);
   }
-  
+
   var options = {}, defaultImageBorderWidth = 1, defaultImageBorderColor = gl.foreColor, defaultImageLineColor = gl.foreColor, defaultImageLabelColor = gl.backColor;
   this.setDataset = function (dataset, options) {}
   this.onInputChanged = function (activeInputs, animatedInputs, options) {}
@@ -350,7 +350,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
     defaultImageLabelColor = options['thumbnailLabelColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailLabelColor'])).map(c => c / 255.0) : gl.backColor;
   }
   this.onPlotBoundsChanged = function (plotBounds) {}
-  
+
   /**
    * @param  {string} imageFilename
    * @param  {number} refIndex
@@ -373,7 +373,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
     case 'bottomcenter': imageAnchorVector = [-0.5, -0.0, 0.0]; break;
     case 'bottomright':  imageAnchorVector = [-1.0, -0.0, 0.0]; break;
     }
-    
+
     var newImage = new Thumbnail(globalView);
     newImage.tex = libGraphics.LoadTexture(gl, imageFilename, function () { globalView.invalidate(); });
     newImage.imagePos = imagePos;
@@ -393,7 +393,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
   this.getImages = function () {
     return images;
   }
-  
+
   this.resolveIntersections = function (tf) {
     var a = libGlMatrix.vec2.create(), b = libGlMatrix.vec2.create(), c = libGlMatrix.vec2.create(), d = libGlMatrix.vec2.create();
     for (var i = 1; i < images.length; ++i)
@@ -404,7 +404,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
           if (images[j].imagePos) {
             tf.transformPos(c, images[j].imagePos);
             tf.transformPos(d, images[j].refPos);
-            
+
             if (libGlMatrix.vec2.sqrDist(a, b) + libGlMatrix.vec2.sqrDist(c, d) > libGlMatrix.vec2.sqrDist(a, d) + libGlMatrix.vec2.sqrDist(c, b) && !libAlgorithm.linesIntersect(a, d, c, b)) {
               //console.log("exchange {0} - {1}".format(i, j));
               var tmp = images[j].imagePos;
@@ -422,7 +422,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
           if (images[j].imagePos) {
             tf.transformPos(c, images[j].imagePos);
             tf.transformPos(d, images[j].refPos);
-            
+
             if (libAlgorithm.linesIntersect(a, b, c, d)) {
               //console.log("intersection {0} - {1}".format(i, j));
               var tmp = images[j].imagePos;
@@ -433,17 +433,17 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
           }
       }
   }
-  
+
   this.imageFromPoint = function (tf, p) {
     var imagePos = libGlMatrix.vec2.create(), refPos = libGlMatrix.vec2.create(), imageSize = libGlMatrix.vec2.create();
-    
+
     var selectedImage = null;
     images.forEach(function (image) {
       if (!image.imagePos)
         return;
-      
+
       tf.transformPos(imagePos, image.imagePos);
-      
+
       tf.transformNml2(imageSize, image.imageSize);
       var w = image.tex.image.width, h = image.tex.image.height;
       var size;
@@ -456,17 +456,17 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
         imagePos[0] + (image.imageAnchor[0] + 1.0) * size[0],
         imagePos[1] + (image.imageAnchor[1]) * size[1],
         imagePos[1] + (image.imageAnchor[1] + 1.0) * size[1]]
-      
+
       if (options['labelThumbnails'])
         imageBounds[2] -= LABEL_HEIGHT * 2 / gl.height;
-      
+
       if (p[0] >= imageBounds[0] && p[0] <= imageBounds[1] &&
         p[1] >= imageBounds[2] && p[1] <= imageBounds[3]) {
         selectedImage = image;
         return;
       }
     });
-    
+
     return selectedImage;
   }
 }

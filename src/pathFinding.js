@@ -2,20 +2,20 @@ function DepthFirstSearch(problem) {
   var fringe = [];
   var closed = {};
   var result = null;
-  
+
   // Create start node with empty path
   var startnode = {state: problem.getStartState()};
   var node = startnode;
   if (problem.isGoalState(node.state))
     return node.state; // Start state is goal
   closed[problem.computeHash(node.state)] = node.state;
-  
+
   while (true) {
     problem.forEachSuccessor(node.state, function (successor) {
       // Test for goal state (before-push)
       if (problem.isGoalState(successor)) {
         // Goal found
-        result = successor; 
+        result = successor;
         return;
       }
 
@@ -41,13 +41,13 @@ function DepthFirstSearch(problem) {
 function BreadthFirstSearch(problem) {
   var fringe = [];
   var closed = {};
-  
+
   var startnode = {state: problem.getStartState()};
   var node = startnode;
   if (problem.isGoalState(node.state))
     return node.state; // Start state is goal
   closed[problem.computeHash(node.state)] = node.state;
-  
+
   while (true) {
     problem.forEachSuccessor(node.state, function (successor) {
       var successor_hash = problem.computeHash(successor);
@@ -164,7 +164,7 @@ function SimpleGreedySearch(problem) {
   var state = startstate;
   if (problem.isGoalState(state))
     return state; // Start state is goal
-  
+
   var cheapestCost = Number.MAX_VALUE, cheapestSuccessor;
   while (true) {
     cheapestSuccessor = null;

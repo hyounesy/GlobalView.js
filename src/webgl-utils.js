@@ -74,7 +74,7 @@ export var WebGLUtils = function () {
         '</div>' +
         '</td></tr></table>';
     };
-    
+
     /**
      * Message for getting a webgl browser
      * @type {string}
@@ -82,7 +82,7 @@ export var WebGLUtils = function () {
     var GET_A_WEBGL_BROWSER = '' +
       'This page requires a browser that supports WebGL.<br/>' +
       '<a href="http://get.webgl.org">Click here to upgrade your browser.</a>';
-    
+
     /**
      * Mesasge for need better hardware
      * @type {string}
@@ -90,7 +90,7 @@ export var WebGLUtils = function () {
     var OTHER_PROBLEM = '' +
       "It doesn't appear your computer can support WebGL.<br/>" +
       '<a href="http://get.webgl.org/troubleshooting/">Click here for more information.</a>';
-    
+
     /**
      * Creates a webgl context. If creation fails it will
      * change the contents of the container of the <canvas>
@@ -113,9 +113,9 @@ export var WebGLUtils = function () {
           container.innerHTML = makeFailHTML(str);
         }
       };
-    
+
       opt_onError = opt_onError || handleCreationError;
-    
+
       if (canvas.addEventListener) {
         canvas.addEventListener("webglcontextcreationerror", function (event) {
               opt_onError(event.statusMessage);
@@ -129,7 +129,7 @@ export var WebGLUtils = function () {
       }
       return context;
     };
-    
+
     /**
      * Creates a webgl context.
      * @param {!HTMLCanvasElement} canvas The canvas tag to get context
@@ -149,13 +149,13 @@ export var WebGLUtils = function () {
       }
       return context;
     }
-    
+
     return {
       create3DContext: create3DContext,
       setupWebGL: setupWebGL
     };
     }();
-    
+
 /**
  * Provides requestAnimationFrame in a cross browser way.
  */
@@ -175,7 +175,7 @@ const window_requestAnimFrame = (function () {
  * Provides requestAnimationFrame in a cross browser way.
  */
 export function requestAnimFrame(callback) {
-  // Initially tried exporting window_requestAnimFrame directly, but got "Illegal Invocation". 
+  // Initially tried exporting window_requestAnimFrame directly, but got "Illegal Invocation".
   // probably related to this: https://stackoverflow.com/questions/10743596/why-are-certain-function-calls-termed-illegal-invocations-in-javascript
   window_requestAnimFrame(callback);
 }

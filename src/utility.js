@@ -84,7 +84,7 @@ String.prototype.format2 = function (pattern, mismatch, var_args) {
 export function makeCloneable(obj) {
   if (!isObject(obj)) // If obj isn't an object
     return obj; // Return obj as is
-  
+
   // Check all properties of obj
   for (var prop in obj)
     if (!isCloneable(obj[prop])) {
@@ -96,7 +96,7 @@ export function makeCloneable(obj) {
           obj_subset[prop] = obj[prop];
       return obj_subset;
     }
-  
+
   // If obj doesn't have type functions
   return obj; // Return obj as is
 };
@@ -107,7 +107,7 @@ function getScript(id) {
   if (!shaderScript) {
     return null;
   }
-  
+
   var str = "";
   var k = shaderScript.firstChild;
   while (k) {
@@ -116,7 +116,7 @@ function getScript(id) {
     }
     k = k.nextSibling;
   }
-  
+
   return str;
 }
 
@@ -224,7 +224,7 @@ export function hsv2rgb(hsv) {
   if(hsv[1] <= 0.000001)
     return [hsv[2], hsv[2], hsv[2]];
   var hh, p, q, t, ff, i, out;
-  
+
   hh = hsv[0];
   if(hh >= 1.0) hh = 0.0;
   hh *= 6.0;
@@ -264,7 +264,7 @@ var _downloader;
 export function download(filename, contentUrl) {
   if (!_downloader)
     document.body.appendChild(_downloader = document.createElement('a'));
-  
+
   _downloader.href = contentUrl;
   _downloader.download = filename;
   _downloader.click();
@@ -275,16 +275,16 @@ export function imageUrlFromBytes(bytes, width, height) {
   var tempCanvas = document.createElement('canvas');
   tempCanvas.width = width;
   tempCanvas.height = height;
-  
+
   // Copy the pixels to the 2D canvas
   var imageData = tempCanvas.getContext('2d').createImageData(width, height);
   imageData.data.set(bytes);
   tempCanvas.getContext('2d').putImageData(imageData, 0, 0);
   var dataURL = tempCanvas.toDataURL();
-  
+
   // Free tempCanvas
   tempCanvas = null;
-  
+
   return dataURL;
 }
 
@@ -390,7 +390,7 @@ export function addKeyUpHandler(onkeyup) {
 export function ForwardList(value) {
   this.value = value;
   this.next = null;
-  
+
   this.push = function (value) {
     // Pushes to front
     var newnode = new ForwardList(this.value);
@@ -443,7 +443,7 @@ export function ForwardList(value) {
     // Source: http://www.geeksforgeeks.org/merge-two-sorted-linked-lists/
     var dummy = new ForwardList(null);
     var tail = dummy;
-    
+
     while (a !== null && b!= null) {
       // While neither a nor b run out
       if (a.value <= b.value) {
@@ -460,10 +460,10 @@ export function ForwardList(value) {
 
       tail = tail.next;
     }
-    
+
     // Concatenate list that didn't run out
     tail.next = a === null ? b : a;
-    
+
     return dummy.next;
   }
 }
@@ -514,7 +514,7 @@ export function HashSet(onchanged) {
   /** A dictionary of all values in the hash set @type {!Object<number, boolean>} */ var hash = {};
   /** The number of values in this hash set @type {number} */ this.length = 0;
   /** A callback to be raised whenever values have been added or deleted @public @type {function()} */ this.onchanged = isFunction(onchanged) ? onchanged : function () {};
-  
+
   this['push'] =
   /**
    * Add a single value into the hash set
@@ -527,7 +527,7 @@ export function HashSet(onchanged) {
       this.onchanged();
     }
   }
-  
+
   this['append'] =
   /**
    * Add an iterable list of values into the hash set
@@ -547,7 +547,7 @@ export function HashSet(onchanged) {
     if (invalidate)
       this.onchanged();
   }
-  
+
   this['set'] =
   /**
    * Reset the hash set to only contain the given value
@@ -561,7 +561,7 @@ export function HashSet(onchanged) {
       this.onchanged();
     }
   }
-  
+
   this['assign'] =
   /**
    * Reset the hash set to only contain the given iterable list of values
@@ -572,7 +572,7 @@ export function HashSet(onchanged) {
       this.clear();
       return;
     }
-    
+
 //var t = performance.now();
     var newHash = {}, identical = (values.length === this.length);
     values.forEach(function (value) {
@@ -580,15 +580,15 @@ export function HashSet(onchanged) {
         identical = false;
       newHash[value] = true;
     });
-    
+
     hash = newHash;
     this.length = values.length;
 //console.log('assign ' + values.length + ': ' + (performance.now() - t));
-    
+
     if (identical === false)
       this.onchanged();
   }
-  
+
   this['assignRange'] =
   /**
    * Reset the hash set to only contain numbers 0 through n - 1
@@ -604,7 +604,7 @@ export function HashSet(onchanged) {
 //console.log('assignRange ' + n + ': ' + (performance.now() - t));
     this.onchanged();
   }
-  
+
   this['erase'] =
   /**
    * Remove the given value from the hash set
@@ -617,7 +617,7 @@ export function HashSet(onchanged) {
       this.onchanged();
     }
   }
-  
+
   this['remove'] =
   /**
    * Remove the given iterable list of values from the hash set
@@ -637,7 +637,7 @@ export function HashSet(onchanged) {
     if (invalidate)
       this.onchanged();
   }
-  
+
   this['isempty'] =
   /**
    * @return {boolean} True, if the hash set doesn't contain any values
@@ -645,7 +645,7 @@ export function HashSet(onchanged) {
   this.isempty = function () {
     return this.length === 0;
   }
-  
+
   this['clear'] =
   /**
    * Resets the hash set to an empty set
@@ -657,7 +657,7 @@ export function HashSet(onchanged) {
       this.onchanged();
     }
   }
-  
+
   this['forEach'] =
   /**
    * Calls the given function once for each value in the hash set
@@ -672,7 +672,7 @@ export function HashSet(onchanged) {
     }
 //if (badOrder !== 0) console.log('bad order: ' + badOrder + ' times');
   }
-  
+
   this['get'] =
   /**
    * @return  {Uint32Array} A sorted array of all values in the hash set
@@ -680,7 +680,7 @@ export function HashSet(onchanged) {
   this.get = function () {
     return new Uint32Array(Object.keys(hash).map(Number));
   }
-  
+
   this['size'] =
   /**
    * @return  {number} The number of values in the hash set
@@ -688,7 +688,7 @@ export function HashSet(onchanged) {
   this.size = function () {
     return this.length;
   }
-  
+
   this['contains'] =
   /**
    * @param  {number} value
