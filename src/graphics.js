@@ -57,13 +57,13 @@ export function Shader(gl, vs, fs, debug) {
   for (var i = 0; i < count; ++i)
     console.log(gl.getActiveUniform(sdr, i).name);*/
 
-this.vertexPositionAttribute = gl.getAttribLocation(sdr, "vpos");
-this.vertexNormalAttribute = gl.getAttribLocation(sdr, "vnml");
-this.vertexTangentAttribute = gl.getAttribLocation(sdr, "vtng");
-this.vertexBinormalAttribute = gl.getAttribLocation(sdr, "vbnml");
-this.VertexTexCoordAttribute = gl.getAttribLocation(sdr, "vtexcoord");
-this.samplerUniform = gl.getUniformLocation(sdr, "uSampler");
-this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
+this.vertexPositionAttribute = gl.getAttribLocation(sdr, 'vpos');
+this.vertexNormalAttribute = gl.getAttribLocation(sdr, 'vnml');
+this.vertexTangentAttribute = gl.getAttribLocation(sdr, 'vtng');
+this.vertexBinormalAttribute = gl.getAttribLocation(sdr, 'vbnml');
+this.VertexTexCoordAttribute = gl.getAttribLocation(sdr, 'vtexcoord');
+this.samplerUniform = gl.getUniformLocation(sdr, 'uSampler');
+this.samplerArrayUniform = gl.getUniformLocation(sdr, 'uSamplers');
 
   this.bind = function () {
     if (currentShader !== this) {
@@ -80,10 +80,10 @@ this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
         this.bind();
         gl.uniform1i(uniform, i);
         if (debug)
-          console.log("gl.uniform1i({0}, {1})".format(uniformString, i));
+          console.log('gl.uniform1i({0}, {1})'.format(uniformString, i));
       };
     else
-      return debug ? i => console.log("Passing value to unused uniform " + uniformString) : null;
+      return debug ? i => console.log('Passing value to unused uniform ' + uniformString) : null;
   }
   this.u1f = function (uniformString) {
     this.bind();
@@ -93,10 +93,10 @@ this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
         this.bind();
         gl.uniform1f(uniform, f);
         if (debug)
-          console.log("gl.uniform1f({0}, {1})".format(uniformString, f));
+          console.log('gl.uniform1f({0}, {1})'.format(uniformString, f));
       };
     else
-      return debug ? f => console.log("Passing value to unused uniform " + uniformString) : null;
+      return debug ? f => console.log('Passing value to unused uniform ' + uniformString) : null;
   }
   this.u2f = function (uniformString) {
     this.bind();
@@ -106,10 +106,10 @@ this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
         this.bind();
         gl.uniform2f(uniform, x, y);
         if (debug)
-          console.log("gl.uniform2f({0}, {1}, {2})".format(uniformString, x, y));
+          console.log('gl.uniform2f({0}, {1}, {2})'.format(uniformString, x, y));
       };
     else
-      return debug ? f => console.log("Passing value to unused uniform " + uniformString) : null;
+      return debug ? f => console.log('Passing value to unused uniform ' + uniformString) : null;
   }
   this.u2x2f = function (uniformString) {
     this.bind();
@@ -119,10 +119,10 @@ this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
         this.bind();
         gl.uniformMatrix2fv(uniform, false, m);
         if (debug)
-          console.log("gl.uniformMatrix2fv({0}, {1})".format(uniformString, m));
+          console.log('gl.uniformMatrix2fv({0}, {1})'.format(uniformString, m));
         };
     else
-      return debug ? f => console.log("Passing value to unused uniform " + uniformString) : null;
+      return debug ? f => console.log('Passing value to unused uniform ' + uniformString) : null;
   }
   this.u3f = function (uniformString) {
     this.bind();
@@ -132,10 +132,10 @@ this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
         this.bind();
         gl.uniform3f(uniform, x, y, z);
         if (debug)
-          console.log("gl.uniform3f({0}, {1}, {2}, {3})".format(uniformString, x, y, z));
+          console.log('gl.uniform3f({0}, {1}, {2}, {3})'.format(uniformString, x, y, z));
       };
     else
-      return debug ? f => console.log("Passing value to unused uniform " + uniformString) : null;
+      return debug ? f => console.log('Passing value to unused uniform ' + uniformString) : null;
   }
   this.u4f = function (uniformString) {
     this.bind();
@@ -145,10 +145,10 @@ this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
         this.bind();
         gl.uniform4f(uniform, x, y, z, w);
         if (debug)
-          console.log("gl.uniform4f({0}, {1}, {2}, {3}, {4})".format(uniformString, x, y, z, w));
+          console.log('gl.uniform4f({0}, {1}, {2}, {3}, {4})'.format(uniformString, x, y, z, w));
       };
     else
-      return debug ? f => console.log("Passing value to unused uniform " + uniformString) : null;
+      return debug ? f => console.log('Passing value to unused uniform ' + uniformString) : null;
   }
   this.u1fv = function (uniformString) {
     this.bind();
@@ -158,10 +158,10 @@ this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
         this.bind();
         gl.uniform1fv(uniform, v);
         if (debug)
-          console.log("gl.uniform1fv({0}, {1})".format(uniformString, v));
+          console.log('gl.uniform1fv({0}, {1})'.format(uniformString, v));
       };
     else
-      return debug ? f => console.log("Passing value to unused uniform " + uniformString) : null;
+      return debug ? f => console.log('Passing value to unused uniform ' + uniformString) : null;
   }
   this.u4fv = function (uniformString) {
     this.bind();
@@ -171,10 +171,10 @@ this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
         this.bind();
         gl.uniform4fv(uniform, v);
         if (debug)
-          console.log("gl.uniform4fv({0}, {1})".format(uniformString, v));
+          console.log('gl.uniform4fv({0}, {1})'.format(uniformString, v));
       };
     else
-      return debug ? f => console.log("Passing value to unused uniform " + uniformString) : null;
+      return debug ? f => console.log('Passing value to unused uniform ' + uniformString) : null;
   }
   this.u4x4f = function (uniformString) {
     this.bind();
@@ -184,10 +184,10 @@ this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
         this.bind();
         gl.uniformMatrix4fv(uniform, false, m);
         if (debug)
-          console.log("gl.uniformMatrix4fv({0}, {1})".format(uniformString, m));
+          console.log('gl.uniformMatrix4fv({0}, {1})'.format(uniformString, m));
       };
     else
-      return debug ? f => console.log("Passing value to unused uniform " + uniformString) : null;
+      return debug ? f => console.log('Passing value to unused uniform ' + uniformString) : null;
   }
 
   this.getAttribLocation = function (attributeName) { return gl.getAttribLocation(sdr, attributeName); }
@@ -213,7 +213,7 @@ this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
 
 export function validateGLSL(gl, code) {
   var vertexShader = gl.createShader(gl.VERTEX_SHADER);
-  gl.shaderSource(vertexShader, "void main() {} " + code);
+  gl.shaderSource(vertexShader, 'void main() {} ' + code);
   gl.compileShader(vertexShader);
   if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
     var err = gl.getShaderInfoLog(vertexShader);

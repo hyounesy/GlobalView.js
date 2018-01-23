@@ -1,12 +1,12 @@
 const globalView = require('../dist/global-view.js');
-const domready = require("domready");
+const domready = require('domready');
 
 var plot, taOptions = document.getElementById('taOptions'), preStatus = document.getElementById('preStatus');
 
 
 domready(function () {
   plot = new globalView.GlobalView(document.getElementById('divGlobalView'), {
-    pointShape: "Cross"
+    pointShape: 'Cross'
   });
 
   new globalView.RandomDataset(1000, 2, function (dataset) {
@@ -33,7 +33,7 @@ function tOptions_onChange(sender) {
   var err;
   if ((err = plot.validateOptions(options)) === true) {
     plot.setOptions(options);
-    preStatus.innerText = "";
+    preStatus.innerText = '';
   } else
     preStatus.innerText = err;
 }

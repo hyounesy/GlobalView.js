@@ -141,7 +141,7 @@ function SimpleAStarSearch(problem, heuristic) {
       var h = problem.heuristic(successor);
       var g = successor_cost;
       if (CHECK_CONSISTENCY && g + h < node.f)
-        throw "Inconsistency found in A*-search heuristic";
+        throw 'Inconsistency found in A*-search heuristic';
       var successor_hash = problem.computeHash(successor);
       if (libUtility.isUndefined(closed[successor_hash])) {
         fringe.push({state: successor, f: g + h, g: g});

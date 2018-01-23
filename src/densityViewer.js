@@ -14,15 +14,15 @@ const libUtility = require('./utility.js');
  */
 export function DensityViewer(gl, globalView) {
   var sdrDensityMap = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured2, libShaders.Shaders.fsViewDensityMap);
-  sdrDensityMap.matWorldViewProj = sdrDensityMap.u4x4f("matWorldViewProj");
-  sdrDensityMap.matTexCoordTransform = sdrDensityMap.u2x2f("matTexCoordTransform");
-  sdrDensityMap.scale = sdrDensityMap.u1f("scale");
-  sdrDensityMap.color = sdrDensityMap.u3f("color");
+  sdrDensityMap.matWorldViewProj = sdrDensityMap.u4x4f('matWorldViewProj');
+  sdrDensityMap.matTexCoordTransform = sdrDensityMap.u2x2f('matTexCoordTransform');
+  sdrDensityMap.scale = sdrDensityMap.u1f('scale');
+  sdrDensityMap.color = sdrDensityMap.u3f('color');
   //var colormap = libGraphics.LoadTexture(gl, "cmDensityMap.png", function() { globalView.invalidate(); });
 
   var sdrClusterMap = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured2, libShaders.Shaders.fsTextured);
-  sdrClusterMap.matWorldViewProj = sdrClusterMap.u4x4f("matWorldViewProj");
-  sdrClusterMap.matTexCoordTransform = sdrClusterMap.u2x2f("matTexCoordTransform");
+  sdrClusterMap.matWorldViewProj = sdrClusterMap.u4x4f('matWorldViewProj');
+  sdrClusterMap.matTexCoordTransform = sdrClusterMap.u2x2f('matTexCoordTransform');
 
   // Create a 2D quad mesh
   var meshQuad = new libGraphics.Mesh(gl, new Float32Array([

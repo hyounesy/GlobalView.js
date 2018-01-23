@@ -1,54 +1,54 @@
 //const libUtility = require('utility')
 
 function BenchmarkDialog() {
-  var benchmarkDialog = $("#benchmarkDialog").dialog({
+  var benchmarkDialog = $('#benchmarkDialog').dialog({
     autoOpen: false,
     modal: true,
     closeOnEscape: false,
     resizable: false,
     buttons: [{
-      text: "Cancel",
+      text: 'Cancel',
       click: function () {
         cancel = true;
-        benchmarkDialog.dialog("close");
+        benchmarkDialog.dialog('close');
       }
     }],
     open: startBenchmark,
     beforeClose: function () { cancel = true; }
   });
 
-  var pbOverall = $("#pbOverall"), pbPass = $("#pbPass"), progressLabel = $(".progress-label"), tblResults = $("#tblResults"), tblResults_body;
+  var pbOverall = $('#pbOverall'), pbPass = $('#pbPass'), progressLabel = $('.progress-label'), tblResults = $('#tblResults'), tblResults_body;
   pbOverall.progressbar({
     value: false,
     change: function () {
-      progressLabel.text("Progress: " + Math.floor(pbOverall.progressbar("value") * 100) / 100 + "%");
+      progressLabel.text('Progress: ' + Math.floor(pbOverall.progressbar('value') * 100) / 100 + '%');
     },
     complete: function () {
-      progressLabel.text("Complete!");
-      benchmarkDialog.dialog("option", "buttons", [{
-        text: "Close",
+      progressLabel.text('Complete!');
+      benchmarkDialog.dialog('option', 'buttons', [{
+        text: 'Close',
         click: function () {
           cancel = true;
-          benchmarkDialog.dialog("close");
+          benchmarkDialog.dialog('close');
         }
       }]);
-      $(".ui-dialog button").last().trigger("focus");
+      $('.ui-dialog button').last().trigger('focus');
     }
   });
   pbPass.progressbar({ value: false });
 
   var cancel = false;
   function reportProgress(percentageOverall, percentagePass) {
-    pbOverall.progressbar("value", 100 * percentageOverall);
-    pbPass.progressbar("value", 100 * percentagePass);
+    pbOverall.progressbar('value', 100 * percentageOverall);
+    pbPass.progressbar('value', 100 * percentagePass);
     return !cancel;
   }
   function reportHeader(header) {
-    tblResults.append("<thead><tr><th>" + header.join("</th><th>") + "</th></tr></thead>");
-    tblResults_body = tblResults.append("<tbody></tbody>");
+    tblResults.append('<thead><tr><th>' + header.join('</th><th>') + '</th></tr></thead>');
+    tblResults_body = tblResults.append('<tbody></tbody>');
   }
   function reportResult(row) {
-    tblResults_body.append("<tr><td>" + row.join("</td><td>") + "</td></tr>");
+    tblResults_body.append('<tr><td>' + row.join('</td><td>') + '</td></tr>');
   }
 
 
@@ -72,7 +72,7 @@ function BenchmarkDialog() {
   const SECONDS_PER_BENCHMARK = 1;//10;
   const SAVE_SCREENSHOTS = false;
 
-  benchmarkDialog.dialog("open");
+  benchmarkDialog.dialog('open');
 
 
   var zip, csv, numBenchmarks, benchmarkCounter, benchmarkOptionIndices, currentOptions, n, time, frames, passStartTime;
@@ -167,9 +167,9 @@ function BenchmarkDialog() {
 
     if (SAVE_SCREENSHOTS) {
       var image = globalView.saveOffscreenBuffer();
-      image = image.substr(image.indexOf("base64,") + "base64,".length); // Convert base64-dataURL to base64
+      image = image.substr(image.indexOf('base64,') + 'base64,'.length); // Convert base64-dataURL to base64
       name = name.replace('{', '').replace('}', '').replaceAll("'", '').replaceAll(',', ', ');
-      zip.file(name + ".png", image, { base64: true });
+      zip.file(name + '.png', image, { base64: true });
     }
 
     //console.log(++benchmarkCounter / numBenchmarks);
@@ -210,12 +210,12 @@ function BenchmarkDialog() {
     cancelBenchmark();
 
     if (SAVE_SCREENSHOTS) {
-      zip.file("benchmark.csv", $.csv.fromArrays(csv));
+      zip.file('benchmark.csv', $.csv.fromArrays(csv));
 
-      zip.generateAsync({ type: "base64" }).then(function (base64) {
-        libUtility.download("benchmark.zip", "data:application/zip;base64," + base64);
+      zip.generateAsync({ type: 'base64' }).then(function (base64) {
+        libUtility.download('benchmark.zip', 'data:application/zip;base64,' + base64);
       });
     } else
-      libUtility.download("benchmark.csv", "data:text/csv;charset=utf-8," + encodeURIComponent($.csv.fromArrays(csv)));
+      libUtility.download('benchmark.csv', 'data:text/csv;charset=utf-8,' + encodeURIComponent($.csv.fromArrays(csv)));
   }
 }

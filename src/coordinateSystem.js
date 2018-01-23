@@ -15,9 +15,9 @@ export function CoordinateSystem(gl, globalView) {
   const NUM_TICKS = 10;
 
   var sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
-  sdrLine.color = sdrLine.u4f("color");
+  sdrLine.color = sdrLine.u4f('color');
   sdrLine.color.apply(sdrLine, gl.foreColor);
-  sdrLine.matWorldViewProj = sdrLine.u4x4f("matWorldViewProj");
+  sdrLine.matWorldViewProj = sdrLine.u4x4f('matWorldViewProj');
   this.updateColorSchema = function () {
     sdrLine.color.apply(sdrLine, gl.foreColor);
   }

@@ -68,27 +68,27 @@ export function GlobalView(div, startupOptions) {
     }
   if (canvas === null) {
     canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
-    canvas.style.position = "static";//"absolute";
-    canvas.style.left = canvas.style.top = "0px";
-    canvas.style.width = canvas.style.height = "100%";
-    canvas.style.backgroundColor = "transparent";
+    canvas.style.position = 'static';//"absolute";
+    canvas.style.left = canvas.style.top = '0px';
+    canvas.style.width = canvas.style.height = '100%';
+    canvas.style.backgroundColor = 'transparent';
     canvas.globalViewWebGLCanvas = true;
     div.appendChild(canvas);
   }
 
   this['invalidate'] = this.invalidate = function () {}; // Silently ignore calls to invalidate during initialization
 
-  var gl = canvas.getContext("webgl");
+  var gl = canvas.getContext('webgl');
   if(!gl) {
-    alert("Error: WebGL not supported");
+    alert('Error: WebGL not supported');
     return;
   }
-  var OES_element_index_uint = gl.getExtension("OES_element_index_uint");
+  var OES_element_index_uint = gl.getExtension('OES_element_index_uint');
   if (!OES_element_index_uint)
-    console.warn("GlobalView warning: Unsupported WebGL extension: OES_element_index_uint");
+    console.warn('GlobalView warning: Unsupported WebGL extension: OES_element_index_uint');
   gl.ext = gl.getExtension('ANGLE_instanced_arrays');
   if (!gl.ext)
-    console.warn("GlobalView warning: Unsupported WebGL extension: ANGLE_instanced_arrays");
+    console.warn('GlobalView warning: Unsupported WebGL extension: ANGLE_instanced_arrays');
 
   var divStyle = window.getComputedStyle(div);
   gl.backColor = divStyle.backgroundColor == 'transparent' ? [0, 0, 0, 0] : libUtility.rgbStringToFloatArray(divStyle.backgroundColor);
@@ -179,7 +179,7 @@ export function GlobalView(div, startupOptions) {
     if (mouseRect !== null && (mouseRect.width != 0 || mouseRect.height != 0))
       gl.drawRect(mouseRect.x, mouseRect.y, mouseRect.width, mouseRect.height);
     if (mousePolygon !== null) {
-      gl.fillPolygon(mousePolygon, "rgba(255, 255, 255, 0.25)");
+      gl.fillPolygon(mousePolygon, 'rgba(255, 255, 255, 0.25)');
       gl.drawPolygon(mousePolygon);
     }
 
@@ -196,9 +196,9 @@ export function GlobalView(div, startupOptions) {
         frameCounter = 0;
       }
       if (fps !== null)
-        gl.drawText(fps.toFixed(5) + " FPS", canvas.width - 8, 8, "topright");
+        gl.drawText(fps.toFixed(5) + ' FPS', canvas.width - 8, 8, 'topright');
       else
-        gl.drawText("approx. " + Math.floor((frameCounter == 1 ? 10000.0 : 1000 * frameCounter) / (t - fpsStart)) + " FPS", canvas.width - 8, 8, "topright");
+        gl.drawText('approx. ' + Math.floor((frameCounter == 1 ? 10000.0 : 1000 * frameCounter) / (t - fpsStart)) + ' FPS', canvas.width - 8, 8, 'topright');
     }
     if (SIMULATE_LOW_FPS)
       setTimeout(function () {globalView.invalidate();}, 100);
@@ -541,7 +541,7 @@ export function GlobalView(div, startupOptions) {
     // General plot options
     /** The space around the drawing area in the form [top, right, bottom, left]. X-axis, y-axis and colormap are drawn within padding space. */
     'padding': {
-      description: "The space around the drawing area in the form [top, right, bottom, left]. X-axis, y-axis and colormap are drawn within padding space.",
+      description: 'The space around the drawing area in the form [top, right, bottom, left]. X-axis, y-axis and colormap are drawn within padding space.',
       default: [50, 60, 50, 50],
       valid: value => libUtility.isNumber(value) || libUtility.isString(value) || (libUtility.isArray(value) && value.length === 4),
       requireRedraw: true,
@@ -549,7 +549,7 @@ export function GlobalView(div, startupOptions) {
     },
     /** When enabled, shows a colormap to the right of the plot. */
     'showColormap': {
-      description: "When enabled, shows a colormap to the right of the plot.",
+      description: 'When enabled, shows a colormap to the right of the plot.',
       default: true,
       valid: [true, false],
       requireRedraw: true,
@@ -557,7 +557,7 @@ export function GlobalView(div, startupOptions) {
     },
     /** When enabled, scrolling above the plot zooms in or out of the data. */
     'enableScrolling': {
-      description: "When enabled, scrolling above the plot zooms in or out of the data.",
+      description: 'When enabled, scrolling above the plot zooms in or out of the data.',
       default: true,
       valid: [true, false],
       requireRedraw: false,
@@ -565,7 +565,7 @@ export function GlobalView(div, startupOptions) {
     },
     /** When enabled, thumbnails can be dragged with the mouse. */
     'enableThumbnailDragging': {
-      description: "When enabled, thumbnails can be dragged with the mouse.",
+      description: 'When enabled, thumbnails can be dragged with the mouse.',
       default: true,
       valid: [true, false],
       requireRedraw: false,
@@ -575,7 +575,7 @@ export function GlobalView(div, startupOptions) {
     // Advanced plot options
     /** When enabled, the canvas is continuously rerendered at up to 60 frames per second. Keep this setting disabled to save processing resources. */
     'enableContinuousRendering': {
-      description: "When enabled, the canvas is continuously rerendered at up to 60 frames per second. Keep this setting disabled to save processing resources.",
+      description: 'When enabled, the canvas is continuously rerendered at up to 60 frames per second. Keep this setting disabled to save processing resources.',
       default: false,
       valid: [true, false],
       requireRedraw: true,
@@ -583,7 +583,7 @@ export function GlobalView(div, startupOptions) {
     },
     /** Enables/disables blending in WebGL. Whenever using any kind of transparency, this setting should be kept enabled. */
     'enableTransparency': {
-      description: "Enables/disables blending in WebGL. Whenever using any kind of transparency, this setting should be kept enabled.",
+      description: 'Enables/disables blending in WebGL. Whenever using any kind of transparency, this setting should be kept enabled.',
       default: true,
       valid: [true, false],
       requireRedraw: true,
@@ -616,7 +616,7 @@ export function GlobalView(div, startupOptions) {
     // Histogram options
     /** When enabled, shows a histogram between the x-axis and the plot. */
     'showXAxisHistogram': {
-      description: "When enabled, shows a histogram between the x-axis and the plot.",
+      description: 'When enabled, shows a histogram between the x-axis and the plot.',
       default: false,
       valid: [true, false],
       requireRedraw: true,
@@ -624,7 +624,7 @@ export function GlobalView(div, startupOptions) {
     },
     /** When enabled, shows a histogram between the y-axis and the plot. */
     'showYAxisHistogram': {
-      description: "When enabled, shows a histogram between the y-axis and the plot.",
+      description: 'When enabled, shows a histogram between the y-axis and the plot.',
       default: false,
       valid: [true, false],
       requireRedraw: true,
@@ -632,7 +632,7 @@ export function GlobalView(div, startupOptions) {
     },
     /** When enabled, shows a histogram between the colormap and the plot. */
     'showColormapHistogram': {
-      description: "When enabled, shows a histogram between the colormap and the plot.",
+      description: 'When enabled, shows a histogram between the colormap and the plot.',
       default: false,
       valid: [true, false],
       requireRedraw: true,
@@ -640,7 +640,7 @@ export function GlobalView(div, startupOptions) {
     },
     /** Controls the number of bins within each histogram in the scatterplot. */
     'numHistogramBins': {
-      description: "Controls the number of bins within each histogram in the scatterplot.",
+      description: 'Controls the number of bins within each histogram in the scatterplot.',
       default: 50,
       valid: value => { return value >= 1; },
       requireRedraw: true,
@@ -648,7 +648,7 @@ export function GlobalView(div, startupOptions) {
     },
     /** Controls the height of each histogram in the scatterplot (in pixels). */
     'histogramHeight': {
-      description: "Controls the height of each histogram in the scatterplot (in pixels).",
+      description: 'Controls the height of each histogram in the scatterplot (in pixels).',
       default: 64,
       valid: value => { return value >= 0; },
       requireRedraw: true,
@@ -658,23 +658,23 @@ export function GlobalView(div, startupOptions) {
     // Point options
     /** Controls the shape of data points in the scatterplot. */
     'pointShape': {
-      description: "Controls the shape of data points in the scatterplot.",
-      default: "Circle",
-      valid: ["Rectangle", "Circle", "Cross", "Diamond", "Gaussian", "Custom"],
+      description: 'Controls the shape of data points in the scatterplot.',
+      default: 'Circle',
+      valid: ['Rectangle', 'Circle', 'Cross', 'Diamond', 'Gaussian', 'Custom'],
       requireRedraw: true,
       requireRecompile: true
     },
     /** When 'pointShape' is set to 'Custom', this defines a GLSL function given vec2 p, that returns opacity in the range [0.0 ... 1.0] at location p. */
     'customPointShape': {
       description: "When 'pointShape' is set to 'Custom', this defines a GLSL function given vec2 p, that returns opacity in the range [0.0 ... 1.0] at location p.",
-      default: "{ return 1.0; }",
-      valid: value => { return libGraphics.validateGLSL(gl, "float opacityMap(in vec2 p) " + value); },
+      default: '{ return 1.0; }',
+      valid: value => { return libGraphics.validateGLSL(gl, 'float opacityMap(in vec2 p) ' + value); },
       requireRedraw: true,
       requireRecompile: true
     },
     /** Controls the diameter of data points in the scatterplot (in pixels). */
     'pointSize': {
-      description: "Controls the diameter of data points in the scatterplot (in pixels).",
+      description: 'Controls the diameter of data points in the scatterplot (in pixels).',
       default: 6,
       valid: value => { return value >= 0; },
       requireRedraw: true,
@@ -682,7 +682,7 @@ export function GlobalView(div, startupOptions) {
     },
     /** Controls the visibility of data points in the scatterplot between 0 (invisible) and 1 (fully opaque). */
     'pointOpacity': {
-      description: "Controls the visibility of data points in the scatterplot between 0 (invisible) and 1 (fully opaque).",
+      description: 'Controls the visibility of data points in the scatterplot between 0 (invisible) and 1 (fully opaque).',
       default: 1,
       valid: value => { return value >= 0 && value <= 1; },
       requireRedraw: true,
@@ -690,8 +690,8 @@ export function GlobalView(div, startupOptions) {
     },
     /** Controls the color of data points in the scatterplot. Valid values are an array of bytes in RGBA order or a colormap name. */
     'pointColor': {
-      description: "Controls the color of data points in the scatterplot. Valid values are an array of bytes in RGBA order or a colormap name.",
-      default: "exhue",
+      description: 'Controls the color of data points in the scatterplot. Valid values are an array of bytes in RGBA order or a colormap name.',
+      default: 'exhue',
       valid: value => { return libColormap.validateColormap(value); },
       requireRedraw: true,
       requireRecompile: false
@@ -700,7 +700,7 @@ export function GlobalView(div, startupOptions) {
     // Thumbnail options
     /** Controls the width/height of thumbnails in the scatterplot (in pixels). */
     'thumbnailSize': {
-      description: "Controls the width/height of thumbnails in the scatterplot (in pixels).",
+      description: 'Controls the width/height of thumbnails in the scatterplot (in pixels).',
       default: 64,
       valid: value => { return value > 0; },
       requireRedraw: true,
@@ -708,7 +708,7 @@ export function GlobalView(div, startupOptions) {
     },
     /** Controls the width of thumbnail borders in the scatterplot. */
     'thumbnailBorderWidth': {
-      description: "Controls the width of thumbnail borders in the scatterplot.",
+      description: 'Controls the width of thumbnail borders in the scatterplot.',
       default: 1,
       valid: value => { return value >= 0; },
       requireRedraw: true,
@@ -746,7 +746,7 @@ export function GlobalView(div, startupOptions) {
     },
     /** When enabled, links thumbnails to points using unique labels instead of lines. */
     'labelThumbnails': {
-      description: "When enabled, links thumbnails to points using unique labels instead of lines.",
+      description: 'When enabled, links thumbnails to points using unique labels instead of lines.',
       default: false,
       valid: [true, false],
       requireRedraw: true,
@@ -797,7 +797,7 @@ export function GlobalView(div, startupOptions) {
   this.setOption = function (option, value) {
     // Validate option
     if (!OPTIONS.hasOwnProperty(option)) {
-      console.warn("GlobalView warning: Unsupported option: " + option);
+      console.warn('GlobalView warning: Unsupported option: ' + option);
       return;
     }
     var optionDefinition = OPTIONS[option];
@@ -806,9 +806,9 @@ export function GlobalView(div, startupOptions) {
     var validationResult;
     if ((libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1) ||
       (libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true)) {
-      console.warn("GlobalView warning: Invalid value for option " + option + ": " + value);
+      console.warn('GlobalView warning: Invalid value for option ' + option + ': ' + value);
       if (libUtility.isString(validationResult))
-        console.warn("                    " + validationResult);
+        console.warn('                    ' + validationResult);
       return;
     }
 
@@ -830,7 +830,7 @@ export function GlobalView(div, startupOptions) {
 
       // Validate option
       if (!OPTIONS.hasOwnProperty(option)) {
-        console.warn("GlobalView warning: Unsupported option: " + option);
+        console.warn('GlobalView warning: Unsupported option: ' + option);
         continue;
       }
       var optionDefinition = OPTIONS[option];
@@ -839,11 +839,11 @@ export function GlobalView(div, startupOptions) {
       var value = newOptions[option], validationResult;
       if ((libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1) ||
         (libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true)) {
-        console.warn("GlobalView warning: Invalid value for option " + option + ": " + value);
+        console.warn('GlobalView warning: Invalid value for option ' + option + ': ' + value);
         if (libUtility.isString(validationResult)) {
           //HY:
             validationResult = optionDefinition.valid(value)
-          console.warn("                    " + validationResult);
+          console.warn('                    ' + validationResult);
         }
         continue;
       }
@@ -865,7 +865,7 @@ export function GlobalView(div, startupOptions) {
   this.setDefaultOption = function (option) {
     // Validate option
     if (!OPTIONS.hasOwnProperty(option)) {
-      console.warn("GlobalView warning: Unsupported option: " + option);
+      console.warn('GlobalView warning: Unsupported option: ' + option);
       return;
     }
     var optionDefinition = OPTIONS[option];
@@ -893,14 +893,14 @@ export function GlobalView(div, startupOptions) {
   this.validateOption = function (option, value) {
     // Validate option
     if (!OPTIONS.hasOwnProperty(option))
-      return "Unsupported option: " + option;
+      return 'Unsupported option: ' + option;
     var optionDefinition = OPTIONS[option];
 
     // Validate value
     var validationResult;
     if ((libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1) ||
       (libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true))
-      return "Invalid value for option " + option + ": " + value + (libUtility.isString(validationResult) ? "\n    " + validationResult : "");
+      return 'Invalid value for option ' + option + ': ' + value + (libUtility.isString(validationResult) ? '\n    ' + validationResult : '');
 
     return true;
   }
@@ -918,7 +918,7 @@ export function GlobalView(div, startupOptions) {
 
       // Validate option
       if (!OPTIONS.hasOwnProperty(option)) {
-        errors.push("Unsupported option: " + option);
+        errors.push('Unsupported option: ' + option);
         continue;
       }
       var optionDefinition = OPTIONS[option];
@@ -927,7 +927,7 @@ export function GlobalView(div, startupOptions) {
       var value = newOptions[option], validationResult;
       if ((libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1) ||
         (libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true)) {
-        errors.push("Invalid value for option " + option + ": " + value + (libUtility.isString(validationResult) ? "\n    " + validationResult : ""));
+        errors.push('Invalid value for option ' + option + ': ' + value + (libUtility.isString(validationResult) ? '\n    ' + validationResult : ''));
         continue;
       }
     }
@@ -1464,7 +1464,7 @@ export function GlobalView(div, startupOptions) {
     case 'adjacent': return this.showImage_adjacent(index);
     case 'lowDensity': return this.showImage_lowDensity(index);
     case 'project': console.warn("GlobalView warning: Can't place a single image using the 'project'-strategy"); return false;
-    default: console.warn("GlobalView warning: Unknown image placement strategy: " + placement); return false;
+    default: console.warn('GlobalView warning: Unknown image placement strategy: ' + placement); return false;
     }
   }
   this['showImages'] =
@@ -1484,7 +1484,7 @@ export function GlobalView(div, startupOptions) {
     case 'adjacent': return this.showImages_adjacent(points);
     case 'lowDensity': return this.showImages_lowDensity(points);
     case 'project': return this.showImages_project(points);
-    default: console.warn("GlobalView warning: Unknown image placement strategy: " + placement); return false;
+    default: console.warn('GlobalView warning: Unknown image placement strategy: ' + placement); return false;
     }
   }
 
@@ -1634,7 +1634,7 @@ export function GlobalView(div, startupOptions) {
    */
   this['onThumbnailSelectionChanged'] = null;
   var ctrlPressed = false, shiftPressed = false;
-  const CTRL = navigator.appVersion.indexOf("Mac") == -1 ? 17 : 224;
+  const CTRL = navigator.appVersion.indexOf('Mac') == -1 ? 17 : 224;
   libUtility.addKeyDownHandler(function (event) {
     if(event.keyCode === CTRL)
       ctrlPressed = true;

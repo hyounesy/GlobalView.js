@@ -11,11 +11,11 @@ export function TextRenderContext(gl, canvas) {
   textCanvas.style.backgroundColor = 'transparent';
   textCanvas.style.pointerEvents = 'none';
   textCanvas.style.zIndex = canvas.style.zIndex + 1;
-  textCanvas.style.position = "static";//"absolute";
+  textCanvas.style.position = 'static';//"absolute";
   //textCanvas.style.left = textCanvas.style.top = "0px";
-  textCanvas.style.width = textCanvas.style.height = "100%";
+  textCanvas.style.width = textCanvas.style.height = '100%';
   canvas.parentElement.appendChild(textCanvas);
-  var ctx = textCanvas.getContext("2d");
+  var ctx = textCanvas.getContext('2d');
   var _font = ctx.font;
   var fontHeight = ctx.measureText('M').width;
 
@@ -35,39 +35,39 @@ export function TextRenderContext(gl, canvas) {
     var offsetV;
     switch (anchor) {
     default: // 'topleft'
-      ctx.textAlign = "left";
+      ctx.textAlign = 'left';
       offsetV = fontHeight;
       break;
     case 'topcenter':
-      ctx.textAlign = "center";
+      ctx.textAlign = 'center';
       offsetV = fontHeight;
       break;
     case 'topright':
-      ctx.textAlign = "right";
+      ctx.textAlign = 'right';
       offsetV = fontHeight;
       break;
     case 'middleleft':
-      ctx.textAlign = "left";
+      ctx.textAlign = 'left';
       offsetV = fontHeight * 0.53;
       break;
     case 'middlecenter':
-      ctx.textAlign = "center";
+      ctx.textAlign = 'center';
       offsetV = fontHeight * 0.53;
       break;
     case 'middleright':
-      ctx.textAlign = "right";
+      ctx.textAlign = 'right';
       offsetV = fontHeight * 0.53;
       break;
     case 'bottomleft':
-      ctx.textAlign = "left";
+      ctx.textAlign = 'left';
       offsetV = 0;
       break;
     case 'bottomcenter':
-      ctx.textAlign = "center";
+      ctx.textAlign = 'center';
       offsetV = 0;
       break;
     case 'bottomright':
-      ctx.textAlign = "right";
+      ctx.textAlign = 'right';
       offsetV = 0;
       break;
     }
@@ -146,9 +146,9 @@ export function TextRenderContext(gl, canvas) {
     ctx.font = _font = font;
 
     // Compute fontHeight (Source: http://stackoverflow.com/a/7462767)
-    var body = document.getElementsByTagName("body")[0];
-    var dummy = document.createElement("div");
-    var dummyText = document.createTextNode("M");
+    var body = document.getElementsByTagName('body')[0];
+    var dummy = document.createElement('div');
+    var dummyText = document.createTextNode('M');
     dummy.appendChild(dummyText);
     dummy.style.font = font;
     body.appendChild(dummy);
@@ -168,7 +168,7 @@ export function TextRenderContext(gl, canvas) {
       textCanvas.height = offscreenRendering.height;
     } else {
       var rect = textCanvas.getBoundingClientRect();
-      textCanvas.style.marginTop = -(rect.bottom - rect.top) + "px";
+      textCanvas.style.marginTop = -(rect.bottom - rect.top) + 'px';
       textCanvas.width = rect.right - rect.left;
       textCanvas.height = rect.bottom - rect.top;
     }
@@ -186,7 +186,7 @@ export function TextRenderContext(gl, canvas) {
     offscreenRendering.oldCanvas = textCanvas;
     offscreenRendering.oldContext = ctx;
     textCanvas = document.createElement('canvas');
-    ctx = textCanvas.getContext("2d");
+    ctx = textCanvas.getContext('2d');
     this.onResize();
   }
   this.disableOffscreenRendering = function () {

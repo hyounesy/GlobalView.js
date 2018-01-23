@@ -93,9 +93,9 @@ export function PointViewer(gl, globalView) {
         if (c)
           pointSet.colormap = libGraphics.LoadTextureFromByteArray(gl, c, c.length / 4, 1);
       } else {
-        console.warn("GlobalView warning: Invalid value for point set color: " + color);
+        console.warn('GlobalView warning: Invalid value for point set color: ' + color);
         if (libUtility.isString(validationResult))
-          console.warn("                    " + validationResult);
+          console.warn('                    ' + validationResult);
       }
     }
     pointSet.opacity = opacity;
@@ -226,24 +226,24 @@ vec{1} getPos()
   return offsets + vec{1}({2}) * scales + vec{1}({3}) * animatedScales;
 }
 `;
-      var attrDeclCode = "", inputs = [/c(\d+)/g, "0.0"], inputCode = [], animatedInputCode = [];
+      var attrDeclCode = '', inputs = [/c(\d+)/g, '0.0'], inputCode = [], animatedInputCode = [];
       for (var d = 0, i = 0; d < ndim; d += 4, ++i) {
         var attrLen = Math.min(4, ndim - d);
-        attrDeclCode += "attribute " + (attrLen == 1 ? "float" : "vec" + attrLen) + " p" + i + ";\n";
+        attrDeclCode += 'attribute ' + (attrLen == 1 ? 'float' : 'vec' + attrLen) + ' p' + i + ';\n';
         for (var a = 0; a < attrLen; ++a)
-          inputs.push("p" + i + (attrLen == 1 ? "" : "[" + a + "]"));
+          inputs.push('p' + i + (attrLen == 1 ? '' : '[' + a + ']'));
       }
       //HY:
       var ND = 4; //todo: should use the globalView.ND
       for (var d = 0; d < ND; ++d) {
-        inputCode.push(String.prototype.format2.apply(activeInputVectors[d] ? activeInputVectors[d].getValueCode : "0.0", inputs));
-        animatedInputCode.push(String.prototype.format2.apply(activeInputVectors[d] ? animatedInputVectors[d].getValueCode : "0.0", inputs));
+        inputCode.push(String.prototype.format2.apply(activeInputVectors[d] ? activeInputVectors[d].getValueCode : '0.0', inputs));
+        animatedInputCode.push(String.prototype.format2.apply(activeInputVectors[d] ? animatedInputVectors[d].getValueCode : '0.0', inputs));
       }
-      attrDeclCode += "attribute float i;\n";
+      attrDeclCode += 'attribute float i;\n';
       if (forLineSdr)
-        getPosCode = getPosCode.format(attrDeclCode, 4, inputCode.slice(0, 4).join(", "), animatedInputCode.slice(0, 4).join(", "));
+        getPosCode = getPosCode.format(attrDeclCode, 4, inputCode.slice(0, 4).join(', '), animatedInputCode.slice(0, 4).join(', '));
       else
-        getPosCode = getPosCode.format(attrDeclCode, 3, inputCode.slice(0, 3).join(", "), animatedInputCode.slice(0, 3).join(", "))
+        getPosCode = getPosCode.format(attrDeclCode, 3, inputCode.slice(0, 3).join(', '), animatedInputCode.slice(0, 3).join(', '))
 
 
       //console.log(getPosCode);
@@ -261,57 +261,57 @@ vec{1} getPos()
         this.sdrLine.free();
 
       // Create shader code for opacityMap() function -> opacityMapCoe
-      var opacityMapCoe = "float opacityMap(in vec2 p) ";
+      var opacityMapCoe = 'float opacityMap(in vec2 p) ';
       switch (options['pointShape']) {
-      case "Circle":
-        opacityMapCoe += "{ return 1.0 - pow(p.x*p.x + p.y*p.y, pointSize / 4.0); }";
+      case 'Circle':
+        opacityMapCoe += '{ return 1.0 - pow(p.x*p.x + p.y*p.y, pointSize / 4.0); }';
         //opacityMapCoe += "{ return p.x*p.x + p.y*p.y < 1.0 ? 1.0 : 0.0; }";
         break;
-      case "Cross":
-        opacityMapCoe += "{ return pointSize / 4.0 * (max(4.0 / pointSize - abs(p.x - p.y), 0.0) + max(4.0 / pointSize - abs(-p.x - p.y), 0.0)); }";
+      case 'Cross':
+        opacityMapCoe += '{ return pointSize / 4.0 * (max(4.0 / pointSize - abs(p.x - p.y), 0.0) + max(4.0 / pointSize - abs(-p.x - p.y), 0.0)); }';
         break;
-      case "Diamond":
-        opacityMapCoe += "{ return 1.0 - pow(abs(p.x) + abs(p.y), 2.0 + pointSize / 4.0); }";
+      case 'Diamond':
+        opacityMapCoe += '{ return 1.0 - pow(abs(p.x) + abs(p.y), 2.0 + pointSize / 4.0); }';
         break;
-      case "Gaussian":
+      case 'Gaussian':
         //opacityMapCoe += "{ return exp({0} * (p.x*p.x + p.y*p.y)); }".format(Math.log(0.001));
-        opacityMapCoe += "{ return exp(-7.0 * (p.x*p.x + p.y*p.y)); }";
+        opacityMapCoe += '{ return exp(-7.0 * (p.x*p.x + p.y*p.y)); }';
         break;
-      case "Custom":
+      case 'Custom':
         opacityMapCoe += options['customPointShape'];
         break;
       default:
-        opacityMapCoe += "{ return 1.0; }";
+        opacityMapCoe += '{ return 1.0; }';
         break;
       }
 
       // Compile shaders
-      this.sdr = new libGraphics.Shader(gl, [this.getPosCode(false), libShaders.Shaders.vsDataPoint], ["precision highp float; uniform float pointSize;", opacityMapCoe, libShaders.Shaders.fsDataPoint]);
+      this.sdr = new libGraphics.Shader(gl, [this.getPosCode(false), libShaders.Shaders.vsDataPoint], ['precision highp float; uniform float pointSize;', opacityMapCoe, libShaders.Shaders.fsDataPoint]);
       //this.sdr.transform = this.sdr.u1fv("transform");
-      this.sdr.offsets = this.sdr.u3f("offsets");
-      this.sdr.scales = this.sdr.u3f("scales");
-      this.sdr.animatedScales = this.sdr.u3f("animatedScales");
-      this.sdr.flipY = this.sdr.u1i("flipY");
-      this.sdr.quadsize = this.sdr.u2f("quadsize");
-      this.sdr.pointOpacity = this.sdr.u1f("pointOpacity"); this.sdr.pointOpacity(options['pointOpacity']);
-      this.sdr.pointSize = this.sdr.u1f("pointSize"); this.sdr.pointSize(options['pointSize']);
-      this.sdr.n = this.sdr.u1f("n"); if (this.sdr.n) this.sdr.n(numvertices);
-      this.sdr.posattr = [this.sdr.getAttribLocation("p0"), this.sdr.getAttribLocation("p1"), this.sdr.getAttribLocation("p2"), this.sdr.getAttribLocation("p3")];
-      this.sdr.vidattr = this.sdr.getAttribLocation("i");
-      this.sdrLine = new libGraphics.Shader(gl, [this.getPosCode(true), libShaders.Shaders.vsDataLine], ["precision highp float; uniform float pointSize;", opacityMapCoe, libShaders.Shaders.fsDataLine]);
+      this.sdr.offsets = this.sdr.u3f('offsets');
+      this.sdr.scales = this.sdr.u3f('scales');
+      this.sdr.animatedScales = this.sdr.u3f('animatedScales');
+      this.sdr.flipY = this.sdr.u1i('flipY');
+      this.sdr.quadsize = this.sdr.u2f('quadsize');
+      this.sdr.pointOpacity = this.sdr.u1f('pointOpacity'); this.sdr.pointOpacity(options['pointOpacity']);
+      this.sdr.pointSize = this.sdr.u1f('pointSize'); this.sdr.pointSize(options['pointSize']);
+      this.sdr.n = this.sdr.u1f('n'); if (this.sdr.n) this.sdr.n(numvertices);
+      this.sdr.posattr = [this.sdr.getAttribLocation('p0'), this.sdr.getAttribLocation('p1'), this.sdr.getAttribLocation('p2'), this.sdr.getAttribLocation('p3')];
+      this.sdr.vidattr = this.sdr.getAttribLocation('i');
+      this.sdrLine = new libGraphics.Shader(gl, [this.getPosCode(true), libShaders.Shaders.vsDataLine], ['precision highp float; uniform float pointSize;', opacityMapCoe, libShaders.Shaders.fsDataLine]);
       //this.sdrLine.transform = this.sdrLine.u1fv("transform");
-      this.sdrLine.offsets = this.sdrLine.u4f("offsets");
-      this.sdrLine.scales = this.sdrLine.u4f("scales");
-      this.sdrLine.animatedScales = this.sdrLine.u4f("animatedScales");
-      this.sdrLine.flipY = this.sdrLine.u1i("flipY");
-      this.sdrLine.quadsize = this.sdrLine.u2f("quadsize");
-      this.sdrLine.pointOpacity = this.sdrLine.u1f("pointOpacity"); this.sdrLine.pointOpacity(options['pointOpacity']);
-      this.sdrLine.pointSize = this.sdrLine.u1f("pointSize"); this.sdrLine.pointSize(options['pointSize']);
-      this.sdrLine.n = this.sdrLine.u1f("n"); if (this.sdrLine.n) this.sdrLine.n(numvertices);
-      this.sdrLine.posattr = [this.sdrLine.getAttribLocation("p0"), this.sdrLine.getAttribLocation("p1"), this.sdrLine.getAttribLocation("p2"), this.sdrLine.getAttribLocation("p3")];
-      this.sdrLine.vidattr = this.sdrLine.getAttribLocation("i");
-      this.sdrLine.lineattr = this.sdrLine.getAttribLocation("lineOffset");
-      this.sdrLine.lineTransform = this.sdrLine.u2x2f("lineTransform");
+      this.sdrLine.offsets = this.sdrLine.u4f('offsets');
+      this.sdrLine.scales = this.sdrLine.u4f('scales');
+      this.sdrLine.animatedScales = this.sdrLine.u4f('animatedScales');
+      this.sdrLine.flipY = this.sdrLine.u1i('flipY');
+      this.sdrLine.quadsize = this.sdrLine.u2f('quadsize');
+      this.sdrLine.pointOpacity = this.sdrLine.u1f('pointOpacity'); this.sdrLine.pointOpacity(options['pointOpacity']);
+      this.sdrLine.pointSize = this.sdrLine.u1f('pointSize'); this.sdrLine.pointSize(options['pointSize']);
+      this.sdrLine.n = this.sdrLine.u1f('n'); if (this.sdrLine.n) this.sdrLine.n(numvertices);
+      this.sdrLine.posattr = [this.sdrLine.getAttribLocation('p0'), this.sdrLine.getAttribLocation('p1'), this.sdrLine.getAttribLocation('p2'), this.sdrLine.getAttribLocation('p3')];
+      this.sdrLine.vidattr = this.sdrLine.getAttribLocation('i');
+      this.sdrLine.lineattr = this.sdrLine.getAttribLocation('lineOffset');
+      this.sdrLine.lineTransform = this.sdrLine.u2x2f('lineTransform');
     }
     if (activeInputVectors && animatedInputVectors)
       this.recompileShader(options);

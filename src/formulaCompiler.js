@@ -125,7 +125,7 @@ export var FormulaCompiler = {
           else if (chr !== '.')
             break;
           else if (hasDot)
-            return error("Unexpected character: " + chr); // More than one '.' inside number string
+            return error('Unexpected character: ' + chr); // More than one '.' inside number string
           else {
             hasDot = true;
             numberString += chr;
@@ -154,7 +154,7 @@ export var FormulaCompiler = {
         return true;
       }
 
-      return error("Unexpected character: " + chr);
+      return error('Unexpected character: ' + chr);
     }
     function getOperatorPrecedence(tok) {
       switch (tok) {
@@ -217,19 +217,19 @@ export var FormulaCompiler = {
             }
 
             // Create operator function signature from operator name and argument FormulaCompiler.types
-            var funcSignature = lhs.type.name + " " + binOp + " " + rhs.type.name;
+            var funcSignature = lhs.type.name + ' ' + binOp + ' ' + rhs.type.name;
 
             // Lookup operator function and return type
             var returnType = functionsReturnTypes[funcSignature];
             if (libUtility.isUndefined(returnType))
-              return error("Undefined operator " + binOp + " on FormulaCompiler.types " + lhs.type.name + " and " + rhs.type.name);
+              return error('Undefined operator ' + binOp + ' on FormulaCompiler.types ' + lhs.type.name + ' and ' + rhs.type.name);
 
             // Merge lhs/rhs.
             if (tokPrec === 10) {
               // If binOp is '=', '+=' or '-='
               var lastOp = lhs.code.pop();
               if (lastOp !== '@' && lastOp !== '@[]')
-                return error("Cannot assign to non-variable");
+                return error('Cannot assign to non-variable');
 
               // Store as rhs, lhs, funcSignature
               lhs.type = returnType;
@@ -256,11 +256,11 @@ export var FormulaCompiler = {
           if (!getTok()) return null; // eat '.'
 
           if (libUtility.isUndefined(type))
-            return error("Undefined variable: " + identifier);
+            return error('Undefined variable: ' + identifier);
           var parentType = type;
           var member = type.members[curVal];
           if (libUtility.isUndefined(member))
-            return error(parentType.name + " does not contain a member: " + curVal);
+            return error(parentType.name + ' does not contain a member: ' + curVal);
           type = member.type;
 
           variable.push('.');
@@ -282,7 +282,7 @@ export var FormulaCompiler = {
         }
 
         if (libUtility.isUndefined(type))
-          return error("Undefined variable: " + identifier);
+          return error('Undefined variable: ' + identifier);
 
         variable.push(type === FormulaCompiler.types.float ? '@' : '@[]');
         return { code: variable, type: type }; // Variable reference
@@ -302,12 +302,12 @@ export var FormulaCompiler = {
       function varDeclAST(type, typeName) {
         type = FormulaCompiler.types[typeName];
         if (libUtility.isUndefined(type))
-          return error("Unsupported type: " + typeName);
+          return error('Unsupported type: ' + typeName);
 
         // Update scope
         var prev = scope[curVal];
         if (!libUtility.isUndefined(prev))
-          return error("Redefinition of variable: " + curVal);
+          return error('Redefinition of variable: ' + curVal);
         scope[curVal] = type; // Store variable type in scope
 
         var variable = [curVal];
@@ -327,13 +327,13 @@ export var FormulaCompiler = {
         var numArgs = args.type.length;
 
         // Create function signature from function name and argument FormulaCompiler.types
-        var argTypeNames = args.type.map(type => type.name).join(", ")
-        var funcSignature = funcName + "(" + argTypeNames + ")";
+        var argTypeNames = args.type.map(type => type.name).join(', ')
+        var funcSignature = funcName + '(' + argTypeNames + ')';
 
         // Lookup function and return type
         var returnType = functionsReturnTypes[funcSignature];
         if (libUtility.isUndefined(returnType))
-          return error("Undefined function " + funcSignature);
+          return error('Undefined function ' + funcSignature);
 
         // Store as args, funcSignature
         var funcCode = args.code;
@@ -509,8 +509,8 @@ export var FormulaCompiler = {
   }
 }
 FormulaCompiler.types = {
-  float: { name: "float" },
-  vec3: { name: "vec3" }
+  float: { name: 'float' },
+  vec3: { name: 'vec3' }
 };
 FormulaCompiler.types.vec3.members = {
   x: {index: 0, type: FormulaCompiler.types.float},
@@ -521,14 +521,14 @@ FormulaCompiler.types.vec3.members = {
 function verboseTest(formula, symbols, symbolTypes) {
   var code = FormulaCompiler.compile(formula, symbolTypes ? symbolTypes : {});
 
-  console.log("formula: " + formula);
+  console.log('formula: ' + formula);
   if (libUtility.isString(code))
-    console.log("err: " + code);
+    console.log('err: ' + code);
   else {
     var globalScope = symbols ? symbols : {};
-    console.log("code: " + code.map(c => libUtility.isString(c) ? '"' + c + '"' : c).join(" "));
-    console.log("result: " + FormulaCompiler.run(code, new Array(16), globalScope));
-    console.log("locals: " + JSON.stringify(globalScope));
+    console.log('code: ' + code.map(c => libUtility.isString(c) ? '"' + c + '"' : c).join(' '));
+    console.log('result: ' + FormulaCompiler.run(code, new Array(16), globalScope));
+    console.log('locals: ' + JSON.stringify(globalScope));
   }
 }
 
@@ -564,7 +564,7 @@ function benchmark(nIter, javascriptCode, formulaCode, evalCode) {
   for (var i = 0; i < nIter; ++i)
     sum += javascriptCode();
   console.log(sum);
-  console.log((performance.now() - tStart) + "ms");
+  console.log((performance.now() - tStart) + 'ms');
 
   sum = 0.0;
   tStart = performance.now();
@@ -573,14 +573,14 @@ function benchmark(nIter, javascriptCode, formulaCode, evalCode) {
   for (var i = 0; i < nIter; ++i)
     sum += FormulaCompiler.run(code, stack, {});
   console.log(sum);
-  console.log((performance.now() - tStart) + "ms");
+  console.log((performance.now() - tStart) + 'ms');
 
   sum = 0.0;
   tStart = performance.now();
   for (var i = 0; i < nIter; ++i)
     sum += eval(evalCode);
   console.log(sum);
-  console.log((performance.now() - tStart) + "ms");
+  console.log((performance.now() - tStart) + 'ms');
 }
 
 /*benchmark(1000000, function() {

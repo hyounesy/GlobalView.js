@@ -861,7 +861,7 @@ export function markPointsInStencilMap(dataset, d0, d1, points, densityMap, sten
  */
 export function downloadStencilMap(stencilMap, fileName) {
   if (!fileName)
-    fileName = "stencilMap.png";
+    fileName = 'stencilMap.png';
 
   var bytes = new Uint8Array(4 * stencilMap.width * stencilMap.height);
   for (var i = 0; i < stencilMap.data.length; ++i) {
@@ -1577,7 +1577,7 @@ export function computeClusterMap_method3(densityMap, d0, d1, options) {
  */
 export function downloadDensityMap(densityMap, fileName) {
   if (!fileName)
-    fileName = "densityMap.png";
+    fileName = 'densityMap.png';
 
   libUtility.download(fileName, libUtility.imageUrlFromBytes(libUtility.F32toI24flipY(densityMap.data, [densityMap.minimum, densityMap.maximum], densityMap.width, densityMap.height), densityMap.width, densityMap.height));
 }

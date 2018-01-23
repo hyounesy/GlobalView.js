@@ -1,35 +1,35 @@
 //const globalView = require('../lib/globalView.js');
-const domready = require("domready");
+const domready = require('domready');
 //const libDataset = require("../lib/dataset.js");
 
 const globalView = require('../dist/global-view.js');
 
 const COLUMN_NAMES = [
-  "Tagged Protein",
-  "Nuclear volume (fL)",
-  "Cellular volume (fL)",
-  "Nuclear surface area (µm²)",
-  "Cellular surface area (µm²)",
-  "Radial proximity (unitless)",
-  "Apical proximity (unitless)"
+  'Tagged Protein',
+  'Nuclear volume (fL)',
+  'Cellular volume (fL)',
+  'Nuclear surface area (µm²)',
+  'Cellular surface area (µm²)',
+  'Radial proximity (unitless)',
+  'Apical proximity (unitless)'
 ];
 const COLUMN_HINTS = [
-  "",
-  "<b>Nuclear volume:</b> the volume of a nucleus of a given cell, as measured by segmented voxels and associated edge length, in units of femtoliter (fL).",
-  "<b>Cell volume:</b> the volume of a cell, as measured by segmented voxels and associated edge length, in units of femtoliter (fL).",
-  "<b>Nuclear surface area:</b> the surface area of a nucleus of a given cell as measured by segmented pixels and associated edge length, in units of µm².",
-  "<b>Cell surface area:</b> the surface area of a cell, as measured by segmented pixels and associated edge length, in units of µm².",
-  "<b>Radial proximity:</b> an intensity-derived image feature, defined as the optical intensity of a structure found in the more external shell of a roughly columnar cell (closer to the cell exterior) as compared to the more internal columnar core of the same cell (closer to the cell center), scaled from -1 to 1. A cell in which all of the fluorescence intensity was at the center of the cell would have a radial proximity of -1; whereas a structure that was at cell boundary would have a radial proximity of 1.",
-  "<b>Apical proximity:</b> an intensity-derived image feature, defined as the optical intensity of a structure found in the top (apical) half of a roughly columnar cell as compared to the basal (bottom) half of this cell, scaled from -1 to 1. A cell in which all of the fluorescent intensity was in the top half would have an apical proximity of 1; whereas a structure that was evenly distributed between the apical and basal halves would have an apical proximity of 0."
+  '',
+  '<b>Nuclear volume:</b> the volume of a nucleus of a given cell, as measured by segmented voxels and associated edge length, in units of femtoliter (fL).',
+  '<b>Cell volume:</b> the volume of a cell, as measured by segmented voxels and associated edge length, in units of femtoliter (fL).',
+  '<b>Nuclear surface area:</b> the surface area of a nucleus of a given cell as measured by segmented pixels and associated edge length, in units of µm².',
+  '<b>Cell surface area:</b> the surface area of a cell, as measured by segmented pixels and associated edge length, in units of µm².',
+  '<b>Radial proximity:</b> an intensity-derived image feature, defined as the optical intensity of a structure found in the more external shell of a roughly columnar cell (closer to the cell exterior) as compared to the more internal columnar core of the same cell (closer to the cell center), scaled from -1 to 1. A cell in which all of the fluorescence intensity was at the center of the cell would have a radial proximity of -1; whereas a structure that was at cell boundary would have a radial proximity of 1.',
+  '<b>Apical proximity:</b> an intensity-derived image feature, defined as the optical intensity of a structure found in the top (apical) half of a roughly columnar cell as compared to the basal (bottom) half of this cell, scaled from -1 to 1. A cell in which all of the fluorescent intensity was in the top half would have an apical proximity of 1; whereas a structure that was evenly distributed between the apical and basal halves would have an apical proximity of 0.'
 ];
 var plot, pointsByProtein = {}
 
 domready(function () {
   plot = new globalView.GlobalView(document.getElementById('divPlot'), {
-    pointShape: "Circle",
+    pointShape: 'Circle',
     pointSize: 8,
     pointOpacity: 0.3,
-    pointColor: ["#A6CEE3", "#B2DF8A", "#33A02C", "#FB9A99", "#FDBF6F", "#FF7F00", "#CAB2D6", "#6A3D9A", "#FFFF99", "#4D61BF"],
+    pointColor: ['#A6CEE3', '#B2DF8A', '#33A02C', '#FB9A99', '#FDBF6F', '#FF7F00', '#CAB2D6', '#6A3D9A', '#FFFF99', '#4D61BF'],
     padding: [8, 152, 50, 50]
   });
   plot.onMouseDown = plot_onMouseDown;
@@ -37,15 +37,15 @@ domready(function () {
   plot.onMouseOverAxisLabel = plot_onMouseOverAxisLabel;
   plot.onSelectionChanged = plot_onSelectionChanged;
   plot.onLassoSelection = plot_onLassoSelection;
-  plot.referencePoints = plot.createPointSet("red", 1);
-  plot.highlightedPoints = plot.createPointSet("red", 1);
-  const csvPath = "datasets/AICS_Cell-feature-analysis_v1.5.csv"; //'http://homepage.univie.ac.at/a0929188/GlobalView/AICS_Cell-feature-analysis_v1.5.csv"
-  const imagesPath = "datasets/AICS_Cell-feature-analysis_v1.5_images/"; //'http://homepage.univie.ac.at/a0929188/GlobalView/images/"
+  plot.referencePoints = plot.createPointSet('red', 1);
+  plot.highlightedPoints = plot.createPointSet('red', 1);
+  const csvPath = 'datasets/AICS_Cell-feature-analysis_v1.5.csv'; //'http://homepage.univie.ac.at/a0929188/GlobalView/AICS_Cell-feature-analysis_v1.5.csv"
+  const imagesPath = 'datasets/AICS_Cell-feature-analysis_v1.5_images/'; //'http://homepage.univie.ac.at/a0929188/GlobalView/images/"
   new globalView.CsvDataset(csvPath, {
     hasHeader: true,
     nameColumn: 1,
     columnLabels: COLUMN_NAMES,
-    imageFilenames: data => imagesPath + data[1] + ".png"
+    imageFilenames: data => imagesPath + data[1] + '.png'
   }, function (dataset) {
     plot.load(dataset, 2, 4, 0, 3);
     plot.getCharacteristicPoints(8, 1, function (characteristicPoints) {
@@ -68,20 +68,20 @@ domready(function () {
 });
 
 function addAllEventListeners() {
-  document.getElementById("cmdSelectAll").addEventListener("click", function () {cmdSelectAll_onClick(document.getElementById("cmdSelectAll"))});
-  document.getElementById("cmdDeselectAll").addEventListener("click", function () {cmdDeselectAll_onClick(document.getElementById("cmdDeselectAll"))});
-  document.getElementById("Tom20").addEventListener("change", function () {cbProtein_onChange(document.getElementById("Tom20"))});
-  document.getElementById("Alpha tubulin").addEventListener("change", function () {cbProtein_onChange(document.getElementById("Alpha tubulin"))});
-  document.getElementById("Sec61 beta").addEventListener("change", function () {cbProtein_onChange(document.getElementById("Sec61 beta"))});
-  document.getElementById("Alpha actinin").addEventListener("change", function () {cbProtein_onChange(document.getElementById("Alpha actinin"))});
-  document.getElementById("Desmoplakin").addEventListener("change", function () {cbProtein_onChange(document.getElementById("Desmoplakin"))});
-  document.getElementById("Lamin B1").addEventListener("change", function () {cbProtein_onChange(document.getElementById("Lamin B1"))});
-  document.getElementById("Fibrillarin").addEventListener("change", function () {cbProtein_onChange(document.getElementById("Fibrillarin"))});
-  document.getElementById("Beta actin").addEventListener("change", function () {cbProtein_onChange(document.getElementById("Beta actin"))});
-  document.getElementById("ZO1").addEventListener("change", function () {cbProtein_onChange(document.getElementById("ZO1"))});
-  document.getElementById("Myosin IIB").addEventListener("change", function () {cbProtein_onChange(document.getElementById("Myosin IIB"))});
-  document.getElementById("cbXAxis").addEventListener("change", function () {cbXAxis_onChange(document.getElementById("cbXAxis"))});
-  document.getElementById("cbYAxis").addEventListener("change", function () {cbYAxis_onChange(document.getElementById("cbYAxis"))});
+  document.getElementById('cmdSelectAll').addEventListener('click', function () {cmdSelectAll_onClick(document.getElementById('cmdSelectAll'))});
+  document.getElementById('cmdDeselectAll').addEventListener('click', function () {cmdDeselectAll_onClick(document.getElementById('cmdDeselectAll'))});
+  document.getElementById('Tom20').addEventListener('change', function () {cbProtein_onChange(document.getElementById('Tom20'))});
+  document.getElementById('Alpha tubulin').addEventListener('change', function () {cbProtein_onChange(document.getElementById('Alpha tubulin'))});
+  document.getElementById('Sec61 beta').addEventListener('change', function () {cbProtein_onChange(document.getElementById('Sec61 beta'))});
+  document.getElementById('Alpha actinin').addEventListener('change', function () {cbProtein_onChange(document.getElementById('Alpha actinin'))});
+  document.getElementById('Desmoplakin').addEventListener('change', function () {cbProtein_onChange(document.getElementById('Desmoplakin'))});
+  document.getElementById('Lamin B1').addEventListener('change', function () {cbProtein_onChange(document.getElementById('Lamin B1'))});
+  document.getElementById('Fibrillarin').addEventListener('change', function () {cbProtein_onChange(document.getElementById('Fibrillarin'))});
+  document.getElementById('Beta actin').addEventListener('change', function () {cbProtein_onChange(document.getElementById('Beta actin'))});
+  document.getElementById('ZO1').addEventListener('change', function () {cbProtein_onChange(document.getElementById('ZO1'))});
+  document.getElementById('Myosin IIB').addEventListener('change', function () {cbProtein_onChange(document.getElementById('Myosin IIB'))});
+  document.getElementById('cbXAxis').addEventListener('change', function () {cbXAxis_onChange(document.getElementById('cbXAxis'))});
+  document.getElementById('cbYAxis').addEventListener('change', function () {cbYAxis_onChange(document.getElementById('cbYAxis'))});
 }
 
 function cmdSelectAll_onClick(sender) {

@@ -1,5 +1,5 @@
 const libGlobalView = require('../dist/global-view.js');
-const domready = require("domready");
+const domready = require('domready');
 
 // Global variables
 //var gl;
@@ -8,22 +8,22 @@ var globalView, dataset;
 var cbDataset, cbColumnX, cbColumnY, cbColumnC, cbColumnS;
 
 domready(function () {
-  cbDataset = document.getElementById("cbDataset");
-  cbColumnX = document.getElementById("cbColumnX");
-  cbColumnY = document.getElementById("cbColumnY");
-  cbColumnC = document.getElementById("cbColumnC");
-  cbColumnS = document.getElementById("cbColumnS");
+  cbDataset = document.getElementById('cbDataset');
+  cbColumnX = document.getElementById('cbColumnX');
+  cbColumnY = document.getElementById('cbColumnY');
+  cbColumnC = document.getElementById('cbColumnC');
+  cbColumnS = document.getElementById('cbColumnS');
 
   const DATASETS = [
-    {name: "10 random points", create: () => new libGlobalView.RandomDataset(10, 3, dataset_onLoad)},
-    {name: "100 random points", create: () => new libGlobalView.RandomDataset(100, 3, dataset_onLoad)},
-    {name: "1.000 random points", create: () => new libGlobalView.RandomDataset(1000, 3, dataset_onLoad)},
-    {name: "10.000 random points", create: () => new libGlobalView.RandomDataset(10000, 3, dataset_onLoad)},
-    {name: "100.000 random points", create: () => new libGlobalView.RandomDataset(100000, 3, dataset_onLoad)},
-    {name: "1.000.000 random points", create: () => new libGlobalView.RandomDataset(1000000, 3, dataset_onLoad)},
-    {name: "10.000.000 random points", create: () => new libGlobalView.RandomDataset(10000000, 3, dataset_onLoad)},
-    {name: "iris", url: "datasets/iris.data", create: () => new libGlobalView.CsvDataset("datasets/iris.data", {columnLabels: ["Sepal Length [cm]", "Sepal Width [cm]", "Petal Length [cm]", "Petal Width [cm]", "Class"]}, dataset_onLoad)},
-    {name: "allencell", url: "datasets/AICS_Cell-feature-analysis_v1.5.csv", create: () => new libGlobalView.CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function (data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
+    {name: '10 random points', create: () => new libGlobalView.RandomDataset(10, 3, dataset_onLoad)},
+    {name: '100 random points', create: () => new libGlobalView.RandomDataset(100, 3, dataset_onLoad)},
+    {name: '1.000 random points', create: () => new libGlobalView.RandomDataset(1000, 3, dataset_onLoad)},
+    {name: '10.000 random points', create: () => new libGlobalView.RandomDataset(10000, 3, dataset_onLoad)},
+    {name: '100.000 random points', create: () => new libGlobalView.RandomDataset(100000, 3, dataset_onLoad)},
+    {name: '1.000.000 random points', create: () => new libGlobalView.RandomDataset(1000000, 3, dataset_onLoad)},
+    {name: '10.000.000 random points', create: () => new libGlobalView.RandomDataset(10000000, 3, dataset_onLoad)},
+    {name: 'iris', url: 'datasets/iris.data', create: () => new libGlobalView.CsvDataset('datasets/iris.data', {columnLabels: ['Sepal Length [cm]', 'Sepal Width [cm]', 'Petal Length [cm]', 'Petal Width [cm]', 'Class']}, dataset_onLoad)},
+    {name: 'allencell', url: 'datasets/AICS_Cell-feature-analysis_v1.5.csv', create: () => new libGlobalView.CsvDataset('datasets/AICS_Cell-feature-analysis_v1.5.csv', {hasHeader: true, nameColumn: 1, imageFilenames: function (data) { return 'datasets/AICS_Cell-feature-analysis_v1.5_images/' + data[1] + '.png'; }}, dataset_onLoad)},
     // {name: "allencell x2", url: "datasets/AICS_Cell-feature-analysis_v1.5_x2.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x2.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
     // {name: "allencell x10", url: "datasets/AICS_Cell-feature-analysis_v1.5_x10.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x10.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
     // {name: "allencell x100", url: "datasets/AICS_Cell-feature-analysis_v1.5_x100.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x100.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
@@ -68,13 +68,13 @@ domready(function () {
   canvas.ondragenter = divGlobalView.ondragenter = ondragenter;
   canvas.ondragleave = divGlobalView.ondragleave = ondragleave;
   canvas.ondrop = divGlobalView.ondrop = ondrop;
-  globalView.highlightedPoints = globalView.createPointSet("yellow", 1);
-  globalView.selectedPoints = globalView.createPointSet("red", 1);
+  globalView.highlightedPoints = globalView.createPointSet('yellow', 1);
+  globalView.selectedPoints = globalView.createPointSet('red', 1);
   onResize();
 
   // Set defaults
-  rNumThumbnails_onChange(document.getElementById("rNumThumbnails"));
-  rDensityRatio_onChange(document.getElementById("rDensityRatio"));
+  rNumThumbnails_onChange(document.getElementById('rNumThumbnails'));
+  rDensityRatio_onChange(document.getElementById('rDensityRatio'));
 
   document.onkeydown = handleKeyDown;
   document.onkeyup = handleKeyUp;
@@ -82,7 +82,7 @@ domready(function () {
   // Fill cbDataset
   DATASETS.forEach(function (dataset) {
     if (typeof dataset.url === 'undefined') {
-      var option = document.createElement("option");
+      var option = document.createElement('option');
       option.text = dataset.name;
       option.createDataset = dataset.create;
       cbDataset.add(option);
@@ -95,7 +95,7 @@ domready(function () {
       }
     } else {
       libGlobalView.urlExists(dataset.url, function () {
-        var option = document.createElement("option");
+        var option = document.createElement('option');
         option.text = dataset.name;
         option.createDataset = dataset.create;
         cbDataset.add(option);
@@ -116,27 +116,27 @@ addAllEventListeners();
 function addAllEventListeners() {
   window.addEventListener('resize', onResize);
 
-  document.getElementById("cbDataset").addEventListener("change", function () {cbDataset_onChange()});
-  document.getElementById("cbColumnX").addEventListener("change", function () {cbColumnX_onChange()});
-  document.getElementById("cbColumnY").addEventListener("change", function () {cbColumnY_onChange()});
-  document.getElementById("cbColumnC").addEventListener("change", function () {cbColumnC_onChange()});
-  document.getElementById("cbColumnS").addEventListener("change", function () {cbColumnS_onChange()});
-  document.getElementById("cbRenderStyle").addEventListener("change", function () {cbRenderStyle_onChange(document.getElementById("cbRenderStyle"))});
-  document.getElementById("cbTransparency").addEventListener("change", function () {cbTransparency_onChange(document.getElementById("cbTransparency"))});
-  document.getElementById("cbPointShape").addEventListener("change", function () {cbPointShape_onChange(document.getElementById("cbPointShape"))});
-  document.getElementById("rPointSize").addEventListener("input", function () {rPointSize_onChange(document.getElementById("rPointSize"))});
-  document.getElementById("rPointOpacity").addEventListener("input", function () {rPointOpacity_onChange(document.getElementById("rPointOpacity"))});
-  document.getElementById("cbShowDensity").addEventListener("change", function () {cbShowDensity_onChange(document.getElementById("cbShowDensity"))});
-  document.getElementById("cbShowClusters").addEventListener("change", function () {cbShowClusters_onChange(document.getElementById("cbShowClusters"))});
-  document.getElementById("cbShowHistograms").addEventListener("change", function () {cbShowHistograms_onChange(document.getElementById("cbShowHistograms"))});
-  document.getElementById("rVariance").addEventListener("input", function () {rVariance_onChange(document.getElementById("rVariance"))});
-  document.getElementById("rNumBins").addEventListener("input", function () {rNumBins_onChange(document.getElementById("rNumBins"))});
-  document.getElementById("cmdRunBenchmark").addEventListener("click", function () {cmdRunBenchmark_onClick(document.getElementById("cmdRunBenchmark"))});
+  document.getElementById('cbDataset').addEventListener('change', function () {cbDataset_onChange()});
+  document.getElementById('cbColumnX').addEventListener('change', function () {cbColumnX_onChange()});
+  document.getElementById('cbColumnY').addEventListener('change', function () {cbColumnY_onChange()});
+  document.getElementById('cbColumnC').addEventListener('change', function () {cbColumnC_onChange()});
+  document.getElementById('cbColumnS').addEventListener('change', function () {cbColumnS_onChange()});
+  document.getElementById('cbRenderStyle').addEventListener('change', function () {cbRenderStyle_onChange(document.getElementById('cbRenderStyle'))});
+  document.getElementById('cbTransparency').addEventListener('change', function () {cbTransparency_onChange(document.getElementById('cbTransparency'))});
+  document.getElementById('cbPointShape').addEventListener('change', function () {cbPointShape_onChange(document.getElementById('cbPointShape'))});
+  document.getElementById('rPointSize').addEventListener('input', function () {rPointSize_onChange(document.getElementById('rPointSize'))});
+  document.getElementById('rPointOpacity').addEventListener('input', function () {rPointOpacity_onChange(document.getElementById('rPointOpacity'))});
+  document.getElementById('cbShowDensity').addEventListener('change', function () {cbShowDensity_onChange(document.getElementById('cbShowDensity'))});
+  document.getElementById('cbShowClusters').addEventListener('change', function () {cbShowClusters_onChange(document.getElementById('cbShowClusters'))});
+  document.getElementById('cbShowHistograms').addEventListener('change', function () {cbShowHistograms_onChange(document.getElementById('cbShowHistograms'))});
+  document.getElementById('rVariance').addEventListener('input', function () {rVariance_onChange(document.getElementById('rVariance'))});
+  document.getElementById('rNumBins').addEventListener('input', function () {rNumBins_onChange(document.getElementById('rNumBins'))});
+  document.getElementById('cmdRunBenchmark').addEventListener('click', function () {cmdRunBenchmark_onClick(document.getElementById('cmdRunBenchmark'))});
   // document.getElementById("cbThumbnailPositioning") // ???
-  document.getElementById("rNumThumbnails").addEventListener("input", function () {rNumThumbnails_onChange(document.getElementById("rNumThumbnails"))});
-  document.getElementById("rDensityRatio").addEventListener("input", function () {rDensityRatio_onChange(document.getElementById("rDensityRatio"))});
-  document.getElementById("cmdShowData2D").addEventListener("click", function () {cmdShowData2D_onClick(document.getElementById("cmdShowData2D"))});
-  document.getElementById("cbLabelThumbnails").addEventListener("change", function () {cbLabelThumbnails_onChange(document.getElementById("cbLabelThumbnails"))});
+  document.getElementById('rNumThumbnails').addEventListener('input', function () {rNumThumbnails_onChange(document.getElementById('rNumThumbnails'))});
+  document.getElementById('rDensityRatio').addEventListener('input', function () {rDensityRatio_onChange(document.getElementById('rDensityRatio'))});
+  document.getElementById('cmdShowData2D').addEventListener('click', function () {cmdShowData2D_onClick(document.getElementById('cmdShowData2D'))});
+  document.getElementById('cbLabelThumbnails').addEventListener('change', function () {cbLabelThumbnails_onChange(document.getElementById('cbLabelThumbnails'))});
 }
 
 function onResize() {
@@ -147,8 +147,8 @@ function onResize() {
   var x = w.innerWidth || e.clientWidth || b.clientWidth;
   var y = w.innerHeight|| e.clientHeight|| b.clientHeight;
   //globalView.resize(x - 32 - 200, y - 32);
-  document.getElementById('divGlobalView').style.width = (x - 32 - 200) + "px";
-  document.getElementById('divGlobalView').style.height = (y - 32) + "px";
+  document.getElementById('divGlobalView').style.width = (x - 32 - 200) + 'px';
+  document.getElementById('divGlobalView').style.height = (y - 32) + 'px';
 }
 
 function cbDataset_onChange() {
@@ -161,7 +161,7 @@ var inflated = false;
 function dataset_onLoad(_dataset) {
   dataset = _dataset;
   if (dataset.columns.length < 2) {
-    alert("Invalid dataset\nDataset has " + dataset.columns.length + " column(s) (at least 2 required).");
+    alert('Invalid dataset\nDataset has ' + dataset.columns.length + ' column(s) (at least 2 required).');
     return;
   }
 
@@ -171,31 +171,31 @@ function dataset_onLoad(_dataset) {
   for(var i = cbColumnC.options.length - 1; i >= 0 ; --i) cbColumnC.remove(i);
   for(var i = cbColumnS.options.length - 1; i >= 0 ; --i) cbColumnS.remove(i);
   for(var i = 0; i < dataset.numColumns; ++i) {
-    var option = document.createElement("option");
+    var option = document.createElement('option');
     option.text = dataset.columns[i].label;
     cbColumnX.add(option);
-    option = document.createElement("option");
+    option = document.createElement('option');
     option.text = dataset.columns[i].label;
     cbColumnY.add(option);
-    option = document.createElement("option");
+    option = document.createElement('option');
     option.text = dataset.columns[i].label;
     cbColumnC.add(option);
-    option = document.createElement("option");
+    option = document.createElement('option');
     option.text = dataset.columns[i].label;
     cbColumnS.add(option);
   }
 if (dataset.numColumns > 3) {
-  dataset.dataVectors.push(new libGlobalView.DataVector(dataset, "0.0"/*"0.5 * c1 + 0.5 * c3"*/));//"i"));
-  var option = document.createElement("option");
+  dataset.dataVectors.push(new libGlobalView.DataVector(dataset, '0.0'/*"0.5 * c1 + 0.5 * c3"*/));//"i"));
+  var option = document.createElement('option');
   option.text = 'formula';
   cbColumnX.add(option);
-  option = document.createElement("option");
+  option = document.createElement('option');
   option.text = 'formula';
   cbColumnY.add(option);
-  option = document.createElement("option");
+  option = document.createElement('option');
   option.text = 'formula';
   cbColumnC.add(option);
-  option = document.createElement("option");
+  option = document.createElement('option');
   option.text = 'formula';
   cbColumnS.add(option);
 }
@@ -226,21 +226,21 @@ function cbColumnS_onChange() {
 }
 
 function cbRenderStyle_onChange(sender) {
-  globalView.setOption("enableContinuousRendering", sender.selectedIndex === 1 ? true : false);
+  globalView.setOption('enableContinuousRendering', sender.selectedIndex === 1 ? true : false);
 }
 function cbTransparency_onChange(sender) {
-  globalView.setOption("enableTransparency", sender.selectedIndex === 0 ? true : false);
+  globalView.setOption('enableTransparency', sender.selectedIndex === 0 ? true : false);
 }
 function cbPointShape_onChange(sender) {
-  globalView.setOption("pointShape", sender.value);
+  globalView.setOption('pointShape', sender.value);
 }
 function rPointOpacity_onChange(sender) {
-  pPointOpacity.innerText = "Point opacity: " + sender.value;
-  globalView.setOption("pointOpacity", Number.parseFloat(sender.value));
+  pPointOpacity.innerText = 'Point opacity: ' + sender.value;
+  globalView.setOption('pointOpacity', Number.parseFloat(sender.value));
 }
 function rPointSize_onChange(sender) {
-  pPointSize.innerText = "Point size: " + sender.value;
-  globalView.setOption("pointSize", Number.parseFloat(sender.value));
+  pPointSize.innerText = 'Point size: ' + sender.value;
+  globalView.setOption('pointSize', Number.parseFloat(sender.value));
 }
 
 var densityMapOptions = new libGlobalView.DensityMapOptions();
@@ -248,11 +248,11 @@ var densityMapOptions = new libGlobalView.DensityMapOptions();
 function cbShowDensity_onChange(sender) {
   if (sender.checked)
     requestVariance(densityMapOptions.gaussScale, true);
-  globalView.setOption("showPointDensity", sender.checked);
+  globalView.setOption('showPointDensity', sender.checked);
 }
 function cbShowClusters_onChange(sender) {
   //globalView.setOption("pointClusterThreshold", 0.01);
-  globalView.setOption("showPointClusters", sender.checked);
+  globalView.setOption('showPointClusters', sender.checked);
 }
 function cbShowHistograms_onChange(sender) {
   var padding = globalView.getOption('padding');
@@ -269,13 +269,13 @@ function cbShowHistograms_onChange(sender) {
 }
 function rVariance_onChange(sender) {
   var variance = Math.round(Math.pow(10, Number.parseFloat(sender.value)));
-  pVariance.innerText = "Variance: " + variance;
+  pVariance.innerText = 'Variance: ' + variance;
   requestVariance(variance, true);
 }
 function rNumBins_onChange(sender) {
   var numBins = Number.parseInt(sender.value, 10);
-  pNumBins.innerText = "# of histogram bins: " + numBins;
-  globalView.setOption("numHistogramBins", numBins);
+  pNumBins.innerText = '# of histogram bins: ' + numBins;
+  globalView.setOption('numHistogramBins', numBins);
 }
 
 function requestVariance(variance, fast) {
@@ -319,11 +319,11 @@ function cmdRunBenchmark_onClick(sender) {
 var numThumbnails, densityRatio;
 function rNumThumbnails_onChange(sender) {
   numThumbnails = 1 << Number.parseInt(sender.value);
-  pNumThumbnails.innerText = "# of thumbnails: " + numThumbnails;
+  pNumThumbnails.innerText = '# of thumbnails: ' + numThumbnails;
 }
 function rDensityRatio_onChange(sender) {
   densityRatio = Number.parseFloat(sender.value);
-  pDensityRatio.innerText = "Density ratio: {0}% outliers,  {1}% clusters".format(100 - Math.round(densityRatio * 100), Math.round(densityRatio * 100));
+  pDensityRatio.innerText = 'Density ratio: {0}% outliers,  {1}% clusters'.format(100 - Math.round(densityRatio * 100), Math.round(densityRatio * 100));
 }
 function cmdShowData2D_onClick(sender) {
   globalView.clearThumbnails();
@@ -333,13 +333,13 @@ function cmdShowData2D_onClick(sender) {
   });
 }
 function cbLabelThumbnails_onChange(sender) {
-  globalView.setOption("labelThumbnails", sender.checked);
+  globalView.setOption('labelThumbnails', sender.checked);
 }
 
 function onMouseOverAxisLabel(dataVector, labelRect) {
   var tooltip = document.getElementsByClassName('tooltip')[0];
   if (dataVector) {
-    tooltip.innerText = "tooltip of " + dataVector.label;
+    tooltip.innerText = 'tooltip of ' + dataVector.label;
 
     var tooltipRect = tooltip.getBoundingClientRect();
     tooltip.style.top = labelRect.t - (tooltipRect.bottom - tooltipRect.top) - 10 + 'px';
@@ -357,20 +357,20 @@ function onMouseOverAxisLabel(dataVector, labelRect) {
 function onMouseOverDatapoint(dataset, index) {
   if (index === -1) {
     globalView.highlightedPoints.clear();
-    imgDataPoint.src = "";
-    pDataPoint.innerText =  "";
+    imgDataPoint.src = '';
+    pDataPoint.innerText =  '';
   } else {
     globalView.highlightedPoints.set(index);
 
-    imgDataPoint.src = dataset.imageFilenames && dataset.imageFilenames[index] ? dataset.imageFilenames[index] : "";
+    imgDataPoint.src = dataset.imageFilenames && dataset.imageFilenames[index] ? dataset.imageFilenames[index] : '';
 
     if (dataset.data) {
       var nc = dataset.numColumns;
       pDataPoint.innerText = dataset.dataVectors.map(dataVector =>
-        dataVector.label + ": " + (dataVector.values ? dataVector.values[Math.floor(dataVector.getValue(index))] : dataVector.getValue(index))
-      ).join("\n");
+        dataVector.label + ': ' + (dataVector.values ? dataVector.values[Math.floor(dataVector.getValue(index))] : dataVector.getValue(index))
+      ).join('\n');
     } else
-      pDataPoint.innerText = dataset.names ? dataset.names[index] : "datapoint " + index;
+      pDataPoint.innerText = dataset.names ? dataset.names[index] : 'datapoint ' + index;
   }
 }
 function onSelectionChanged(dataset, selection) {
@@ -394,21 +394,21 @@ function ondragenter(event) {
   if (!dragOverCanvas) {
     const padding = globalView.getOption('padding');
 
-    dragOverCanvas = document.createElement("canvas");
+    dragOverCanvas = document.createElement('canvas');
     dragOverCanvas.style.pointerEvents = 'none';
     dragOverCanvas.style.zIndex = 100000;
-    dragOverCanvas.style.position = "static";//"absolute";
-    dragOverCanvas.style.width = dragOverCanvas.style.height = "100%";
-    dragOverCanvas.style.backgroundColor = "green";
+    dragOverCanvas.style.position = 'static';//"absolute";
+    dragOverCanvas.style.width = dragOverCanvas.style.height = '100%';
+    dragOverCanvas.style.backgroundColor = 'green';
     dragOverCanvas.style.opacity = 0.1;
     document.getElementById('divGlobalView').appendChild(dragOverCanvas);
 
 
     var rect = dragOverCanvas.getBoundingClientRect();
-    dragOverCanvas.style.marginTop = -(rect.bottom - rect.top - padding[0]) + "px";
-    dragOverCanvas.style.marginLeft = padding[3] + "px";
-    dragOverCanvas.style.width = (rect.right - rect.left - padding[1] - padding[3]) + "px";
-    dragOverCanvas.style.height = (rect.bottom - rect.top - padding[0] - padding[2]) + "px";
+    dragOverCanvas.style.marginTop = -(rect.bottom - rect.top - padding[0]) + 'px';
+    dragOverCanvas.style.marginLeft = padding[3] + 'px';
+    dragOverCanvas.style.width = (rect.right - rect.left - padding[1] - padding[3]) + 'px';
+    dragOverCanvas.style.height = (rect.bottom - rect.top - padding[0] - padding[2]) + 'px';
   }
 }
 function ondragleave(event) {
@@ -436,7 +436,7 @@ function ondrop(event) {
 }
 
 var ctrlPressed = false, shiftPressed = false;
-var CTRL = navigator.appVersion.indexOf("Mac") == -1 ? 17 : 224;
+var CTRL = navigator.appVersion.indexOf('Mac') == -1 ? 17 : 224;
 function handleKeyDown(event) {
   if(event.keyCode === CTRL)
     ctrlPressed = true;
@@ -452,7 +452,7 @@ function handleKeyDown(event) {
   case 36: // HOME key
     globalView.enableOffscreenRendering(1024, 1024);
     globalView.renderOffscreenBuffer();
-    libGlobalView.download("globalView.png", globalView.saveOffscreenBuffer());
+    libGlobalView.download('globalView.png', globalView.saveOffscreenBuffer());
     globalView.disableOffscreenRendering();
   }
 }

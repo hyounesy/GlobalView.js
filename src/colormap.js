@@ -19,21 +19,21 @@ export function Colormap(gl, globalView) {
   const NUM_TICKS = 10;
 
   var sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
-  sdrLine.color = sdrLine.u4f("color");
+  sdrLine.color = sdrLine.u4f('color');
   sdrLine.color.apply(sdrLine, gl.foreColor);
-  sdrLine.matWorldViewProj = sdrLine.u4x4f("matWorldViewProj");
+  sdrLine.matWorldViewProj = sdrLine.u4x4f('matWorldViewProj');
   this.updateColorSchema = function () {
     sdrLine.color.apply(sdrLine, gl.foreColor);
   }
 
   var sdrColormap = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured, libShaders.Shaders.fsTextured1D);
-  sdrColormap.matWorldViewProj = sdrColormap.u4x4f("matWorldViewProj");
+  sdrColormap.matWorldViewProj = sdrColormap.u4x4f('matWorldViewProj');
   var colormaps = {
-    exhue: libGraphics.LoadTexture(gl, "/exhue.png", function () { globalView.invalidate(); }),//function() { setTimeout(function() { globalView.invalidate(); }, 1000); }),
-    rainbow: libGraphics.LoadTexture(gl, "/rainbow.png", function () { globalView.invalidate(); }),//function() { setTimeout(function() { globalView.invalidate(); }, 1000); }),
+    exhue: libGraphics.LoadTexture(gl, '/exhue.png', function () { globalView.invalidate(); }),//function() { setTimeout(function() { globalView.invalidate(); }, 1000); }),
+    rainbow: libGraphics.LoadTexture(gl, '/rainbow.png', function () { globalView.invalidate(); }),//function() { setTimeout(function() { globalView.invalidate(); }, 1000); }),
     2: libGraphics.LoadTextureFromByteArray(gl, new Uint8Array([255, 0, 0, 255, 0, 255, 0, 255]), 2, 1)
   };
-  this.builtinColormaps = ["exhue", "rainbow"];
+  this.builtinColormaps = ['exhue', 'rainbow'];
 var texColormap = colormaps.exhue;
 
   // Create a 2D line mesh
@@ -228,16 +228,16 @@ export function validateColor(color) {
       rgb.g >= 0x00 && rgb.g <= 0xFF &&
       rgb.b >= 0x00 && rgb.b <= 0xFF)
       return true; // color is hex color
-    return "Unknown color " + color;
+    return 'Unknown color ' + color;
   }
 
   if (libUtility.isArray(color)) {
     if (color.length !== 4)
-      return "Color array needs to have 4 components (RGBA).";
+      return 'Color array needs to have 4 components (RGBA).';
     return true;
   }
 
-  return "Unknown color " + color;
+  return 'Unknown color ' + color;
 }
 
 export function parseColor(color) {
@@ -260,7 +260,7 @@ if (colormap === null) return true;
 
   if (libUtility.isArray(colormap)) {
     if (colormap.length === 0)
-      return "Colormap array cannot be empty.";
+      return 'Colormap array cannot be empty.';
     if (libUtility.isString(colormap[0])) {
       var err;
       for (var i = 0; i < colormap.length; ++i)
@@ -269,15 +269,15 @@ if (colormap === null) return true;
       return true;
     } else {
       if (colormap.length % 4 !== 0)
-        return "Colormap array length must be multiple of 4.";
+        return 'Colormap array length must be multiple of 4.';
       for (var i = 0; i < colormap.length; ++i)
         if (!libUtility.isNumber(colormap[i]) || colormap[i] < 0x00 || colormap[i] > 0xFF)
-          return "Colormap array must contain numbers between 0 and 255.";
+          return 'Colormap array must contain numbers between 0 and 255.';
       return true;
     }
   }
 
-  return "Unknown colormap " + colormap;
+  return 'Unknown colormap ' + colormap;
 }
 
 export function parseColormap(colormap) {

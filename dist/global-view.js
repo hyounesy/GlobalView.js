@@ -136,7 +136,7 @@ function isFunction(x) {
 }
 
 function isArray(x) {
-  return Object.prototype.toString.call(x) === "[object Array]";
+  return Object.prototype.toString.call(x) === '[object Array]';
 }
 
 function isString(x) {
@@ -149,7 +149,7 @@ function isNumber(x) {
 
 function isObject(x) {
   var t = typeof x === 'undefined' ? 'undefined' : _typeof(x);
-  return t !== 'undefined' && t !== 'function' && t !== 'string' && t !== 'number' && Object.prototype.toString.call(x) !== "[object Array]";
+  return t !== 'undefined' && t !== 'function' && t !== 'string' && t !== 'number' && Object.prototype.toString.call(x) !== '[object Array]';
 }
 function isCloneable(x) {
   return !(isFunction(x) || x instanceof WebGLTexture); //TODO: Add more
@@ -205,14 +205,14 @@ function makeCloneable(obj) {
 
   // Check all properties of obj
   for (var prop in obj) {
-    if (!isCloneable(obj[prop])) // If obj has at least on non-cloneable property
-      {
-        // Create a new object and clone all cloneable properties into that new object
-        var obj_subset = {};
-        for (prop in obj) {
-          if (isCloneable(obj[prop])) obj_subset[prop] = obj[prop];
-        }return obj_subset;
-      }
+    if (!isCloneable(obj[prop])) {
+      // If obj has at least on non-cloneable property
+      // Create a new object and clone all cloneable properties into that new object
+      var obj_subset = {};
+      for (prop in obj) {
+        if (isCloneable(obj[prop])) obj_subset[prop] = obj[prop];
+      }return obj_subset;
+    }
   } // If obj doesn't have type functions
   return obj; // Return obj as is
 };
@@ -223,7 +223,7 @@ function getScript(id) {
     return null;
   }
 
-  var str = "";
+  var str = '';
   var k = shaderScript.firstChild;
   while (k) {
     if (k.nodeType == 3) {
@@ -235,40 +235,40 @@ function getScript(id) {
   return str;
 }
 
-function colorNameToHex(color) // Source: https://stackoverflow.com/a/1573141
-{
+function colorNameToHex(color) {
+  // Source: https://stackoverflow.com/a/1573141
   var colors = {
-    "aliceblue": "#f0f8ff", "antiquewhite": "#faebd7", "aqua": "#00ffff", "aquamarine": "#7fffd4", "azure": "#f0ffff",
-    "beige": "#f5f5dc", "bisque": "#ffe4c4", "black": "#000000", "blanchedalmond": "#ffebcd", "blue": "#0000ff", "blueviolet": "#8a2be2",
-    "brown": "#a52a2a", "burlywood": "#deb887", "cadetblue": "#5f9ea0", "chartreuse": "#7fff00", "chocolate": "#d2691e", "coral": "#ff7f50",
-    "cornflowerblue": "#6495ed", "cornsilk": "#fff8dc", "crimson": "#dc143c", "cyan": "#00ffff", "darkblue": "#00008b", "darkcyan": "#008b8b",
-    "darkgoldenrod": "#b8860b", "darkgray": "#a9a9a9", "darkgreen": "#006400", "darkkhaki": "#bdb76b", "darkmagenta": "#8b008b",
-    "darkolivegreen": "#556b2f", "darkorange": "#ff8c00", "darkorchid": "#9932cc", "darkred": "#8b0000", "darksalmon": "#e9967a",
-    "darkseagreen": "#8fbc8f", "darkslateblue": "#483d8b", "darkslategray": "#2f4f4f", "darkturquoise": "#00ced1", "darkviolet": "#9400d3",
-    "deeppink": "#ff1493", "deepskyblue": "#00bfff", "dimgray": "#696969", "dodgerblue": "#1e90ff", "firebrick": "#b22222", "floralwhite": "#fffaf0",
-    "forestgreen": "#228b22", "fuchsia": "#ff00ff", "gainsboro": "#dcdcdc", "ghostwhite": "#f8f8ff", "gold": "#ffd700", "goldenrod": "#daa520",
-    "gray": "#808080", "green": "#008000", "greenyellow": "#adff2f", "honeydew": "#f0fff0", "hotpink": "#ff69b4", "indianred ": "#cd5c5c",
-    "indigo": "#4b0082", "ivory": "#fffff0", "khaki": "#f0e68c", "lavender": "#e6e6fa", "lavenderblush": "#fff0f5", "lawngreen": "#7cfc00",
-    "lemonchiffon": "#fffacd", "lightblue": "#add8e6", "lightcoral": "#f08080", "lightcyan": "#e0ffff", "lightgoldenrodyellow": "#fafad2",
-    "lightgray": "#d3d3d3", "lightgreen": "#90ee90", "lightpink": "#ffb6c1", "lightsalmon": "#ffa07a", "lightseagreen": "#20b2aa",
-    "lightskyblue": "#87cefa", "lightslategray": "#778899", "lightsteelblue": "#b0c4de", "lightyellow": "#ffffe0", "lime": "#00ff00",
-    "limegreen": "#32cd32", "linen": "#faf0e6", "magenta": "#ff00ff", "maroon": "#800000", "mediumaquamarine": "#66cdaa", "mediumblue": "#0000cd",
-    "mediumorchid": "#ba55d3", "mediumpurple": "#9370d8", "mediumseagreen": "#3cb371", "mediumslateblue": "#7b68ee", "mediumspringgreen": "#00fa9a",
-    "mediumturquoise": "#48d1cc", "mediumvioletred": "#c71585", "midnightblue": "#191970", "mintcream": "#f5fffa", "mistyrose": "#ffe4e1",
-    "moccasin": "#ffe4b5", "navajowhite": "#ffdead", "navy": "#000080", "oldlace": "#fdf5e6", "olive": "#808000", "olivedrab": "#6b8e23",
-    "orange": "#ffa500", "orangered": "#ff4500", "orchid": "#da70d6", "palegoldenrod": "#eee8aa", "palegreen": "#98fb98", "paleturquoise": "#afeeee",
-    "palevioletred": "#d87093", "papayawhip": "#ffefd5", "peachpuff": "#ffdab9", "peru": "#cd853f", "pink": "#ffc0cb", "plum": "#dda0dd",
-    "powderblue": "#b0e0e6", "purple": "#800080", "rebeccapurple": "#663399", "red": "#ff0000", "rosybrown": "#bc8f8f", "royalblue": "#4169e1",
-    "saddlebrown": "#8b4513", "salmon": "#fa8072", "sandybrown": "#f4a460", "seagreen": "#2e8b57", "seashell": "#fff5ee", "sienna": "#a0522d",
-    "silver": "#c0c0c0", "skyblue": "#87ceeb", "slateblue": "#6a5acd", "slategray": "#708090", "snow": "#fffafa", "springgreen": "#00ff7f",
-    "steelblue": "#4682b4", "tan": "#d2b48c", "teal": "#008080", "thistle": "#d8bfd8", "tomato": "#ff6347", "turquoise": "#40e0d0", "violet": "#ee82ee",
-    "wheat": "#f5deb3", "white": "#ffffff", "whitesmoke": "#f5f5f5", "yellow": "#ffff00", "yellowgreen": "#9acd32"
+    'aliceblue': '#f0f8ff', 'antiquewhite': '#faebd7', 'aqua': '#00ffff', 'aquamarine': '#7fffd4', 'azure': '#f0ffff',
+    'beige': '#f5f5dc', 'bisque': '#ffe4c4', 'black': '#000000', 'blanchedalmond': '#ffebcd', 'blue': '#0000ff', 'blueviolet': '#8a2be2',
+    'brown': '#a52a2a', 'burlywood': '#deb887', 'cadetblue': '#5f9ea0', 'chartreuse': '#7fff00', 'chocolate': '#d2691e', 'coral': '#ff7f50',
+    'cornflowerblue': '#6495ed', 'cornsilk': '#fff8dc', 'crimson': '#dc143c', 'cyan': '#00ffff', 'darkblue': '#00008b', 'darkcyan': '#008b8b',
+    'darkgoldenrod': '#b8860b', 'darkgray': '#a9a9a9', 'darkgreen': '#006400', 'darkkhaki': '#bdb76b', 'darkmagenta': '#8b008b',
+    'darkolivegreen': '#556b2f', 'darkorange': '#ff8c00', 'darkorchid': '#9932cc', 'darkred': '#8b0000', 'darksalmon': '#e9967a',
+    'darkseagreen': '#8fbc8f', 'darkslateblue': '#483d8b', 'darkslategray': '#2f4f4f', 'darkturquoise': '#00ced1', 'darkviolet': '#9400d3',
+    'deeppink': '#ff1493', 'deepskyblue': '#00bfff', 'dimgray': '#696969', 'dodgerblue': '#1e90ff', 'firebrick': '#b22222', 'floralwhite': '#fffaf0',
+    'forestgreen': '#228b22', 'fuchsia': '#ff00ff', 'gainsboro': '#dcdcdc', 'ghostwhite': '#f8f8ff', 'gold': '#ffd700', 'goldenrod': '#daa520',
+    'gray': '#808080', 'green': '#008000', 'greenyellow': '#adff2f', 'honeydew': '#f0fff0', 'hotpink': '#ff69b4', 'indianred ': '#cd5c5c',
+    'indigo': '#4b0082', 'ivory': '#fffff0', 'khaki': '#f0e68c', 'lavender': '#e6e6fa', 'lavenderblush': '#fff0f5', 'lawngreen': '#7cfc00',
+    'lemonchiffon': '#fffacd', 'lightblue': '#add8e6', 'lightcoral': '#f08080', 'lightcyan': '#e0ffff', 'lightgoldenrodyellow': '#fafad2',
+    'lightgray': '#d3d3d3', 'lightgreen': '#90ee90', 'lightpink': '#ffb6c1', 'lightsalmon': '#ffa07a', 'lightseagreen': '#20b2aa',
+    'lightskyblue': '#87cefa', 'lightslategray': '#778899', 'lightsteelblue': '#b0c4de', 'lightyellow': '#ffffe0', 'lime': '#00ff00',
+    'limegreen': '#32cd32', 'linen': '#faf0e6', 'magenta': '#ff00ff', 'maroon': '#800000', 'mediumaquamarine': '#66cdaa', 'mediumblue': '#0000cd',
+    'mediumorchid': '#ba55d3', 'mediumpurple': '#9370d8', 'mediumseagreen': '#3cb371', 'mediumslateblue': '#7b68ee', 'mediumspringgreen': '#00fa9a',
+    'mediumturquoise': '#48d1cc', 'mediumvioletred': '#c71585', 'midnightblue': '#191970', 'mintcream': '#f5fffa', 'mistyrose': '#ffe4e1',
+    'moccasin': '#ffe4b5', 'navajowhite': '#ffdead', 'navy': '#000080', 'oldlace': '#fdf5e6', 'olive': '#808000', 'olivedrab': '#6b8e23',
+    'orange': '#ffa500', 'orangered': '#ff4500', 'orchid': '#da70d6', 'palegoldenrod': '#eee8aa', 'palegreen': '#98fb98', 'paleturquoise': '#afeeee',
+    'palevioletred': '#d87093', 'papayawhip': '#ffefd5', 'peachpuff': '#ffdab9', 'peru': '#cd853f', 'pink': '#ffc0cb', 'plum': '#dda0dd',
+    'powderblue': '#b0e0e6', 'purple': '#800080', 'rebeccapurple': '#663399', 'red': '#ff0000', 'rosybrown': '#bc8f8f', 'royalblue': '#4169e1',
+    'saddlebrown': '#8b4513', 'salmon': '#fa8072', 'sandybrown': '#f4a460', 'seagreen': '#2e8b57', 'seashell': '#fff5ee', 'sienna': '#a0522d',
+    'silver': '#c0c0c0', 'skyblue': '#87ceeb', 'slateblue': '#6a5acd', 'slategray': '#708090', 'snow': '#fffafa', 'springgreen': '#00ff7f',
+    'steelblue': '#4682b4', 'tan': '#d2b48c', 'teal': '#008080', 'thistle': '#d8bfd8', 'tomato': '#ff6347', 'turquoise': '#40e0d0', 'violet': '#ee82ee',
+    'wheat': '#f5deb3', 'white': '#ffffff', 'whitesmoke': '#f5f5f5', 'yellow': '#ffff00', 'yellowgreen': '#9acd32'
   };
   return colors[color.toLowerCase()];
 }
 
-function hexToRgb(hex) // Source: https://stackoverflow.com/a/5624139
-{
+function hexToRgb(hex) {
+  // Source: https://stackoverflow.com/a/5624139
   // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
   var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
   hex = hex.replace(shorthandRegex, function (m, r, g, b) {
@@ -338,8 +338,8 @@ function F32toI24flipY(floats, bounds, width, height) {
   }return bytes;
 }
 
-function hsv2rgb(hsv) // Source: https://stackoverflow.com/a/6930407
-{
+function hsv2rgb(hsv) {
+  // Source: https://stackoverflow.com/a/6930407
   if (hsv[1] <= 0.000001) return [hsv[2], hsv[2], hsv[2]];
   var hh, p, q, t, ff, i, out;
 
@@ -375,7 +375,7 @@ function urlExists(url, onTrue, onFalse, isAsync) {
     if (this.readyState == 4 && this.status != 404 && onTrue) onTrue();
   };
   request.open('HEAD', url, !(isAsync === false));
-  request.overrideMimeType("text/csv; charset=utf8");
+  request.overrideMimeType('text/csv; charset=utf8');
   request.send();
   return request.status != 404;
 }
@@ -418,19 +418,19 @@ Math.clamp = function (f, minimum, maximum) {
   return Math.min(Math.max(f, minimum), maximum);
 };
 
-function createCookie(name, value, days) // Source: http://www.quirksmode.org/js/cookies.html
-{
-  var expires = "";
+function createCookie(name, value, days) {
+  // Source: http://www.quirksmode.org/js/cookies.html
+  var expires = '';
   if (days) {
     var date = new Date();
     date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-    expires = "; expires=" + date.toUTCString();
+    expires = '; expires=' + date.toUTCString();
   }
-  document.cookie = name + "=" + value + expires + "; path=/";
+  document.cookie = name + '=' + value + expires + '; path=/';
 }
-function readCookie(name) // Source: http://www.quirksmode.org/js/cookies.html
-{
-  var nameEQ = name + "=";
+function readCookie(name) {
+  // Source: http://www.quirksmode.org/js/cookies.html
+  var nameEQ = name + '=';
   var ca = document.cookie.split(';');
   for (var i = 0; i < ca.length; ++i) {
     var c = ca[i];
@@ -450,146 +450,39 @@ function readIntCookie(name) {
   cookie = Number.parseInt(cookie, 10);
   return isNaN(cookie) ? null : cookie;
 }
-function eraseCookie(name) // Source: http://www.quirksmode.org/js/cookies.html
-{
-  createCookie(name, "", -1);
+function eraseCookie(name) {
+  // Source: http://www.quirksmode.org/js/cookies.html
+  createCookie(name, '', -1);
 }
 
-function getParameterByName(name, url) // Source: https://stackoverflow.com/a/901144
-{
+function getParameterByName(name, url) {
+  // Source: https://stackoverflow.com/a/901144
   if (!url) url = window.location.href;
-  name = name.replace(/[\[\]]/g, "\\$&");
-  var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+  name = name.replace(/[\[\]]/g, '\\$&');
+  var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
       results = regex.exec(url);
   if (!results) return null;
   if (!results[2]) return '';
-  return decodeURIComponent(results[2].replace(/\+/g, " "));
+  return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
-function addMouseWheelHandler(onmousewheel) // Source: http://www.javascriptkit.com/javatutors/onmousewheel.shtml
-{
-  var mousewheelevt = /Firefox/i.test(navigator.userAgent) ? "DOMMouseScroll" : "mousewheel";
-  if (document.attachEvent) document.attachEvent("on" + mousewheelevt, onmousewheel);else if (document.addEventListener) document.addEventListener(mousewheelevt, onmousewheel, false);
+function addMouseWheelHandler(onmousewheel) {
+  // Source: http://www.javascriptkit.com/javatutors/onmousewheel.shtml
+  var mousewheelevt = /Firefox/i.test(navigator.userAgent) ? 'DOMMouseScroll' : 'mousewheel';
+  if (document.attachEvent) document.attachEvent('on' + mousewheelevt, onmousewheel);else if (document.addEventListener) document.addEventListener(mousewheelevt, onmousewheel, false);
 }
 function addMouseMoveHandler(onmousemove) {
-  if (document.attachEvent) document.attachEvent("onmousemove", onmousemove);else if (document.addEventListener) document.addEventListener("mousemove", onmousemove, false);
+  if (document.attachEvent) document.attachEvent('onmousemove', onmousemove);else if (document.addEventListener) document.addEventListener('mousemove', onmousemove, false);
 }
 function addMouseUpHandler(onmouseup) {
-  if (document.attachEvent) document.attachEvent("onmouseup", onmouseup);else if (document.addEventListener) document.addEventListener("mouseup", onmouseup, false);
+  if (document.attachEvent) document.attachEvent('onmouseup', onmouseup);else if (document.addEventListener) document.addEventListener('mouseup', onmouseup, false);
 }
 function addKeyDownHandler(onkeydown) {
-  if (document.attachEvent) document.attachEvent("onkeydown", onkeydown);else if (document.addEventListener) document.addEventListener("keydown", onkeydown, false);
+  if (document.attachEvent) document.attachEvent('onkeydown', onkeydown);else if (document.addEventListener) document.addEventListener('keydown', onkeydown, false);
 }
 function addKeyUpHandler(onkeyup) {
-  if (document.attachEvent) document.attachEvent("onkeyup", onkeyup);else if (document.addEventListener) document.addEventListener("keyup", onkeyup, false);
+  if (document.attachEvent) document.attachEvent('onkeyup', onkeyup);else if (document.addEventListener) document.addEventListener('keyup', onkeyup, false);
 }
-
-// Standard forward-list
-/*function ForwardList() {
-  function Node(value) {
-    this.value = value;
-    this.next = null;
-  }
-  this.front = null;
-  this.length = 0;
-  
-  this.pushFront = function(value)
-  {
-    var newnode = new Node(value);
-    newnode.next = this.front;
-    this.front = newnode;
-    ++this.length;
-  }
-  this.pushBack = function(value)
-  {
-    if (this.front === null)
-      this.pushFront(value);
-    else
-    {
-      var back = this.front;
-      while (back.next !== null)
-        back = back.next;
-      var newnode = new Node(value);
-      back.next = newnode;
-      ++this.length;
-    }
-  }
-  this.sortedPush = function(value)
-  {
-    if (this.front === null || this.front.value >= value)
-      this.pushFront(value);
-    else
-    {
-      var node = this.front;
-      while (node.next !== null && node.next.value < value)
-        node = node.next;
-      var newnode = new Node(value);
-      newnode.next = node.next;
-      node.next = newnode;
-    }
-    ++this.length;
-  }
-  this.toArray = function()
-  {
-    var array = [];
-    for (var node = this.front; node; node = node.next)
-      array.push(node.value);
-    return array;
-  }
-  this.print = function()
-  {
-    var array = [];
-    for (var node = this.front; node; node = node.next)
-      array.push(node.value);
-    console.log(array.join(", "));
-  }
-  
-  ForwardList.sortedMerge = function(a, b) // Source: http://www.geeksforgeeks.org/merge-two-sorted-linked-lists/
-  {
-    var mergedList = new ForwardList();
-    mergedList.length = a.length + b.length;
-    
-    a = a.front;
-    b = b.front;
-    var dummy = new Node(null);
-    var tail = dummy;
-    
-    while (a !== null && b!= null) // While neither a nor b run out
-    {
-      if (a.value <= b.value)
-      {
-        var newNode = a;
-        a = newNode.next;
-        newNode.next = tail.next;
-        tail.next = newNode;
-      }
-      else
-      {
-        var newNode = b;
-        b = newNode.next;
-        newNode.next = tail.next;
-        tail.next = newNode;
-      }
-
-      tail = tail.next;
-    }
-    
-    // Concatenate list that didn't run out
-    tail.next = a === null ? b : a;
-    
-    mergedList.front = dummy.next
-    return mergedList;
-  }
-}
-//var a = new ForwardList();
-//a.sortedPush(10);
-//a.sortedPush(15);
-//a.sortedPush(5);
-//var b = new ForwardList();
-//b.sortedPush(2);
-//b.sortedPush(3);
-//b.sortedPush(20);
-//ForwardList.sortedMerge(a, b).print();*/
 
 /**
  * Simple forward-list
@@ -601,8 +494,8 @@ function ForwardList(value) {
   this.value = value;
   this.next = null;
 
-  this.push = function (value) // Pushes to front
-  {
+  this.push = function (value) {
+    // Pushes to front
     var newnode = new ForwardList(this.value);
     newnode.next = this.next;
     this.next = newnode;
@@ -635,7 +528,7 @@ function ForwardList(value) {
     var array = [];
     for (var node = this; node; node = node.next) {
       array.push(node.value);
-    }console.log(array.join(", "));
+    }console.log(array.join(', '));
   };
   this.size = function () {
     var size = 0;
@@ -648,13 +541,13 @@ function ForwardList(value) {
       callback(node.value);
     }
   };
-  ForwardList.sortedMerge = function (a, b) // Source: http://www.geeksforgeeks.org/merge-two-sorted-linked-lists/
-  {
+  ForwardList.sortedMerge = function (a, b) {
+    // Source: http://www.geeksforgeeks.org/merge-two-sorted-linked-lists/
     var dummy = new ForwardList(null);
     var tail = dummy;
 
-    while (a !== null && b != null) // While neither a nor b run out
-    {
+    while (a !== null && b != null) {
+      // While neither a nor b run out
       if (a.value <= b.value) {
         var newNode = a;
         a = newNode.next;
@@ -904,129 +797,6 @@ function HashSet(onchanged) {
     return hash[value] === true;
   };
 }
-/*function HashSet(onchanged) // Set-based (slower on Firefox!)
-{
-  var hash = new Set();
-  this.onchanged = isFunction(onchanged) ? onchanged : function() {};
-  
-  this.push = function(value)
-  {
-    if (!hash.has(value))
-    {
-      hash.add(value);
-      this.onchanged();
-    }
-  }
-  this.append = function(values)
-  {
-//var t = performance.now();
-    var sizeBefore = hash.size;
-    hash = new Set([...hash, ...values]);
-    var invalidate = hash.size !== sizeBefore;
-//console.log('append ' + values.length + ': ' + (performance.now() - t));
-    if (invalidate)
-      this.onchanged();
-  }
-  this.set = function(value)
-  {
-    if (hash.size !== 1 || !hash.has(value))
-    {
-      hash = new Set([value]);
-      this.onchanged();
-    }
-  }
-  this.assign = function(values)
-  {
-    if (values.length === 0)
-    {
-      this.clear();
-      return;
-    }
-    
-//var t = performance.now();
-    var newHash = new Set(), identical = (values.length === hash.size);
-    values.forEach(function(value) {
-      if (identical && !hash.has(value))
-        identical = false;
-      newHash.add(value);
-    });
-    
-    hash = newHash;
-//console.log('assign ' + values.length + ': ' + (performance.now() - t));
-    
-    if (identical === false)
-      this.onchanged();
-  }
-  this.assignRange = function(n)
-  {
-    if (n <= 0)
-      return;
-//var t = performance.now();
-    hash = new Set();
-    for (var i = 0; i < n; ++i)
-      hash.add(i);
-//console.log('assignRange ' + n + ': ' + (performance.now() - t));
-    this.onchanged();
-  }
-  this.erase = function(value)
-  {
-    if (hash.has(value))
-    {
-      hash.delete(value);
-      this.onchanged();
-    }
-  }
-  this.remove = function(values)
-  {
-//var t = performance.now();
-    var invalidate = false, self = this;
-    values.forEach(function(value) {
-      if (hash.has(value))
-      {
-        hash.delete(value);
-        --self.length;
-        invalidate = true;
-      }
-    });
-//console.log('remove ' + values.length + ': ' + (performance.now() - t));
-    if (invalidate)
-      this.onchanged();
-  }
-  this.isempty = function()
-  {
-    return hash.size === 0;
-  }
-  this.clear = function()
-  {
-    if (hash.size !== 0)
-    {
-      hash = new Set();
-      this.onchanged();
-    }
-  }
-  this.forEach = function(callback)
-  {
-//var last = Number.MIN_SAFE_INTEGER, badOrder = 0;
-    for (var value of hash)
-    {
-//if (value < last) ++badOrder; last = value;
-      callback(value);
-    }
-//if (badOrder !== 0) console.log('bad order: ' + badOrder + ' times');
-  }
-  this.get = function()
-  {
-    return new Uint32Array(hash.keys());
-  }
-  this.size = function()
-  {
-    return hash.size;
-  }
-  this.contains = function(value)
-  {
-    return hash.has(value);
-  }
-}*/
 
 /***/ }),
 /* 1 */
@@ -1176,13 +946,13 @@ function Shader(gl, vs, fs, debug) {
   for (var i = 0; i < count; ++i)
     console.log(gl.getActiveUniform(sdr, i).name);*/
 
-  this.vertexPositionAttribute = gl.getAttribLocation(sdr, "vpos");
-  this.vertexNormalAttribute = gl.getAttribLocation(sdr, "vnml");
-  this.vertexTangentAttribute = gl.getAttribLocation(sdr, "vtng");
-  this.vertexBinormalAttribute = gl.getAttribLocation(sdr, "vbnml");
-  this.VertexTexCoordAttribute = gl.getAttribLocation(sdr, "vtexcoord");
-  this.samplerUniform = gl.getUniformLocation(sdr, "uSampler");
-  this.samplerArrayUniform = gl.getUniformLocation(sdr, "uSamplers");
+  this.vertexPositionAttribute = gl.getAttribLocation(sdr, 'vpos');
+  this.vertexNormalAttribute = gl.getAttribLocation(sdr, 'vnml');
+  this.vertexTangentAttribute = gl.getAttribLocation(sdr, 'vtng');
+  this.vertexBinormalAttribute = gl.getAttribLocation(sdr, 'vbnml');
+  this.VertexTexCoordAttribute = gl.getAttribLocation(sdr, 'vtexcoord');
+  this.samplerUniform = gl.getUniformLocation(sdr, 'uSampler');
+  this.samplerArrayUniform = gl.getUniformLocation(sdr, 'uSamplers');
 
   this.bind = function () {
     if (currentShader !== this) {
@@ -1197,9 +967,9 @@ function Shader(gl, vs, fs, debug) {
     if (uniform) return function (i) {
       this.bind();
       gl.uniform1i(uniform, i);
-      if (debug) console.log("gl.uniform1i({0}, {1})".format(uniformString, i));
+      if (debug) console.log('gl.uniform1i({0}, {1})'.format(uniformString, i));
     };else return debug ? function (i) {
-      return console.log("Passing value to unused uniform " + uniformString);
+      return console.log('Passing value to unused uniform ' + uniformString);
     } : null;
   };
   this.u1f = function (uniformString) {
@@ -1208,9 +978,9 @@ function Shader(gl, vs, fs, debug) {
     if (uniform) return function (f) {
       this.bind();
       gl.uniform1f(uniform, f);
-      if (debug) console.log("gl.uniform1f({0}, {1})".format(uniformString, f));
+      if (debug) console.log('gl.uniform1f({0}, {1})'.format(uniformString, f));
     };else return debug ? function (f) {
-      return console.log("Passing value to unused uniform " + uniformString);
+      return console.log('Passing value to unused uniform ' + uniformString);
     } : null;
   };
   this.u2f = function (uniformString) {
@@ -1219,9 +989,9 @@ function Shader(gl, vs, fs, debug) {
     if (uniform) return function (x, y) {
       this.bind();
       gl.uniform2f(uniform, x, y);
-      if (debug) console.log("gl.uniform2f({0}, {1}, {2})".format(uniformString, x, y));
+      if (debug) console.log('gl.uniform2f({0}, {1}, {2})'.format(uniformString, x, y));
     };else return debug ? function (f) {
-      return console.log("Passing value to unused uniform " + uniformString);
+      return console.log('Passing value to unused uniform ' + uniformString);
     } : null;
   };
   this.u2x2f = function (uniformString) {
@@ -1230,9 +1000,9 @@ function Shader(gl, vs, fs, debug) {
     if (uniform) return function (m) {
       this.bind();
       gl.uniformMatrix2fv(uniform, false, m);
-      if (debug) console.log("gl.uniformMatrix2fv({0}, {1})".format(uniformString, m));
+      if (debug) console.log('gl.uniformMatrix2fv({0}, {1})'.format(uniformString, m));
     };else return debug ? function (f) {
-      return console.log("Passing value to unused uniform " + uniformString);
+      return console.log('Passing value to unused uniform ' + uniformString);
     } : null;
   };
   this.u3f = function (uniformString) {
@@ -1241,9 +1011,9 @@ function Shader(gl, vs, fs, debug) {
     if (uniform) return function (x, y, z) {
       this.bind();
       gl.uniform3f(uniform, x, y, z);
-      if (debug) console.log("gl.uniform3f({0}, {1}, {2}, {3})".format(uniformString, x, y, z));
+      if (debug) console.log('gl.uniform3f({0}, {1}, {2}, {3})'.format(uniformString, x, y, z));
     };else return debug ? function (f) {
-      return console.log("Passing value to unused uniform " + uniformString);
+      return console.log('Passing value to unused uniform ' + uniformString);
     } : null;
   };
   this.u4f = function (uniformString) {
@@ -1252,9 +1022,9 @@ function Shader(gl, vs, fs, debug) {
     if (uniform) return function (x, y, z, w) {
       this.bind();
       gl.uniform4f(uniform, x, y, z, w);
-      if (debug) console.log("gl.uniform4f({0}, {1}, {2}, {3}, {4})".format(uniformString, x, y, z, w));
+      if (debug) console.log('gl.uniform4f({0}, {1}, {2}, {3}, {4})'.format(uniformString, x, y, z, w));
     };else return debug ? function (f) {
-      return console.log("Passing value to unused uniform " + uniformString);
+      return console.log('Passing value to unused uniform ' + uniformString);
     } : null;
   };
   this.u1fv = function (uniformString) {
@@ -1263,9 +1033,9 @@ function Shader(gl, vs, fs, debug) {
     if (uniform) return function (v) {
       this.bind();
       gl.uniform1fv(uniform, v);
-      if (debug) console.log("gl.uniform1fv({0}, {1})".format(uniformString, v));
+      if (debug) console.log('gl.uniform1fv({0}, {1})'.format(uniformString, v));
     };else return debug ? function (f) {
-      return console.log("Passing value to unused uniform " + uniformString);
+      return console.log('Passing value to unused uniform ' + uniformString);
     } : null;
   };
   this.u4fv = function (uniformString) {
@@ -1274,9 +1044,9 @@ function Shader(gl, vs, fs, debug) {
     if (uniform) return function (v) {
       this.bind();
       gl.uniform4fv(uniform, v);
-      if (debug) console.log("gl.uniform4fv({0}, {1})".format(uniformString, v));
+      if (debug) console.log('gl.uniform4fv({0}, {1})'.format(uniformString, v));
     };else return debug ? function (f) {
-      return console.log("Passing value to unused uniform " + uniformString);
+      return console.log('Passing value to unused uniform ' + uniformString);
     } : null;
   };
   this.u4x4f = function (uniformString) {
@@ -1285,9 +1055,9 @@ function Shader(gl, vs, fs, debug) {
     if (uniform) return function (m) {
       this.bind();
       gl.uniformMatrix4fv(uniform, false, m);
-      if (debug) console.log("gl.uniformMatrix4fv({0}, {1})".format(uniformString, m));
+      if (debug) console.log('gl.uniformMatrix4fv({0}, {1})'.format(uniformString, m));
     };else return debug ? function (f) {
-      return console.log("Passing value to unused uniform " + uniformString);
+      return console.log('Passing value to unused uniform ' + uniformString);
     } : null;
   };
 
@@ -1315,7 +1085,7 @@ function Shader(gl, vs, fs, debug) {
 
 function validateGLSL(gl, code) {
   var vertexShader = gl.createShader(gl.VERTEX_SHADER);
-  gl.shaderSource(vertexShader, "void main() {} " + code);
+  gl.shaderSource(vertexShader, 'void main() {} ' + code);
   gl.compileShader(vertexShader);
   if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
     var err = gl.getShaderInfoLog(vertexShader);
@@ -1609,7 +1379,7 @@ THE SOFTWARE. */
 /***/ (function(module, exports) {
 
 /**
- * Blocks of GLSL shader code. Blocks starting with vs... are vertex shaders, 
+ * Blocks of GLSL shader code. Blocks starting with vs... are vertex shaders,
  * blocks starting with fs... are fragment shaders
  * @summary Vertex- and fragment shader code
  * @package
@@ -1931,7 +1701,7 @@ function computeHistogram2D(dataset, d0, d1, width, height) {
  * @param  {Object} histogram To create a histogram object from a 2D histogram, call `makeCloneable(histogram)`
  * @param  {DensityMapOptions} options
  * @return {Object} A density map object
- * 
+ *
  * To get a {@link DensityMap} from the output object, call `new DensityMap(output)`.
  */
 function computeDensityMap(histogram, options) {
@@ -2094,8 +1864,7 @@ function computeDensityMap(histogram, options) {
 
   /*// Precompute extends of gaussians up to maxDensity based on cutoffIntensity and normalizedGaussScale -> ext[]
   var ext = new Float32Array(maxDensity);
-  for (var i = 0; i < maxDensity; ++i)
-  {
+  for (var i = 0; i < maxDensity; ++i) {
     ext[i] = Math.floor(Math.sqrt(Math.log(cutoffIntensity / (i + 1)) / normalizedGaussScale));
     ext[i] = Math.min(ext[i], maxExtend); // Set upper bound for ext[i]: Precomputed map of gaussian scales shouldn't be larger than densityMap (size*size)
   }*/
@@ -2242,7 +2011,7 @@ function computeDensityMap(histogram, options) {
  * @param  {number} height
  * @param  {DensityMapOptions} options
  * @return {Array<Array<DensityMap>>} 2D array of density maps
- * 
+ *
  * The density map of dimensions d0 and d1 can be accessed using `densityMapArray[d0][d1 - d0 - 1]`.
  */
 function computeDensityMapND(dataset, width, height, options) {
@@ -2310,15 +2079,15 @@ function findRepresentativePoints(dataset, d0, d1, densityMap, k, dist, targetRa
       numHighRepresentativePoints = 0,
       ratio = 0.5; // Initial ratio is "fifty-fifty"
   var next = function next() {
-    if (ratio < targetRatio || ratio === targetRatio && targetRatio >= 0.5) // If ratio is too low or ratio is perfect and targetRatio is high
-      {
-        pointIsHigh = 1;
-        return d_high--; // Retrieve next high density data point
-      } else // If ratio is too high or ratio is perfect and targetRatioChoose k characteristic points from the given dataset based on the given density map is low
-      {
-        pointIsHigh = 0;
-        return d_low++; // Retrieve next low density data point
-      }
+    if (ratio < targetRatio || ratio === targetRatio && targetRatio >= 0.5) {
+      // If ratio is too low or ratio is perfect and targetRatio is high
+      pointIsHigh = 1;
+      return d_high--; // Retrieve next high density data point
+    } else {
+      // If ratio is too high or ratio is perfect and targetRatioChoose k characteristic points from the given dataset based on the given density map is low
+      pointIsHigh = 0;
+      return d_low++; // Retrieve next low density data point
+    }
   };
   var representativePoints = [indices[next()]]; // Set first represenatative point
   numHighRepresentativePoints += pointIsHigh;
@@ -2603,7 +2372,7 @@ function markPointsInStencilMap(dataset, d0, d1, points, densityMap, stencilMap,
  * @param  {string=} fileName=stencilMap.png The file name of the downloaded image.
  */
 function downloadStencilMap(stencilMap, fileName) {
-  if (!fileName) fileName = "stencilMap.png";
+  if (!fileName) fileName = 'stencilMap.png';
 
   var bytes = new Uint8Array(4 * stencilMap.width * stencilMap.height);
   for (var i = 0; i < stencilMap.data.length; ++i) {
@@ -3034,18 +2803,18 @@ function computeClusterMap_method1(dataset, d0, d1, densityMap) {
   };
 
   //for (var i = n - 1; i >= 0; --i) // Iteraterate points in order of decreasing point density
-  for (var i = 0; i < n; ++i) // Iteraterate points in order of increasing point density
-  {
+  for (var i = 0; i < n; ++i) {
+    // Iteraterate points in order of increasing point density
     var p0 = data[indices[i] * nc + d0] * s0 + o0;
     var p1 = data[indices[i] * nc + d1] * s1 + o1;
 
     var x = Math.clamp(Math.floor(p0 * width), 0, width - 1);
     var y = Math.clamp(Math.floor(p1 * height), 0, height - 1);
-    if (clustermap[y * width + x] === 0) // If clustermap[y * width + x] doesn't contain a cluster
-      {
-        floodFillRecursive(x, y, densities[y * width + x]);
-        ++currentClusterId;
-      }
+    if (clustermap[y * width + x] === 0) {
+      // If clustermap[y * width + x] doesn't contain a cluster
+      floodFillRecursive(x, y, densities[y * width + x]);
+      ++currentClusterId;
+    }
   }
 
   return clustermap;
@@ -3097,43 +2866,43 @@ function computeClusterMap_method2(dataset, d0, d1, densityMap) {
   var neighborQueue = new libUtility.PriorityQueue('d'); // Queue of all neighbors of clusters (candidates ro be included in the cluster)
 
   //for (var i = n - 1; i >= 0; --i) // Iteraterate points in order of decreasing point density
-  for (var i = 0; i < n; ++i) // Iteraterate points in order of increasing point density
-  {
+  for (var i = 0; i < n; ++i) {
+    // Iteraterate points in order of increasing point density
     var p0 = data[indices[i] * nc + d0] * s0 + o0;
     var p1 = data[indices[i] * nc + d1] * s1 + o1;
 
     var x = Math.clamp(Math.floor(p0 * width), 0, width - 1);
     var y = Math.clamp(Math.floor(p1 * height), 0, height - 1);
-    if (clustermap[y * width + x] === 0) // If clustermap[y * width + x] doesn't contain a cluster
-      {
-        clustermap[y * width + x] = currentClusterId;
-        var d = densities[y * width + x]; //EDIT: Not sure if we need 'nd < n'
+    if (clustermap[y * width + x] === 0) {
+      // If clustermap[y * width + x] doesn't contain a cluster
+      clustermap[y * width + x] = currentClusterId;
+      var d = densities[y * width + x]; //EDIT: Not sure if we need 'nd < n'
 
-        if (--x !== -1) {
-          var nd = densities[y * width + x];
-          if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) neighborQueue.push({ c: clustermap[y * width + x] = currentClusterId, x: x, y: y, d: densities[y * width + x] });
-        }
-
-        ++x;
-        if (++x !== width) {
-          var nd = densities[y * width + x];
-          if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) neighborQueue.push({ c: clustermap[y * width + x] = currentClusterId, x: x, y: y, d: densities[y * width + x] });
-        }
-
-        --x;
-        if (--y !== -1) {
-          var nd = densities[y * width + x];
-          if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) neighborQueue.push({ c: clustermap[y * width + x] = currentClusterId, x: x, y: y, d: densities[y * width + x] });
-        }
-
-        ++y;
-        if (++y !== height) {
-          var nd = densities[y * width + x];
-          if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) neighborQueue.push({ c: clustermap[y * width + x] = currentClusterId, x: x, y: y, d: densities[y * width + x] });
-        }
-
-        ++currentClusterId; // EDIT: Maybe use 'i + 1' as cluster ID
+      if (--x !== -1) {
+        var nd = densities[y * width + x];
+        if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) neighborQueue.push({ c: clustermap[y * width + x] = currentClusterId, x: x, y: y, d: densities[y * width + x] });
       }
+
+      ++x;
+      if (++x !== width) {
+        var nd = densities[y * width + x];
+        if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) neighborQueue.push({ c: clustermap[y * width + x] = currentClusterId, x: x, y: y, d: densities[y * width + x] });
+      }
+
+      --x;
+      if (--y !== -1) {
+        var nd = densities[y * width + x];
+        if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) neighborQueue.push({ c: clustermap[y * width + x] = currentClusterId, x: x, y: y, d: densities[y * width + x] });
+      }
+
+      ++y;
+      if (++y !== height) {
+        var nd = densities[y * width + x];
+        if (nd !== 0 && nd < d && clustermap[y * width + x] === 0) neighborQueue.push({ c: clustermap[y * width + x] = currentClusterId, x: x, y: y, d: densities[y * width + x] });
+      }
+
+      ++currentClusterId; // EDIT: Maybe use 'i + 1' as cluster ID
+    }
   }
 
   while (neighborQueue.length) {
@@ -3184,7 +2953,7 @@ var PriorityQueue = libUtility.PriorityQueue;
  * @param  {number} d1 The second input dimension (This value must match the one used to compute the histogram)
  * @param  {ClusterMapOptions} options
  * @return {Object} A cluster map object
- * 
+ *
  * To get a {@link ClusterMap} from the output object, call `new ClusterMap(clusterMap)`
  */
 function computeClusterMap_method3(densityMap, d0, d1, options) {
@@ -3320,7 +3089,7 @@ function computeClusterMap_method3(densityMap, d0, d1, options) {
  * @param  {string=} fileName=densityMap.png The file name of the downloaded image.
  */
 function downloadDensityMap(densityMap, fileName) {
-  if (!fileName) fileName = "densityMap.png";
+  if (!fileName) fileName = 'densityMap.png';
 
   libUtility.download(fileName, libUtility.imageUrlFromBytes(libUtility.F32toI24flipY(densityMap.data, [densityMap.minimum, densityMap.maximum], densityMap.width, densityMap.height), densityMap.width, densityMap.height));
 }
@@ -3421,17 +3190,17 @@ function pointInsidePolygon(P, V) {
   // loop through all edges of the polygon
   for (var i = 0; i < n; i++) {
     // Test edge from V[i] to V[i + 1]
-    if (V[i][1] <= P[1]) // If edge-start is on or below P
-      {
-        if (V[i + 1][1] > P[1]) // If edge is upward crossing
-          if (isLeft(V[i], V[i + 1], P) > 0) // If P is to the left of edge
-            ++wn; // We have a valid up intersect
-      } else // If edge-start is above P
-      {
-        if (V[i + 1][1] <= P[1]) // If edge is downward crossing
-          if (isLeft(V[i], V[i + 1], P) < 0) // If P is to the right of edge
-            --wn; // We have a valid down intersect
-      }
+    if (V[i][1] <= P[1]) {
+      // If edge-start is on or below P
+      if (V[i + 1][1] > P[1]) // If edge is upward crossing
+        if (isLeft(V[i], V[i + 1], P) > 0) // If P is to the left of edge
+          ++wn; // We have a valid up intersect
+    } else {
+      // If edge-start is above P
+      if (V[i + 1][1] <= P[1]) // If edge is downward crossing
+        if (isLeft(V[i], V[i + 1], P) < 0) // If P is to the right of edge
+          --wn; // We have a valid down intersect
+    }
   }
   return wn !== 0;
 }
@@ -3469,25 +3238,25 @@ function Colormap(gl, globalView) {
   var NUM_TICKS = 10;
 
   var sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
-  sdrLine.color = sdrLine.u4f("color");
+  sdrLine.color = sdrLine.u4f('color');
   sdrLine.color.apply(sdrLine, gl.foreColor);
-  sdrLine.matWorldViewProj = sdrLine.u4x4f("matWorldViewProj");
+  sdrLine.matWorldViewProj = sdrLine.u4x4f('matWorldViewProj');
   this.updateColorSchema = function () {
     sdrLine.color.apply(sdrLine, gl.foreColor);
   };
 
   var sdrColormap = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured, libShaders.Shaders.fsTextured1D);
-  sdrColormap.matWorldViewProj = sdrColormap.u4x4f("matWorldViewProj");
+  sdrColormap.matWorldViewProj = sdrColormap.u4x4f('matWorldViewProj');
   var colormaps = {
-    exhue: libGraphics.LoadTexture(gl, "/exhue.png", function () {
+    exhue: libGraphics.LoadTexture(gl, '/exhue.png', function () {
       globalView.invalidate();
     }), //function() { setTimeout(function() { globalView.invalidate(); }, 1000); }),
-    rainbow: libGraphics.LoadTexture(gl, "/rainbow.png", function () {
+    rainbow: libGraphics.LoadTexture(gl, '/rainbow.png', function () {
       globalView.invalidate();
     }), //function() { setTimeout(function() { globalView.invalidate(); }, 1000); }),
     2: libGraphics.LoadTextureFromByteArray(gl, new Uint8Array([255, 0, 0, 255, 0, 255, 0, 255]), 2, 1)
   };
-  this.builtinColormaps = ["exhue", "rainbow"];
+  this.builtinColormaps = ['exhue', 'rainbow'];
   var texColormap = colormaps.exhue;
 
   // Create a 2D line mesh
@@ -3593,8 +3362,8 @@ function Colormap(gl, globalView) {
         var exp = Math.ceil(Math.log(axis.tickDistance) / Math.log(10)); // Compute power-of-10 just above tickDistance -> pow(10, exp)
 
         // Try less aggressive rounding in each iteration until break condition is met
-        for (var i = 0; i < 10; ++i) // Maximum 10 iterations
-        {
+        for (var i = 0; i < 10; ++i) {
+          // Maximum 10 iterations
           axis.tickDistance = (maximum - minimum) / numTicks;
           var base = Math.pow(10, exp--);
           axis.tickDistance = Math.round(axis.tickDistance / base) * base; // Round tickDistance to base
@@ -3653,15 +3422,15 @@ function validateColor(color) {
     if (!libUtility.isUndefined(libUtility.colorNameToHex(color))) return true; // color is known color name
     var rgb;
     if ((rgb = libUtility.hexToRgb(color)) !== null && rgb.r >= 0x00 && rgb.r <= 0xFF && rgb.g >= 0x00 && rgb.g <= 0xFF && rgb.b >= 0x00 && rgb.b <= 0xFF) return true; // color is hex color
-    return "Unknown color " + color;
+    return 'Unknown color ' + color;
   }
 
   if (libUtility.isArray(color)) {
-    if (color.length !== 4) return "Color array needs to have 4 components (RGBA).";
+    if (color.length !== 4) return 'Color array needs to have 4 components (RGBA).';
     return true;
   }
 
-  return "Unknown color " + color;
+  return 'Unknown color ' + color;
 }
 
 function parseColor(color) {
@@ -3681,21 +3450,21 @@ function validateColormap(colormap) {
   if (libUtility.isString(colormap)) return validateColor(colormap);
 
   if (libUtility.isArray(colormap)) {
-    if (colormap.length === 0) return "Colormap array cannot be empty.";
+    if (colormap.length === 0) return 'Colormap array cannot be empty.';
     if (libUtility.isString(colormap[0])) {
       var err;
       for (var i = 0; i < colormap.length; ++i) {
         if ((err = validateColor(colormap[i])) !== true) return err;
       }return true;
     } else {
-      if (colormap.length % 4 !== 0) return "Colormap array length must be multiple of 4.";
+      if (colormap.length % 4 !== 0) return 'Colormap array length must be multiple of 4.';
       for (var i = 0; i < colormap.length; ++i) {
-        if (!libUtility.isNumber(colormap[i]) || colormap[i] < 0x00 || colormap[i] > 0xFF) return "Colormap array must contain numbers between 0 and 255.";
+        if (!libUtility.isNumber(colormap[i]) || colormap[i] < 0x00 || colormap[i] > 0xFF) return 'Colormap array must contain numbers between 0 and 255.';
       }return true;
     }
   }
 
-  return "Unknown colormap " + colormap;
+  return 'Unknown colormap ' + colormap;
 }
 
 function parseColormap(colormap) {
@@ -6154,33 +5923,33 @@ function GlobalView(div, startupOptions) {
 
   var canvas = null;
   for (var i = 0; i < div.children.length; ++i) {
-    if (div.children[i] instanceof HTMLCanvasElement && div.children[i].globalViewWebGLCanvas) // If div already contains a GlobalView-WebGL-canvas, ...
-      {
-        // Share canvas
-        canvas = /** @type {HTMLCanvasElement} */div.children[i];
-        break;
-      }
+    if (div.children[i] instanceof HTMLCanvasElement && div.children[i].globalViewWebGLCanvas) {
+      // If div already contains a GlobalView-WebGL-canvas, ...
+      // Share canvas
+      canvas = /** @type {HTMLCanvasElement} */div.children[i];
+      break;
+    }
   }if (canvas === null) {
     canvas = /** @type {HTMLCanvasElement} */document.createElement('canvas');
-    canvas.style.position = "static"; //"absolute";
-    canvas.style.left = canvas.style.top = "0px";
-    canvas.style.width = canvas.style.height = "100%";
-    canvas.style.backgroundColor = "transparent";
+    canvas.style.position = 'static'; //"absolute";
+    canvas.style.left = canvas.style.top = '0px';
+    canvas.style.width = canvas.style.height = '100%';
+    canvas.style.backgroundColor = 'transparent';
     canvas.globalViewWebGLCanvas = true;
     div.appendChild(canvas);
   }
 
   this['invalidate'] = this.invalidate = function () {}; // Silently ignore calls to invalidate during initialization
 
-  var gl = canvas.getContext("webgl");
+  var gl = canvas.getContext('webgl');
   if (!gl) {
-    alert("Error: WebGL not supported");
+    alert('Error: WebGL not supported');
     return;
   }
-  var OES_element_index_uint = gl.getExtension("OES_element_index_uint");
-  if (!OES_element_index_uint) console.warn("GlobalView warning: Unsupported WebGL extension: OES_element_index_uint");
+  var OES_element_index_uint = gl.getExtension('OES_element_index_uint');
+  if (!OES_element_index_uint) console.warn('GlobalView warning: Unsupported WebGL extension: OES_element_index_uint');
   gl.ext = gl.getExtension('ANGLE_instanced_arrays');
-  if (!gl.ext) console.warn("GlobalView warning: Unsupported WebGL extension: ANGLE_instanced_arrays");
+  if (!gl.ext) console.warn('GlobalView warning: Unsupported WebGL extension: ANGLE_instanced_arrays');
 
   var divStyle = window.getComputedStyle(div);
   gl.backColor = divStyle.backgroundColor == 'transparent' ? [0, 0, 0, 0] : libUtility.rgbStringToFloatArray(divStyle.backgroundColor);
@@ -6258,20 +6027,6 @@ function GlobalView(div, startupOptions) {
       var isAnimating = tf.animate();
       if (isAnimating) globalView.invalidate();
 
-      /*var _dcTransform, _transform;
-      if (flipY === true)
-      {
-        _dcTransform = matN.clone(tf.getDcTransform());
-        matN.scale(_dcTransform, [1, -1]);
-        _transform = matN.clone(tf.getTransform());
-        matN.scale(_transform, [1, -1]);
-      }
-      else
-      {
-        _dcTransform = tf.getDcTransform();
-        _transform = tf.getTransform();
-      }*/
-
       var d0 = activeInputs[0],
           d1 = activeInputs[1];
       // densityViewer.updateImages(imageViewer.getImages(), d0, d1);
@@ -6289,7 +6044,7 @@ function GlobalView(div, startupOptions) {
 
     if (mouseRect !== null && (mouseRect.width != 0 || mouseRect.height != 0)) gl.drawRect(mouseRect.x, mouseRect.y, mouseRect.width, mouseRect.height);
     if (mousePolygon !== null) {
-      gl.fillPolygon(mousePolygon, "rgba(255, 255, 255, 0.25)");
+      gl.fillPolygon(mousePolygon, 'rgba(255, 255, 255, 0.25)');
       gl.drawPolygon(mousePolygon);
     }
 
@@ -6298,14 +6053,14 @@ function GlobalView(div, startupOptions) {
     t = tn;
     if (SHOW_FPS) {
       ++frameCounter;
-      if (t - fpsStart > 10000.0 || frameCounter > 1000) // Refresh FPS after 10s or 1000 frames
-        {
-          //fps = (frameCounter == 1 ? 10000.0 : 1000 * frameCounter) / (t - fpsStart);
-          fps = 1000 * frameCounter / (t - fpsStart);
-          fpsStart = t;
-          frameCounter = 0;
-        }
-      if (fps !== null) gl.drawText(fps.toFixed(5) + " FPS", canvas.width - 8, 8, "topright");else gl.drawText("approx. " + Math.floor((frameCounter == 1 ? 10000.0 : 1000 * frameCounter) / (t - fpsStart)) + " FPS", canvas.width - 8, 8, "topright");
+      if (t - fpsStart > 10000.0 || frameCounter > 1000) {
+        // Refresh FPS after 10s or 1000 frames
+        //fps = (frameCounter == 1 ? 10000.0 : 1000 * frameCounter) / (t - fpsStart);
+        fps = 1000 * frameCounter / (t - fpsStart);
+        fpsStart = t;
+        frameCounter = 0;
+      }
+      if (fps !== null) gl.drawText(fps.toFixed(5) + ' FPS', canvas.width - 8, 8, 'topright');else gl.drawText('approx. ' + Math.floor((frameCounter == 1 ? 10000.0 : 1000 * frameCounter) / (t - fpsStart)) + ' FPS', canvas.width - 8, 8, 'topright');
     }
     if (SIMULATE_LOW_FPS) setTimeout(function () {
       globalView.invalidate();
@@ -6629,7 +6384,7 @@ function GlobalView(div, startupOptions) {
     // General plot options
     /** The space around the drawing area in the form [top, right, bottom, left]. X-axis, y-axis and colormap are drawn within padding space. */
     'padding': {
-      description: "The space around the drawing area in the form [top, right, bottom, left]. X-axis, y-axis and colormap are drawn within padding space.",
+      description: 'The space around the drawing area in the form [top, right, bottom, left]. X-axis, y-axis and colormap are drawn within padding space.',
       default: [50, 60, 50, 50],
       valid: function valid(value) {
         return libUtility.isNumber(value) || libUtility.isString(value) || libUtility.isArray(value) && value.length === 4;
@@ -6639,7 +6394,7 @@ function GlobalView(div, startupOptions) {
     },
     /** When enabled, shows a colormap to the right of the plot. */
     'showColormap': {
-      description: "When enabled, shows a colormap to the right of the plot.",
+      description: 'When enabled, shows a colormap to the right of the plot.',
       default: true,
       valid: [true, false],
       requireRedraw: true,
@@ -6647,7 +6402,7 @@ function GlobalView(div, startupOptions) {
     },
     /** When enabled, scrolling above the plot zooms in or out of the data. */
     'enableScrolling': {
-      description: "When enabled, scrolling above the plot zooms in or out of the data.",
+      description: 'When enabled, scrolling above the plot zooms in or out of the data.',
       default: true,
       valid: [true, false],
       requireRedraw: false,
@@ -6655,7 +6410,7 @@ function GlobalView(div, startupOptions) {
     },
     /** When enabled, thumbnails can be dragged with the mouse. */
     'enableThumbnailDragging': {
-      description: "When enabled, thumbnails can be dragged with the mouse.",
+      description: 'When enabled, thumbnails can be dragged with the mouse.',
       default: true,
       valid: [true, false],
       requireRedraw: false,
@@ -6665,7 +6420,7 @@ function GlobalView(div, startupOptions) {
     // Advanced plot options
     /** When enabled, the canvas is continuously rerendered at up to 60 frames per second. Keep this setting disabled to save processing resources. */
     'enableContinuousRendering': {
-      description: "When enabled, the canvas is continuously rerendered at up to 60 frames per second. Keep this setting disabled to save processing resources.",
+      description: 'When enabled, the canvas is continuously rerendered at up to 60 frames per second. Keep this setting disabled to save processing resources.',
       default: false,
       valid: [true, false],
       requireRedraw: true,
@@ -6673,7 +6428,7 @@ function GlobalView(div, startupOptions) {
     },
     /** Enables/disables blending in WebGL. Whenever using any kind of transparency, this setting should be kept enabled. */
     'enableTransparency': {
-      description: "Enables/disables blending in WebGL. Whenever using any kind of transparency, this setting should be kept enabled.",
+      description: 'Enables/disables blending in WebGL. Whenever using any kind of transparency, this setting should be kept enabled.',
       default: true,
       valid: [true, false],
       requireRedraw: true,
@@ -6708,7 +6463,7 @@ function GlobalView(div, startupOptions) {
     // Histogram options
     /** When enabled, shows a histogram between the x-axis and the plot. */
     'showXAxisHistogram': {
-      description: "When enabled, shows a histogram between the x-axis and the plot.",
+      description: 'When enabled, shows a histogram between the x-axis and the plot.',
       default: false,
       valid: [true, false],
       requireRedraw: true,
@@ -6716,7 +6471,7 @@ function GlobalView(div, startupOptions) {
     },
     /** When enabled, shows a histogram between the y-axis and the plot. */
     'showYAxisHistogram': {
-      description: "When enabled, shows a histogram between the y-axis and the plot.",
+      description: 'When enabled, shows a histogram between the y-axis and the plot.',
       default: false,
       valid: [true, false],
       requireRedraw: true,
@@ -6724,7 +6479,7 @@ function GlobalView(div, startupOptions) {
     },
     /** When enabled, shows a histogram between the colormap and the plot. */
     'showColormapHistogram': {
-      description: "When enabled, shows a histogram between the colormap and the plot.",
+      description: 'When enabled, shows a histogram between the colormap and the plot.',
       default: false,
       valid: [true, false],
       requireRedraw: true,
@@ -6732,7 +6487,7 @@ function GlobalView(div, startupOptions) {
     },
     /** Controls the number of bins within each histogram in the scatterplot. */
     'numHistogramBins': {
-      description: "Controls the number of bins within each histogram in the scatterplot.",
+      description: 'Controls the number of bins within each histogram in the scatterplot.',
       default: 50,
       valid: function valid(value) {
         return value >= 1;
@@ -6742,7 +6497,7 @@ function GlobalView(div, startupOptions) {
     },
     /** Controls the height of each histogram in the scatterplot (in pixels). */
     'histogramHeight': {
-      description: "Controls the height of each histogram in the scatterplot (in pixels).",
+      description: 'Controls the height of each histogram in the scatterplot (in pixels).',
       default: 64,
       valid: function valid(value) {
         return value >= 0;
@@ -6754,25 +6509,25 @@ function GlobalView(div, startupOptions) {
     // Point options
     /** Controls the shape of data points in the scatterplot. */
     'pointShape': {
-      description: "Controls the shape of data points in the scatterplot.",
-      default: "Circle",
-      valid: ["Rectangle", "Circle", "Cross", "Diamond", "Gaussian", "Custom"],
+      description: 'Controls the shape of data points in the scatterplot.',
+      default: 'Circle',
+      valid: ['Rectangle', 'Circle', 'Cross', 'Diamond', 'Gaussian', 'Custom'],
       requireRedraw: true,
       requireRecompile: true
     },
     /** When 'pointShape' is set to 'Custom', this defines a GLSL function given vec2 p, that returns opacity in the range [0.0 ... 1.0] at location p. */
     'customPointShape': {
       description: "When 'pointShape' is set to 'Custom', this defines a GLSL function given vec2 p, that returns opacity in the range [0.0 ... 1.0] at location p.",
-      default: "{ return 1.0; }",
+      default: '{ return 1.0; }',
       valid: function valid(value) {
-        return libGraphics.validateGLSL(gl, "float opacityMap(in vec2 p) " + value);
+        return libGraphics.validateGLSL(gl, 'float opacityMap(in vec2 p) ' + value);
       },
       requireRedraw: true,
       requireRecompile: true
     },
     /** Controls the diameter of data points in the scatterplot (in pixels). */
     'pointSize': {
-      description: "Controls the diameter of data points in the scatterplot (in pixels).",
+      description: 'Controls the diameter of data points in the scatterplot (in pixels).',
       default: 6,
       valid: function valid(value) {
         return value >= 0;
@@ -6782,7 +6537,7 @@ function GlobalView(div, startupOptions) {
     },
     /** Controls the visibility of data points in the scatterplot between 0 (invisible) and 1 (fully opaque). */
     'pointOpacity': {
-      description: "Controls the visibility of data points in the scatterplot between 0 (invisible) and 1 (fully opaque).",
+      description: 'Controls the visibility of data points in the scatterplot between 0 (invisible) and 1 (fully opaque).',
       default: 1,
       valid: function valid(value) {
         return value >= 0 && value <= 1;
@@ -6792,8 +6547,8 @@ function GlobalView(div, startupOptions) {
     },
     /** Controls the color of data points in the scatterplot. Valid values are an array of bytes in RGBA order or a colormap name. */
     'pointColor': {
-      description: "Controls the color of data points in the scatterplot. Valid values are an array of bytes in RGBA order or a colormap name.",
-      default: "exhue",
+      description: 'Controls the color of data points in the scatterplot. Valid values are an array of bytes in RGBA order or a colormap name.',
+      default: 'exhue',
       valid: function valid(value) {
         return libColormap.validateColormap(value);
       },
@@ -6804,7 +6559,7 @@ function GlobalView(div, startupOptions) {
     // Thumbnail options
     /** Controls the width/height of thumbnails in the scatterplot (in pixels). */
     'thumbnailSize': {
-      description: "Controls the width/height of thumbnails in the scatterplot (in pixels).",
+      description: 'Controls the width/height of thumbnails in the scatterplot (in pixels).',
       default: 64,
       valid: function valid(value) {
         return value > 0;
@@ -6814,7 +6569,7 @@ function GlobalView(div, startupOptions) {
     },
     /** Controls the width of thumbnail borders in the scatterplot. */
     'thumbnailBorderWidth': {
-      description: "Controls the width of thumbnail borders in the scatterplot.",
+      description: 'Controls the width of thumbnail borders in the scatterplot.',
       default: 1,
       valid: function valid(value) {
         return value >= 0;
@@ -6857,7 +6612,7 @@ function GlobalView(div, startupOptions) {
     },
     /** When enabled, links thumbnails to points using unique labels instead of lines. */
     'labelThumbnails': {
-      description: "When enabled, links thumbnails to points using unique labels instead of lines.",
+      description: 'When enabled, links thumbnails to points using unique labels instead of lines.',
       default: false,
       valid: [true, false],
       requireRedraw: true,
@@ -6905,7 +6660,7 @@ function GlobalView(div, startupOptions) {
   this.setOption = function (option, value) {
     // Validate option
     if (!OPTIONS.hasOwnProperty(option)) {
-      console.warn("GlobalView warning: Unsupported option: " + option);
+      console.warn('GlobalView warning: Unsupported option: ' + option);
       return;
     }
     var optionDefinition = OPTIONS[option];
@@ -6913,8 +6668,8 @@ function GlobalView(div, startupOptions) {
     // Validate value
     var validationResult;
     if (libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1 || libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true) {
-      console.warn("GlobalView warning: Invalid value for option " + option + ": " + value);
-      if (libUtility.isString(validationResult)) console.warn("                    " + validationResult);
+      console.warn('GlobalView warning: Invalid value for option ' + option + ': ' + value);
+      if (libUtility.isString(validationResult)) console.warn('                    ' + validationResult);
       return;
     }
 
@@ -6936,7 +6691,7 @@ function GlobalView(div, startupOptions) {
 
       // Validate option
       if (!OPTIONS.hasOwnProperty(option)) {
-        console.warn("GlobalView warning: Unsupported option: " + option);
+        console.warn('GlobalView warning: Unsupported option: ' + option);
         continue;
       }
       var optionDefinition = OPTIONS[option];
@@ -6945,11 +6700,11 @@ function GlobalView(div, startupOptions) {
       var value = newOptions[option],
           validationResult;
       if (libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1 || libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true) {
-        console.warn("GlobalView warning: Invalid value for option " + option + ": " + value);
+        console.warn('GlobalView warning: Invalid value for option ' + option + ': ' + value);
         if (libUtility.isString(validationResult)) {
           //HY:
           validationResult = optionDefinition.valid(value);
-          console.warn("                    " + validationResult);
+          console.warn('                    ' + validationResult);
         }
         continue;
       }
@@ -6971,7 +6726,7 @@ function GlobalView(div, startupOptions) {
   this.setDefaultOption = function (option) {
     // Validate option
     if (!OPTIONS.hasOwnProperty(option)) {
-      console.warn("GlobalView warning: Unsupported option: " + option);
+      console.warn('GlobalView warning: Unsupported option: ' + option);
       return;
     }
     var optionDefinition = OPTIONS[option];
@@ -6997,12 +6752,12 @@ function GlobalView(div, startupOptions) {
    */
   this.validateOption = function (option, value) {
     // Validate option
-    if (!OPTIONS.hasOwnProperty(option)) return "Unsupported option: " + option;
+    if (!OPTIONS.hasOwnProperty(option)) return 'Unsupported option: ' + option;
     var optionDefinition = OPTIONS[option];
 
     // Validate value
     var validationResult;
-    if (libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1 || libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true) return "Invalid value for option " + option + ": " + value + (libUtility.isString(validationResult) ? "\n    " + validationResult : "");
+    if (libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1 || libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true) return 'Invalid value for option ' + option + ': ' + value + (libUtility.isString(validationResult) ? '\n    ' + validationResult : '');
 
     return true;
   };
@@ -7019,7 +6774,7 @@ function GlobalView(div, startupOptions) {
 
       // Validate option
       if (!OPTIONS.hasOwnProperty(option)) {
-        errors.push("Unsupported option: " + option);
+        errors.push('Unsupported option: ' + option);
         continue;
       }
       var optionDefinition = OPTIONS[option];
@@ -7028,7 +6783,7 @@ function GlobalView(div, startupOptions) {
       var value = newOptions[option],
           validationResult;
       if (libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1 || libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true) {
-        errors.push("Invalid value for option " + option + ": " + value + (libUtility.isString(validationResult) ? "\n    " + validationResult : ""));
+        errors.push('Invalid value for option ' + option + ': ' + value + (libUtility.isString(validationResult) ? '\n    ' + validationResult : ''));
         continue;
       }
     }
@@ -7500,15 +7255,15 @@ function GlobalView(div, startupOptions) {
       var src = [v0.getValue(p), v1.getValue(p)];
       tf.datasetCoordToDeviceCoord(src, src); // Same as src = [v0.getValue(p) * scales[0] + offsets[0], v1.getValue(p) * scales[1] + offsets[1]];
 
-      if (libGlMatrix.vec2.dot([src[0] - offsets[0] - E[0], src[1] - offsets[1] - E[1]], eigenvec) > 0.0) // If src is above E in direction eigenvec
-        {
-          dest = libAlgorithm.vectorLineIntersection2D(src, eigenvec, bl, tl); // Project src in direction eigenvec onto line from bl, to tl
-          if (!dest) dest = libAlgorithm.vectorLineIntersection2D(src, eigenvec, tl, tr); // Project src in direction eigenvec onto line from tl, to tr
-        } else // If src is below E in direction eigenvec
-        {
-          dest = libAlgorithm.vectorLineIntersection2D(src, eigenvec, bl, br); // Project src in direction -eigenvec onto line from bl, to br
-          if (!dest) dest = libAlgorithm.vectorLineIntersection2D(src, eigenvec, br, tr); // Project src in direction -eigenvec onto line from br, to tr
-        }
+      if (libGlMatrix.vec2.dot([src[0] - offsets[0] - E[0], src[1] - offsets[1] - E[1]], eigenvec) > 0.0) {
+        // If src is above E in direction eigenvec
+        dest = libAlgorithm.vectorLineIntersection2D(src, eigenvec, bl, tl); // Project src in direction eigenvec onto line from bl, to tl
+        if (!dest) dest = libAlgorithm.vectorLineIntersection2D(src, eigenvec, tl, tr); // Project src in direction eigenvec onto line from tl, to tr
+      } else {
+        // If src is below E in direction eigenvec
+        dest = libAlgorithm.vectorLineIntersection2D(src, eigenvec, bl, br); // Project src in direction -eigenvec onto line from bl, to br
+        if (!dest) dest = libAlgorithm.vectorLineIntersection2D(src, eigenvec, br, tr); // Project src in direction -eigenvec onto line from br, to tr
+      }
       if (!dest) return; // This should never happen!
 
       // Convert position on rectangle [bl, br, tl, tr] to scalar -> imagePos
@@ -7609,7 +7364,7 @@ function GlobalView(div, startupOptions) {
       case 'project':
         console.warn("GlobalView warning: Can't place a single image using the 'project'-strategy");return false;
       default:
-        console.warn("GlobalView warning: Unknown image placement strategy: " + placement);return false;
+        console.warn('GlobalView warning: Unknown image placement strategy: ' + placement);return false;
     }
   };
   this['showImages'] =
@@ -7634,7 +7389,7 @@ function GlobalView(div, startupOptions) {
       case 'project':
         return this.showImages_project(points);
       default:
-        console.warn("GlobalView warning: Unknown image placement strategy: " + placement);return false;
+        console.warn('GlobalView warning: Unknown image placement strategy: ' + placement);return false;
     }
   };
 
@@ -7788,7 +7543,7 @@ function GlobalView(div, startupOptions) {
   this['onThumbnailSelectionChanged'] = null;
   var ctrlPressed = false,
       shiftPressed = false;
-  var CTRL = navigator.appVersion.indexOf("Mac") == -1 ? 17 : 224;
+  var CTRL = navigator.appVersion.indexOf('Mac') == -1 ? 17 : 224;
   libUtility.addKeyDownHandler(function (event) {
     if (event.keyCode === CTRL) ctrlPressed = true;else if (event.keyCode === 16) shiftPressed = true;
   });
@@ -7808,25 +7563,25 @@ function GlobalView(div, startupOptions) {
     // Fire mouse-down handler
     this['onMouseDown'](event);
 
-    if (event['viewDragging']) // If mouse-down handler set ['viewDragging'] property to a truthy value
-      {
-        if (p[0] > plotBounds.x + plotBounds.width) {
-          viewDragX = viewDragY = false;
-          viewDragZ = colormap.visible;
-        } else {
-          viewDragX = p[0] >= plotBounds.x;
-          viewDragY = p[1] <= plotBounds.y + plotBounds.height;
-          viewDragZ = false;
-        }
-
-        // Transform mousepos from canvas space to device coordinates
-        p[0] = 2 * p[0] / canvasBounds.width - 1;
-        p[1] = 1 - 2 * p[1] / canvasBounds.height;
-        p[2] = 1 - (p[2] - plotBounds.y) / plotBounds.height;
-
-        if (viewDragX || viewDragY || viewDragZ) viewDragStartPos = p; // Initiate view dragging
-        return; // Prevent other mouse-down events
+    if (event['viewDragging']) {
+      // If mouse-down handler set ['viewDragging'] property to a truthy value
+      if (p[0] > plotBounds.x + plotBounds.width) {
+        viewDragX = viewDragY = false;
+        viewDragZ = colormap.visible;
       } else {
+        viewDragX = p[0] >= plotBounds.x;
+        viewDragY = p[1] <= plotBounds.y + plotBounds.height;
+        viewDragZ = false;
+      }
+
+      // Transform mousepos from canvas space to device coordinates
+      p[0] = 2 * p[0] / canvasBounds.width - 1;
+      p[1] = 1 - 2 * p[1] / canvasBounds.height;
+      p[2] = 1 - (p[2] - plotBounds.y) / plotBounds.height;
+
+      if (viewDragX || viewDragY || viewDragZ) viewDragStartPos = p; // Initiate view dragging
+      return; // Prevent other mouse-down events
+    } else {
       // Transform mousepos from canvas space to device coordinates
       p[0] = 2 * p[0] / canvasBounds.width - 1;
       p[1] = 1 - 2 * p[1] / canvasBounds.height;
@@ -8413,7 +8168,7 @@ var WebGLUtils = function () {
       if (container) {
         var str = window.WebGLRenderingContext ? OTHER_PROBLEM : GET_A_WEBGL_BROWSER;
         if (msg) {
-          str += "<br/><br/>Status: " + msg;
+          str += '<br/><br/>Status: ' + msg;
         }
         container.innerHTML = makeFailHTML(str);
       }
@@ -8422,14 +8177,14 @@ var WebGLUtils = function () {
     opt_onError = opt_onError || handleCreationError;
 
     if (canvas.addEventListener) {
-      canvas.addEventListener("webglcontextcreationerror", function (event) {
+      canvas.addEventListener('webglcontextcreationerror', function (event) {
         opt_onError(event.statusMessage);
       }, false);
     }
     var context = create3DContext(canvas, opt_attribs);
     if (!context) {
       if (!window.WebGLRenderingContext) {
-        opt_onError("");
+        opt_onError('');
       }
     }
     return context;
@@ -8442,7 +8197,7 @@ var WebGLUtils = function () {
    * @return {WebGLRenderingContext|null} The created context.
    */
   var create3DContext = function create3DContext(canvas, opt_attribs) {
-    var names = ["webgl", "experimental-webgl", "webkit-3d", "moz-webgl"];
+    var names = ['webgl', 'experimental-webgl', 'webkit-3d', 'moz-webgl'];
     var context = null;
     for (var ii = 0; ii < names.length; ++ii) {
       try {
@@ -8474,7 +8229,7 @@ var window_requestAnimFrame = function () {
  * Provides requestAnimationFrame in a cross browser way.
  */
 function requestAnimFrame(callback) {
-  // Initially tried exporting window_requestAnimFrame directly, but got "Illegal Invocation". 
+  // Initially tried exporting window_requestAnimFrame directly, but got "Illegal Invocation".
   // probably related to this: https://stackoverflow.com/questions/10743596/why-are-certain-function-calls-termed-illegal-invocations-in-javascript
   window_requestAnimFrame(callback);
 }
@@ -8499,11 +8254,11 @@ function TextRenderContext(gl, canvas) {
   textCanvas.style.backgroundColor = 'transparent';
   textCanvas.style.pointerEvents = 'none';
   textCanvas.style.zIndex = canvas.style.zIndex + 1;
-  textCanvas.style.position = "static"; //"absolute";
+  textCanvas.style.position = 'static'; //"absolute";
   //textCanvas.style.left = textCanvas.style.top = "0px";
-  textCanvas.style.width = textCanvas.style.height = "100%";
+  textCanvas.style.width = textCanvas.style.height = '100%';
   canvas.parentElement.appendChild(textCanvas);
-  var ctx = textCanvas.getContext("2d");
+  var ctx = textCanvas.getContext('2d');
   var _font = ctx.font;
   var fontHeight = ctx.measureText('M').width;
 
@@ -8522,39 +8277,39 @@ function TextRenderContext(gl, canvas) {
     switch (anchor) {
       default:
         // 'topleft'
-        ctx.textAlign = "left";
+        ctx.textAlign = 'left';
         offsetV = fontHeight;
         break;
       case 'topcenter':
-        ctx.textAlign = "center";
+        ctx.textAlign = 'center';
         offsetV = fontHeight;
         break;
       case 'topright':
-        ctx.textAlign = "right";
+        ctx.textAlign = 'right';
         offsetV = fontHeight;
         break;
       case 'middleleft':
-        ctx.textAlign = "left";
+        ctx.textAlign = 'left';
         offsetV = fontHeight * 0.53;
         break;
       case 'middlecenter':
-        ctx.textAlign = "center";
+        ctx.textAlign = 'center';
         offsetV = fontHeight * 0.53;
         break;
       case 'middleright':
-        ctx.textAlign = "right";
+        ctx.textAlign = 'right';
         offsetV = fontHeight * 0.53;
         break;
       case 'bottomleft':
-        ctx.textAlign = "left";
+        ctx.textAlign = 'left';
         offsetV = 0;
         break;
       case 'bottomcenter':
-        ctx.textAlign = "center";
+        ctx.textAlign = 'center';
         offsetV = 0;
         break;
       case 'bottomright':
-        ctx.textAlign = "right";
+        ctx.textAlign = 'right';
         offsetV = 0;
         break;
     }
@@ -8624,9 +8379,9 @@ function TextRenderContext(gl, canvas) {
     ctx.font = _font = font;
 
     // Compute fontHeight (Source: http://stackoverflow.com/a/7462767)
-    var body = document.getElementsByTagName("body")[0];
-    var dummy = document.createElement("div");
-    var dummyText = document.createTextNode("M");
+    var body = document.getElementsByTagName('body')[0];
+    var dummy = document.createElement('div');
+    var dummyText = document.createTextNode('M');
     dummy.appendChild(dummyText);
     dummy.style.font = font;
     body.appendChild(dummy);
@@ -8646,7 +8401,7 @@ function TextRenderContext(gl, canvas) {
       textCanvas.height = offscreenRendering.height;
     } else {
       var rect = textCanvas.getBoundingClientRect();
-      textCanvas.style.marginTop = -(rect.bottom - rect.top) + "px";
+      textCanvas.style.marginTop = -(rect.bottom - rect.top) + 'px';
       textCanvas.width = rect.right - rect.left;
       textCanvas.height = rect.bottom - rect.top;
     }
@@ -8663,7 +8418,7 @@ function TextRenderContext(gl, canvas) {
     offscreenRendering.oldCanvas = textCanvas;
     offscreenRendering.oldContext = ctx;
     textCanvas = document.createElement('canvas');
-    ctx = textCanvas.getContext("2d");
+    ctx = textCanvas.getContext('2d');
     this.onResize();
   };
   this.disableOffscreenRendering = function () {
@@ -8775,8 +8530,8 @@ function PointViewer(gl, globalView) {
         var c = libColormap.parseColormap(color);
         if (c) pointSet.colormap = libGraphics.LoadTextureFromByteArray(gl, c, c.length / 4, 1);
       } else {
-        console.warn("GlobalView warning: Invalid value for point set color: " + color);
-        if (libUtility.isString(validationResult)) console.warn("                    " + validationResult);
+        console.warn('GlobalView warning: Invalid value for point set color: ' + color);
+        if (libUtility.isString(validationResult)) console.warn('                    ' + validationResult);
       }
     }
     pointSet.opacity = opacity;
@@ -8899,25 +8654,25 @@ function PointViewer(gl, globalView) {
     this.getPosCode = function (forLineSdr) {
       // Create shader code for getPos() function -> getPosCode
       var getPosCode = '\n{0}\nuniform vec{1} offsets, scales, animatedScales;\nuniform float n;\n#define PI 3.14159265359\nvec{1} getPos()\n{\n  return offsets + vec{1}({2}) * scales + vec{1}({3}) * animatedScales;\n}\n';
-      var attrDeclCode = "",
-          inputs = [/c(\d+)/g, "0.0"],
+      var attrDeclCode = '',
+          inputs = [/c(\d+)/g, '0.0'],
           inputCode = [],
           animatedInputCode = [];
       for (var d = 0, i = 0; d < ndim; d += 4, ++i) {
         var attrLen = Math.min(4, ndim - d);
-        attrDeclCode += "attribute " + (attrLen == 1 ? "float" : "vec" + attrLen) + " p" + i + ";\n";
+        attrDeclCode += 'attribute ' + (attrLen == 1 ? 'float' : 'vec' + attrLen) + ' p' + i + ';\n';
         for (var a = 0; a < attrLen; ++a) {
-          inputs.push("p" + i + (attrLen == 1 ? "" : "[" + a + "]"));
+          inputs.push('p' + i + (attrLen == 1 ? '' : '[' + a + ']'));
         }
       }
       //HY:
       var ND = 4; //todo: should use the globalView.ND
       for (var d = 0; d < ND; ++d) {
-        inputCode.push(String.prototype.format2.apply(activeInputVectors[d] ? activeInputVectors[d].getValueCode : "0.0", inputs));
-        animatedInputCode.push(String.prototype.format2.apply(activeInputVectors[d] ? animatedInputVectors[d].getValueCode : "0.0", inputs));
+        inputCode.push(String.prototype.format2.apply(activeInputVectors[d] ? activeInputVectors[d].getValueCode : '0.0', inputs));
+        animatedInputCode.push(String.prototype.format2.apply(activeInputVectors[d] ? animatedInputVectors[d].getValueCode : '0.0', inputs));
       }
-      attrDeclCode += "attribute float i;\n";
-      if (forLineSdr) getPosCode = getPosCode.format(attrDeclCode, 4, inputCode.slice(0, 4).join(", "), animatedInputCode.slice(0, 4).join(", "));else getPosCode = getPosCode.format(attrDeclCode, 3, inputCode.slice(0, 3).join(", "), animatedInputCode.slice(0, 3).join(", "));
+      attrDeclCode += 'attribute float i;\n';
+      if (forLineSdr) getPosCode = getPosCode.format(attrDeclCode, 4, inputCode.slice(0, 4).join(', '), animatedInputCode.slice(0, 4).join(', '));else getPosCode = getPosCode.format(attrDeclCode, 3, inputCode.slice(0, 3).join(', '), animatedInputCode.slice(0, 3).join(', '));
 
       //console.log(getPosCode);
       return getPosCode;
@@ -8932,57 +8687,57 @@ function PointViewer(gl, globalView) {
       if (this.sdrLine !== null) this.sdrLine.free();
 
       // Create shader code for opacityMap() function -> opacityMapCoe
-      var opacityMapCoe = "float opacityMap(in vec2 p) ";
+      var opacityMapCoe = 'float opacityMap(in vec2 p) ';
       switch (options['pointShape']) {
-        case "Circle":
-          opacityMapCoe += "{ return 1.0 - pow(p.x*p.x + p.y*p.y, pointSize / 4.0); }";
+        case 'Circle':
+          opacityMapCoe += '{ return 1.0 - pow(p.x*p.x + p.y*p.y, pointSize / 4.0); }';
           //opacityMapCoe += "{ return p.x*p.x + p.y*p.y < 1.0 ? 1.0 : 0.0; }";
           break;
-        case "Cross":
-          opacityMapCoe += "{ return pointSize / 4.0 * (max(4.0 / pointSize - abs(p.x - p.y), 0.0) + max(4.0 / pointSize - abs(-p.x - p.y), 0.0)); }";
+        case 'Cross':
+          opacityMapCoe += '{ return pointSize / 4.0 * (max(4.0 / pointSize - abs(p.x - p.y), 0.0) + max(4.0 / pointSize - abs(-p.x - p.y), 0.0)); }';
           break;
-        case "Diamond":
-          opacityMapCoe += "{ return 1.0 - pow(abs(p.x) + abs(p.y), 2.0 + pointSize / 4.0); }";
+        case 'Diamond':
+          opacityMapCoe += '{ return 1.0 - pow(abs(p.x) + abs(p.y), 2.0 + pointSize / 4.0); }';
           break;
-        case "Gaussian":
+        case 'Gaussian':
           //opacityMapCoe += "{ return exp({0} * (p.x*p.x + p.y*p.y)); }".format(Math.log(0.001));
-          opacityMapCoe += "{ return exp(-7.0 * (p.x*p.x + p.y*p.y)); }";
+          opacityMapCoe += '{ return exp(-7.0 * (p.x*p.x + p.y*p.y)); }';
           break;
-        case "Custom":
+        case 'Custom':
           opacityMapCoe += options['customPointShape'];
           break;
         default:
-          opacityMapCoe += "{ return 1.0; }";
+          opacityMapCoe += '{ return 1.0; }';
           break;
       }
 
       // Compile shaders
-      this.sdr = new libGraphics.Shader(gl, [this.getPosCode(false), libShaders.Shaders.vsDataPoint], ["precision highp float; uniform float pointSize;", opacityMapCoe, libShaders.Shaders.fsDataPoint]);
+      this.sdr = new libGraphics.Shader(gl, [this.getPosCode(false), libShaders.Shaders.vsDataPoint], ['precision highp float; uniform float pointSize;', opacityMapCoe, libShaders.Shaders.fsDataPoint]);
       //this.sdr.transform = this.sdr.u1fv("transform");
-      this.sdr.offsets = this.sdr.u3f("offsets");
-      this.sdr.scales = this.sdr.u3f("scales");
-      this.sdr.animatedScales = this.sdr.u3f("animatedScales");
-      this.sdr.flipY = this.sdr.u1i("flipY");
-      this.sdr.quadsize = this.sdr.u2f("quadsize");
-      this.sdr.pointOpacity = this.sdr.u1f("pointOpacity");this.sdr.pointOpacity(options['pointOpacity']);
-      this.sdr.pointSize = this.sdr.u1f("pointSize");this.sdr.pointSize(options['pointSize']);
-      this.sdr.n = this.sdr.u1f("n");if (this.sdr.n) this.sdr.n(numvertices);
-      this.sdr.posattr = [this.sdr.getAttribLocation("p0"), this.sdr.getAttribLocation("p1"), this.sdr.getAttribLocation("p2"), this.sdr.getAttribLocation("p3")];
-      this.sdr.vidattr = this.sdr.getAttribLocation("i");
-      this.sdrLine = new libGraphics.Shader(gl, [this.getPosCode(true), libShaders.Shaders.vsDataLine], ["precision highp float; uniform float pointSize;", opacityMapCoe, libShaders.Shaders.fsDataLine]);
+      this.sdr.offsets = this.sdr.u3f('offsets');
+      this.sdr.scales = this.sdr.u3f('scales');
+      this.sdr.animatedScales = this.sdr.u3f('animatedScales');
+      this.sdr.flipY = this.sdr.u1i('flipY');
+      this.sdr.quadsize = this.sdr.u2f('quadsize');
+      this.sdr.pointOpacity = this.sdr.u1f('pointOpacity');this.sdr.pointOpacity(options['pointOpacity']);
+      this.sdr.pointSize = this.sdr.u1f('pointSize');this.sdr.pointSize(options['pointSize']);
+      this.sdr.n = this.sdr.u1f('n');if (this.sdr.n) this.sdr.n(numvertices);
+      this.sdr.posattr = [this.sdr.getAttribLocation('p0'), this.sdr.getAttribLocation('p1'), this.sdr.getAttribLocation('p2'), this.sdr.getAttribLocation('p3')];
+      this.sdr.vidattr = this.sdr.getAttribLocation('i');
+      this.sdrLine = new libGraphics.Shader(gl, [this.getPosCode(true), libShaders.Shaders.vsDataLine], ['precision highp float; uniform float pointSize;', opacityMapCoe, libShaders.Shaders.fsDataLine]);
       //this.sdrLine.transform = this.sdrLine.u1fv("transform");
-      this.sdrLine.offsets = this.sdrLine.u4f("offsets");
-      this.sdrLine.scales = this.sdrLine.u4f("scales");
-      this.sdrLine.animatedScales = this.sdrLine.u4f("animatedScales");
-      this.sdrLine.flipY = this.sdrLine.u1i("flipY");
-      this.sdrLine.quadsize = this.sdrLine.u2f("quadsize");
-      this.sdrLine.pointOpacity = this.sdrLine.u1f("pointOpacity");this.sdrLine.pointOpacity(options['pointOpacity']);
-      this.sdrLine.pointSize = this.sdrLine.u1f("pointSize");this.sdrLine.pointSize(options['pointSize']);
-      this.sdrLine.n = this.sdrLine.u1f("n");if (this.sdrLine.n) this.sdrLine.n(numvertices);
-      this.sdrLine.posattr = [this.sdrLine.getAttribLocation("p0"), this.sdrLine.getAttribLocation("p1"), this.sdrLine.getAttribLocation("p2"), this.sdrLine.getAttribLocation("p3")];
-      this.sdrLine.vidattr = this.sdrLine.getAttribLocation("i");
-      this.sdrLine.lineattr = this.sdrLine.getAttribLocation("lineOffset");
-      this.sdrLine.lineTransform = this.sdrLine.u2x2f("lineTransform");
+      this.sdrLine.offsets = this.sdrLine.u4f('offsets');
+      this.sdrLine.scales = this.sdrLine.u4f('scales');
+      this.sdrLine.animatedScales = this.sdrLine.u4f('animatedScales');
+      this.sdrLine.flipY = this.sdrLine.u1i('flipY');
+      this.sdrLine.quadsize = this.sdrLine.u2f('quadsize');
+      this.sdrLine.pointOpacity = this.sdrLine.u1f('pointOpacity');this.sdrLine.pointOpacity(options['pointOpacity']);
+      this.sdrLine.pointSize = this.sdrLine.u1f('pointSize');this.sdrLine.pointSize(options['pointSize']);
+      this.sdrLine.n = this.sdrLine.u1f('n');if (this.sdrLine.n) this.sdrLine.n(numvertices);
+      this.sdrLine.posattr = [this.sdrLine.getAttribLocation('p0'), this.sdrLine.getAttribLocation('p1'), this.sdrLine.getAttribLocation('p2'), this.sdrLine.getAttribLocation('p3')];
+      this.sdrLine.vidattr = this.sdrLine.getAttribLocation('i');
+      this.sdrLine.lineattr = this.sdrLine.getAttribLocation('lineOffset');
+      this.sdrLine.lineTransform = this.sdrLine.u2x2f('lineTransform');
     };
     if (activeInputVectors && animatedInputVectors) this.recompileShader(options);
 
@@ -13291,12 +13046,12 @@ function Thumbnail(globalView) {
  */
 function ImageViewer(gl, globalView) {
   var sdrImage = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured, libShaders.Shaders.fsTextured);
-  sdrImage.matWorldViewProj = sdrImage.u4x4f("matWorldViewProj");
+  sdrImage.matWorldViewProj = sdrImage.u4x4f('matWorldViewProj');
 
   var sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
-  sdrLine.color = sdrLine.u4f("color");
+  sdrLine.color = sdrLine.u4f('color');
   sdrLine.color.apply(sdrLine, gl.foreColor);
-  sdrLine.matWorldViewProj = sdrLine.u4x4f("matWorldViewProj");
+  sdrLine.matWorldViewProj = sdrLine.u4x4f('matWorldViewProj');
 
   // Create a 2D line mesh
   var meshLine = new libGraphics.Mesh(gl, new Float32Array([
@@ -13656,15 +13411,15 @@ var libUtility = __webpack_require__(0);
  */
 function DensityViewer(gl, globalView) {
   var sdrDensityMap = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured2, libShaders.Shaders.fsViewDensityMap);
-  sdrDensityMap.matWorldViewProj = sdrDensityMap.u4x4f("matWorldViewProj");
-  sdrDensityMap.matTexCoordTransform = sdrDensityMap.u2x2f("matTexCoordTransform");
-  sdrDensityMap.scale = sdrDensityMap.u1f("scale");
-  sdrDensityMap.color = sdrDensityMap.u3f("color");
+  sdrDensityMap.matWorldViewProj = sdrDensityMap.u4x4f('matWorldViewProj');
+  sdrDensityMap.matTexCoordTransform = sdrDensityMap.u2x2f('matTexCoordTransform');
+  sdrDensityMap.scale = sdrDensityMap.u1f('scale');
+  sdrDensityMap.color = sdrDensityMap.u3f('color');
   //var colormap = libGraphics.LoadTexture(gl, "cmDensityMap.png", function() { globalView.invalidate(); });
 
   var sdrClusterMap = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured2, libShaders.Shaders.fsTextured);
-  sdrClusterMap.matWorldViewProj = sdrClusterMap.u4x4f("matWorldViewProj");
-  sdrClusterMap.matTexCoordTransform = sdrClusterMap.u2x2f("matTexCoordTransform");
+  sdrClusterMap.matWorldViewProj = sdrClusterMap.u4x4f('matWorldViewProj');
+  sdrClusterMap.matTexCoordTransform = sdrClusterMap.u2x2f('matTexCoordTransform');
 
   // Create a 2D quad mesh
   var meshQuad = new libGraphics.Mesh(gl, new Float32Array([
@@ -13694,96 +13449,96 @@ function DensityViewer(gl, globalView) {
     var pos = libGlMatrix.vec2.create();
 
     if (this.showClusterMap) {
-      if (dataset && dataset.isClusterMapReady(d0, d1)) // If clusterMap is ready
-        {
-          var clusterMap = dataset.requestClusterMap(d0, d1, clusterMapOptions); // Retrieve clusterMap synchronously (since we already know it's ready)
-          if (clusterMap.width === 0 || clusterMap.height === 0) return;
+      if (dataset && dataset.isClusterMapReady(d0, d1)) {
+        // If clusterMap is ready
+        var clusterMap = dataset.requestClusterMap(d0, d1, clusterMapOptions); // Retrieve clusterMap synchronously (since we already know it's ready)
+        if (clusterMap.width === 0 || clusterMap.height === 0) return;
 
-          // Create texture if it wasn't already created
-          var texture = this.showDensityMap ? clusterMap.dtex : clusterMap.tex;
-          if (!texture) {
-            var densityMap = this.showDensityMap ? dataset.requestDensityMap(d0, d1, undefined, undefined) : null; // Retrieve densityMap synchronously (since we already know it's ready)
-            var rgba = new Uint8Array(4 * clusterMap.data.length);
-            for (var i = 0; i < clusterMap.data.length; ++i) {
-              var c = clusterMap.data[i];
+        // Create texture if it wasn't already created
+        var texture = this.showDensityMap ? clusterMap.dtex : clusterMap.tex;
+        if (!texture) {
+          var densityMap = this.showDensityMap ? dataset.requestDensityMap(d0, d1, undefined, undefined) : null; // Retrieve densityMap synchronously (since we already know it's ready)
+          var rgba = new Uint8Array(4 * clusterMap.data.length);
+          for (var i = 0; i < clusterMap.data.length; ++i) {
+            var c = clusterMap.data[i];
 
-              if (c === 0) {
-                rgba[4 * i + 0] = 0;
-                rgba[4 * i + 1] = 0;
-                rgba[4 * i + 2] = 0;
-                rgba[4 * i + 3] = 0;
-              } else {
-                // Use random RGB color (deprecated)
-                /*var clr = [Math.sin(++c) * 10000, Math.sin(++c) * 10000, Math.sin(++c) * 10000];
-                clr[0] -= Math.floor(clr[0]);
-                clr[1] -= Math.floor(clr[1]);
-                clr[2] -= Math.floor(clr[2]);*/
+            if (c === 0) {
+              rgba[4 * i + 0] = 0;
+              rgba[4 * i + 1] = 0;
+              rgba[4 * i + 2] = 0;
+              rgba[4 * i + 3] = 0;
+            } else {
+              // Use random RGB color (deprecated)
+              /*var clr = [Math.sin(++c) * 10000, Math.sin(++c) * 10000, Math.sin(++c) * 10000];
+              clr[0] -= Math.floor(clr[0]);
+              clr[1] -= Math.floor(clr[1]);
+              clr[2] -= Math.floor(clr[2]);*/
 
-                // Use evenly spaced hues
-                --c; // --c ... ID to index
-                var d = densityMap ? (densityMap.data[i] - clusterMap.minDensities[c]) / (clusterMap.densities[c] - clusterMap.minDensities[c]) : 0.75;
-                if (d < 0.0) d = 0.0;
-                c = (c + 0.5) / clusterMap.n; // +0.5 ... Use off-hues
-                if (c > 1) c -= 1;
+              // Use evenly spaced hues
+              --c; // --c ... ID to index
+              var d = densityMap ? (densityMap.data[i] - clusterMap.minDensities[c]) / (clusterMap.densities[c] - clusterMap.minDensities[c]) : 0.75;
+              if (d < 0.0) d = 0.0;
+              c = (c + 0.5) / clusterMap.n; // +0.5 ... Use off-hues
+              if (c > 1) c -= 1;
 
-                var clr = [c, 0.5, 1]; // 0.5 ... Use 50% saturated colors
-                clr = libUtility.hsv2rgb(clr);
+              var clr = [c, 0.5, 1]; // 0.5 ... Use 50% saturated colors
+              clr = libUtility.hsv2rgb(clr);
 
-                rgba[4 * i + 0] = Math.floor(clr[0] * 255);
-                rgba[4 * i + 1] = Math.floor(clr[1] * 255);
-                rgba[4 * i + 2] = Math.floor(clr[2] * 255);
-                rgba[4 * i + 3] = Math.floor(d * 255);
-              }
+              rgba[4 * i + 0] = Math.floor(clr[0] * 255);
+              rgba[4 * i + 1] = Math.floor(clr[1] * 255);
+              rgba[4 * i + 2] = Math.floor(clr[2] * 255);
+              rgba[4 * i + 3] = Math.floor(d * 255);
             }
-            //libUtility.download("clustermap.png", libUtility.imageUrlFromBytes(rgba, clusterMap.width, clusterMap.height));
-            texture = libGraphics.LoadTextureFromByteArray(gl, rgba, clusterMap.width, clusterMap.height);
-            if (this.showDensityMap) clusterMap.dtex = texture;else clusterMap.tex = texture;
           }
+          //libUtility.download("clustermap.png", libUtility.imageUrlFromBytes(rgba, clusterMap.width, clusterMap.height));
+          texture = libGraphics.LoadTextureFromByteArray(gl, rgba, clusterMap.width, clusterMap.height);
+          if (this.showDensityMap) clusterMap.dtex = texture;else clusterMap.tex = texture;
+        }
 
-          sdrClusterMap.bind();
-          meshQuad.bind(sdrClusterMap, texture);
+        sdrClusterMap.bind();
+        meshQuad.bind(sdrClusterMap, texture);
 
-          var mattrans = libGlMatrix.mat4.create();
-          if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-          tf.datasetCoordToDeviceCoord(pos, d0 > d1 ? [clusterMap.invTransformY(0), clusterMap.invTransformX(0)] : [clusterMap.invTransformX(0), clusterMap.invTransformY(0)]);
-          libGlMatrix.mat4.translate(mattrans, mattrans, [pos[0], pos[1], 0.0]);
-          tf.datasetDistToDeviceDist(pos, d0 > d1 ? [clusterMap.height / clusterMap.transform[2], clusterMap.width / clusterMap.transform[0]] : [clusterMap.width / clusterMap.transform[0], clusterMap.height / clusterMap.transform[2]]);
-          libGlMatrix.mat4.scale(mattrans, mattrans, [pos[0], pos[1], 1.0]);
-          sdrClusterMap.matWorldViewProj(mattrans);
+        var mattrans = libGlMatrix.mat4.create();
+        if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+        tf.datasetCoordToDeviceCoord(pos, d0 > d1 ? [clusterMap.invTransformY(0), clusterMap.invTransformX(0)] : [clusterMap.invTransformX(0), clusterMap.invTransformY(0)]);
+        libGlMatrix.mat4.translate(mattrans, mattrans, [pos[0], pos[1], 0.0]);
+        tf.datasetDistToDeviceDist(pos, d0 > d1 ? [clusterMap.height / clusterMap.transform[2], clusterMap.width / clusterMap.transform[0]] : [clusterMap.width / clusterMap.transform[0], clusterMap.height / clusterMap.transform[2]]);
+        libGlMatrix.mat4.scale(mattrans, mattrans, [pos[0], pos[1], 1.0]);
+        sdrClusterMap.matWorldViewProj(mattrans);
 
-          sdrClusterMap.matTexCoordTransform(new Float32Array(d0 > d1 ? [0, 1, 1, 0] : [1, 0, 0, 1]));
-          meshQuad.draw();
-        } else // If clusterMap isn't ready yet
+        sdrClusterMap.matTexCoordTransform(new Float32Array(d0 > d1 ? [0, 1, 1, 0] : [1, 0, 0, 1]));
+        meshQuad.draw();
+      } else // If clusterMap isn't ready yet
         dataset.requestClusterMap(d0, d1, clusterMapOptions, function () {
           globalView.invalidate();
         }); // Request clusterMap and redraw once it's computed
     } else if (this.showDensityMap) {
-      if (dataset && dataset.isDensityMapReady(d0, d1)) // If densityMap is ready
-        {
-          var densityMap = /** @type {DensityMap} */dataset.requestDensityMap(d0, d1, undefined, undefined); // Retrieve densityMap synchronously (since we already know it's ready)
-          if (densityMap.width === 0 || densityMap.height === 0) return;
-          //libUtility.download("densityMap.png", libUtility.imageUrlFromBytes(libUtility.F32toI24flipY(densityMap.data, [densityMap.minimum, densityMap.maximum], densityMap.width, densityMap.height), densityMap.width, densityMap.height));
+      if (dataset && dataset.isDensityMapReady(d0, d1)) {
+        // If densityMap is ready
+        var densityMap = /** @type {DensityMap} */dataset.requestDensityMap(d0, d1, undefined, undefined); // Retrieve densityMap synchronously (since we already know it's ready)
+        if (densityMap.width === 0 || densityMap.height === 0) return;
+        //libUtility.download("densityMap.png", libUtility.imageUrlFromBytes(libUtility.F32toI24flipY(densityMap.data, [densityMap.minimum, densityMap.maximum], densityMap.width, densityMap.height), densityMap.width, densityMap.height));
 
-          // Create texture if it wasn't already created
-          if (!densityMap.texture) densityMap.texture = libGraphics.LoadTextureFromFloatArray(gl, densityMap.data, densityMap.width, densityMap.height);
+        // Create texture if it wasn't already created
+        if (!densityMap.texture) densityMap.texture = libGraphics.LoadTextureFromFloatArray(gl, densityMap.data, densityMap.width, densityMap.height);
 
-          sdrDensityMap.bind();
-          meshQuad.bind(sdrDensityMap, [densityMap.texture] /*colormap*/);
+        sdrDensityMap.bind();
+        meshQuad.bind(sdrDensityMap, [densityMap.texture] /*colormap*/);
 
-          var mattrans = libGlMatrix.mat4.create();
-          if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
-          tf.datasetCoordToDeviceCoord(pos, d0 > d1 ? [densityMap.invTransformY(0), densityMap.invTransformX(0)] : [densityMap.invTransformX(0), densityMap.invTransformY(0)]);
-          libGlMatrix.mat4.translate(mattrans, mattrans, [pos[0], pos[1], 0.0]);
-          tf.datasetDistToDeviceDist(pos, d0 > d1 ? [densityMap.height / densityMap.transform[2], densityMap.width / densityMap.transform[0]] : [densityMap.width / densityMap.transform[0], densityMap.height / densityMap.transform[2]]);
-          libGlMatrix.mat4.scale(mattrans, mattrans, [pos[0], pos[1], 1.0]);
-          sdrDensityMap.matWorldViewProj(mattrans);
+        var mattrans = libGlMatrix.mat4.create();
+        if (flipY === true) libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+        tf.datasetCoordToDeviceCoord(pos, d0 > d1 ? [densityMap.invTransformY(0), densityMap.invTransformX(0)] : [densityMap.invTransformX(0), densityMap.invTransformY(0)]);
+        libGlMatrix.mat4.translate(mattrans, mattrans, [pos[0], pos[1], 0.0]);
+        tf.datasetDistToDeviceDist(pos, d0 > d1 ? [densityMap.height / densityMap.transform[2], densityMap.width / densityMap.transform[0]] : [densityMap.width / densityMap.transform[0], densityMap.height / densityMap.transform[2]]);
+        libGlMatrix.mat4.scale(mattrans, mattrans, [pos[0], pos[1], 1.0]);
+        sdrDensityMap.matWorldViewProj(mattrans);
 
-          sdrDensityMap.matTexCoordTransform(new Float32Array(d0 > d1 ? [0, 1, 1, 0] : [1, 0, 0, 1]));
-          sdrDensityMap.scale(1 / densityMap.maximum);
-          //sdrDensityMap.scale(0.5);
-          sdrDensityMap.color(gl.foreColor[0], gl.foreColor[1], gl.foreColor[2]);
-          meshQuad.draw();
-        } else // If densityMap isn't ready yet
+        sdrDensityMap.matTexCoordTransform(new Float32Array(d0 > d1 ? [0, 1, 1, 0] : [1, 0, 0, 1]));
+        sdrDensityMap.scale(1 / densityMap.maximum);
+        //sdrDensityMap.scale(0.5);
+        sdrDensityMap.color(gl.foreColor[0], gl.foreColor[1], gl.foreColor[2]);
+        meshQuad.draw();
+      } else // If densityMap isn't ready yet
         dataset.requestDensityMap(d0, d1, undefined, undefined, function () {
           globalView.invalidate();
         }); // Request densityMap and redraw once it's computed
@@ -13819,16 +13574,6 @@ function DensityViewer(gl, globalView) {
       return { x: x, y: y, rx: rx, ry: ry, vx: 0, vy: 0, fx: 0, fy: 0 };
     });
 
-    /*var repellPoint = function(body, point_x, point_y, magnitude, magnitude2)
-    {
-      var dx = body.x - point_x, dy = body.y - point_y;
-      var dist = Math.sqrt(dx*dx + dy*dy);
-      var F = magnitude / (dist*dist*dist) + magnitude2 / dist;
-      F = Math.max(-1e1, Math.min(1e1, F));
-      body.fx += F * dx;
-      body.fy += F * dy;
-    }*/
-
     var repellPoint = function repellPoint(body, point_x, point_y, minDist, minDistMagnitude, maxDist, maxDistMagnitude) {
       var dx = body.x - point_x,
           dy = body.y - point_y;
@@ -13849,16 +13594,6 @@ function DensityViewer(gl, globalView) {
     };
 
     for (var i = 0; i < bodies.length; ++i) {
-      /*for (var j = 0; j < bodies.length; ++j)
-      {
-        if (i !== j)
-        {
-          repellPoint(bodies[i], bodies[j].x, bodies[j].y, 20.0, 1e-3, Number.MAX_VALUE, 0);
-          repellPoint(bodies[i], bodies[j].rx, bodies[j].ry, 20.0, 1e-3, Number.MAX_VALUE, 0);
-        }
-      }
-      repellPoint(bodies[i], bodies[i].rx, bodies[i].ry, 20.0, 1e-3, 20.0, 1e-4);*/
-
       var sample_x = Math.floor(bodies[i].x),
           sample_y = Math.floor(bodies[i].y);
       var density = densityMap[sample_x * width + sample_y];
@@ -13879,33 +13614,6 @@ function DensityViewer(gl, globalView) {
         repellPoint(bodies[i], bodies[i].x + bestDir[0], bodies[i].y + bestDir[1], Number.MIN_VALUE, 0, 0.0, density);
         console.log(density);
       }
-
-      /*for (var j = i + 1; j < bodies.length; ++j)
-      {
-        var dx = bodies[i].x - bodies[j].x, dy = bodies[i].y - bodies[j].y;
-        var dist = Math.sqrt(dx*dx + dy*dy);
-        var F = 1e2 / (dist*dist*dist);
-        bodies[i].fx += F * dx;
-        bodies[i].fy += F * dy;
-        bodies[j].fx -= F * dx;
-        bodies[j].fy -= F * dy;
-      }
-      
-      for (var j = 0; j < bodies.length; ++j)
-        if (i !== j)
-        {
-          var dx = bodies[i].x - bodies[j].rx, dy = bodies[i].y - bodies[j].ry;
-          var dist = Math.sqrt(dx*dx + dy*dy);
-          var F = 1e2 / (dist*dist*dist);
-          bodies[i].fx += F * dx;
-          bodies[i].fy += F * dy;
-        }
-      
-      var dx = bodies[i].x - bodies[i].rx, dy = bodies[i].y - bodies[i].ry;
-      var dist = Math.sqrt(dx*dx + dy*dy);
-      var F = -1e2 / (dist*dist*dist);
-      bodies[i].fx += F * dx;
-      bodies[i].fy += F * dy;*/
     }
 
     for (var i = 0; i < bodies.length; ++i) {
@@ -13915,35 +13623,6 @@ function DensityViewer(gl, globalView) {
       images[i].imagePos[d0] = densityMap.invTransformX(bodies[i].x);
       images[i].imagePos[d1] = densityMap.invTransformY(bodies[i].y);
     }
-
-    /*images.forEach(function(image) {
-      var p0 = Math.floor(densityMap.transformX(image.imagePos[d0]));
-      var p1 = Math.floor(densityMap.transformY(image.imagePos[d1]));
-      
-      var bestDir = null, bestDensity = densityMap[p1 * width + p0];
-      [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]].forEach(function(dir) {
-        var x = p0 + dir[0];
-        var y = p1 + dir[1];
-        if (x >= xMin && x < xMax && y >= yMin && y < yMax)
-        {
-          //var sqDensity = Math.pow(densityOffset + densityMap[y * width + x] * densityScale, 2);
-          var density = densityMap[y * width + x];
-          if (density < bestDensity)
-          {
-            bestDensity = density;
-            bestDir = dir;
-          }
-        }
-      });
-      if (bestDir !== null)
-      {
-        p0 += bestDir[0];
-        p1 += bestDir[1];
-        
-        image.imagePos[d0] = densityMap.invTransformX(p0);
-        image.imagePos[d1] = densityMap.invTransformY(p1);
-      }
-    });*/
   };
 }
 
@@ -13970,9 +13649,9 @@ var libGlMatrix = __webpack_require__(3);
  */
 function HistogramViewer(gl, globalView) {
   var sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
-  sdrLine.color = sdrLine.u4f("color");
+  sdrLine.color = sdrLine.u4f('color');
   sdrLine.color.apply(sdrLine, gl.foreColor);
-  sdrLine.matWorldViewProj = sdrLine.u4x4f("matWorldViewProj");
+  sdrLine.matWorldViewProj = sdrLine.u4x4f('matWorldViewProj');
 
   /*this.updateColorSchema = function() {
     sdrLine.color.apply(sdrLine, gl.foreColor);
@@ -14191,9 +13870,9 @@ function CoordinateSystem(gl, globalView) {
   var NUM_TICKS = 10;
 
   var sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
-  sdrLine.color = sdrLine.u4f("color");
+  sdrLine.color = sdrLine.u4f('color');
   sdrLine.color.apply(sdrLine, gl.foreColor);
-  sdrLine.matWorldViewProj = sdrLine.u4x4f("matWorldViewProj");
+  sdrLine.matWorldViewProj = sdrLine.u4x4f('matWorldViewProj');
   this.updateColorSchema = function () {
     sdrLine.color.apply(sdrLine, gl.foreColor);
   };
@@ -14356,8 +14035,8 @@ function CoordinateSystem(gl, globalView) {
         var exp = Math.ceil(Math.log(axis.tickDistance) / Math.log(10)); // Compute power-of-10 just above tickDistance -> pow(10, exp)
 
         // Try less aggressive rounding in each iteration until break condition is met
-        for (var i = 0; i < 10; ++i) // Maximum 10 iterations
-        {
+        for (var i = 0; i < 10; ++i) {
+          // Maximum 10 iterations
           axis.tickDistance = (maximum - minimum) / numTicks;
           var base = Math.pow(10, exp--);
           axis.tickDistance = Math.round(axis.tickDistance / base) * base; // Round tickDistance to base
@@ -14482,7 +14161,7 @@ function DataVector(dataset, source) {
     };
 
     //this.getValueCode = "log(c{0})".format(c);
-    this.getValueCode = "c" + c; //"{" + c + "}";
+    this.getValueCode = 'c' + c; //"{" + c + "}";
 
     var column = dataset.columns[c];
     this['minimum'] = this.minimum = column.minimum;
@@ -14504,10 +14183,10 @@ function DataVector(dataset, source) {
       'PI': Math.PI
     };
 
-    var code = libFormulaCompiler.FormulaCompiler.compile(source + ";", globalTypes);
+    var code = libFormulaCompiler.FormulaCompiler.compile(source + ';', globalTypes);
     if (libUtility.isString(code)) {
       console.error("GlobalView error: Error while parsing data vector formula '{0}'".format(source));
-      console.error("                  " + code);
+      console.error('                  ' + code);
       return;
     }
     var formula = source;
@@ -14661,7 +14340,7 @@ function Dataset() {
   this.requestDensityMap = function (d0, d1, size, options, ondone) {
     // Validate inputs
     if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) {
-      console.warn("GlobalView warning: Requesting density map for dimensions {0}, {1} on a dataset with only {2} data vectors".format(d0, d1, this.dataVectors.length));
+      console.warn('GlobalView warning: Requesting density map for dimensions {0}, {1} on a dataset with only {2} data vectors'.format(d0, d1, this.dataVectors.length));
       return null;
     }
     var isAsync = libUtility.isFunction(ondone); //&& !/Firefox/i.test(navigator.userAgent);// Firefox tends to crash with Parallel.js
@@ -14686,56 +14365,56 @@ function Dataset() {
     if (densityMap && options && densityMap.options && !libAlgorithm.DensityMapOptions.equals(options, densityMap.options)) // If options changed
       densityMap = null; // Recompute density map
 
-    if (isAsync) // If async
-      {
-        if (!densityMap) // If _densityMaps[d0][d1] isn't computed or being computed yet
-          {
-            // While we compute _densityMaps[d0][d1], replace it with an array of functions to execute when it is ready
-            _densityMaps[d0][d1] = { pending: [ondone], old: _densityMaps[d0][d1] };
+    if (isAsync) {
+      // If async
+      if (!densityMap) {
+        // If _densityMaps[d0][d1] isn't computed or being computed yet
+        // While we compute _densityMaps[d0][d1], replace it with an array of functions to execute when it is ready
+        _densityMaps[d0][d1] = { pending: [ondone], old: _densityMaps[d0][d1] };
 
-            // Compute histogram synchronously
-            var histogram = libAlgorithm.computeHistogram2D(this, d0, d1, size, size);
+        // Compute histogram synchronously
+        var histogram = libAlgorithm.computeHistogram2D(this, d0, d1, size, size);
 
-            // Execute an asynchronous worker that computes _densityMaps[d0][d1]
-            var p = new Parallel([libUtility.makeCloneable(histogram), new libAlgorithm.DensityMapOptions(options)], { evalPath: 'eval.js' });
-            p.require(libAlgorithm.DensityMap);
-            p.require(libAlgorithm.computeDensityMap);
-            p.spawn(function (params) {
-              // the following code will be evaled from a blob in Parallel. so no need for libAlgorithm. 
-              return computeDensityMap.apply(null, params);
-            }).then(function (densityMap) {
-              densityMap = new libAlgorithm.DensityMap(densityMap);
-              // Free histogram
-              histogram = null;
+        // Execute an asynchronous worker that computes _densityMaps[d0][d1]
+        var p = new Parallel([libUtility.makeCloneable(histogram), new libAlgorithm.DensityMapOptions(options)], { evalPath: 'eval.js' });
+        p.require(libAlgorithm.DensityMap);
+        p.require(libAlgorithm.computeDensityMap);
+        p.spawn(function (params) {
+          // the following code will be evaled from a blob in Parallel. so no need for libAlgorithm.
+          return computeDensityMap.apply(null, params);
+        }).then(function (densityMap) {
+          densityMap = new libAlgorithm.DensityMap(densityMap);
+          // Free histogram
+          histogram = null;
 
-              // Set _densityMaps[d0][d1]
-              _densityMaps[d0][d1].old = null;
-              var pending = _densityMaps[d0][d1].pending;
-              _densityMaps[d0][d1] = densityMap;
+          // Set _densityMaps[d0][d1]
+          _densityMaps[d0][d1].old = null;
+          var pending = _densityMaps[d0][d1].pending;
+          _densityMaps[d0][d1] = densityMap;
 
-              if (_clusterMaps.length > d0 && _clusterMaps[d0].length > d1 && _clusterMaps[d0][d1] && libUtility.isUndefined(_clusterMaps[d0][d1].pending)) _clusterMaps[d0][d1] = null;
+          if (_clusterMaps.length > d0 && _clusterMaps[d0].length > d1 && _clusterMaps[d0][d1] && libUtility.isUndefined(_clusterMaps[d0][d1].pending)) _clusterMaps[d0][d1] = null;
 
-              // Execute queued 'ondone' functions
-              pending.forEach(function (ondone) {
-                ondone(densityMap);
-              });
-            });
-          } else if (!libUtility.isUndefined(densityMap.pending)) // If _densityMaps[d0][d1] is currently being computed asynchronously
-          {
-            if (densityMap.old && (!options || libAlgorithm.DensityMapOptions.equals(densityMap.old.options, options))) // If the deprecated densityMap satisfies our requested options
-              ondone( /** @type {DensityMap} */densityMap.old);else densityMap.pending.push(ondone);
-          } else // If _densityMaps[d0][d1] is available
-          ondone( /** @type {DensityMap} */densityMap);
-        return null;
-      } else {
-      if (!densityMap) // If _densityMaps[d0][d1] isn't computed or being computed yet
-        {
-          //var tStart = performance.now();
-          var histogram = libAlgorithm.computeHistogram2D(this, d0, d1, size, size);
-          _densityMaps[d0][d1] = densityMap = new libAlgorithm.DensityMap(libAlgorithm.computeDensityMap(histogram, new libAlgorithm.DensityMapOptions(options)));
-          histogram = null; // Free histogram
-          //console.log(performance.now() - tStart + "ms");
-        } else if (densityMap.old && (!options || libAlgorithm.DensityMapOptions.equals(densityMap.old.options, options))) // If the deprecated densityMap satisfies our requested options
+          // Execute queued 'ondone' functions
+          pending.forEach(function (ondone) {
+            ondone(densityMap);
+          });
+        });
+      } else if (!libUtility.isUndefined(densityMap.pending)) {
+        // If _densityMaps[d0][d1] is currently being computed asynchronously
+        if (densityMap.old && (!options || libAlgorithm.DensityMapOptions.equals(densityMap.old.options, options))) // If the deprecated densityMap satisfies our requested options
+          ondone( /** @type {DensityMap} */densityMap.old);else densityMap.pending.push(ondone);
+      } else // If _densityMaps[d0][d1] is available
+        ondone( /** @type {DensityMap} */densityMap);
+      return null;
+    } else {
+      if (!densityMap) {
+        // If _densityMaps[d0][d1] isn't computed or being computed yet
+        //var tStart = performance.now();
+        var histogram = libAlgorithm.computeHistogram2D(this, d0, d1, size, size);
+        _densityMaps[d0][d1] = densityMap = new libAlgorithm.DensityMap(libAlgorithm.computeDensityMap(histogram, new libAlgorithm.DensityMapOptions(options)));
+        histogram = null; // Free histogram
+        //console.log(performance.now() - tStart + "ms");
+      } else if (densityMap.old && (!options || libAlgorithm.DensityMapOptions.equals(densityMap.old.options, options))) // If the deprecated densityMap satisfies our requested options
         densityMap = densityMap.old;else while (!libUtility.isUndefined(_densityMaps[d0][d1].pending)) {} // Wait while _densityMaps[d0][d1] is being computed asynchronously
 
       if (libUtility.isFunction(ondone)) ondone( /** @type {DensityMap} */densityMap);
@@ -14762,7 +14441,7 @@ function Dataset() {
   this['requestClusterMap'] = this.requestClusterMap = function (d0, d1, options, ondone) {
     // Validate inputs
     if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) {
-      console.warn("GlobalView warning: Requesting cluster map for dimensions {0}, {1} on a dataset with only {2} data vectors".format(d0, d1, this.dataVectors.length));
+      console.warn('GlobalView warning: Requesting cluster map for dimensions {0}, {1} on a dataset with only {2} data vectors'.format(d0, d1, this.dataVectors.length));
       return null;
     }
     var isAsync = libUtility.isFunction(ondone); //&& !/Firefox/i.test(navigator.userAgent);// Firefox tends to crash with Parallel.js
@@ -14785,50 +14464,50 @@ function Dataset() {
     if (clusterMap && options && clusterMap.options && !libAlgorithm.ClusterMapOptions.equals(options, clusterMap.options)) // If options changed
       clusterMap = null; // Recompute density map
 
-    if (isAsync) // If async
-      {
-        if (!clusterMap) // If _clusterMaps[d0][d1] isn't computed or being computed yet
-          {
-            // While we compute _clusterMaps[d0][d1], replace it with an array of functions to execute when it is ready
-            _clusterMaps[d0][d1] = { pending: [ondone] };
+    if (isAsync) {
+      // If async
+      if (!clusterMap) {
+        // If _clusterMaps[d0][d1] isn't computed or being computed yet
+        // While we compute _clusterMaps[d0][d1], replace it with an array of functions to execute when it is ready
+        _clusterMaps[d0][d1] = { pending: [ondone] };
 
-            this.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
-              // Execute an asynchronous worker that computes _clusterMaps[d0][d1]
-              var p = new Parallel([libUtility.makeCloneable(densityMap), d0, d1, new libAlgorithm.ClusterMapOptions(options)], { evalPath: 'eval.js' });
-              p.require(libAlgorithm.computeClusterMap_method3);
-              p.require(libUtility.ForwardList);
-              p.require(libUtility.PriorityQueue);
-              p.spawn(function (params) {
-                // the following code will be evaled from a blob in Parallel. so no need for libAlgorithm. 
-                return computeClusterMap_method3.apply(null, params);
-              }).then(function (clusterMap) {
-                clusterMap = new libAlgorithm.ClusterMap(clusterMap);
-                // Set _clusterMaps[d0][d1]
-                var pending = _clusterMaps[d0][d1].pending;
-                _clusterMaps[d0][d1] = clusterMap;
+        this.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
+          // Execute an asynchronous worker that computes _clusterMaps[d0][d1]
+          var p = new Parallel([libUtility.makeCloneable(densityMap), d0, d1, new libAlgorithm.ClusterMapOptions(options)], { evalPath: 'eval.js' });
+          p.require(libAlgorithm.computeClusterMap_method3);
+          p.require(libUtility.ForwardList);
+          p.require(libUtility.PriorityQueue);
+          p.spawn(function (params) {
+            // the following code will be evaled from a blob in Parallel. so no need for libAlgorithm.
+            return computeClusterMap_method3.apply(null, params);
+          }).then(function (clusterMap) {
+            clusterMap = new libAlgorithm.ClusterMap(clusterMap);
+            // Set _clusterMaps[d0][d1]
+            var pending = _clusterMaps[d0][d1].pending;
+            _clusterMaps[d0][d1] = clusterMap;
 
-                // Execute queued 'ondone' functions
-                pending.forEach(function (ondone) {
-                  ondone(clusterMap);
-                });
-              });
+            // Execute queued 'ondone' functions
+            pending.forEach(function (ondone) {
+              ondone(clusterMap);
             });
-          } else if (!libUtility.isUndefined(clusterMap.pending)) // If _clusterMaps[d0][d1] is currently being computed asynchronously
-          {
-            if (clusterMap.old && (!options || libAlgorithm.ClusterMapOptions.equals(clusterMap.old.options, options))) // If the deprecated clusterMap satisfies our requested options
-              ondone( /** @type {ClusterMap} */clusterMap.old);else clusterMap.pending.push(ondone);
-          } else // If _clusterMaps[d0][d1] is available
-          ondone(clusterMap);
-      } else {
-      if (!clusterMap) // If _clusterMaps[d0][d1] isn't computed or being computed yet
-        {
-          var densityMap = this.requestDensityMap(d0, d1, undefined, undefined);
-          if (densityMap) {
-            //var tStart = performance.now();
-            _clusterMaps[d0][d1] = clusterMap = new libAlgorithm.ClusterMap(libAlgorithm.computeClusterMap_method3(densityMap, d0, d1, new libAlgorithm.ClusterMapOptions(options)));
-            //console.log(performance.now() - tStart + "ms");
-          } else _clusterMaps[d0][d1] = clusterMap = null;
-        } else if (clusterMap.old && (!options || libAlgorithm.ClusterMapOptions.equals(clusterMap.old.options, options))) // If the deprecated clusterMap satisfies our requested options
+          });
+        });
+      } else if (!libUtility.isUndefined(clusterMap.pending)) {
+        // If _clusterMaps[d0][d1] is currently being computed asynchronously
+        if (clusterMap.old && (!options || libAlgorithm.ClusterMapOptions.equals(clusterMap.old.options, options))) // If the deprecated clusterMap satisfies our requested options
+          ondone( /** @type {ClusterMap} */clusterMap.old);else clusterMap.pending.push(ondone);
+      } else // If _clusterMaps[d0][d1] is available
+        ondone(clusterMap);
+    } else {
+      if (!clusterMap) {
+        // If _clusterMaps[d0][d1] isn't computed or being computed yet
+        var densityMap = this.requestDensityMap(d0, d1, undefined, undefined);
+        if (densityMap) {
+          //var tStart = performance.now();
+          _clusterMaps[d0][d1] = clusterMap = new libAlgorithm.ClusterMap(libAlgorithm.computeClusterMap_method3(densityMap, d0, d1, new libAlgorithm.ClusterMapOptions(options)));
+          //console.log(performance.now() - tStart + "ms");
+        } else _clusterMaps[d0][d1] = clusterMap = null;
+      } else if (clusterMap.old && (!options || libAlgorithm.ClusterMapOptions.equals(clusterMap.old.options, options))) // If the deprecated clusterMap satisfies our requested options
         clusterMap = clusterMap.old;else while (!libUtility.isUndefined(clusterMap.pending)) {} // Wait while _clusterMaps[d0][d1] is being computed asynchronously
 
       if (libUtility.isFunction(ondone)) ondone(clusterMap);
@@ -14862,15 +14541,15 @@ function Dataset() {
         column = this.columns[c];
         sample = column.minimum + (column.maximum - column.minimum) * samples[c] * sampleScale;
 
-        if (column.values) // If column is qualitative
-          {
-            fdata_inflated[i_inflated * nc + c] = sample = Math.max(0, Math.min(column.values.length - 1, Math.round(sample)));
-            data_inflated[i_inflated * nc + c] = column.values[sample];
-          } else // If column is numeric
-          {
-            fdata_inflated[i_inflated * nc + c] = sample;
-            data_inflated[i_inflated * nc + c] = sample;
-          }
+        if (column.values) {
+          // If column is qualitative
+          fdata_inflated[i_inflated * nc + c] = sample = Math.max(0, Math.min(column.values.length - 1, Math.round(sample)));
+          data_inflated[i_inflated * nc + c] = column.values[sample];
+        } else {
+          // If column is numeric
+          fdata_inflated[i_inflated * nc + c] = sample;
+          data_inflated[i_inflated * nc + c] = sample;
+        }
       }
     }
     this['fdata'] = this.fdata = fdata_inflated;
@@ -14882,7 +14561,7 @@ function Dataset() {
       for (var i = 0, len = n; i < len; ++i) {
         names_inflated[i] = names[i];
       }for (var index = 0, i_inflated = n, len = n * nc; i_inflated < n_inflated; ++i_inflated) {
-        names_inflated[i_inflated] = "generated datapoint " + ++index;
+        names_inflated[i_inflated] = 'generated datapoint ' + ++index;
       }this['names'] = this.names = names_inflated;
     }
 
@@ -14931,7 +14610,7 @@ function Dataset() {
       csv[i + 1] = row; // +1 ... Header row
     }
 
-    libUtility.download(filename, "data:text/csv;charset=utf-8," + encodeURIComponent($.csv.fromArrays(csv)));
+    libUtility.download(filename, 'data:text/csv;charset=utf-8,' + encodeURIComponent($.csv.fromArrays(csv)));
   };
 }
 
@@ -14979,35 +14658,35 @@ function RandomDataset(n, nc, onload) {
 var CSV_DATASET_OPTIONS = {
   /** When true, tries to infer other options based on the structure of the dataset (slow). */
   'autoDetect': {
-    description: "When true, tries to infer other options based on the structure of the dataset (slow).",
+    description: 'When true, tries to infer other options based on the structure of the dataset (slow).',
     default: false,
     valid: [true, false]
   },
 
   /** When true, interprets the first row of the dataset as column labels. */
   'hasHeader': {
-    description: "When true, interprets the first row of the dataset as column labels.",
+    description: 'When true, interprets the first row of the dataset as column labels.',
     default: false,
     valid: [true, false]
   },
 
   /** Index of a column of the dataset that contains data point names. */
   'nameColumn': {
-    description: "Index of a column of the dataset that contains data point names.",
+    description: 'Index of a column of the dataset that contains data point names.',
     default: null,
     valid: null
   },
 
   /** An array of column labels, or a function that takes the column index as input and returns the column label. */
   'columnLabels': {
-    description: "An array of column labels, or a function that takes the column index as input and returns the column label.",
+    description: 'An array of column labels, or a function that takes the column index as input and returns the column label.',
     default: null,
     valid: null
   },
 
   /** An array of image URLs, or a function that takes a row of data and the row index as input and returns a URL to an image of the data point. */
   'imageFilenames': {
-    description: "An array of image URLs, or a function that takes a row of data and the row index as input and returns a URL to an image of the data point.",
+    description: 'An array of image URLs, or a function that takes a row of data and the row index as input and returns a URL to an image of the data point.',
     default: null,
     valid: null
   }
@@ -15031,7 +14710,7 @@ function CsvDataset(file, options, onload) {
 
     // Validate option
     if (!CSV_DATASET_OPTIONS.hasOwnProperty(option)) {
-      console.warn("CsvDataset warning: Unsupported option: " + option);
+      console.warn('CsvDataset warning: Unsupported option: ' + option);
       continue;
     }
     var optionDefinition = CSV_DATASET_OPTIONS[option];
@@ -15039,7 +14718,7 @@ function CsvDataset(file, options, onload) {
     // Validate value
     var value = options[option];
     if (optionDefinition.valid && optionDefinition.valid.indexOf(value) === -1 || optionDefinition.validRange && (value < optionDefinition.validRange[0] || value > optionDefinition.validRange[1])) {
-      console.warn("CsvDataset warning: Invalid value for option " + option + ": " + value);
+      console.warn('CsvDataset warning: Invalid value for option ' + option + ': ' + value);
       delete options[option];
       continue;
     }
@@ -15064,7 +14743,7 @@ function CsvDataset(file, options, onload) {
 
         // If the first row consists of only string values, but the second row has at least one numeric value, we can assume the first row is a header
         if (firstRowOnlyStrings && secondRowHasNumbers) options['hasHeader'] = true;
-        console.log("Assuming hasHeader = " + options['hasHeader']);
+        console.log('Assuming hasHeader = ' + options['hasHeader']);
       }
       if (libUtility.isUndefined(options['nameColumn'])) {
         // Assume no name column by default
@@ -15080,7 +14759,7 @@ function CsvDataset(file, options, onload) {
             break;
           }
         }
-        console.log("Assuming nameColumn = " + options['nameColumn']);
+        console.log('Assuming nameColumn = ' + options['nameColumn']);
       }
     }
 
@@ -15103,7 +14782,7 @@ function CsvDataset(file, options, onload) {
       }
     } else if (libUtility.isArray(options['columnLabels'])) {
       if (options['columnLabels'].length !== nc) {
-        console.warn("CsvDataset warning: Number of provided column labels (" + options['columnLabels'].length + ") differs from number of data columns in the dataset (" + nc + ")");
+        console.warn('CsvDataset warning: Number of provided column labels (' + options['columnLabels'].length + ') differs from number of data columns in the dataset (' + nc + ')');
         columnLabels = null;
       } else columnLabels = options['columnLabels'];
     } else columnLabels = null;
@@ -15123,7 +14802,7 @@ function CsvDataset(file, options, onload) {
           isNumeric = true;
       for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
         // Skip blank lines
-        if (data[i].length === 1 && data[i][0] === "") {
+        if (data[i].length === 1 && data[i][0] === '') {
           --di;
           continue;
         }
@@ -15149,7 +14828,7 @@ function CsvDataset(file, options, onload) {
             valueIdx = 0;
         for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
           // Skip blank lines
-          if (data[i].length === 1 && data[i][0] === "") {
+          if (data[i].length === 1 && data[i][0] === '') {
             --di;
             continue;
           }
@@ -15176,23 +14855,23 @@ function CsvDataset(file, options, onload) {
       dataset.dataVectors.push(new DataVector(dataset, ci));
     }
 
-    if (di !== n) // If some line were blank
-      {
-        di = n - di; // Set di to the number of skipped lines
-        n -= di; // Shrink n
-        di *= nc; // Set di to the number of skipped values
+    if (di !== n) {
+      // If some line were blank
+      di = n - di; // Set di to the number of skipped lines
+      n -= di; // Shrink n
+      di *= nc; // Set di to the number of skipped values
 
-        // Shrink dataset.data and dataset.fdata
-        dataset.data.splice(-di);
-        if (Float32Array.prototype.splice)
-          /** @type {{splice: Function}} */dataset.fdata.splice(-di);else if (Float32Array.prototype.slice) dataset['fdata'] = dataset.fdata = dataset.fdata.slice(0, -di);else {
-          var trimedFdata = new Float32Array(nc * n);
-          var len;
-          for (i = 0, len = trimedFdata.length; i < len; ++i) {
-            trimedFdata[i] = dataset.fdata[i];
-          }dataset['fdata'] = dataset.fdata = trimedFdata;
-        }
+      // Shrink dataset.data and dataset.fdata
+      dataset.data.splice(-di);
+      if (Float32Array.prototype.splice)
+        /** @type {{splice: Function}} */dataset.fdata.splice(-di);else if (Float32Array.prototype.slice) dataset['fdata'] = dataset.fdata = dataset.fdata.slice(0, -di);else {
+        var trimedFdata = new Float32Array(nc * n);
+        var len;
+        for (i = 0, len = trimedFdata.length; i < len; ++i) {
+          trimedFdata[i] = dataset.fdata[i];
+        }dataset['fdata'] = dataset.fdata = trimedFdata;
       }
+    }
 
     // Set number of data points
     dataset['length'] = dataset.length = n;
@@ -15203,7 +14882,7 @@ function CsvDataset(file, options, onload) {
       var nameColumn = options['nameColumn'];
       for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
         // Skip blank lines
-        if (data[i].length === 1 && data[i][0] === "") {
+        if (data[i].length === 1 && data[i][0] === '') {
           --di;
           continue;
         }
@@ -15217,7 +14896,7 @@ function CsvDataset(file, options, onload) {
       dataset['imageFilenames'] = dataset.imageFilenames = new Array(n);
       for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
         // Skip blank lines
-        if (data[i].length === 1 && data[i][0] === "") {
+        if (data[i].length === 1 && data[i][0] === '') {
           --di;
           continue;
         }
@@ -15226,7 +14905,7 @@ function CsvDataset(file, options, onload) {
       }
     } else if (libUtility.isArray(options['imageFilenames'])) {
       if (options['imageFilenames'].length !== n) {
-        console.warn("CsvDataset warning: Number of provided image filenames (" + options['imageFilenames'].length + ") differs from number of data points (" + n + ")");
+        console.warn('CsvDataset warning: Number of provided image filenames (' + options['imageFilenames'].length + ') differs from number of data points (' + n + ')');
         dataset['imageFilenames'] = dataset.imageFilenames = null;
       } else dataset['imageFilenames'] = dataset.imageFilenames = options['imageFilenames'];
     } else dataset['imageFilenames'] = dataset.imageFilenames = null;
@@ -15235,17 +14914,16 @@ function CsvDataset(file, options, onload) {
     if (onload) onload(dataset);
   };
 
-  if (libUtility.isString(file))
+  if (libUtility.isString(file)) {
     //$.get(file, parseCsv, "text");
-    {
-      var request = new XMLHttpRequest();
-      request.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) parseCsv(this.responseText);
-      };
-      request.open("GET", /** @type {string} */file, true);
-      request.overrideMimeType("text/csv; charset=utf8");
-      request.send();
-    } else {
+    var request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) parseCsv(this.responseText);
+    };
+    request.open('GET', /** @type {string} */file, true);
+    request.overrideMimeType('text/csv; charset=utf8');
+    request.send();
+  } else {
     var reader = new FileReader();
     reader.onload = function (event) {
       return parseCsv(reader.result);
@@ -15416,7 +15094,7 @@ var FormulaCompiler = {
         var numberString = chr,
             hasDot = false;
         while (getch() !== '') {
-          if (chr >= '0' && chr <= '9') numberString += chr;else if (chr !== '.') break;else if (hasDot) return error("Unexpected character: " + chr); // More than one '.' inside number string
+          if (chr >= '0' && chr <= '9') numberString += chr;else if (chr !== '.') break;else if (hasDot) return error('Unexpected character: ' + chr); // More than one '.' inside number string
           else {
               hasDot = true;
               numberString += chr;
@@ -15442,7 +15120,7 @@ var FormulaCompiler = {
         return true;
       }
 
-      return error("Unexpected character: " + chr);
+      return error('Unexpected character: ' + chr);
     }
     function getOperatorPrecedence(tok) {
       switch (tok) {
@@ -15505,27 +15183,7 @@ var FormulaCompiler = {
           var binOp = curTok;
           if (!getTok()) return null; // eat binop
 
-          if (binOp == '?') {
-            /*var ifExpr = primaryAST();
-            if (ifExpr == null)
-              return null;
-             if (CurTok != ':')
-              return error("Expected ':'");
-            if (!getTok()) return null;  // eat ':'
-             var elseExpr = primaryAST();
-            if (elseExpr == null)
-              return null;
-             // If '?' binds less tightly with elseExpr than the operator after elseExpr, let the pending operator take elseExpr as its lhs
-            var nextPrec = getOperatorPrecedence(curTok);
-            if (tokPrec < nextPrec)
-            {
-              elseExpr = bineryOpAST(tokPrec + 1, elseExpr);
-              if (elseExpr == null)
-                return null;
-            }
-             //lhs = new ChoiceExprAST(new MpuSharp.Segment(lhs.source.begin, elseExpr.source.end), lhs, ifExpr, elseExpr);
-            lhs = lhs.concat(ifExpr, elseExpr); lhs.push('?');*/
-          } else {
+          if (binOp != '?') {
             // Parse the expression after the binary operator.
             var rhs = exprAST(tokPrec);
             if (rhs == null) return null;
@@ -15538,23 +15196,23 @@ var FormulaCompiler = {
             }
 
             // Create operator function signature from operator name and argument FormulaCompiler.types
-            var funcSignature = lhs.type.name + " " + binOp + " " + rhs.type.name;
+            var funcSignature = lhs.type.name + ' ' + binOp + ' ' + rhs.type.name;
 
             // Lookup operator function and return type
             var returnType = functionsReturnTypes[funcSignature];
-            if (libUtility.isUndefined(returnType)) return error("Undefined operator " + binOp + " on FormulaCompiler.types " + lhs.type.name + " and " + rhs.type.name);
+            if (libUtility.isUndefined(returnType)) return error('Undefined operator ' + binOp + ' on FormulaCompiler.types ' + lhs.type.name + ' and ' + rhs.type.name);
 
             // Merge lhs/rhs.
-            if (tokPrec === 10) // If binOp is '=', '+=' or '-='
-              {
-                var lastOp = lhs.code.pop();
-                if (lastOp !== '@' && lastOp !== '@[]') return error("Cannot assign to non-variable");
+            if (tokPrec === 10) {
+              // If binOp is '=', '+=' or '-='
+              var lastOp = lhs.code.pop();
+              if (lastOp !== '@' && lastOp !== '@[]') return error('Cannot assign to non-variable');
 
-                // Store as rhs, lhs, funcSignature
-                lhs.type = returnType;
-                lhs.code = rhs.code.concat(lhs.code);
-                lhs.code.push(funcSignature);
-              } else {
+              // Store as rhs, lhs, funcSignature
+              lhs.type = returnType;
+              lhs.code = rhs.code.concat(lhs.code);
+              lhs.code.push(funcSignature);
+            } else {
               // Store as lhs, rhs, funcSignature
               lhs.type = returnType;
               lhs.code = lhs.code.concat(rhs.code);
@@ -15574,10 +15232,10 @@ var FormulaCompiler = {
         while (curTok === '.') {
           if (!getTok()) return null; // eat '.'
 
-          if (libUtility.isUndefined(type)) return error("Undefined variable: " + identifier);
+          if (libUtility.isUndefined(type)) return error('Undefined variable: ' + identifier);
           var parentType = type;
           var member = type.members[curVal];
-          if (libUtility.isUndefined(member)) return error(parentType.name + " does not contain a member: " + curVal);
+          if (libUtility.isUndefined(member)) return error(parentType.name + ' does not contain a member: ' + curVal);
           type = member.type;
 
           variable.push('.');
@@ -15596,30 +15254,7 @@ var FormulaCompiler = {
           return varDeclAST(variable, identifier); // Variable declaration
         }
 
-        /*if (curTok === '[') // Array access
-        {
-          if (!getTok()) return null; // Eat '['
-          if (curTok === ']') // Array type
-          {
-            if (!getTok()) return null; // Eat ']'
-            //return new VariableExprAST(getLineNumber(), enclosingScopes, true);
-            variable.IsArray = true;
-            return variable;
-          }
-          
-          var index = ParseExpression();
-          if (index != null)
-          {
-            if (CurTok != ']')
-              return Error("Expected ']' after expression");
-            if (!getTok()) return null; // Eat ']'
-            return new IndexExprAST(getLineNumber(), variable, index);
-          }
-          else
-            return null;
-        }*/
-
-        if (libUtility.isUndefined(type)) return error("Undefined variable: " + identifier);
+        if (libUtility.isUndefined(type)) return error('Undefined variable: ' + identifier);
 
         variable.push(type === FormulaCompiler.types.float ? '@' : '@[]');
         return { code: variable, type: type }; // Variable reference
@@ -15627,13 +15262,6 @@ var FormulaCompiler = {
       function identifierAndPostAST() {
         var identifier = identifierAST();
         if (!identifier) return null;
-
-        /*switch (curTok)
-        {
-        case '++': case '--':
-          if (!getTok()) return null;  // Eat '++' or '--'
-          identifier.push('post' + curTok);
-        }*/
 
         return identifier;
       }
@@ -15644,11 +15272,11 @@ var FormulaCompiler = {
       }
       function varDeclAST(type, typeName) {
         type = FormulaCompiler.types[typeName];
-        if (libUtility.isUndefined(type)) return error("Unsupported type: " + typeName);
+        if (libUtility.isUndefined(type)) return error('Unsupported type: ' + typeName);
 
         // Update scope
         var prev = scope[curVal];
-        if (!libUtility.isUndefined(prev)) return error("Redefinition of variable: " + curVal);
+        if (!libUtility.isUndefined(prev)) return error('Redefinition of variable: ' + curVal);
         scope[curVal] = type; // Store variable type in scope
 
         var variable = [curVal];
@@ -15670,12 +15298,12 @@ var FormulaCompiler = {
         // Create function signature from function name and argument FormulaCompiler.types
         var argTypeNames = args.type.map(function (type) {
           return type.name;
-        }).join(", ");
-        var funcSignature = funcName + "(" + argTypeNames + ")";
+        }).join(', ');
+        var funcSignature = funcName + '(' + argTypeNames + ')';
 
         // Lookup function and return type
         var returnType = functionsReturnTypes[funcSignature];
-        if (libUtility.isUndefined(returnType)) return error("Undefined function " + funcSignature);
+        if (libUtility.isUndefined(returnType)) return error('Undefined function ' + funcSignature);
 
         // Store as args, funcSignature
         var funcCode = args.code;
@@ -15744,16 +15372,6 @@ var FormulaCompiler = {
 
         var lhs = primaryAST();
         if (!lhs) return null;
-
-        /*if (curTok === '=' || curTok === '+=')
-        {
-          var op = curTok;
-          if (!getTok()) return null; // Eat op
-          var rhs = exprAST();
-          if (!rhs) return null;
-          return lhs.concat(rhs, [op]);
-        }*/
-
         return bineryOpAST(exprPrec, lhs);
       }
       function topLevelAST() {
@@ -15883,8 +15501,8 @@ var FormulaCompiler = {
   }
 };
 FormulaCompiler.types = {
-  float: { name: "float" },
-  vec3: { name: "vec3" }
+  float: { name: 'float' },
+  vec3: { name: 'vec3' }
 };
 FormulaCompiler.types.vec3.members = {
   x: { index: 0, type: FormulaCompiler.types.float },
@@ -15895,14 +15513,14 @@ FormulaCompiler.types.vec3.members = {
 function verboseTest(formula, symbols, symbolTypes) {
   var code = FormulaCompiler.compile(formula, symbolTypes ? symbolTypes : {});
 
-  console.log("formula: " + formula);
-  if (libUtility.isString(code)) console.log("err: " + code);else {
+  console.log('formula: ' + formula);
+  if (libUtility.isString(code)) console.log('err: ' + code);else {
     var globalScope = symbols ? symbols : {};
-    console.log("code: " + code.map(function (c) {
+    console.log('code: ' + code.map(function (c) {
       return libUtility.isString(c) ? '"' + c + '"' : c;
-    }).join(" "));
-    console.log("result: " + FormulaCompiler.run(code, new Array(16), globalScope));
-    console.log("locals: " + JSON.stringify(globalScope));
+    }).join(' '));
+    console.log('result: ' + FormulaCompiler.run(code, new Array(16), globalScope));
+    console.log('locals: ' + JSON.stringify(globalScope));
   }
 }
 
@@ -15935,7 +15553,7 @@ function benchmark(nIter, javascriptCode, formulaCode, evalCode) {
   for (var i = 0; i < nIter; ++i) {
     sum += javascriptCode();
   }console.log(sum);
-  console.log(performance.now() - tStart + "ms");
+  console.log(performance.now() - tStart + 'ms');
 
   sum = 0.0;
   tStart = performance.now();
@@ -15944,14 +15562,14 @@ function benchmark(nIter, javascriptCode, formulaCode, evalCode) {
   for (var i = 0; i < nIter; ++i) {
     sum += FormulaCompiler.run(code, stack, {});
   }console.log(sum);
-  console.log(performance.now() - tStart + "ms");
+  console.log(performance.now() - tStart + 'ms');
 
   sum = 0.0;
   tStart = performance.now();
   for (var i = 0; i < nIter; ++i) {
     sum += eval(evalCode);
   }console.log(sum);
-  console.log(performance.now() - tStart + "ms");
+  console.log(performance.now() - tStart + 'ms');
 }
 
 /*benchmark(1000000, function() {

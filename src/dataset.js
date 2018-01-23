@@ -39,7 +39,7 @@ export function DataVector(dataset, source) {
     }
 
     //this.getValueCode = "log(c{0})".format(c);
-    this.getValueCode = "c" + c;//"{" + c + "}";
+    this.getValueCode = 'c' + c;//"{" + c + "}";
 
     var column = dataset.columns[c];
     this['minimum'] = this.minimum = column.minimum;
@@ -60,10 +60,10 @@ export function DataVector(dataset, source) {
       'PI': Math.PI
     };
 
-    var code = libFormulaCompiler.FormulaCompiler.compile(source + ";", globalTypes);
+    var code = libFormulaCompiler.FormulaCompiler.compile(source + ';', globalTypes);
     if (libUtility.isString(code)) {
       console.error("GlobalView error: Error while parsing data vector formula '{0}'".format(source));
-      console.error("                  " + code);
+      console.error('                  ' + code);
       return;
     }
     var formula = source;
@@ -220,7 +220,7 @@ export function Dataset() {
   this.requestDensityMap = function (d0, d1, size, options, ondone) {
     // Validate inputs
     if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) {
-      console.warn("GlobalView warning: Requesting density map for dimensions {0}, {1} on a dataset with only {2} data vectors".format(d0, d1, this.dataVectors.length));
+      console.warn('GlobalView warning: Requesting density map for dimensions {0}, {1} on a dataset with only {2} data vectors'.format(d0, d1, this.dataVectors.length));
       return null;
     }
     var isAsync = libUtility.isFunction(ondone) ;//&& !/Firefox/i.test(navigator.userAgent);// Firefox tends to crash with Parallel.js
@@ -329,7 +329,7 @@ export function Dataset() {
   this['requestClusterMap'] = this.requestClusterMap = function (d0, d1, options, ondone) {
     // Validate inputs
     if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) {
-      console.warn("GlobalView warning: Requesting cluster map for dimensions {0}, {1} on a dataset with only {2} data vectors".format(d0, d1, this.dataVectors.length));
+      console.warn('GlobalView warning: Requesting cluster map for dimensions {0}, {1} on a dataset with only {2} data vectors'.format(d0, d1, this.dataVectors.length));
       return null;
     }
     var isAsync = libUtility.isFunction(ondone) ;//&& !/Firefox/i.test(navigator.userAgent);// Firefox tends to crash with Parallel.js
@@ -448,7 +448,7 @@ export function Dataset() {
       for (var i = 0, len = n; i < len; ++i)
         names_inflated[i] = names[i];
       for (var index = 0, i_inflated = n, len = n * nc; i_inflated < n_inflated; ++i_inflated)
-        names_inflated[i_inflated] = "generated datapoint " + ++index;
+        names_inflated[i_inflated] = 'generated datapoint ' + ++index;
       this['names'] = this.names = names_inflated;
     }
 
@@ -499,7 +499,7 @@ export function Dataset() {
       csv[i + 1] = row; // +1 ... Header row
     }
 
-    libUtility.download(filename, "data:text/csv;charset=utf-8," + encodeURIComponent($.csv.fromArrays(csv)));
+    libUtility.download(filename, 'data:text/csv;charset=utf-8,' + encodeURIComponent($.csv.fromArrays(csv)));
   }
 }
 
@@ -549,35 +549,35 @@ export function RandomDataset(n, nc, onload) {
 var CSV_DATASET_OPTIONS = {
   /** When true, tries to infer other options based on the structure of the dataset (slow). */
   'autoDetect': {
-    description: "When true, tries to infer other options based on the structure of the dataset (slow).",
+    description: 'When true, tries to infer other options based on the structure of the dataset (slow).',
     default: false,
     valid: [true, false]
   },
 
   /** When true, interprets the first row of the dataset as column labels. */
   'hasHeader': {
-    description: "When true, interprets the first row of the dataset as column labels.",
+    description: 'When true, interprets the first row of the dataset as column labels.',
     default: false,
     valid: [true, false]
   },
 
   /** Index of a column of the dataset that contains data point names. */
   'nameColumn': {
-    description: "Index of a column of the dataset that contains data point names.",
+    description: 'Index of a column of the dataset that contains data point names.',
     default: null,
     valid: null
   },
 
   /** An array of column labels, or a function that takes the column index as input and returns the column label. */
   'columnLabels': {
-    description: "An array of column labels, or a function that takes the column index as input and returns the column label.",
+    description: 'An array of column labels, or a function that takes the column index as input and returns the column label.',
     default: null,
     valid: null
   },
 
   /** An array of image URLs, or a function that takes a row of data and the row index as input and returns a URL to an image of the data point. */
   'imageFilenames': {
-    description: "An array of image URLs, or a function that takes a row of data and the row index as input and returns a URL to an image of the data point.",
+    description: 'An array of image URLs, or a function that takes a row of data and the row index as input and returns a URL to an image of the data point.',
     default: null,
     valid: null
   }
@@ -602,7 +602,7 @@ export function CsvDataset(file, options, onload) {
 
     // Validate option
     if (!CSV_DATASET_OPTIONS.hasOwnProperty(option)) {
-      console.warn("CsvDataset warning: Unsupported option: " + option);
+      console.warn('CsvDataset warning: Unsupported option: ' + option);
       continue;
     }
     var optionDefinition = CSV_DATASET_OPTIONS[option];
@@ -611,7 +611,7 @@ export function CsvDataset(file, options, onload) {
     var value = options[option];
     if ((optionDefinition.valid && optionDefinition.valid.indexOf(value) === -1) ||
       (optionDefinition.validRange && (value < optionDefinition.validRange[0] || value > optionDefinition.validRange[1]))) {
-      console.warn("CsvDataset warning: Invalid value for option " + option + ": " + value);
+      console.warn('CsvDataset warning: Invalid value for option ' + option + ': ' + value);
       delete options[option];
       continue;
     }
@@ -634,7 +634,7 @@ export function CsvDataset(file, options, onload) {
         // If the first row consists of only string values, but the second row has at least one numeric value, we can assume the first row is a header
         if (firstRowOnlyStrings && secondRowHasNumbers)
           options['hasHeader'] = true;
-        console.log("Assuming hasHeader = " + options['hasHeader']);
+        console.log('Assuming hasHeader = ' + options['hasHeader']);
       }
       if (libUtility.isUndefined(options['nameColumn'])) {
         // Assume no name column by default
@@ -648,7 +648,7 @@ export function CsvDataset(file, options, onload) {
             break;
           }
         }
-        console.log("Assuming nameColumn = " + options['nameColumn']);
+        console.log('Assuming nameColumn = ' + options['nameColumn']);
       }
     }
 
@@ -670,7 +670,7 @@ export function CsvDataset(file, options, onload) {
       }
     } else if (libUtility.isArray(options['columnLabels'])) {
       if (options['columnLabels'].length !== nc) {
-        console.warn("CsvDataset warning: Number of provided column labels (" + options['columnLabels'].length + ") differs from number of data columns in the dataset (" + nc + ")");
+        console.warn('CsvDataset warning: Number of provided column labels (' + options['columnLabels'].length + ') differs from number of data columns in the dataset (' + nc + ')');
         columnLabels = null;
       } else
         columnLabels = options['columnLabels'];
@@ -690,7 +690,7 @@ export function CsvDataset(file, options, onload) {
       var min = Number.MAX_VALUE, max = Number.MIN_VALUE, isNumeric = true;
       for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
         // Skip blank lines
-        if (data[i].length === 1 && data[i][0] === "") {
+        if (data[i].length === 1 && data[i][0] === '') {
           --di;
           continue;
         }
@@ -715,7 +715,7 @@ export function CsvDataset(file, options, onload) {
         var valueMap = {}, valueIdx = 0;
         for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
           // Skip blank lines
-          if (data[i].length === 1 && data[i][0] === "") {
+          if (data[i].length === 1 && data[i][0] === '') {
             --di;
             continue;
           }
@@ -773,7 +773,7 @@ export function CsvDataset(file, options, onload) {
       var nameColumn = options['nameColumn'];
       for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
         // Skip blank lines
-        if (data[i].length === 1 && data[i][0] === "") {
+        if (data[i].length === 1 && data[i][0] === '') {
           --di;
           continue;
         }
@@ -788,7 +788,7 @@ export function CsvDataset(file, options, onload) {
       dataset['imageFilenames'] = dataset.imageFilenames = new Array(n);
       for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
         // Skip blank lines
-        if (data[i].length === 1 && data[i][0] === "") {
+        if (data[i].length === 1 && data[i][0] === '') {
           --di;
           continue;
         }
@@ -797,7 +797,7 @@ export function CsvDataset(file, options, onload) {
       }
     } else if (libUtility.isArray(options['imageFilenames'])) {
       if (options['imageFilenames'].length !== n) {
-        console.warn("CsvDataset warning: Number of provided image filenames (" + options['imageFilenames'].length + ") differs from number of data points (" + n + ")");
+        console.warn('CsvDataset warning: Number of provided image filenames (' + options['imageFilenames'].length + ') differs from number of data points (' + n + ')');
         dataset['imageFilenames'] = dataset.imageFilenames = null;
       } else
         dataset['imageFilenames'] = dataset.imageFilenames = options['imageFilenames'];
@@ -814,8 +814,8 @@ export function CsvDataset(file, options, onload) {
     //$.get(file, parseCsv, "text");
     var request = new XMLHttpRequest();
     request.onreadystatechange = function () {if (this.readyState == 4 && this.status == 200) parseCsv(this.responseText)};
-    request.open("GET", /** @type {string} */(file), true);
-    request.overrideMimeType("text/csv; charset=utf8");
+    request.open('GET', /** @type {string} */(file), true);
+    request.overrideMimeType('text/csv; charset=utf8');
     request.send();
   } else {
     var reader = new FileReader();

@@ -108,7 +108,7 @@ export var WebGLUtils = function () {
                OTHER_PROBLEM :
                GET_A_WEBGL_BROWSER;
           if (msg) {
-            str += "<br/><br/>Status: " + msg;
+            str += '<br/><br/>Status: ' + msg;
           }
           container.innerHTML = makeFailHTML(str);
         }
@@ -117,14 +117,14 @@ export var WebGLUtils = function () {
       opt_onError = opt_onError || handleCreationError;
 
       if (canvas.addEventListener) {
-        canvas.addEventListener("webglcontextcreationerror", function (event) {
+        canvas.addEventListener('webglcontextcreationerror', function (event) {
               opt_onError(event.statusMessage);
             }, false);
       }
       var context = create3DContext(canvas, opt_attribs);
       if (!context) {
         if (!window.WebGLRenderingContext) {
-          opt_onError("");
+          opt_onError('');
         }
       }
       return context;
@@ -137,7 +137,7 @@ export var WebGLUtils = function () {
      * @return {WebGLRenderingContext|null} The created context.
      */
     var create3DContext = function (canvas, opt_attribs) {
-      var names = ["webgl", "experimental-webgl", "webkit-3d", "moz-webgl"];
+      var names = ['webgl', 'experimental-webgl', 'webkit-3d', 'moz-webgl'];
       var context = null;
       for (var ii = 0; ii < names.length; ++ii) {
         try {
