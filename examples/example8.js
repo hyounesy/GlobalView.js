@@ -1,9 +1,9 @@
-const libGlobalView = require('../dist/global-view.js');
+const globalView = require('../dist/global-view.js');
 const domready = require('domready');
 
 // Global variables
 //var gl;
-var globalView, dataset;
+var plot, dataset;
 
 var cbDataset, cbColumnX, cbColumnY, cbColumnC, cbColumnS;
 
@@ -15,29 +15,29 @@ domready(function () {
   cbColumnS = document.getElementById('cbColumnS');
 
   const DATASETS = [
-    {name: '10 random points', create: () => new libGlobalView.RandomDataset(10, 3, dataset_onLoad)},
-    {name: '100 random points', create: () => new libGlobalView.RandomDataset(100, 3, dataset_onLoad)},
-    {name: '1.000 random points', create: () => new libGlobalView.RandomDataset(1000, 3, dataset_onLoad)},
-    {name: '10.000 random points', create: () => new libGlobalView.RandomDataset(10000, 3, dataset_onLoad)},
-    {name: '100.000 random points', create: () => new libGlobalView.RandomDataset(100000, 3, dataset_onLoad)},
-    {name: '1.000.000 random points', create: () => new libGlobalView.RandomDataset(1000000, 3, dataset_onLoad)},
-    {name: '10.000.000 random points', create: () => new libGlobalView.RandomDataset(10000000, 3, dataset_onLoad)},
-    {name: 'iris', url: 'datasets/iris.data', create: () => new libGlobalView.CsvDataset('datasets/iris.data', {columnLabels: ['Sepal Length [cm]', 'Sepal Width [cm]', 'Petal Length [cm]', 'Petal Width [cm]', 'Class']}, dataset_onLoad)},
-    {name: 'allencell', url: 'datasets/AICS_Cell-feature-analysis_v1.5.csv', create: () => new libGlobalView.CsvDataset('datasets/AICS_Cell-feature-analysis_v1.5.csv', {hasHeader: true, nameColumn: 1, imageFilenames: function (data) { return 'datasets/AICS_Cell-feature-analysis_v1.5_images/' + data[1] + '.png'; }}, dataset_onLoad)},
+    {name: '10 random points', create: () => new globalView.RandomDataset(10, 3, dataset_onLoad)},
+    {name: '100 random points', create: () => new globalView.RandomDataset(100, 3, dataset_onLoad)},
+    {name: '1.000 random points', create: () => new globalView.RandomDataset(1000, 3, dataset_onLoad)},
+    {name: '10.000 random points', create: () => new globalView.RandomDataset(10000, 3, dataset_onLoad)},
+    {name: '100.000 random points', create: () => new globalView.RandomDataset(100000, 3, dataset_onLoad)},
+    {name: '1.000.000 random points', create: () => new globalView.RandomDataset(1000000, 3, dataset_onLoad)},
+    {name: '10.000.000 random points', create: () => new globalView.RandomDataset(10000000, 3, dataset_onLoad)},
+    {name: 'iris', url: 'datasets/iris.data', create: () => new globalView.CsvDataset('datasets/iris.data', {columnLabels: ['Sepal Length [cm]', 'Sepal Width [cm]', 'Petal Length [cm]', 'Petal Width [cm]', 'Class']}, dataset_onLoad)},
+    {name: 'allencell', url: 'datasets/AICS_Cell-feature-analysis_v1.5.csv', create: () => new globalView.CsvDataset('datasets/AICS_Cell-feature-analysis_v1.5.csv', {hasHeader: true, nameColumn: 1, imageFilenames: function (data) { return 'datasets/AICS_Cell-feature-analysis_v1.5_images/' + data[1] + '.png'; }}, dataset_onLoad)},
     // {name: "allencell x2", url: "datasets/AICS_Cell-feature-analysis_v1.5_x2.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x2.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
     // {name: "allencell x10", url: "datasets/AICS_Cell-feature-analysis_v1.5_x10.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x10.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
     // {name: "allencell x100", url: "datasets/AICS_Cell-feature-analysis_v1.5_x100.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x100.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
   ];
 
   var divGlobalView = document.getElementById('divGlobalView');
-  globalView = new libGlobalView.GlobalView(divGlobalView, {
+  plot = new globalView.GlobalView(divGlobalView, {
     //showXAxisHistogram: true,
     //showYAxisHistogram: true,
     //showColormapHistogram: true,
     //pointColor: "white"//"#AAF"
     padding: [50, 80, 50, 50]
   });
-  globalView.onMouseDown = function (event) {
+  plot.onMouseDown = function (event) {
     switch (event.button) {
       // On left mouse button: Enable point selection and dragging events.
       //                       If control button is pressed, initiate view dragging, else, enable lasso selection
@@ -60,16 +60,16 @@ domready(function () {
       break;
     }
   }
-  globalView.onMouseOverAxisLabel = onMouseOverAxisLabel;
-  globalView.onMouseOverDatapoint = onMouseOverDatapoint;
-  globalView.onLassoSelection = globalView.onSelectionChanged = onSelectionChanged;
+  plot.onMouseOverAxisLabel = onMouseOverAxisLabel;
+  plot.onMouseOverDatapoint = onMouseOverDatapoint;
+  plot.onLassoSelection = plot.onSelectionChanged = onSelectionChanged;
   var canvas = divGlobalView.childNodes[0];
   canvas.ondragover = divGlobalView.ondragover = ondragover;
   canvas.ondragenter = divGlobalView.ondragenter = ondragenter;
   canvas.ondragleave = divGlobalView.ondragleave = ondragleave;
   canvas.ondrop = divGlobalView.ondrop = ondrop;
-  globalView.highlightedPoints = globalView.createPointSet('yellow', 1);
-  globalView.selectedPoints = globalView.createPointSet('red', 1);
+  plot.highlightedPoints = plot.createPointSet('yellow', 1);
+  plot.selectedPoints = plot.createPointSet('red', 1);
   onResize();
 
   // Set defaults
@@ -88,20 +88,20 @@ domready(function () {
       cbDataset.add(option);
       if (cbDataset.options.length === DATASETS.length) {
         // Load dataset
-        var datasetIndex = libGlobalView.readIntCookie('datasetIndex');
+        var datasetIndex = globalView.readIntCookie('datasetIndex');
         if (datasetIndex !== null)
           cbDataset.selectedIndex = datasetIndex;
         cbDataset_onChange(); // Load even if cookie isn't set
       }
     } else {
-      libGlobalView.urlExists(dataset.url, function () {
+      globalView.urlExists(dataset.url, function () {
         var option = document.createElement('option');
         option.text = dataset.name;
         option.createDataset = dataset.create;
         cbDataset.add(option);
         if (cbDataset.options.length === DATASETS.length) {
           // Load dataset
-          var datasetIndex = libGlobalView.readIntCookie('datasetIndex');
+          var datasetIndex = globalView.readIntCookie('datasetIndex');
           if (datasetIndex !== null)
             cbDataset.selectedIndex = datasetIndex;
           cbDataset_onChange(); // Load even if cookie isn't set
@@ -146,13 +146,13 @@ function onResize() {
   var b = document.body;
   var x = w.innerWidth || e.clientWidth || b.clientWidth;
   var y = w.innerHeight|| e.clientHeight|| b.clientHeight;
-  //globalView.resize(x - 32 - 200, y - 32);
+  //plot.resize(x - 32 - 200, y - 32);
   document.getElementById('divGlobalView').style.width = (x - 32 - 200) + 'px';
   document.getElementById('divGlobalView').style.height = (y - 32) + 'px';
 }
 
 function cbDataset_onChange() {
-  libGlobalView.createCookie('datasetIndex', cbDataset.selectedIndex);
+  globalView.createCookie('datasetIndex', cbDataset.selectedIndex);
   if (cbDataset.selectedIndex >= 0 && cbDataset.options[cbDataset.selectedIndex].createDataset)
     cbDataset.options[cbDataset.selectedIndex].createDataset();
 }
@@ -185,7 +185,7 @@ function dataset_onLoad(_dataset) {
     cbColumnS.add(option);
   }
 if (dataset.numColumns > 3) {
-  dataset.dataVectors.push(new libGlobalView.DataVector(dataset, '0.0'/*"0.5 * c1 + 0.5 * c3"*/));//"i"));
+  dataset.dataVectors.push(new globalView.DataVector(dataset, '0.0'/*"0.5 * c1 + 0.5 * c3"*/));//"i"));
   var option = document.createElement('option');
   option.text = 'formula';
   cbColumnX.add(option);
@@ -199,68 +199,68 @@ if (dataset.numColumns > 3) {
   option.text = 'formula';
   cbColumnS.add(option);
 }
-  var activeColumnX = libGlobalView.readIntCookie('activeColumnX'), activeColumnY = libGlobalView.readIntCookie('activeColumnY'), activeColumnC = libGlobalView.readIntCookie('activeColumnC'), activeColumnS = libGlobalView.readIntCookie('activeColumnS');
+  var activeColumnX = globalView.readIntCookie('activeColumnX'), activeColumnY = globalView.readIntCookie('activeColumnY'), activeColumnC = globalView.readIntCookie('activeColumnC'), activeColumnS = globalView.readIntCookie('activeColumnS');
   cbColumnX.selectedIndex = Math.max(0, Math.min(dataset.numColumns - 1, activeColumnX !== null && activeColumnX < dataset.numColumns ? activeColumnX : 0));
   cbColumnY.selectedIndex = Math.max(0, Math.min(dataset.numColumns - 1, activeColumnY !== null && activeColumnY < dataset.numColumns ? activeColumnY : 1));
   cbColumnC.selectedIndex = Math.max(0, Math.min(dataset.numColumns - 1, activeColumnC !== null && activeColumnC < dataset.numColumns ? activeColumnC : 2));
   cbColumnS.selectedIndex = Math.max(0, Math.min(dataset.numColumns - 1, activeColumnS !== null && activeColumnS < dataset.numColumns ? activeColumnS : 3));
 
   // Show dataset
-  globalView.load(dataset, cbColumnX.selectedIndex, cbColumnY.selectedIndex, cbColumnC.selectedIndex, cbColumnS.selectedIndex);
+  plot.load(dataset, cbColumnX.selectedIndex, cbColumnY.selectedIndex, cbColumnC.selectedIndex, cbColumnS.selectedIndex);
 }
 function cbColumnX_onChange() {
-  libGlobalView.createCookie('activeColumnX', cbColumnX.selectedIndex);
-  globalView.setActiveColumn(0, cbColumnX.selectedIndex);
+  globalView.createCookie('activeColumnX', cbColumnX.selectedIndex);
+  plot.setActiveColumn(0, cbColumnX.selectedIndex);
 }
 function cbColumnY_onChange() {
-  libGlobalView.createCookie('activeColumnY', cbColumnY.selectedIndex);
-  globalView.setActiveColumn(1, cbColumnY.selectedIndex);
+  globalView.createCookie('activeColumnY', cbColumnY.selectedIndex);
+  plot.setActiveColumn(1, cbColumnY.selectedIndex);
 }
 function cbColumnC_onChange() {
-  libGlobalView.createCookie('activeColumnC', cbColumnC.selectedIndex);
-  globalView.setActiveColumn(2, cbColumnC.selectedIndex);
+  globalView.createCookie('activeColumnC', cbColumnC.selectedIndex);
+  plot.setActiveColumn(2, cbColumnC.selectedIndex);
 }
 function cbColumnS_onChange() {
-  libGlobalView.createCookie('activeColumnS', cbColumnS.selectedIndex);
-  globalView.setActiveColumn(3, cbColumnS.selectedIndex);
+  globalView.createCookie('activeColumnS', cbColumnS.selectedIndex);
+  plot.setActiveColumn(3, cbColumnS.selectedIndex);
 }
 
 function cbRenderStyle_onChange(sender) {
-  globalView.setOption('enableContinuousRendering', sender.selectedIndex === 1 ? true : false);
+  plot.setOption('enableContinuousRendering', sender.selectedIndex === 1 ? true : false);
 }
 function cbTransparency_onChange(sender) {
-  globalView.setOption('enableTransparency', sender.selectedIndex === 0 ? true : false);
+  plot.setOption('enableTransparency', sender.selectedIndex === 0 ? true : false);
 }
 function cbPointShape_onChange(sender) {
-  globalView.setOption('pointShape', sender.value);
+  plot.setOption('pointShape', sender.value);
 }
 function rPointOpacity_onChange(sender) {
   pPointOpacity.innerText = 'Point opacity: ' + sender.value;
-  globalView.setOption('pointOpacity', Number.parseFloat(sender.value));
+  plot.setOption('pointOpacity', Number.parseFloat(sender.value));
 }
 function rPointSize_onChange(sender) {
   pPointSize.innerText = 'Point size: ' + sender.value;
-  globalView.setOption('pointSize', Number.parseFloat(sender.value));
+  plot.setOption('pointSize', Number.parseFloat(sender.value));
 }
 
-var densityMapOptions = new libGlobalView.DensityMapOptions();
+var densityMapOptions = new globalView.DensityMapOptions();
 //densityMapOptions.logScale = false;
 function cbShowDensity_onChange(sender) {
   if (sender.checked)
     requestVariance(densityMapOptions.gaussScale, true);
-  globalView.setOption('showPointDensity', sender.checked);
+  plot.setOption('showPointDensity', sender.checked);
 }
 function cbShowClusters_onChange(sender) {
-  //globalView.setOption("pointClusterThreshold", 0.01);
-  globalView.setOption('showPointClusters', sender.checked);
+  //plot.setOption("pointClusterThreshold", 0.01);
+  plot.setOption('showPointClusters', sender.checked);
 }
 function cbShowHistograms_onChange(sender) {
-  var padding = globalView.getOption('padding');
-  padding[2] += (sender.checked ? 64 : 0) - (globalView.getOption('showXAxisHistogram') ? 64 : 0);
-  padding[3] += (sender.checked ? 64 : 0) - (globalView.getOption('showYAxisHistogram') ? 64 : 0);
-  padding[1] += (sender.checked ? 64 : 0) - (globalView.getOption('showColormapHistogram') ? 64 : 0);
+  var padding = plot.getOption('padding');
+  padding[2] += (sender.checked ? 64 : 0) - (plot.getOption('showXAxisHistogram') ? 64 : 0);
+  padding[3] += (sender.checked ? 64 : 0) - (plot.getOption('showYAxisHistogram') ? 64 : 0);
+  padding[1] += (sender.checked ? 64 : 0) - (plot.getOption('showColormapHistogram') ? 64 : 0);
 
-  globalView.setOptions({
+  plot.setOptions({
     showXAxisHistogram: sender.checked,
     showYAxisHistogram: sender.checked,
     showColormapHistogram: sender.checked,
@@ -275,7 +275,7 @@ function rVariance_onChange(sender) {
 function rNumBins_onChange(sender) {
   var numBins = Number.parseInt(sender.value, 10);
   pNumBins.innerText = '# of histogram bins: ' + numBins;
-  globalView.setOption('numHistogramBins', numBins);
+  plot.setOption('numHistogramBins', numBins);
 }
 
 function requestVariance(variance, fast) {
@@ -286,9 +286,9 @@ function requestVariance(variance, fast) {
   }
 
   densityMapOptions.gaussScale = variance;
-  dataset.requestDensityMap(globalView.getActiveColumn(0), globalView.getActiveColumn(1), fast ? 64 : null, densityMapOptions, function (densityMap) {
+  dataset.requestDensityMap(plot.getActiveColumn(0), plot.getActiveColumn(1), fast ? 64 : null, densityMapOptions, function (densityMap) {
     if (densityMapOptions.gaussScale === variance) {
-      globalView.invalidate();
+      plot.invalidate();
       if (fast)
         requestVariance(variance, densityMap.options.gaussScale !== variance);
     }
@@ -326,14 +326,14 @@ function rDensityRatio_onChange(sender) {
   pDensityRatio.innerText = 'Density ratio: {0}% outliers,  {1}% clusters'.format(100 - Math.round(densityRatio * 100), Math.round(densityRatio * 100));
 }
 function cmdShowData2D_onClick(sender) {
-  globalView.clearThumbnails();
-  globalView.getCharacteristicPoints(numThumbnails, densityRatio, function (characteristicPoints) {
-    globalView.selectedPoints.assign(characteristicPoints);
-    globalView.showImages(globalView.selectedPoints, cbThumbnailPositioning.value);
+  plot.clearThumbnails();
+  plot.getCharacteristicPoints(numThumbnails, densityRatio, function (characteristicPoints) {
+    plot.selectedPoints.assign(characteristicPoints);
+    plot.showImages(plot.selectedPoints, cbThumbnailPositioning.value);
   });
 }
 function cbLabelThumbnails_onChange(sender) {
-  globalView.setOption('labelThumbnails', sender.checked);
+  plot.setOption('labelThumbnails', sender.checked);
 }
 
 function onMouseOverAxisLabel(dataVector, labelRect) {
@@ -356,11 +356,11 @@ function onMouseOverAxisLabel(dataVector, labelRect) {
 
 function onMouseOverDatapoint(dataset, index) {
   if (index === -1) {
-    globalView.highlightedPoints.clear();
+    plot.highlightedPoints.clear();
     imgDataPoint.src = '';
     pDataPoint.innerText =  '';
   } else {
-    globalView.highlightedPoints.set(index);
+    plot.highlightedPoints.set(index);
 
     imgDataPoint.src = dataset.imageFilenames && dataset.imageFilenames[index] ? dataset.imageFilenames[index] : '';
 
@@ -376,12 +376,12 @@ function onMouseOverDatapoint(dataset, index) {
 function onSelectionChanged(dataset, selection) {
   if (selection.length === 0) {
     if (!shiftPressed)
-      globalView.selectedPoints.clear();
+      plot.selectedPoints.clear();
   } else {
     if (shiftPressed)
-      globalView.selectedPoints.append(selection);
-    else if (selection.length !== 1 || !globalView.selectedPoints.contains(selection[0]))
-      globalView.selectedPoints.assign(selection);
+      plot.selectedPoints.append(selection);
+    else if (selection.length !== 1 || !plot.selectedPoints.contains(selection[0]))
+      plot.selectedPoints.assign(selection);
   }
 }
 
@@ -392,9 +392,10 @@ var dragOverCanvas = null;
 function ondragenter(event) {
   console.log('ondragenter');
   if (!dragOverCanvas) {
-    const padding = globalView.getOption('padding');
+    const padding = plot.getOption('padding');
 
     dragOverCanvas = document.createElement('canvas');
+    dragOverCanvas.setAttribute('id', 'dragOverCanvas');
     dragOverCanvas.style.pointerEvents = 'none';
     dragOverCanvas.style.zIndex = 100000;
     dragOverCanvas.style.position = 'static';//"absolute";
@@ -445,15 +446,15 @@ function handleKeyDown(event) {
 
   switch(event.keyCode) {
   case 46: // DELETE key
-    globalView.points.remove(globalView.selectedPoints.get());
-    globalView.selectedPoints.clear();
+    plot.points.remove(plot.selectedPoints.get());
+    plot.selectedPoints.clear();
     break;
 
   case 36: // HOME key
-    globalView.enableOffscreenRendering(1024, 1024);
-    globalView.renderOffscreenBuffer();
-    libGlobalView.download('globalView.png', globalView.saveOffscreenBuffer());
-    globalView.disableOffscreenRendering();
+    plot.enableOffscreenRendering(1024, 1024);
+    plot.renderOffscreenBuffer();
+    globalView.download('globalView.png', plot.saveOffscreenBuffer());
+    plot.disableOffscreenRendering();
   }
 }
 function handleKeyUp(event) {
