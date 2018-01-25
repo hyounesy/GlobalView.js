@@ -14,11 +14,34 @@ export const COLORMAP_WIDTH = 10; // [pixel]
  * @param {Object} gl // {WebGLRenderingContext}
  * @param {Object} globalView // {GlobalView}
  */
+
+// http://base64online.org/encode
+// http://textmechanic.co/Line-Length-Breaker.html
+const imageExhue =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAABCAYAAABADtw1AAAABHNCSVQICA' +
+  'gIfAhkiAAAAh5JREFUWIWlVu1xxTAIQ92rI3SN7r+B+iM2HwInedfevcYGBJJN7MDM7Of7l2YwoxkNFn' +
+  '+XbY+5bWbLjuq7bAwHjCXuyRZ2DnXERqY6yl11JH6RosQPPvZcFH3VL+uhdsz2yDnnm7nmOskOSIzyL9' +
+  'jQgswzgZEmhdYx9sqJBJKWOtpaDYmtts79bZ3/2aSuxtCklfu4zUlCInpLrSdjPsawztOYir9aA69qlR' +
+  'x3HMmdkbdxc/4briNejodYQ0SnR0x6K+r6V10blfa68LEaV6xShxI7jnJP9Yyel5ox8Y2eGyqqLvO9SX' +
+  'VZ/ft0EHtlPvguIGZ/i631NIZn/MDvqEVrTVoO+l3LI0byt52+0WLG5X6npXfRYX2q72Ff0m0it1uN2Y' +
+  'PJ7iKQb7MW5/lrL/fjlnV+4gZ/PSL98droWnCos3N+dpVROO4aJ5vc7qolnQqt1smX1zcAhPnJLPjEJf' +
+  'NcNojopjFhKwfuTx7Aa8CvJSxCsQ9pjri+djOlOQ0r5+QHSv473xgH50jAcPD1XOn5dfTf45af8DXL65' +
+  'Nq3/lm+5XzM8xjfZO4ATNryXrTvPtyPwz7cqivduVvosXe4V2LOd+qKd6BYJd1leeF54YEfmds2S0Brf' +
+  '5/xLAjI67EE8UWz4Vjt5Uc9cOP5ru5KyQ/9AP0EJdW79JSukXw9QfzDjz87G28a8H2O/8+LnH2dcLQu7' +
+  '1hBh5vfQ+xXHX/AM1S5PNCNCVNAAAAAElFTkSuQmCC';
+
+const imageRainbow =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAABCAYAAABADtw1AAAAt0lEQVRYhe' +
+  'WNsQ0CMRAErxOQeJHRwveAXk/sBj6iAKgAioAeoBXIQRBBAOmZCnzy7pvg5GCkDXZ2ZTaZRgAF+8yW9c' +
+  'E4Lln3EAr2mS3rg3FcEkX+gRbwUrkaHm2TzbNtFOkzW9YH43jltRmK894OOtZL5Zr43LpsvvdOkT6zZX' +
+  '0wjlfCJeRzDQr1mS3rg3GcsjvF4uzPUcd6qVwTi+UB4KhYn9myPhjHJ6t5j6Bgn9myPhjHJSIiP3thWH' +
+  'cGKpqFAAAAAElFTkSuQmCC';
+
 export function Colormap(gl, globalView) {
   const TICK_LENGTH = 6; // [pixel]
   const NUM_TICKS = 10;
 
-  var sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
+  const sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
   sdrLine.color = sdrLine.u4f('color');
   sdrLine.color.apply(sdrLine, gl.foreColor);
   sdrLine.matWorldViewProj = sdrLine.u4x4f('matWorldViewProj');
@@ -26,15 +49,27 @@ export function Colormap(gl, globalView) {
     sdrLine.color.apply(sdrLine, gl.foreColor);
   }
 
-  var sdrColormap = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured, libShaders.Shaders.fsTextured1D);
+  const sdrColormap = new libGraphics.Shader(
+    gl, libShaders.Shaders.vsTextured,
+    libShaders.Shaders.fsTextured1D
+  );
   sdrColormap.matWorldViewProj = sdrColormap.u4x4f('matWorldViewProj');
-  var colormaps = {
-    exhue: libGraphics.LoadTexture(gl, '/exhue.png', function () { globalView.invalidate(); }),//function() { setTimeout(function() { globalView.invalidate(); }, 1000); }),
-    rainbow: libGraphics.LoadTexture(gl, '/rainbow.png', function () { globalView.invalidate(); }),//function() { setTimeout(function() { globalView.invalidate(); }, 1000); }),
-    2: libGraphics.LoadTextureFromByteArray(gl, new Uint8Array([255, 0, 0, 255, 0, 255, 0, 255]), 2, 1)
+  const colormaps = {
+    exhue: libGraphics.LoadTexture(gl, imageExhue, () => {
+      globalView.invalidate();
+    }), // function() { setTimeout(function() { globalView.invalidate(); }, 1000); }),
+    rainbow: libGraphics.LoadTexture(gl, imageRainbow, () => {
+      globalView.invalidate();
+    }), // function() { setTimeout(function() { globalView.invalidate(); }, 1000); }),
+    2: libGraphics.LoadTextureFromByteArray(
+      gl,
+      new Uint8Array([255, 0, 0, 255, 0, 255, 0, 255]),
+      2, 1,
+    ),
   };
-  this.builtinColormaps = ['exhue', 'rainbow'];
-var texColormap = colormaps.exhue;
+  // not used:
+  // this.builtinColormaps = ['exhue', 'rainbow'];
+  let texColormap = colormaps.exhue;
 
   // Create a 2D line mesh
   var meshLine = new libGraphics.Mesh(gl, new Float32Array([
@@ -193,14 +228,15 @@ var texColormap = colormaps.exhue;
     axis.tickLength = TICK_LENGTH + (options['showColormapHistogram'] ? options['histogramHeight'] : 0);
     if (options['pointColor'] !== pointColor) {
       pointColor = options['pointColor'];
-
-if (pointColor === null)
-texColormap = colormaps.exhue;
-else {
-      var c = parseColormap(pointColor);
-      if (c)
-        texColormap = libGraphics.LoadTextureFromByteArray(gl, c, c.length / 4, 1);
-}
+      if (pointColor === null) {
+        texColormap = colormaps['exhue'];
+      } else if (colormaps[pointColor]) {
+        texColormap = colormaps[pointColor];
+      } else {
+        var c = parseColormap(pointColor);
+        if (c)
+          texColormap = libGraphics.LoadTextureFromByteArray(gl, c, c.length / 4, 1);
+      }
     }
   }
   this.onPlotBoundsChanged = function (plotBounds) {

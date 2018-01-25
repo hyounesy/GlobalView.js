@@ -8,6 +8,7 @@
  */
 export function TextRenderContext(gl, canvas) {
   var textCanvas = document.createElement('canvas');
+  textCanvas.setAttribute('id', 'textCanvas');
   textCanvas.style.backgroundColor = 'transparent';
   textCanvas.style.pointerEvents = 'none';
   textCanvas.style.zIndex = canvas.style.zIndex + 1;
@@ -186,6 +187,7 @@ export function TextRenderContext(gl, canvas) {
     offscreenRendering.oldCanvas = textCanvas;
     offscreenRendering.oldContext = ctx;
     textCanvas = document.createElement('canvas');
+    textCanvas.setAttribute('id', 'textCanvasOffScreen');
     ctx = textCanvas.getContext('2d');
     this.onResize();
   }

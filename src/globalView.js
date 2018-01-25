@@ -1,5 +1,5 @@
 const webglUtils = require('./webgl-utils.js');
-export const libUtility = require('./utility.js');
+const libUtility = require('./utility.js');
 const libTextRenderContext = require('./textRenderContext.js');
 const libPointViewer = require('./pointViewer.js');
 const libImageViewer = require('./imageViewer');
@@ -7,11 +7,11 @@ const libDensityViewer = require('./densityViewer.js');
 const libHistogramViewer = require('./histogramViewer.js');
 const libCoordinateSystem = require('./coordinateSystem.js');
 const libColormap = require('./colormap.js');
-export const libAlgorithm = require('./algorithm.js');
+const libAlgorithm = require('./algorithm.js');
 const libGraphics = require('./graphics.js');
 const libGlMatrix = require('gl-matrix');
 
-
+/*
 function myAlert(msg) {
   alert(msg); // eslint-disable-line no-alert, no-undef
 }
@@ -30,6 +30,7 @@ export function initCanvas(canvasElement) {
   gl.clearColor(1, 0, 0, 1);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // eslint-disable-line no-bitwise
 }
+*/
 
 // >>> Options
 
@@ -39,7 +40,7 @@ var SIMULATE_LOW_FPS = false;
 
 //var IMAGE_SIZE = 64 // Image width/height are smaller or equal to IMAGE_SIZE, maintaining aspect ratio
 
-var ND = 4; // Number of dimensions
+const ND = 4; // Number of dimensions
 
 /** @typedef {{
  * description: string,
@@ -68,6 +69,7 @@ export function GlobalView(div, startupOptions) {
     }
   if (canvas === null) {
     canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+    canvas.setAttribute('id', 'webGLCanvas');
     canvas.style.position = 'static';//"absolute";
     canvas.style.left = canvas.style.top = '0px';
     canvas.style.width = canvas.style.height = '100%';
@@ -325,7 +327,7 @@ export function GlobalView(div, startupOptions) {
       if (invalid === true)
         recompute();
       return animatedScales;
-    }
+    };
 
     // Transformation methods
     this.deviceCoordToDatasetCoord = function (vOut, vIn) {
@@ -2129,6 +2131,7 @@ export function GlobalView(div, startupOptions) {
 
     // Create a temporary 2D canvas to store the result -> tempCanvas
     var tempCanvas = document.createElement('canvas');
+    tempCanvas.setAttribute('id', 'tempCanvas');
     tempCanvas.width = gl.viewportWidth;
     tempCanvas.height = gl.viewportHeight;
     var tempContext = tempCanvas.getContext('2d');

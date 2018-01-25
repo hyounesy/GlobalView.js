@@ -4,7 +4,6 @@ export {
 } from './stats';
 
 export {
-  initCanvas,
   GlobalView,
 } from './globalView';
 

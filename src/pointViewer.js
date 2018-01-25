@@ -234,7 +234,7 @@ vec{1} getPos()
           inputs.push('p' + i + (attrLen == 1 ? '' : '[' + a + ']'));
       }
       //HY:
-      var ND = 4; //todo: should use the globalView.ND
+      const ND = 4; //todo: should use the globalView.ND
       for (var d = 0; d < ND; ++d) {
         inputCode.push(String.prototype.format2.apply(activeInputVectors[d] ? activeInputVectors[d].getValueCode : '0.0', inputs));
         animatedInputCode.push(String.prototype.format2.apply(activeInputVectors[d] ? animatedInputVectors[d].getValueCode : '0.0', inputs));
