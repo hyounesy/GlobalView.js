@@ -38,6 +38,14 @@ export function isCloneable(x) {
   return !(isFunction(x) || x instanceof WebGLTexture); //TODO: Add more
 }
 
+const enableDebugLog = true;
+export function debugLog(x) {
+  // TODO: disable for release
+  if (enableDebugLog) {
+    console.log(x);
+  }
+}
+
 Array.create = function (n, func) {
   var array = new Array(n);
   if (isFunction(func))
