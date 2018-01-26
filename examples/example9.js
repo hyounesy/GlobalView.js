@@ -4,9 +4,17 @@ const domready = require('domready');
 const JSZip = require('jszip');
 const FileSaver = require('file-saver');
 
-const numTests = 5;
+function Test1(div, ondone) {
+  const plot = new globalView.GlobalView(div, null);
+  this.getPlot = () => plot;
+  const data = new globalView.RandomDataset(1000, 3, (dataset) => {
+    plot.load(dataset, 0, 1, 2, 2);
+    setTimeout(() => { ondone(); }, 500);
+  });
+}
 
 domready(() => {
+  const tests = [Test1, Test1, Test1];
   const newImages = [];
 
   const table = $('<table style="width:100%"></table>');
@@ -31,7 +39,7 @@ domready(() => {
   }
 
   function runTest(i) {
-    if (i >= numTests) {
+    if (i >= tests.length) {
       testsDone();
       return;
     }
@@ -58,19 +66,15 @@ domready(() => {
       .append($('<td></td>')
         .append(div2)));
 
-    const plot1 = new globalView.GlobalView(div1[0], null);
-    globalView.RandomDataset(1000, 3, ((dataset) => {
-      setTimeout(() => {
-        plot1.load(dataset, 0, 1, 2, 2);
-        plot1.enableOffscreenRendering(width, height);
-        plot1.renderOffscreenBuffer();
-        const newImage = plot1.saveOffscreenBuffer();
-        newImages.push(newImage);
-        div2.append($('<img></img>').attr('src', newImage));
-        plot1.disableOffscreenRendering();
-        runTest(i + 1);
-      }, 500);
-    }));
+    const test = new tests[i](div1[0], () => {
+      test.getPlot().enableOffscreenRendering(width, height);
+      test.getPlot().renderOffscreenBuffer();
+      const newImage = test.getPlot().saveOffscreenBuffer();
+      newImages.push(newImage);
+      div2.append($('<img></img>').attr('src', newImage));
+      test.getPlot().disableOffscreenRendering();
+      runTest(i + 1);
+    });
   }
   runTest(0);
 });

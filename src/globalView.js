@@ -1020,8 +1020,8 @@ export function GlobalView(div, startupOptions) {
     animatedInputs[1].origin = activeInputs[1] = activeColumnY;
     animatedInputs[2].origin = activeInputs[2] = activeColumnC;
     animatedInputs[3].origin = activeInputs[3] = activeColumnS;
-//dataset.dataVectors.push(new DataVector(dataset, "({1} + {2}) / 2.0"));//"i"));
-//dataset.dataVectors.push(new DataVector(dataset, "{2} + 2.0"));//"i"));
+    //dataset.dataVectors.push(new DataVector(dataset, "({1} + {2}) / 2.0"));//"i"));
+    //dataset.dataVectors.push(new DataVector(dataset, "{2} + 2.0"));//"i"));
 
 
     // Reset transform
