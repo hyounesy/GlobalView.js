@@ -37,6 +37,8 @@ const imageRainbow =
   '0wjlfCJeRzDQr1mS3rg3GcsjvF4uzPUcd6qVwTi+UB4KhYn9myPhjHJ6t5j6Bgn9myPhjHJSIiP3thWH' +
   'cGKpqFAAAAAElFTkSuQmCC';
 
+let colormaps = {};
+
 export function Colormap(gl, globalView) {
   const TICK_LENGTH = 6; // [pixel]
   const NUM_TICKS = 10;
@@ -54,7 +56,7 @@ export function Colormap(gl, globalView) {
     libShaders.Shaders.fsTextured1D
   );
   sdrColormap.matWorldViewProj = sdrColormap.u4x4f('matWorldViewProj');
-  const colormaps = {
+  colormaps = {
     exhue: libGraphics.LoadTexture(gl, imageExhue, () => {
       globalView.invalidate();
     }), // function() { setTimeout(function() { globalView.invalidate(); }, 1000); }),
@@ -291,8 +293,11 @@ export function parseColor(color) {
 
 export function validateColormap(colormap) {
 if (colormap === null) return true;
-  if (libUtility.isString(colormap))
+  if (libUtility.isString(colormap)) {
+    if (colormaps[colormap])
+      return true;
     return validateColor(colormap);
+  }
 
   if (libUtility.isArray(colormap)) {
     if (colormap.length === 0)
