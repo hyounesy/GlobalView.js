@@ -1,5 +1,3 @@
-const p = require('path');
-
 module.exports = {
   entry: {
     'example1.min': './examples/example1.js',
@@ -10,7 +8,6 @@ module.exports = {
     'example6.min': './examples/example6.js',
     'example7.min': './examples/example7.js',
     'example8.min': './examples/example8.js',
-    'example9.min': './examples/example9.js',
   },
   output: {
     path: __dirname,
@@ -20,6 +17,7 @@ module.exports = {
 
 
 /*
+const p = require('path');
 const webpack = require('webpack');
 module.exports = {
   entry: {
