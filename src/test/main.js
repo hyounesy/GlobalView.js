@@ -62,41 +62,41 @@ domready(() => {
   // const failedTests = [];
   // const newImages = [];
 
-  const table = $('<table style="width:100%"></table>');
+  const table = $('<table border=1 frame=hsides rules=rows></table>');
   const progress = $('<p></p>');
   table.append($('<tr></tr>')
-    .append('$(<td>Interactive</td>)')
-    .append('$(<td>Current</td>)')
-    .append('$(<td>Expected</td>)')
-    .append('$(<td>Diff</td>)'));
+    .append('$(<td align="center"><b>Interactive</b></td>)')
+    .append('$(<td align="center"><b>Current</b></td>)')
+    .append('$(<td align="center"><b>Expected</b></td>)')
+    .append('$(<td align="center"><b>Diff</b></td>)'));
   $('#divMain').append(progress).append(table);
 
   function downloadAll() {
     const zip = new JSZip();
     const expected = zip.folder('expected');
-    testResults.forEach((testInfo) => {
-      if (testInfo.image) {
-        expected.file(`${testInfo.name}.png`, urlToBase64(testInfo.image), { base64: true });
+    testResults.forEach((testResult) => {
+      if (testResult.image) {
+        expected.file(`${testResult.name}.png`, urlToBase64(testResult.image), { base64: true });
       }
     });
     zip.generateAsync({ type: 'blob' })
       .then((content) => {
-        FileSaver.saveAs(content, 'tests.zip');
+        FileSaver.saveAs(content, 'expected.zip');
       });
   }
 
   function testsDone() {
     const failedTests = [];
-    testResults.forEach((testInfo) => {
-      if (!testInfo.success) {
-        failedTests.push(testInfo.name);
+    testResults.forEach((testResult) => {
+      if (!testResult.success) {
+        failedTests.push(testResult.name);
       }
     });
 
     if (failedTests.length === 0) {
       progress.text('All Passed!');
     } else {
-      progress.text(`${failedTests.length} tests failed: ${failedTests.join()}`);
+      progress.text(`${failedTests.length} tests failed: ${failedTests.join(', ')}`);
     }
     progress.append($('<br><br>'));
     progress.append($('<button>Download Generated Images</button>').click(() => { downloadAll(); }));
@@ -104,26 +104,27 @@ domready(() => {
 
   function runTest(i) {
     if (i >= allTests.length) {
-      setTimeout(() => { testsDone(); }, 2000); // wait two seconds for the results
+      progress.text('Waiting for results ...');
+      setTimeout(() => { testsDone(); }, 5000); // wait 5 seconds for the results
       return;
     }
 
-    const testInfo = {};
-    testResults.push(testInfo);
-    testInfo.name = allTests[i].name;
-    const logText = `Running test (${i + 1} of ${allTests.length}): ${testInfo.name} ...`;
+    const testResult = {};
+    testResults.push(testResult);
+    testResult.name = allTests[i].name;
+    const logText = `Running test (${i + 1} of ${allTests.length}): ${testResult.name} ...`;
     console.log(logText);
     progress.text(logText);
 
     const imageWidth = 300;
     const imageHeight = 300;
 
-    const divPlot = $('<div></div>');
+    const divPlot = $(`<div style="border: 0px; width: ${imageWidth}px; height: ${imageHeight}px;"></div>`);
     const divCurrent = $('<div></div>');
     const divExpected = $('<div></div>');
     const divDiff = $('<div></div>');
 
-    table.append($(`<tr><td>${testInfo.name}</td></tr>`));
+    table.append($(`<tr><td>${testResult.name}</td></tr>`));
     table.append($('<tr></tr>')
       .append($('<td nowrap></td>')
         .css({
@@ -144,12 +145,12 @@ domready(() => {
         test.getPlot().renderOffscreenBuffer();
         const testImageUrl = test.getPlot().saveOffscreenBuffer();
         test.getPlot().disableOffscreenRendering();
-        testInfo.image = testImageUrl;
+        testResult.image = testImageUrl;
 
         divCurrent.append($('<img></img>').attr('src', testImageUrl));
         test.getPlot().disableOffscreenRendering();
 
-        const expectedImageUrl = `tests/expected/${testInfo.name}.png`;
+        const expectedImageUrl = `tests/expected/${testResult.name}.png`;
         getImageDataFromUrl(expectedImageUrl, (expectedImageData) => {
           divExpected.append($('<img></img>').attr('src', expectedImageUrl));
           getImageDataFromUrl(testImageUrl, (testImageData) => {
@@ -161,10 +162,10 @@ domready(() => {
               },
             );
             if (errorPixels === 0) {
-              testInfo.success = true;
-              console.log(`[Ok] Output of ${testInfo.name} matches the expected output.`);
+              testResult.success = true;
+              console.log(`[Ok] Output of ${testResult.name} matches the expected output.`);
             } else {
-              console.error(`[Fail] Output of ${testInfo.name} does not match the expected output.`);
+              console.error(`[Fail] Output of ${testResult.name} does not match the expected output.`);
             }
             const canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
             canvas.width = imageWidth;

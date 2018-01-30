@@ -1,12 +1,12 @@
 const globalView = require('../../../dist/global-view.js');
 
-function testCustomOptions(div, options, ondone) {
+function testCustomOptions(div, options, ondone, timeout = 500) {
   const plot = new globalView.GlobalView(div, options);
 
   const data = new globalView.CsvDataset('tests/datasets/iris.data', {}, (dataset) => {
     plot.load(dataset, 0, 1, 4, 1);
 
-    setTimeout(() => { ondone(); }, 500); // boiler-plate code
+    setTimeout(() => { ondone(); }, timeout); // boiler-plate code
   });
   return plot;
 }
@@ -32,17 +32,17 @@ export function testOptionTransparency(div, ondone) {
 }
 
 export function testOptionPointDensity(div, ondone) {
-  const plot = testCustomOptions(div, { showPointDensity: true }, ondone);
+  const plot = testCustomOptions(div, { showPointDensity: true }, ondone, 5000);
   this.getPlot = () => plot;
 }
 
 export function testOptionPointClusters(div, ondone) {
-  const plot = testCustomOptions(div, { showPointClusters: true, pointClusterThreshold: 0.2 }, ondone);
+  const plot = testCustomOptions(div, { showPointClusters: true, pointClusterThreshold: 0.2 }, ondone, 5000);
   this.getPlot = () => plot;
 }
 
 export function testOptionPadding(div, ondone) {
-  const plot = testCustomOptions(div, { padding: [40, 50, 60, 70] }, ondone);
+  const plot = testCustomOptions(div, { padding: [100, 110, 120, 130] }, ondone);
   this.getPlot = () => plot;
 }
 
