@@ -3,4 +3,10 @@ module.exports = {
   "env": {
     "mocha": true
   },
+  "globals": {
+    "Image": true,
+    "window": true,
+    "document": true,
+    "ImageData": true,
+  },
 };

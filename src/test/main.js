@@ -13,20 +13,32 @@ function urlToBase64(dataUrl) {
 }
 
 function getImageDataFromUrl(url, callback) {
-  const canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
-  const image = new Image();
-  image.onload = function onload() {
-    canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
-    canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(this, 0, 0);
-    callback(ctx.getImageData(0, 0, canvas.width, canvas.height));
-    // Get raw image data
-    // callback(canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, ''));
-    // ... or get as Data URI
-    // callback(canvas.toDataURL('image/png'));
-  };
-  image.src = url;
+  try {
+    const canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+    const image = new Image();
+    image.onload = function onload() {
+      let result = null;
+      try {
+        canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
+        canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(this, 0, 0);
+        result = ctx.getImageData(0, 0, canvas.width, canvas.height)
+      } catch (error) {
+        console.error(error);
+        result = null;
+      }
+      // Get raw image data
+      // callback(canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, ''));
+      // ... or get as Data URI
+      // callback(canvas.toDataURL('image/png'));
+      callback(result);
+    };
+    image.src = url;
+  } catch (error) {
+    console.error(error);
+    callback(null);
+  }
 }
 /**
  * create an ImageData from a Uint8Array buffer
@@ -46,8 +58,9 @@ function getImageDataFromBytes(ubuf, width, height) {
 }
 
 domready(() => {
-  const failedTests = [];
-  const newImages = [];
+  const testResults = [];
+  // const failedTests = [];
+  // const newImages = [];
 
   const table = $('<table style="width:100%"></table>');
   const progress = $('<p></p>');
@@ -61,8 +74,10 @@ domready(() => {
   function downloadAll() {
     const zip = new JSZip();
     const expected = zip.folder('expected');
-    newImages.forEach((img) => {
-      expected.file(`${img[0]}.png`, urlToBase64(img[1]), { base64: true });
+    testResults.forEach((testInfo) => {
+      if (testInfo.image) {
+        expected.file(`${testInfo.name}.png`, urlToBase64(testInfo.image), { base64: true });
+      }
     });
     zip.generateAsync({ type: 'blob' })
       .then((content) => {
@@ -71,23 +86,32 @@ domready(() => {
   }
 
   function testsDone() {
+    const failedTests = [];
+    testResults.forEach((testInfo) => {
+      if (!testInfo.success) {
+        failedTests.push(testInfo.name);
+      }
+    });
+
     if (failedTests.length === 0) {
       progress.text('All Passed!');
     } else {
       progress.text(`${failedTests.length} tests failed: ${failedTests.join()}`);
     }
-    progress.append($('<br>'));
+    progress.append($('<br><br>'));
     progress.append($('<button>Download Generated Images</button>').click(() => { downloadAll(); }));
   }
 
   function runTest(i) {
     if (i >= allTests.length) {
-      testsDone();
+      setTimeout(() => { testsDone(); }, 2000); // wait two seconds for the results
       return;
     }
 
-    const testName = allTests[i].name;
-    const logText = `Running test (${i + 1} of ${allTests.length}): ${testName} ...`;
+    const testInfo = {};
+    testResults.push(testInfo);
+    testInfo.name = allTests[i].name;
+    const logText = `Running test (${i + 1} of ${allTests.length}): ${testInfo.name} ...`;
     console.log(logText);
     progress.text(logText);
 
@@ -99,7 +123,7 @@ domready(() => {
     const divExpected = $('<div></div>');
     const divDiff = $('<div></div>');
 
-    table.append($(`<tr><td>${testName}</td></tr>`));
+    table.append($(`<tr><td>${testInfo.name}</td></tr>`));
     table.append($('<tr></tr>')
       .append($('<td nowrap></td>')
         .css({
@@ -115,42 +139,44 @@ domready(() => {
         .append(divDiff)));
 
     const test = new allTests[i](divPlot[0], () => {
-      test.getPlot().enableOffscreenRendering(imageWidth, imageHeight);
-      test.getPlot().renderOffscreenBuffer();
-      const testImageUrl = test.getPlot().saveOffscreenBuffer();
-      test.getPlot().disableOffscreenRendering();
-      newImages.push([testName, testImageUrl]);
+      try {
+        test.getPlot().enableOffscreenRendering(imageWidth, imageHeight);
+        test.getPlot().renderOffscreenBuffer();
+        const testImageUrl = test.getPlot().saveOffscreenBuffer();
+        test.getPlot().disableOffscreenRendering();
+        testInfo.image = testImageUrl;
 
-      divCurrent.append($('<img></img>').attr('src', testImageUrl));
-      test.getPlot().disableOffscreenRendering();
+        divCurrent.append($('<img></img>').attr('src', testImageUrl));
+        test.getPlot().disableOffscreenRendering();
 
-      const expectedImageUrl = `tests/expected/${testName}.png`;
-      divExpected.append($('<img></img>').attr('src', expectedImageUrl));
+        const expectedImageUrl = `tests/expected/${testInfo.name}.png`;
+        getImageDataFromUrl(expectedImageUrl, (expectedImageData) => {
+          divExpected.append($('<img></img>').attr('src', expectedImageUrl));
+          getImageDataFromUrl(testImageUrl, (testImageData) => {
+            const diffData = new Uint8Array(imageWidth * imageHeight * 4);
+            const errorPixels = pixelmatch(
+              expectedImageData.data, testImageData.data, diffData,
+              imageWidth, imageHeight, {
+                threshold: 0.001,
+              },
+            );
+            if (errorPixels === 0) {
+              testInfo.success = true;
+              console.log(`[Ok] Output of ${testInfo.name} matches the expected output.`);
+            } else {
+              console.error(`[Fail] Output of ${testInfo.name} does not match the expected output.`);
+            }
+            const canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+            canvas.width = imageWidth;
+            canvas.height = imageHeight;
 
-      getImageDataFromUrl(expectedImageUrl, (expectedImageData) => {
-        getImageDataFromUrl(testImageUrl, (testImageData) => {
-          const diffData = new Uint8Array(imageWidth * imageHeight * 4);
-          const error = pixelmatch(
-            expectedImageData.data, testImageData.data, diffData,
-            imageWidth, imageHeight, {
-              threshold: 0.0001,
-            },
-          );
-          if (error < 0.0001) {
-            console.log(`[Test ${testName} Passed]`);
-          } else {
-            console.error(`[Test ${testName} Failed]`);
-            failedTests.push(testName);
-          }
-          const canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
-          canvas.width = imageWidth;
-          canvas.height = imageHeight;
-
-          canvas.getContext('2d').putImageData(getImageDataFromBytes(diffData, imageWidth, imageHeight), 0, 0);
-          divDiff.append(canvas);
+            canvas.getContext('2d').putImageData(getImageDataFromBytes(diffData, imageWidth, imageHeight), 0, 0);
+            divDiff.append(canvas);
+          });
         });
-      });
-
+      } catch (error) {
+        console.error(error);
+      }
       runTest(i + 1);
     });
   }
