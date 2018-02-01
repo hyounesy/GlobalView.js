@@ -58,12 +58,6 @@ export function testOptionPointOpacity(div, ondone) {
 
 /*
 {
-  "showXAxisHistogram": false,
-  "showYAxisHistogram": false,
-  "showColormapHistogram": false,
-  "numHistogramBins": 50,
-  "histogramHeight": 64,
-
   "thumbnailSize": 64,
   "thumbnailBorderWidth": 1,
   "thumbnailBorderColor": null,
