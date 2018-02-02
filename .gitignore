@@ -1,0 +1,10 @@
+.idea/
+node_modules/
+es/
+__dist/
+coverage/
+.nyc_output/
+.vscode/
+lib/test
+examples/*.min.js
+src/test/*.min.js

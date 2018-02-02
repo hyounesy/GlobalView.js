@@ -1,0 +1,14 @@
+{
+  "env": {
+    "commonjs": {
+      "presets": ["env"]
+    },
+    "es": {
+      "presets": [["env", { "modules": false }]]
+    },
+    "test": {
+      "presets": ["env"],
+      "plugins": ["istanbul"]
+    }
+  }
+}
