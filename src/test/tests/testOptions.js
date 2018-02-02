@@ -56,13 +56,3 @@ export function testOptionPointOpacity(div, ondone) {
   this.getPlot = () => plot;
 }
 
-/*
-{
-  "thumbnailSize": 64,
-  "thumbnailBorderWidth": 1,
-  "thumbnailBorderColor": null,
-  "thumbnailLineColor": null,
-  "thumbnailLabelColor": null,
-  "labelThumbnails": false
-}
-*/

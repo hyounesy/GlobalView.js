@@ -1,3 +1,4 @@
+const p = require('path');
 module.exports = {
   entry: {
     'example1.min': './examples/example1.js',
@@ -10,7 +11,7 @@ module.exports = {
     'example8.min': './examples/example8.js',
   },
   output: {
-    path: __dirname,
+    path: p.join(__dirname, '../bin'),
     filename: '[name].js',
   },
 };
