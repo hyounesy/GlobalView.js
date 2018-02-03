@@ -74,7 +74,7 @@ export function CoordinateSystem(gl, globalView) {
     // Draw x-axis ticks and tick labels
     xTickLabel_top = 0;
     if (this.visible[0]) {
-      var axis = axes[0];
+      const axis = axes[0];
       libGlMatrix.mat4.identity(mattrans);
       if (flipY === true) {
         libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
@@ -88,16 +88,16 @@ export function CoordinateSystem(gl, globalView) {
       sdrLine.matWorldViewProj(mattrans);
       meshLine.draw();
       libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -1.0, 0.0]);
-      for (var i = 0; i < axis.tickCount; ++i) {
-        var x = axis.tickOffset + i * axis.tickDistance;
-        var tickPos = (x - axis.minimum) / (axis.maximum - axis.minimum);
+      for (let i = 0; i < axis.tickCount; ++i) {
+        const x = axis.tickOffset + i * axis.tickDistance;
+        const tickPos = (x - axis.minimum) / (axis.maximum - axis.minimum);
 
         libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, tickPos, 0.0]);
         sdrLine.matWorldViewProj(mattrans);
         meshLine.draw();
         libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -tickPos, 0.0]);
 
-        var tickLabel = axis.values ? axis.values[x] : x.toPrecision(6) / 1;
+        const tickLabel = axis.values ? axis.values[x] : x.toPrecision(6) / 1;
         gl.drawText(tickLabel, plotBounds.x + plotBounds.width * tickPos, gl.height - plotBounds.y + axis.tickLength + 2, 'topcenter');
       }
       xTickLabel_top = gl.height - plotBounds.y + axis.tickLength + 10 + gl.measureTextHeight();
@@ -238,7 +238,7 @@ export function CoordinateSystem(gl, globalView) {
     axes[1].tickLength = TICK_LENGTH + (options['showYAxisHistogram'] ? options['histogramHeight'] : 0);
   }
   this.onPlotBoundsChanged = function (plotBounds) {
-    for (var i = 0; i < 2; ++i) {
+    for (let i = 0; i < 2; ++i) {
       axes[i].values === null ?
         this.setNumericRange(i, axes[i].minimum, axes[i].maximum, true) :
         this.setEnumRange(i, axes[i].minimum + 0.5, axes[i].maximum + 0.5, axes[i].values);
@@ -247,15 +247,15 @@ export function CoordinateSystem(gl, globalView) {
 
   this.labelFromPoint = function (plotBounds, p) {
     if (this.visible[0]) {
-      var halfTextWidth = gl.measureTextWidth(axes[0].label) / 2;
-      var plotCenter = plotBounds.x + plotBounds.width / 2;
+      const halfTextWidth = gl.measureTextWidth(axes[0].label) / 2;
+      const plotCenter = plotBounds.x + plotBounds.width / 2;
       if (p[0] >= plotCenter - halfTextWidth && p[0] < plotCenter + halfTextWidth && p[1] >= xTickLabel_top && p[1] <= xTickLabel_top + gl.measureTextHeight() + 2) {
         return 0;
       }
     }
     if (this.visible[1]) {
-      var halfTextWidth = gl.measureTextWidth(axes[1].label) / 2;
-      var plotCenter = gl.height - plotBounds.y - plotBounds.height / 2;
+      const halfTextWidth = gl.measureTextWidth(axes[1].label) / 2;
+      const plotCenter = gl.height - plotBounds.y - plotBounds.height / 2;
       if (p[0] >= yTickLabel_left - gl.measureTextHeight() && p[0] <= yTickLabel_left + 2 && p[1] >= plotCenter - halfTextWidth && p[1] < plotCenter + halfTextWidth) {
         return 1;
       }

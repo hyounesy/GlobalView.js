@@ -245,7 +245,7 @@ vec{1} getPos()
         inputs = [/c(\d+)/g, '0.0'],
         inputCode = [],
         animatedInputCode = [];
-      for (var d = 0, i = 0; d < ndim; d += 4, ++i) {
+      for (let d = 0, i = 0; d < ndim; d += 4, ++i) {
         var attrLen = Math.min(4, ndim - d);
         attrDeclCode += 'attribute ' + (attrLen === 1 ? 'float' : 'vec' + attrLen) + ' p' + i + ';\n';
         for (var a = 0; a < attrLen; ++a) {
@@ -353,7 +353,7 @@ vec{1} getPos()
         count = numvertices;
       }
 
-      for(var i = 0; i < 16; i++) {
+      for(let i = 0; i < 16; i++) {
         gl.disableVertexAttribArray(i);
         if (gl.ext) {
           gl.ext.vertexAttribDivisorANGLE(i, 0);
@@ -385,7 +385,7 @@ vec{1} getPos()
       gl.drawArrays(gl.POINTS, 0, Math.min(count, numvertices - offset));
     }
     this.drawIndexed = function (texture, idxbuffer, count) {
-      for(var i = 0; i < 16; i++) {
+      for(let i = 0; i < 16; i++) {
         gl.disableVertexAttribArray(i);
         if (gl.ext) {
           gl.ext.vertexAttribDivisorANGLE(i, 0);
@@ -427,14 +427,14 @@ vec{1} getPos()
         count = numvertices;
       }
 
-      for(var i = 0; i < 16; i++) {
+      for(let i = 0; i < 16; i++) {
         gl.disableVertexAttribArray(i);
         gl.ext.vertexAttribDivisorANGLE(i, 0);
       }
 
       if (posbuffer) {
         gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
-        for(var d = 0, i = 0; d < ndim; d += 4, ++i) {
+        for(let d = 0, i = 0; d < ndim; d += 4, ++i) {
           if (this.sdrLine.posattr[i] !== -1) {
             gl.enableVertexAttribArray(this.sdrLine.posattr[i]);
             gl.vertexAttribPointer(this.sdrLine.posattr[i], Math.min(4, ndim - d), gl.FLOAT, false, ndim * 4, (offset * ndim + d) * 4);

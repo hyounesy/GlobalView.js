@@ -217,20 +217,20 @@ function dataset_onLoad(_dataset) {
   }
 
   // Update active-column comboboxes
-  for(var i = cbColumnX.options.length - 1; i >= 0 ; --i) {
+  for(let i = cbColumnX.options.length - 1; i >= 0 ; --i) {
     cbColumnX.remove(i);
   }
-  for(var i = cbColumnY.options.length - 1; i >= 0 ; --i) {
+  for(let i = cbColumnY.options.length - 1; i >= 0 ; --i) {
     cbColumnY.remove(i);
   }
-  for(var i = cbColumnC.options.length - 1; i >= 0 ; --i) {
+  for(let i = cbColumnC.options.length - 1; i >= 0 ; --i) {
     cbColumnC.remove(i);
   }
-  for(var i = cbColumnS.options.length - 1; i >= 0 ; --i) {
+  for(let i = cbColumnS.options.length - 1; i >= 0 ; --i) {
     cbColumnS.remove(i);
   }
-  for(var i = 0; i < dataset.numColumns; ++i) {
-    var option = document.createElement('option');
+  for(let i = 0; i < dataset.numColumns; ++i) {
+    let option = document.createElement('option');
     option.text = dataset.columns[i].label;
     cbColumnX.add(option);
     option = document.createElement('option');

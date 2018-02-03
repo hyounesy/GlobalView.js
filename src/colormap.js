@@ -319,8 +319,8 @@ export function validateColormap(colormap) {
       return 'Colormap array cannot be empty.';
     }
     if (libUtility.isString(colormap[0])) {
-      var err;
-      for (var i = 0; i < colormap.length; ++i) {
+      let err;
+      for (let i = 0; i < colormap.length; ++i) {
         if ((err = validateColor(colormap[i])) !== true) {
           return err;
         }

@@ -1606,13 +1606,13 @@ export function GlobalView(div, startupOptions) {
    * @param  {Thumbnail|number} image Image or index of image to show
    */
   this.highlightImage = function (image) {
-    var images = imageViewer.getImages();
+    const images = imageViewer.getImages();
     if (libUtility.isNumber(image)) {
-      for (var i = 0; i < images.length; ++i) {
+      for (let i = 0; i < images.length; ++i) {
         images[i].highlighted = i === image;
       }
     } else {
-      for (var i = 0; i < images.length; ++i) {
+      for (let i = 0; i < images.length; ++i) {
         images[i].highlighted = images[i] === image;
       }
     }
@@ -2040,7 +2040,7 @@ export function GlobalView(div, startupOptions) {
       return;
     }
 
-    var invalidate = false;
+    let invalidate = false;
     if (pointDragDownPos !== null) {
       pointDragDownPos = pointDrag = null;
       invalidate = true;
@@ -2051,8 +2051,8 @@ export function GlobalView(div, startupOptions) {
         // TODO: Find points within mousePolygon -> selection
 
         // Transform mousePolygon from canvas space to dataset coordinates
-        for (var i = 0; i < mousePolygon.length; ++i) {
-          var p = mousePolygon[i];
+        for (let i = 0; i < mousePolygon.length; ++i) {
+          const p = mousePolygon[i];
 
           // Transform p from canvas space to device coordinates
           p[0] = 2 * p[0] / canvas.width - 1;
@@ -2067,15 +2067,12 @@ export function GlobalView(div, startupOptions) {
         // Close polygon
         mousePolygon.push(mousePolygon[0]);
 
-        var px,
-          py,
-          selection = [];
-        var v0 = dataset.dataVectors[activeInputs[0]],
-          v1 = dataset.dataVectors[activeInputs[1]];
+        const selection = [];
+        const v0 = dataset.dataVectors[activeInputs[0]];
+        const v1 = dataset.dataVectors[activeInputs[1]];
         pointViewer.points.forEach(function (i) {
-          px = v0.getValue(i);
-          py = v1.getValue(i);
-          ;
+          const px = v0.getValue(i);
+          const py = v1.getValue(i);
           if (libAlgorithm.pointInsidePolygon([px, py], mousePolygon)) {
             selection.push(i);
           }

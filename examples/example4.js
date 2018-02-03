@@ -32,7 +32,8 @@ domready(function () {
   });
   measureTime('Random dataset generation', 1);
 
-  for (var frames = 0; performance.now() - tStart < 1000; ++frames) {
+  let frames = 0;
+  for (frames = 0; performance.now() - tStart < 1000; ++frames) {
     plot.renderOffscreenBuffer();
   }
   measureTime('Render time', frames);

@@ -502,7 +502,7 @@ export function ForwardList(value) {
     while (a !== null && b!= null) {
       // While neither a nor b run out
       if (a.value <= b.value) {
-        var newNode = a;
+        let newNode = a;
         a = newNode.next;
         newNode.next = tail.next;
         tail.next = newNode;

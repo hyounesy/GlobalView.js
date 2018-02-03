@@ -32,7 +32,7 @@ export function DataVector(dataset, source) {
   var nc = dataset.numColumns;
 
   if (libUtility.isNumber(source)) {
-    var c = Math.round(source);
+    const c = Math.round(source);
     this['getValue'] = this.getValue = function (i) {
       // return Math.log(dataset.fdata[i * nc + c]);
       return dataset.fdata[i * nc + c];
@@ -267,7 +267,7 @@ export function Dataset() {
         _densityMaps[d0][d1] = {pending: [ondone], old: _densityMaps[d0][d1]};
 
         // Compute histogram synchronously
-        var histogram = libAlgorithm.computeHistogram2D(this, d0, d1, size, size);
+        let histogram = libAlgorithm.computeHistogram2D(this, d0, d1, size, size);
 
         // Execute an asynchronous worker that computes _densityMaps[d0][d1]
         const p = new Parallel([libUtility.makeCloneable(histogram), new libAlgorithm.DensityMapOptions(options)], { evalPath: 'eval.js' });
@@ -460,10 +460,10 @@ export function Dataset() {
     var data = this.data,
       data_inflated = new Array(n_inflated * nc);
 
-    for (var i = 0, len = n * nc; i < len; ++i) {
+    for (let i = 0, len = n * nc; i < len; ++i) {
       fdata_inflated[i] = fdata[i];
     }
-    for (var i = 0, len = n * nc; i < len; ++i) {
+    for (let i = 0, len = n * nc; i < len; ++i) {
       data_inflated[i] = data[i];
     }
 
@@ -471,7 +471,7 @@ export function Dataset() {
       samples,
       sample,
       sampleScale = 1 / densityMapChain[0].size;
-    for (var i, i_inflated = n, len = n * nc; i_inflated < n_inflated; ++i_inflated) {
+    for (let i, i_inflated = n, len = n * nc; i_inflated < n_inflated; ++i_inflated) {
       i = i_inflated % n;
 
       samples = libAlgorithm.sampleDensityMapChain(densityMapChain);
@@ -496,22 +496,22 @@ export function Dataset() {
     if (this.names !== null) {
       var names = /** @type {Array<string>} */ (this.names),
         names_inflated = new Array(n_inflated);
-      for (var i = 0, len = n; i < len; ++i) {
+      for (let i = 0, len = n; i < len; ++i) {
         names_inflated[i] = names[i];
       }
-      for (var index = 0, i_inflated = n, len = n * nc; i_inflated < n_inflated; ++i_inflated) {
+      for (let index = 0, i_inflated = n, len = n * nc; i_inflated < n_inflated; ++i_inflated) {
         names_inflated[i_inflated] = 'generated datapoint ' + ++index;
       }
       this['names'] = this.names = names_inflated;
     }
 
     if (this.imageFilenames !== null) {
-      var imageFilenames = /** @type {Array<string>} */ (this.imageFilenames),
+      const imageFilenames = /** @type {Array<string>} */ (this.imageFilenames),
         imageFilenames_inflated = new Array(n_inflated);
-      for (var i = 0, len = n; i < len; ++i) {
+      for (let i = 0, len = n; i < len; ++i) {
         imageFilenames_inflated[i] = imageFilenames[i];
       }
-      for (var i_inflated = n, len = n * nc; i_inflated < n_inflated; ++i_inflated) {
+      for (let i_inflated = n, len = n * nc; i_inflated < n_inflated; ++i_inflated) {
         imageFilenames_inflated[i_inflated] = imageFilenames[i_inflated % n];
       }
       this['imageFilenames'] = this.imageFilenames = imageFilenames_inflated;
@@ -534,7 +534,7 @@ export function Dataset() {
 
     // Create csv header array
     var header = new Array(csv_nc);
-    for (var c = 0, ci = 0; c < csv_nc; ++c, ++ci) {
+    for (let c = 0, ci = 0; c < csv_nc; ++c, ++ci) {
       if (c === nameColumn) {
         header[c] = nameColumnLabel;
         --ci;
@@ -579,7 +579,7 @@ export function RandomDataset(n, nc, onload) {
 
   this['numColumns'] = this.numColumns = nc;
   this['length'] = this.length = n;
-  for (var i = 0; i < nc; ++i) {
+  for (let i = 0; i < nc; ++i) {
     this.columns.push({minimum: 0, maximum: 1, label: generateColumnName(i, nc)});
     this.dataVectors.push(new DataVector(this, i));
   }
@@ -704,8 +704,8 @@ export function CsvDataset(file, options, onload) {
         options['nameColumn'] = null;
 
         // If any row consists of only unique strings, we can assume it contains data point names
-        for (var c = 0; c < data[0].length; ++c) {
-          var valueMap = {};
+        for (let c = 0; c < data[0].length; ++c) {
+          const valueMap = {};
           if (data.every(row => (row.length > c && isNaN(parseData(row[c])) && !(row[c] in valueMap)) ? valueMap[row[c]] = true : false)) {
             options['nameColumn'] = c;
             break;
@@ -725,7 +725,7 @@ export function CsvDataset(file, options, onload) {
     var columnLabels;
     if (libUtility.isFunction(options['columnLabels'])) {
       columnLabels = new Array(n);
-      for (var c = 0, ci = 0; c < data[0].length; ++c, ++ci) {
+      for (let c = 0, ci = 0; c < data[0].length; ++c, ++ci) {
         if (c === options['nameColumn']) {
           --ci;
           continue;
@@ -748,16 +748,16 @@ export function CsvDataset(file, options, onload) {
     dataset['fdata'] = dataset.fdata = new Float32Array(nc * n);
     var i,
       di;
-    for (var c = 0, ci = 0; c < data[0].length; ++c, ++ci) {
+    for (let c = 0, ci = 0; c < data[0].length; ++c, ++ci) {
       if (c === options['nameColumn']) {
         --ci;
         continue;
       }
 
       // Loop through all values of column c -> value, fvalue, min, max
-      var min = Number.MAX_VALUE,
-        max = Number.MIN_VALUE,
-        isNumeric = true;
+      let min = Number.MAX_VALUE;
+      let max = Number.MIN_VALUE;
+      let isNumeric = true;
       for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
         // Skip blank lines
         if (data[i].length === 1 && data[i][0] === '') {
@@ -765,8 +765,8 @@ export function CsvDataset(file, options, onload) {
           continue;
         }
 
-        var value = data[i][c];
-        var fvalue = parseData(value);
+        const value = data[i][c];
+        const fvalue = parseData(value);
         if (isNaN(fvalue)) {
           isNumeric = false;
           break;
@@ -778,12 +778,12 @@ export function CsvDataset(file, options, onload) {
         max = Math.max(max, fvalue);
       }
 
-      var valueList = null;
+      let valueList = null;
       if (!isNumeric) {
         // Loop through all values of column c again, generating a value map -> value, fvalue, min, max
         valueList = [];
-        var valueMap = {},
-          valueIdx = 0;
+        const valueMap = {};
+        let valueIdx = 0;
         for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
           // Skip blank lines
           if (data[i].length === 1 && data[i][0] === '') {

@@ -644,7 +644,7 @@ function benchmark(nIter, javascriptCode, formulaCode, evalCode) {
   tStart = performance.now();
   var code = FormulaCompiler.compile(formulaCode);
   var stack = new Array(16);
-  for (var i = 0; i < nIter; ++i) {
+  for (let i = 0; i < nIter; ++i) {
     sum += FormulaCompiler.run(code, stack, {});
   }
   console.log(sum);
@@ -652,7 +652,7 @@ function benchmark(nIter, javascriptCode, formulaCode, evalCode) {
 
   sum = 0.0;
   tStart = performance.now();
-  for (var i = 0; i < nIter; ++i) {
+  for (let i = 0; i < nIter; ++i) {
     sum += eval(evalCode);
   }
   console.log(sum);

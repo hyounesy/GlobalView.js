@@ -54,7 +54,7 @@ domready(function () {
       plot.showImages(plot.referencePoints, 'lowDensity');
     });
 
-    for (var i = 0, nc = dataset.numColumns; i < dataset.length; ++i) {
+    for (let i = 0, nc = dataset.numColumns; i < dataset.length; ++i) {
       var protein = dataset.data[i * nc + 0];
       var proteinPoints = pointsByProtein[protein];
       if (!proteinPoints) {
@@ -63,7 +63,7 @@ domready(function () {
       proteinPoints.push(i);
     }
 
-    for (var i = 0; i < COLUMN_HINTS.length; ++i) {
+    for (let i = 0; i < COLUMN_HINTS.length; ++i) {
       dataset.dataVectors[i].hint = COLUMN_HINTS[i];
     }
   });

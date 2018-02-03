@@ -70,8 +70,8 @@ export function DensityViewer(gl, globalView) {
         // Create texture if it wasn't already created
         var texture = this.showDensityMap ? clusterMap.dtex : clusterMap.tex;
         if (!texture) {
-          var densityMap = this.showDensityMap ? dataset.requestDensityMap(d0, d1, undefined, undefined) : null; // Retrieve densityMap synchronously (since we already know it's ready)
-          var rgba = new Uint8Array(4 * clusterMap.data.length);
+          const densityMap = this.showDensityMap ? dataset.requestDensityMap(d0, d1, undefined, undefined) : null; // Retrieve densityMap synchronously (since we already know it's ready)
+          const rgba = new Uint8Array(4 * clusterMap.data.length);
           for (var i = 0; i < clusterMap.data.length; ++i) {
             var c = clusterMap.data[i];
 
@@ -119,7 +119,7 @@ export function DensityViewer(gl, globalView) {
         sdrClusterMap.bind();
         meshQuad.bind(sdrClusterMap, texture);
 
-        var mattrans = libGlMatrix.mat4.create();
+        const mattrans = libGlMatrix.mat4.create();
         if (flipY === true) {
           libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
         }
@@ -226,19 +226,19 @@ export function DensityViewer(gl, globalView) {
 
       if (dist < minDist) {
         dist -= minDist;
-        var F = -minDistMagnitude * dist;
+        const F = -minDistMagnitude * dist;
         // if (dx < 1e-4 && dy < 1e-4) dx += 1e-4;
         body.fx += F * dx;
         body.fy += F * dy;
       } else if (dist > maxDist) {
         dist -= maxDist;
-        var F = -maxDistMagnitude * dist;
+        const F = -maxDistMagnitude * dist;
         body.fx += F * dx;
         body.fy += F * dy;
       }
     }
 
-    for (var i = 0; i < bodies.length; ++i) {
+    for (let i = 0; i < bodies.length; ++i) {
       var sample_x = Math.floor(bodies[i].x),
         sample_y = Math.floor(bodies[i].y);
       var density = densityMap[sample_x * width + sample_y];

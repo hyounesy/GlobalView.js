@@ -60,7 +60,7 @@ export function HistogramViewer(gl, globalView) {
 
     // Draw x-axis histogram
     if (options['showXAxisHistogram'] && axes[0].histogram) {
-      var axis = axes[0];
+      const axis = axes[0];
       gl.enable(gl.SCISSOR_TEST);
       gl.scissor(plotBounds.x, 0.0, plotBounds.width, gl.height);
 
@@ -97,7 +97,7 @@ export function HistogramViewer(gl, globalView) {
 
     // Draw y-axis histogram
     if (options['showYAxisHistogram'] && axes[1].histogram) {
-      var axis = axes[1];
+      const axis = axes[1];
       gl.enable(gl.SCISSOR_TEST);
       gl.scissor(0.0, flipY ? gl.height - plotBounds.y - plotBounds.height : plotBounds.y, gl.width, plotBounds.height);
 
@@ -221,8 +221,8 @@ export function HistogramViewer(gl, globalView) {
     var v3_set = function (i, x, y) {
       i *= 3; positions[i++] = x; positions[i++] = y; positions[i++] = 0.0;
     };
-    for (var b = 0, i = -1, x_scale = 1 / numBins; b < numBins; ++b) {
-      var y = axis.histogram.data[b] / axis.histogram.maximum;
+    for (let b = 0, i = -1, x_scale = 1 / numBins; b < numBins; ++b) {
+      const y = axis.histogram.data[b] / axis.histogram.maximum;
 
       v3_set(++i, (b + 0) * x_scale, 0);
       v3_set(++i, (b + 1) * x_scale, 0);

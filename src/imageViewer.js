@@ -199,7 +199,7 @@ export function ImageViewer(gl, globalView) {
 
     if (options['labelThumbnails']) {
       // Draw labels at image.refPos
-      var label = 1;
+      let label = 1;
       images.forEach(function (image) {
         if (image.imagePos === image.refPos) {
           return;
@@ -259,7 +259,7 @@ export function ImageViewer(gl, globalView) {
     // gl.disable(gl.SCISSOR_TEST);
 
     sdrImage.bind();
-    var label = 1;
+    let label = 1;
     images.forEach(function (image) {
       if (!image.imagePos) {
         return;
@@ -415,22 +415,22 @@ export function ImageViewer(gl, globalView) {
   }
 
   this.resolveIntersections = function (tf) {
-    var a = libGlMatrix.vec2.create(),
+    let a = libGlMatrix.vec2.create(),
       b = libGlMatrix.vec2.create(),
       c = libGlMatrix.vec2.create(),
       d = libGlMatrix.vec2.create();
-    for (var i = 1; i < images.length; ++i) {
+    for (let i = 1; i < images.length; ++i) {
       if (images[i].imagePos) {
         tf.transformPos(a, images[i].imagePos);
         tf.transformPos(b, images[i].refPos);
-        for (var j = 0; j < i; ++j) {
+        for (let j = 0; j < i; ++j) {
           if (images[j].imagePos) {
             tf.transformPos(c, images[j].imagePos);
             tf.transformPos(d, images[j].refPos);
 
             if (libGlMatrix.vec2.sqrDist(a, b) + libGlMatrix.vec2.sqrDist(c, d) > libGlMatrix.vec2.sqrDist(a, d) + libGlMatrix.vec2.sqrDist(c, b) && !libAlgorithm.linesIntersect(a, d, c, b)) {
             // console.log("exchange {0} - {1}".format(i, j));
-              var tmp = images[j].imagePos;
+              let tmp = images[j].imagePos;
               images[j].imagePos = images[i].imagePos;
               images[i].imagePos = tmp;
               i = j = 0; break; // EDIT: How neccessary is this?

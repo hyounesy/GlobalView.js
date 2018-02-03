@@ -353,7 +353,7 @@ export function Mesh(_gl, positions, normals, tangents, binormals, texcoords, in
 
     sdr.bind();
 
-    for(var i = 0; i < 16; i++) {
+    for(let i = 0; i < 16; i++) {
       gl.disableVertexAttribArray(i);
       if (gl.ext) {
         gl.ext.vertexAttribDivisorANGLE(i, 0);
@@ -386,8 +386,8 @@ export function Mesh(_gl, positions, normals, tangents, binormals, texcoords, in
     if(texture) {
       if(libUtility.isArray(texture)) {
         if(sdr.samplerArrayUniform) {
-          var idxarray = new Array(i);
-          for(var i = 0; i < texture.length; i++) {
+          const idxarray = new Array(texture.length);
+          for(let i = 0; i < texture.length; i++) {
             gl.activeTexture(gl.TEXTURE0 + i);
             gl.bindTexture(gl.TEXTURE_2D, texture[i]);
             idxarray[i] = i;
