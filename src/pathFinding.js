@@ -6,8 +6,9 @@ function DepthFirstSearch(problem) {
   // Create start node with empty path
   var startnode = {state: problem.getStartState()};
   var node = startnode;
-  if (problem.isGoalState(node.state))
-    return node.state; // Start state is goal
+  if (problem.isGoalState(node.state)) {
+    return node.state;
+  } // Start state is goal
   closed[problem.computeHash(node.state)] = node.state;
 
   while (true) {
@@ -26,12 +27,14 @@ function DepthFirstSearch(problem) {
         closed[successor_hash] = successor;
       }
     });
-    if (result !== null)
+    if (result !== null) {
       return result;
+    }
 
     // Test if maze has been completly traversed without finding any goal state
-    if (fringe.length == 0)
-      return null; // Goal not found
+    if (fringe.length == 0) {
+      return null;
+    } // Goal not found
 
     // Pop new node and update dirs to be the path of the freshly pop'ed node
     node = fringe.pop();
@@ -44,8 +47,9 @@ function BreadthFirstSearch(problem) {
 
   var startnode = {state: problem.getStartState()};
   var node = startnode;
-  if (problem.isGoalState(node.state))
-    return node.state; // Start state is goal
+  if (problem.isGoalState(node.state)) {
+    return node.state;
+  } // Start state is goal
   closed[problem.computeHash(node.state)] = node.state;
 
   while (true) {
@@ -57,8 +61,9 @@ function BreadthFirstSearch(problem) {
       }
     });
 
-    if (fringe.length === 0)
-      return null; // Goal not found
+    if (fringe.length === 0) {
+      return null;
+    } // Goal not found
     node = fringe.shift();
     if (problem.isGoalState(node.state)) {
       fringe = null;
@@ -73,8 +78,9 @@ function UniformCostSearch(problem) {
 
   var startnode = {state: problem.getStartState(), cost: 0.0};
   var node = startnode;
-  if (problem.isGoalState(node.state))
-    return node.state; // Start state is goal
+  if (problem.isGoalState(node.state)) {
+    return node.state;
+  } // Start state is goal
   closed[problem.computeHash(node.state)] = {state: node.state, prevCost: node.cost};
 
   while (true) {
@@ -87,8 +93,9 @@ function UniformCostSearch(problem) {
       }
     });
 
-    if (fringe.length == 0)
-      return null; // Goal not found
+    if (fringe.length == 0) {
+      return null;
+    } // Goal not found
     node = fringe.pop();
     if (problem.isGoalState(node.state)) {
       fringe = null;
@@ -102,8 +109,9 @@ function SimpleUniformCostSearch(problem) {
 
   var startnode = {state: problem.getStartState(), cost: 0.0};
   var node = startnode;
-  if (problem.isGoalState(node.state))
-    return node.state; // Start state is goal
+  if (problem.isGoalState(node.state)) {
+    return node.state;
+  } // Start state is goal
   closed[problem.computeHash(node.state)] = node.state;
 
   while (true) {
@@ -115,8 +123,9 @@ function SimpleUniformCostSearch(problem) {
       }
     });
 
-    if (fringe.length == 0)
-      return null; // Goal not found
+    if (fringe.length == 0) {
+      return null;
+    } // Goal not found
     node = fringe.pop();
     if (problem.isGoalState(node.state)) {
       fringe = null;
@@ -133,16 +142,18 @@ function SimpleAStarSearch(problem, heuristic) {
 
   var startnode = {state: problem.getStartState(), f: 0.0, g: 0.0};
   var node = startnode;
-  if (problem.isGoalState(node.state))
-    return node.state; // Start state is goal
+  if (problem.isGoalState(node.state)) {
+    return node.state;
+  } // Start state is goal
   closed[problem.computeHash(node.state)] = node.state;
 
   while (true) {
     problem.forEachSuccessor(node.state, function (successor, successor_cost) {
       var h = problem.heuristic(successor);
       var g = successor_cost;
-      if (CHECK_CONSISTENCY && g + h < node.f)
+      if (CHECK_CONSISTENCY && g + h < node.f) {
         throw 'Inconsistency found in A*-search heuristic';
+      }
       var successor_hash = problem.computeHash(successor);
       if (libUtility.isUndefined(closed[successor_hash])) {
         fringe.push({state: successor, f: g + h, g: g});
@@ -150,8 +161,9 @@ function SimpleAStarSearch(problem, heuristic) {
       }
     });
 
-    if (fringe.length == 0)
-      return null; // Goal not found
+    if (fringe.length == 0) {
+      return null;
+    } // Goal not found
     node = fringe.pop();
     if (problem.isGoalState(node.state)) {
       fringe = null;
@@ -163,8 +175,9 @@ function SimpleAStarSearch(problem, heuristic) {
 function SimpleGreedySearch(problem) {
   var startstate = problem.getStartState();
   var state = startstate;
-  if (problem.isGoalState(state))
-    return state; // Start state is goal
+  if (problem.isGoalState(state)) {
+    return state;
+  } // Start state is goal
 
   var cheapestCost = Number.MAX_VALUE,
     cheapestSuccessor;
@@ -176,9 +189,11 @@ function SimpleGreedySearch(problem) {
         cheapestSuccessor = successor;
       }
     });
-    if ((state = cheapestSuccessor) === null)
-      return null; // Goal not found
-    if (problem.isGoalState(state))
-      return state; // Goal found
+    if ((state = cheapestSuccessor) === null) {
+      return null;
+    } // Goal not found
+    if (problem.isGoalState(state)) {
+      return state;
+    } // Goal found
   }
 }

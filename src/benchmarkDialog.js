@@ -73,7 +73,7 @@ function BenchmarkDialog() {
     // pointShape: ['Rectangle'],
     // N: [1000000]//linspace(100000, 200000, 1000000)
     // N: [1e1, 1e2, 1e3/*, 1e4, 1e5, 1e6*/]
-    N: Array.create(1000, i => 10000 * i)
+    N: Array.create(1000, (i) => 10000 * i)
   };
   const SECONDS_PER_BENCHMARK = 1;// 10;
   const SAVE_SCREENSHOTS = false;
@@ -99,49 +99,58 @@ function BenchmarkDialog() {
 
     // Set default options
     var allElements = document.getElementsByTagName('*');
-    for (var i in allElements)
+    for (var i in allElements) {
       if (allElements[i].className == 'option') {
-        if (allElements[i].onchange)
+        if (allElements[i].onchange) {
           allElements[i].onchange(allElements[i]);
-        else if (allElements[i].oninput)
+        } else if (allElements[i].oninput) {
           allElements[i].oninput(allElements[i]);
+        }
       }
+    }
 
     numBenchmarks = 1;
     benchmarkCounter = 0;
-    for (option in benchmarkOptions)
+    for (option in benchmarkOptions) {
       numBenchmarks *= benchmarkOptions[option].length;
+    }
 
-    if (SAVE_SCREENSHOTS)
+    if (SAVE_SCREENSHOTS) {
       zip = new JSZip();
+    }
 
     var csvHeader = ['fps', 'options'];
-    for (option in benchmarkOptions)
+    for (option in benchmarkOptions) {
       csvHeader.push('' + option);
+    }
     csv = [csvHeader];
 
     n = -1;
     benchmarkOptionIndices = {}
-    for (option in benchmarkOptions)
+    for (option in benchmarkOptions) {
       benchmarkOptionIndices[option] = 0;
+    }
 
     reportHeader(csvHeader);
 
-    if (reportProgress(0, 0))
+    if (reportProgress(0, 0)) {
       setTimeout(startBenchmarkPass, 0);
-    else
+    } else {
       cancelBenchmark();
+    }
   }
 
   function startBenchmarkPass() {
     currentOptions = {};
-    for (option in benchmarkOptions)
+    for (option in benchmarkOptions) {
       currentOptions[option] = benchmarkOptions[option][benchmarkOptionIndices[option]];
+    }
 
 
     // <<<<<<<<<< START RUN BENCHMARK >>>>>>>>>>
-    if (currentOptions.N !== n)
+    if (currentOptions.N !== n) {
       globalView.load(new RandomDataset(n = currentOptions.N, 2), 0, 1, 1, 1);
+    }
 
     // Set options
     globalView.setOptions(currentOptions);
@@ -150,10 +159,11 @@ function BenchmarkDialog() {
     frames = 0;
     passStartTime = performance.now();
 
-    if (reportProgress(0, 0))
+    if (reportProgress(0, 0)) {
       setTimeout(renderBenchmark, 0);
-    else
+    } else {
       cancelBenchmark();
+    }
   }
 
   function renderBenchmark() {
@@ -165,10 +175,11 @@ function BenchmarkDialog() {
     ++frames;
     var passTime = (tEnd - passStartTime) / 1000.0;
 
-    if (reportProgress(benchmarkCounter / numBenchmarks, passTime / SECONDS_PER_BENCHMARK))
+    if (reportProgress(benchmarkCounter / numBenchmarks, passTime / SECONDS_PER_BENCHMARK)) {
       setTimeout(passTime < SECONDS_PER_BENCHMARK ? renderBenchmark : finishBenchmarkPass, 0);
-    else
+    } else {
       cancelBenchmark();
+    }
   }
 
   function finishBenchmarkPass() {
@@ -176,8 +187,9 @@ function BenchmarkDialog() {
     var fps = frames / time;
     var name = JSON.stringify(currentOptions).replaceAll('"', "'");
     var csvRow = [fps, name];
-    for (option in currentOptions)
+    for (option in currentOptions) {
       csvRow.push(currentOptions[option]);
+    }
     csv.push(csvRow);
 
     if (SAVE_SCREENSHOTS) {
@@ -191,9 +203,11 @@ function BenchmarkDialog() {
     // <<<<<<<<<< END RUN BENCHMARK >>>>>>>>>>
 
     var getKeyByIndex = function (map, idx) {
-      for (key in map)
-        if (idx-- === 0)
+      for (key in map) {
+        if (idx-- === 0) {
           return key;
+        }
+      }
       return null;
     };
 
@@ -206,12 +220,13 @@ function BenchmarkDialog() {
 
     reportResult(csvRow);
 
-    if (reportProgress(++benchmarkCounter / numBenchmarks, 1) && option !== null)
+    if (reportProgress(++benchmarkCounter / numBenchmarks, 1) && option !== null) {
       setTimeout(startBenchmarkPass, 0);
-    else if (option !== null)
+    } else if (option !== null) {
       cancelBenchmark();
-    else
+    } else {
       finishBenchmark();
+    }
   }
 
   function cancelBenchmark() {
@@ -231,7 +246,8 @@ function BenchmarkDialog() {
       zip.generateAsync({ type: 'base64' }).then(function (base64) {
         libUtility.download('benchmark.zip', 'data:application/zip;base64,' + base64);
       });
-    } else
+    } else {
       libUtility.download('benchmark.csv', 'data:text/csv;charset=utf-8,' + encodeURIComponent($.csv.fromArrays(csv)));
+    }
   }
 }

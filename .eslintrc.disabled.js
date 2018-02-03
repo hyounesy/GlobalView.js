@@ -150,7 +150,7 @@ module.exports = {
         "class-methods-use-this": 0,            // enforce that class methods utilize this
         "complexity": 0,                        // enforce a maximum cyclomatic complexity allowed in a program
         "consistent-return": 0,                 // require return statements to either always or never specify values
-        "curly": 0,                             // enforce consistent brace style for all control statements
+        "curly": 2,                             // enforce consistent brace style for all control statements
         "default-case": 0,                      // require default cases in switch statements
         "dot-location": 0,                      // enforce consistent newlines before and after dots
         "dot-notation": 0,                      // enforce dot notation whenever possible
@@ -255,14 +255,14 @@ module.exports = {
         //////// Stylistic Issues ////////
 
         "array-bracket-newline": 0,             // enforce linebreaks after opening and before closing array brackets
-        "array-bracket-spacing": 0,             // enforce consistent spacing inside array brackets
+        "array-bracket-spacing": 2,             // enforce consistent spacing inside array brackets
         "array-element-newline": 0,             // enforce line breaks after each array element
         "block-spacing": 0,                     // disallow or enforce spaces inside of blocks after opening block and before closing block
-        "brace-style": 0,                       // enforce consistent brace style for blocks
+        "brace-style": 2,                       // enforce consistent brace style for blocks
         "camelcase": 0,                         // enforce camelcase naming convention
         "capitalized-comments": 0,              // enforce or disallow capitalization of the first letter of a comment
         "comma-dangle": 0,                      // require or disallow trailing commas
-        "comma-spacing": 0,                     // enforce consistent spacing before and after commas
+        "comma-spacing": 2,                     // enforce consistent spacing before and after commas
         "comma-style": 0,                       // enforce consistent comma style
         "computed-property-spacing": 0,         // enforce consistent spacing inside computed property brackets
         "consistent-this": 0,                   // enforce consistent naming when capturing the current execution context
@@ -276,7 +276,7 @@ module.exports = {
         "id-length": 0,                         // enforce minimum and maximum identifier lengths
         "id-match": 0,                          // require identifiers to match a specified regular expression
         "implicit-arrow-linebreak": 0,          // enforce the location of arrow function bodies
-        "indent": 0,                            // enforce consistent indentation
+        "indent": ["error", 2, { "SwitchCase": 1 }], // enforce consistent indentation
         "jsx-quotes": 0,                        // enforce the consistent use of either double or single quotes in JSX attributes
         "key-spacing": 0,                       // enforce consistent spacing between keys and values in object literal properties
         "keyword-spacing": 0,                   // enforce consistent spacing before and after keywords
@@ -312,7 +312,7 @@ module.exports = {
         "no-restricted-syntax": 0,              // disallow specified syntax
         "no-tabs": 2,                           // disallow all tabs
         "no-ternary": 0,                        // disallow ternary operators
-        "no-trailing-spaces": 0,                // disallow trailing whitespace at the end of lines
+        "no-trailing-spaces": 2,                // disallow trailing whitespace at the end of lines
         "no-underscore-dangle": 0,              // disallow dangling underscores in identifiers
         "no-unneeded-ternary": 0,               // disallow ternary operators when simpler alternatives exist
         "no-whitespace-before-property": 0,     // disallow whitespace before properties
@@ -321,13 +321,13 @@ module.exports = {
         "object-curly-spacing": 0,              // enforce consistent spacing inside braces
         "object-property-newline": 0,           // enforce placing object properties on separate lines
         "one-var": 0,                           // enforce variables to be declared either together or separately in functions
-        "one-var-declaration-per-line": 0,      // require or disallow newlines around variable declarations
+        "one-var-declaration-per-line": 2,      // require or disallow newlines around variable declarations
         "operator-assignment": 0,               // require or disallow assignment operator shorthand where possible
         "operator-linebreak": 0,                // enforce consistent linebreak style for operators
         "padded-blocks": 0,                     // require or disallow padding within blocks
         "padding-line-between-statements": 0,   // require or disallow padding lines between statements
         "quote-props": 0,                       // require quotes around object literal property names
-        "quotes": 0,                            // enforce the consistent use of either backticks, double, or single quotes
+        "quotes": ["error", "single", { "avoidEscape": true }], // enforce the consistent use of either backticks, double, or single quotes
         "require-jsdoc": 0,                     // require JSDoc comments
         "semi": 0,                              // require or disallow semicolons instead of ASI
         "semi-spacing": 0,                      // enforce consistent spacing before and after semicolons
@@ -336,7 +336,7 @@ module.exports = {
         "sort-vars": 0,                         // require variables within the same declaration block to be sorted
         "space-before-blocks": 0,               // enforce consistent spacing before blocks
         "space-before-function-paren": 0,       // enforce consistent spacing before function definition opening parenthesis
-        "space-in-parens": 0,                   // enforce consistent spacing inside parentheses
+        "space-in-parens": 2,                   // enforce consistent spacing inside parentheses
         "space-infix-ops": 0,                   // require spacing around infix operators
         "space-unary-ops": 0,                   // enforce consistent spacing before or after unary operators
         "spaced-comment": 0,                    // enforce consistent spacing after the // or /* in a comment
@@ -348,8 +348,8 @@ module.exports = {
 
         //////// ECMAScript 6 ////////
 
-        "arrow-body-style": 0,                  // require braces around arrow function bodies
-        "arrow-parens": 0,                      // require parentheses around arrow function arguments
+        "arrow-body-style": 2,                  // require braces around arrow function bodies
+        "arrow-parens": 2,                      // require parentheses around arrow function arguments
         "arrow-spacing": 0,                     // enforce consistent spacing before and after the arrow in arrow functions
         "constructor-super": 0,                 // require super() calls in constructors
         "generator-star-spacing": 0,            // enforce consistent spacing around * operators in generator functions

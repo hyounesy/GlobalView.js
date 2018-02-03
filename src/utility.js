@@ -3,8 +3,9 @@ export function linspace(first, second, last) {
   const halfOffset = 0.5 * offset;
   let values = [first],
     i = 0;
-  while (values[i] + halfOffset < last)
+  while (values[i] + halfOffset < last) {
     values.push(first + ++i * offset);
+  }
   values[i] = last;
   console.log(values);
   return new Float32Array(values);
@@ -49,11 +50,13 @@ export function debugLog(x) {
 
 Array.create = function (n, func) {
   var array = new Array(n);
-  if (isFunction(func))
-    for (var i = 0; i < n; ++i)
+  if (isFunction(func)) {
+    for (var i = 0; i < n; ++i) {
       array[i] = func(i);
-  else
+    }
+  } else {
     array.fill(func);
+  }
   return array;
 };
 Array.prototype.minIndex = function () {
@@ -91,20 +94,24 @@ String.prototype.format2 = function (pattern, mismatch, var_args) {
 
 
 export function makeCloneable(obj) {
-  if (!isObject(obj)) // If obj isn't an object
-    return obj; // Return obj as is
+  if (!isObject(obj)) { // If obj isn't an object
+    return obj;
+  } // Return obj as is
 
   // Check all properties of obj
-  for (var prop in obj)
+  for (var prop in obj) {
     if (!isCloneable(obj[prop])) {
-      // If obj has at least on non-cloneable property
-      // Create a new object and clone all cloneable properties into that new object
+    // If obj has at least on non-cloneable property
+    // Create a new object and clone all cloneable properties into that new object
       var obj_subset = {};
-      for (prop in obj)
-        if (isCloneable(obj[prop]))
+      for (prop in obj) {
+        if (isCloneable(obj[prop])) {
           obj_subset[prop] = obj[prop];
+        }
+      }
       return obj_subset;
     }
+  }
 
   // If obj doesn't have type functions
   return obj; // Return obj as is
@@ -132,31 +139,31 @@ function getScript(id) {
 export function colorNameToHex(color) {
 // Source: https://stackoverflow.com/a/1573141
   var colors = {
-    'aliceblue':'#f0f8ff','antiquewhite':'#faebd7','aqua':'#00ffff','aquamarine':'#7fffd4','azure':'#f0ffff',
-    'beige':'#f5f5dc','bisque':'#ffe4c4','black':'#000000','blanchedalmond':'#ffebcd','blue':'#0000ff','blueviolet':'#8a2be2',
-    'brown':'#a52a2a','burlywood':'#deb887','cadetblue':'#5f9ea0','chartreuse':'#7fff00','chocolate':'#d2691e','coral':'#ff7f50',
-    'cornflowerblue':'#6495ed','cornsilk':'#fff8dc','crimson':'#dc143c','cyan':'#00ffff','darkblue':'#00008b','darkcyan':'#008b8b',
-    'darkgoldenrod':'#b8860b','darkgray':'#a9a9a9','darkgreen':'#006400','darkkhaki':'#bdb76b','darkmagenta':'#8b008b',
-    'darkolivegreen':'#556b2f','darkorange':'#ff8c00','darkorchid':'#9932cc','darkred':'#8b0000','darksalmon':'#e9967a',
-    'darkseagreen':'#8fbc8f','darkslateblue':'#483d8b','darkslategray':'#2f4f4f','darkturquoise':'#00ced1','darkviolet':'#9400d3',
-    'deeppink':'#ff1493','deepskyblue':'#00bfff','dimgray':'#696969','dodgerblue':'#1e90ff','firebrick':'#b22222','floralwhite':'#fffaf0',
-    'forestgreen':'#228b22','fuchsia':'#ff00ff','gainsboro':'#dcdcdc','ghostwhite':'#f8f8ff','gold':'#ffd700','goldenrod':'#daa520',
-    'gray':'#808080','green':'#008000','greenyellow':'#adff2f','honeydew':'#f0fff0','hotpink':'#ff69b4','indianred ':'#cd5c5c',
-    'indigo':'#4b0082','ivory':'#fffff0','khaki':'#f0e68c','lavender':'#e6e6fa','lavenderblush':'#fff0f5','lawngreen':'#7cfc00',
-    'lemonchiffon':'#fffacd','lightblue':'#add8e6','lightcoral':'#f08080','lightcyan':'#e0ffff','lightgoldenrodyellow':'#fafad2',
-    'lightgray':'#d3d3d3','lightgreen':'#90ee90','lightpink':'#ffb6c1','lightsalmon':'#ffa07a','lightseagreen':'#20b2aa',
-    'lightskyblue':'#87cefa','lightslategray':'#778899','lightsteelblue':'#b0c4de','lightyellow':'#ffffe0','lime':'#00ff00',
-    'limegreen':'#32cd32','linen':'#faf0e6','magenta':'#ff00ff','maroon':'#800000','mediumaquamarine':'#66cdaa','mediumblue':'#0000cd',
-    'mediumorchid':'#ba55d3','mediumpurple':'#9370d8','mediumseagreen':'#3cb371','mediumslateblue':'#7b68ee','mediumspringgreen':'#00fa9a',
-    'mediumturquoise':'#48d1cc','mediumvioletred':'#c71585','midnightblue':'#191970','mintcream':'#f5fffa','mistyrose':'#ffe4e1',
-    'moccasin':'#ffe4b5','navajowhite':'#ffdead','navy':'#000080','oldlace':'#fdf5e6','olive':'#808000','olivedrab':'#6b8e23',
-    'orange':'#ffa500','orangered':'#ff4500','orchid':'#da70d6','palegoldenrod':'#eee8aa','palegreen':'#98fb98','paleturquoise':'#afeeee',
-    'palevioletred':'#d87093','papayawhip':'#ffefd5','peachpuff':'#ffdab9','peru':'#cd853f','pink':'#ffc0cb','plum':'#dda0dd',
-    'powderblue':'#b0e0e6','purple':'#800080','rebeccapurple':'#663399','red':'#ff0000','rosybrown':'#bc8f8f','royalblue':'#4169e1',
-    'saddlebrown':'#8b4513','salmon':'#fa8072','sandybrown':'#f4a460','seagreen':'#2e8b57','seashell':'#fff5ee','sienna':'#a0522d',
-    'silver':'#c0c0c0','skyblue':'#87ceeb','slateblue':'#6a5acd','slategray':'#708090','snow':'#fffafa','springgreen':'#00ff7f',
-    'steelblue':'#4682b4','tan':'#d2b48c','teal':'#008080','thistle':'#d8bfd8','tomato':'#ff6347','turquoise':'#40e0d0','violet':'#ee82ee',
-    'wheat':'#f5deb3','white':'#ffffff','whitesmoke':'#f5f5f5','yellow':'#ffff00','yellowgreen':'#9acd32'
+    'aliceblue':'#f0f8ff', 'antiquewhite':'#faebd7', 'aqua':'#00ffff', 'aquamarine':'#7fffd4', 'azure':'#f0ffff',
+    'beige':'#f5f5dc', 'bisque':'#ffe4c4', 'black':'#000000', 'blanchedalmond':'#ffebcd', 'blue':'#0000ff', 'blueviolet':'#8a2be2',
+    'brown':'#a52a2a', 'burlywood':'#deb887', 'cadetblue':'#5f9ea0', 'chartreuse':'#7fff00', 'chocolate':'#d2691e', 'coral':'#ff7f50',
+    'cornflowerblue':'#6495ed', 'cornsilk':'#fff8dc', 'crimson':'#dc143c', 'cyan':'#00ffff', 'darkblue':'#00008b', 'darkcyan':'#008b8b',
+    'darkgoldenrod':'#b8860b', 'darkgray':'#a9a9a9', 'darkgreen':'#006400', 'darkkhaki':'#bdb76b', 'darkmagenta':'#8b008b',
+    'darkolivegreen':'#556b2f', 'darkorange':'#ff8c00', 'darkorchid':'#9932cc', 'darkred':'#8b0000', 'darksalmon':'#e9967a',
+    'darkseagreen':'#8fbc8f', 'darkslateblue':'#483d8b', 'darkslategray':'#2f4f4f', 'darkturquoise':'#00ced1', 'darkviolet':'#9400d3',
+    'deeppink':'#ff1493', 'deepskyblue':'#00bfff', 'dimgray':'#696969', 'dodgerblue':'#1e90ff', 'firebrick':'#b22222', 'floralwhite':'#fffaf0',
+    'forestgreen':'#228b22', 'fuchsia':'#ff00ff', 'gainsboro':'#dcdcdc', 'ghostwhite':'#f8f8ff', 'gold':'#ffd700', 'goldenrod':'#daa520',
+    'gray':'#808080', 'green':'#008000', 'greenyellow':'#adff2f', 'honeydew':'#f0fff0', 'hotpink':'#ff69b4', 'indianred ':'#cd5c5c',
+    'indigo':'#4b0082', 'ivory':'#fffff0', 'khaki':'#f0e68c', 'lavender':'#e6e6fa', 'lavenderblush':'#fff0f5', 'lawngreen':'#7cfc00',
+    'lemonchiffon':'#fffacd', 'lightblue':'#add8e6', 'lightcoral':'#f08080', 'lightcyan':'#e0ffff', 'lightgoldenrodyellow':'#fafad2',
+    'lightgray':'#d3d3d3', 'lightgreen':'#90ee90', 'lightpink':'#ffb6c1', 'lightsalmon':'#ffa07a', 'lightseagreen':'#20b2aa',
+    'lightskyblue':'#87cefa', 'lightslategray':'#778899', 'lightsteelblue':'#b0c4de', 'lightyellow':'#ffffe0', 'lime':'#00ff00',
+    'limegreen':'#32cd32', 'linen':'#faf0e6', 'magenta':'#ff00ff', 'maroon':'#800000', 'mediumaquamarine':'#66cdaa', 'mediumblue':'#0000cd',
+    'mediumorchid':'#ba55d3', 'mediumpurple':'#9370d8', 'mediumseagreen':'#3cb371', 'mediumslateblue':'#7b68ee', 'mediumspringgreen':'#00fa9a',
+    'mediumturquoise':'#48d1cc', 'mediumvioletred':'#c71585', 'midnightblue':'#191970', 'mintcream':'#f5fffa', 'mistyrose':'#ffe4e1',
+    'moccasin':'#ffe4b5', 'navajowhite':'#ffdead', 'navy':'#000080', 'oldlace':'#fdf5e6', 'olive':'#808000', 'olivedrab':'#6b8e23',
+    'orange':'#ffa500', 'orangered':'#ff4500', 'orchid':'#da70d6', 'palegoldenrod':'#eee8aa', 'palegreen':'#98fb98', 'paleturquoise':'#afeeee',
+    'palevioletred':'#d87093', 'papayawhip':'#ffefd5', 'peachpuff':'#ffdab9', 'peru':'#cd853f', 'pink':'#ffc0cb', 'plum':'#dda0dd',
+    'powderblue':'#b0e0e6', 'purple':'#800080', 'rebeccapurple':'#663399', 'red':'#ff0000', 'rosybrown':'#bc8f8f', 'royalblue':'#4169e1',
+    'saddlebrown':'#8b4513', 'salmon':'#fa8072', 'sandybrown':'#f4a460', 'seagreen':'#2e8b57', 'seashell':'#fff5ee', 'sienna':'#a0522d',
+    'silver':'#c0c0c0', 'skyblue':'#87ceeb', 'slateblue':'#6a5acd', 'slategray':'#708090', 'snow':'#fffafa', 'springgreen':'#00ff7f',
+    'steelblue':'#4682b4', 'tan':'#d2b48c', 'teal':'#008080', 'thistle':'#d8bfd8', 'tomato':'#ff6347', 'turquoise':'#40e0d0', 'violet':'#ee82ee',
+    'wheat':'#f5deb3', 'white':'#ffffff', 'whitesmoke':'#f5f5f5', 'yellow':'#ffff00', 'yellowgreen':'#9acd32'
   };
   return colors[color.toLowerCase()];
 }
@@ -179,8 +186,9 @@ export function hexToRgb(hex) {
 
 export function rgbStringToFloatArray(rgbstr) {
   var rgb = rgbstr.match(/\d+/g);
-  for (var i = 0; i < 4; ++i)
+  for (var i = 0; i < 4; ++i) {
     rgb[i] = i < rgb.length ? Math.max(0x00, Math.min(0xFF, rgb[i] / 0xFF)) : 1.0;
+  }
   return rgb;
 }
 
@@ -213,9 +221,9 @@ export function F32toI24flipY(floats, bounds, width, height) {
   var i = 0,
     voffset = -bounds[0],
     vscale = 0xFFFFFE / (bounds[1] - bounds[0]);
-  for(var y = 0; y < height; ++y)
+  for(var y = 0; y < height; ++y) {
     for(var x = 0; x < width; ++x) {
-      // var value = Math.floor((floats[(height - y - 1) * width + x] - bounds[0]) * vscale) + 1;
+    // var value = Math.floor((floats[(height - y - 1) * width + x] - bounds[0]) * vscale) + 1;
       var value = floats[(height - y - 1) * width + x];
       value += voffset;
       value *= vscale;
@@ -229,13 +237,15 @@ export function F32toI24flipY(floats, bounds, width, height) {
       bytes[i + 3] = 255;
       i += 4;
     }
+  }
   return bytes;
 }
 
 export function hsv2rgb(hsv) {
   // Source: https://stackoverflow.com/a/6930407
-  if(hsv[1] <= 0.000001)
+  if(hsv[1] <= 0.000001) {
     return [hsv[2], hsv[2], hsv[2]];
+  }
   var hh,
     p,
     q,
@@ -245,7 +255,9 @@ export function hsv2rgb(hsv) {
     out;
 
   hh = hsv[0];
-  if(hh >= 1.0) hh = 0.0;
+  if(hh >= 1.0) {
+    hh = 0.0;
+  }
   hh *= 6.0;
   i = Math.floor(hh);
   ff = hh - i;
@@ -267,10 +279,12 @@ export function hsv2rgb(hsv) {
 export function urlExists(url, onTrue, onFalse, isAsync) {
   var request = new XMLHttpRequest();
   request.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status == 404 && onFalse)
+    if (this.readyState == 4 && this.status == 404 && onFalse) {
       onFalse();
-    if (this.readyState == 4 && this.status != 404 && onTrue)
+    }
+    if (this.readyState == 4 && this.status != 404 && onTrue) {
       onTrue();
+    }
   }
   request.open('HEAD', url, !(isAsync === false));
   request.overrideMimeType('text/csv; charset=utf8');
@@ -281,8 +295,9 @@ export function urlExists(url, onTrue, onFalse, isAsync) {
 
 var _downloader;
 export function download(filename, contentUrl) {
-  if (!_downloader)
+  if (!_downloader) {
     document.body.appendChild(_downloader = document.createElement('a'));
+  }
 
   _downloader.href = contentUrl;
   _downloader.download = filename;
@@ -335,10 +350,12 @@ export function readCookie(name) {
   var ca = document.cookie.split(';');
   for(var i = 0; i < ca.length; ++i) {
     var c = ca[i];
-    while (c.charAt(0) == ' ')
+    while (c.charAt(0) == ' ') {
       c = c.substring(1, c.length);
-    if (c.indexOf(nameEQ) == 0)
-      return c.substring(nameEQ.length,c.length);
+    }
+    if (c.indexOf(nameEQ) == 0) {
+      return c.substring(nameEQ.length, c.length);
+    }
   }
   return null;
 }
@@ -354,17 +371,23 @@ export function readIntCookie(name) {
 }
 export function eraseCookie(name) {
   // Source: http://www.quirksmode.org/js/cookies.html
-  createCookie(name,'',-1);
+  createCookie(name, '', -1);
 }
 
 export function getParameterByName(name, url) {
   // Source: https://stackoverflow.com/a/901144
-  if (!url) url = window.location.href;
+  if (!url) {
+    url = window.location.href;
+  }
   name = name.replace(/[\[\]]/g, '\\$&');
   var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
     results = regex.exec(url);
-  if (!results) return null;
-  if (!results[2]) return '';
+  if (!results) {
+    return null;
+  }
+  if (!results[2]) {
+    return '';
+  }
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
@@ -372,34 +395,39 @@ export function getParameterByName(name, url) {
 export function addMouseWheelHandler(onmousewheel) {
   // Source: http://www.javascriptkit.com/javatutors/onmousewheel.shtml
   var mousewheelevt = (/Firefox/i.test(navigator.userAgent)) ? 'DOMMouseScroll' : 'mousewheel';
-  if (document.attachEvent)
+  if (document.attachEvent) {
     document.attachEvent('on' + mousewheelevt, onmousewheel);
-  else if(document.addEventListener)
+  } else if(document.addEventListener) {
     document.addEventListener(mousewheelevt, onmousewheel, false);
+  }
 }
 export function addMouseMoveHandler(onmousemove) {
-  if (document.attachEvent)
+  if (document.attachEvent) {
     document.attachEvent('onmousemove', onmousemove);
-  else if(document.addEventListener)
+  } else if(document.addEventListener) {
     document.addEventListener('mousemove', onmousemove, false);
+  }
 }
 export function addMouseUpHandler(onmouseup) {
-  if (document.attachEvent)
+  if (document.attachEvent) {
     document.attachEvent('onmouseup', onmouseup);
-  else if(document.addEventListener)
+  } else if(document.addEventListener) {
     document.addEventListener('mouseup', onmouseup, false);
+  }
 }
 export function addKeyDownHandler(onkeydown) {
-  if (document.attachEvent)
+  if (document.attachEvent) {
     document.attachEvent('onkeydown', onkeydown);
-  else if(document.addEventListener)
+  } else if(document.addEventListener) {
     document.addEventListener('keydown', onkeydown, false);
+  }
 }
 export function addKeyUpHandler(onkeyup) {
-  if (document.attachEvent)
+  if (document.attachEvent) {
     document.attachEvent('onkeyup', onkeyup);
-  else if(document.addEventListener)
+  } else if(document.addEventListener) {
     document.addEventListener('keyup', onkeyup, false);
+  }
 }
 
 /**
@@ -421,18 +449,20 @@ export function ForwardList(value) {
   }
   this.pushBack = function (value) {
     var back = this;
-    while (back.next !== null)
+    while (back.next !== null) {
       back = back.next;
+    }
     var newnode = new ForwardList(value);
     back.next = newnode;
   }
   this.sortedPush = function (value) {
-    if (value <= this.value)
+    if (value <= this.value) {
       this.push(value);
-    else {
+    } else {
       var node = this;
-      while (node.next !== null && node.next.value < value)
+      while (node.next !== null && node.next.value < value) {
         node = node.next;
+      }
       var newnode = new ForwardList(value);
       newnode.next = node.next;
       node.next = newnode;
@@ -440,25 +470,29 @@ export function ForwardList(value) {
   }
   this.toArray = function () {
     var array = [];
-    for (var node = this; node; node = node.next)
+    for (var node = this; node; node = node.next) {
       array.push(node.value);
+    }
     return array;
   }
   this.print = function () {
     var array = [];
-    for (var node = this; node; node = node.next)
+    for (var node = this; node; node = node.next) {
       array.push(node.value);
+    }
     console.log(array.join(', '));
   }
   this.size = function () {
     var size = 0;
-    for (var node = this; node; node = node.next)
+    for (var node = this; node; node = node.next) {
       ++size;
+    }
     return size;
   }
   this.forEach = function (callback) {
-    for (var node = this; node; node = node.next)
+    for (var node = this; node; node = node.next) {
       callback(node.value);
+    }
   }
   ForwardList.sortedMerge = function (a, b) {
     // Source: http://www.geeksforgeeks.org/merge-two-sorted-linked-lists/
@@ -567,8 +601,9 @@ export function HashSet(onchanged) {
       }
     });
     // console.log('append ' + values.length + ': ' + (performance.now() - t));
-    if (invalidate)
+    if (invalidate) {
       this.onchanged();
+    }
   }
 
   this['set'] =
@@ -600,8 +635,9 @@ export function HashSet(onchanged) {
     var newHash = {},
       identical = (values.length === this.length);
     values.forEach(function (value) {
-      if (identical && hash[value] !== true)
+      if (identical && hash[value] !== true) {
         identical = false;
+      }
       newHash[value] = true;
     });
 
@@ -609,8 +645,9 @@ export function HashSet(onchanged) {
     this.length = values.length;
     // console.log('assign ' + values.length + ': ' + (performance.now() - t));
 
-    if (identical === false)
+    if (identical === false) {
       this.onchanged();
+    }
   }
 
   this['assignRange'] =
@@ -619,8 +656,9 @@ export function HashSet(onchanged) {
    * @param  {number} n The number of values to set
    */
   this.assignRange = function (n) {
-    if (n <= 0)
+    if (n <= 0) {
       return;
+    }
     // var t = performance.now();
     hash = new Array(n);
     hash.fill(true);
@@ -659,8 +697,9 @@ export function HashSet(onchanged) {
       }
     });
     // console.log('remove ' + values.length + ': ' + (performance.now() - t));
-    if (invalidate)
+    if (invalidate) {
       this.onchanged();
+    }
   }
 
   this['isempty'] =

@@ -51,10 +51,11 @@ domready(function () {
       case 0:
         event['pointSelection'] = true;
         event['pointDragging'] = true;
-        if (ctrlPressed)
+        if (ctrlPressed) {
           event['viewDragging'] = true;
-        else
+        } else {
           event['polygonLassoSelection'] = true;
+        }
         break;
 
       // On middle mouse button: Initiate view dragging
@@ -96,8 +97,9 @@ domready(function () {
       if (cbDataset.options.length === DATASETS.length) {
         // Load dataset
         var datasetIndex = globalView.readIntCookie('datasetIndex');
-        if (datasetIndex !== null)
+        if (datasetIndex !== null) {
           cbDataset.selectedIndex = datasetIndex;
+        }
         cbDataset_onChange(); // Load even if cookie isn't set
       }
     } else {
@@ -109,8 +111,9 @@ domready(function () {
         if (cbDataset.options.length === DATASETS.length) {
           // Load dataset
           var datasetIndex = globalView.readIntCookie('datasetIndex');
-          if (datasetIndex !== null)
+          if (datasetIndex !== null) {
             cbDataset.selectedIndex = datasetIndex;
+          }
           cbDataset_onChange(); // Load even if cookie isn't set
         }
       });
@@ -200,8 +203,9 @@ function onResize() {
 
 function cbDataset_onChange() {
   globalView.createCookie('datasetIndex', cbDataset.selectedIndex);
-  if (cbDataset.selectedIndex >= 0 && cbDataset.options[cbDataset.selectedIndex].createDataset)
+  if (cbDataset.selectedIndex >= 0 && cbDataset.options[cbDataset.selectedIndex].createDataset) {
     cbDataset.options[cbDataset.selectedIndex].createDataset();
+  }
 }
 
 var inflated = false;
@@ -213,10 +217,18 @@ function dataset_onLoad(_dataset) {
   }
 
   // Update active-column comboboxes
-  for(var i = cbColumnX.options.length - 1; i >= 0 ; --i) cbColumnX.remove(i);
-  for(var i = cbColumnY.options.length - 1; i >= 0 ; --i) cbColumnY.remove(i);
-  for(var i = cbColumnC.options.length - 1; i >= 0 ; --i) cbColumnC.remove(i);
-  for(var i = cbColumnS.options.length - 1; i >= 0 ; --i) cbColumnS.remove(i);
+  for(var i = cbColumnX.options.length - 1; i >= 0 ; --i) {
+    cbColumnX.remove(i);
+  }
+  for(var i = cbColumnY.options.length - 1; i >= 0 ; --i) {
+    cbColumnY.remove(i);
+  }
+  for(var i = cbColumnC.options.length - 1; i >= 0 ; --i) {
+    cbColumnC.remove(i);
+  }
+  for(var i = cbColumnS.options.length - 1; i >= 0 ; --i) {
+    cbColumnS.remove(i);
+  }
   for(var i = 0; i < dataset.numColumns; ++i) {
     var option = document.createElement('option');
     option.text = dataset.columns[i].label;
@@ -296,8 +308,9 @@ function rPointSize_onChange(sender) {
 var densityMapOptions = new globalView.DensityMapOptions();
 // densityMapOptions.logScale = false;
 function cbShowDensity_onChange(sender) {
-  if (sender.checked)
+  if (sender.checked) {
     requestVariance(densityMapOptions.gaussScale, true);
+  }
   plot.setOption('showPointDensity', sender.checked);
 }
 function cbShowClusters_onChange(sender) {
@@ -339,8 +352,9 @@ function requestVariance(variance, fast) {
   dataset.requestDensityMap(plot.getActiveColumn(0), plot.getActiveColumn(1), fast ? 64 : null, densityMapOptions, function (densityMap) {
     if (densityMapOptions.gaussScale === variance) {
       plot.invalidate();
-      if (fast)
+      if (fast) {
         requestVariance(variance, densityMap.options.gaussScale !== variance);
+      }
     }
   });
 }
@@ -417,22 +431,25 @@ function onMouseOverDatapoint(dataset, index) {
 
     if (dataset.data) {
       var nc = dataset.numColumns;
-      pDataPoint.innerText = dataset.dataVectors.map(dataVector =>
+      pDataPoint.innerText = dataset.dataVectors.map((dataVector) =>
         dataVector.label + ': ' + (dataVector.values ? dataVector.values[Math.floor(dataVector.getValue(index))] : dataVector.getValue(index))
       ).join('\n');
-    } else
+    } else {
       pDataPoint.innerText = dataset.names ? dataset.names[index] : 'datapoint ' + index;
+    }
   }
 }
 function onSelectionChanged(dataset, selection) {
   if (selection.length === 0) {
-    if (!shiftPressed)
+    if (!shiftPressed) {
       plot.selectedPoints.clear();
+    }
   } else {
-    if (shiftPressed)
+    if (shiftPressed) {
       plot.selectedPoints.append(selection);
-    else if (selection.length !== 1 || !plot.selectedPoints.contains(selection[0]))
+    } else if (selection.length !== 1 || !plot.selectedPoints.contains(selection[0])) {
       plot.selectedPoints.assign(selection);
+    }
   }
 }
 
@@ -491,10 +508,11 @@ var ctrlPressed = false,
   shiftPressed = false;
 var CTRL = navigator.appVersion.indexOf('Mac') == -1 ? 17 : 224;
 function handleKeyDown(event) {
-  if(event.keyCode === CTRL)
+  if(event.keyCode === CTRL) {
     ctrlPressed = true;
-  else if(event.keyCode === 16)
+  } else if(event.keyCode === 16) {
     shiftPressed = true;
+  }
 
   switch(event.keyCode) {
     case 46: // DELETE key
@@ -510,8 +528,9 @@ function handleKeyDown(event) {
   }
 }
 function handleKeyUp(event) {
-  if(event.which === CTRL)
+  if(event.which === CTRL) {
     ctrlPressed = false;
-  else if(event.keyCode === 16)
+  } else if(event.keyCode === 16) {
     shiftPressed = false;
+  }
 }

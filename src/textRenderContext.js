@@ -30,8 +30,9 @@ export function TextRenderContext(gl, canvas) {
     x = Math.floor(x);
     y = Math.floor(y);
 
-    if (color)
+    if (color) {
       ctx.fillStyle = color;
+    }
 
     var offsetV;
     switch (anchor) {
@@ -72,9 +73,9 @@ export function TextRenderContext(gl, canvas) {
         offsetV = 0;
         break;
     }
-    if (rotation == 0)
+    if (rotation == 0) {
       ctx.fillText(str, x, y + offsetV);
-    else {
+    } else {
       ctx.save();
       ctx.translate(x, y);
       ctx.rotate(rotation);
@@ -83,8 +84,9 @@ export function TextRenderContext(gl, canvas) {
       ctx.restore();
     }
 
-    if (color)
+    if (color) {
       ctx.fillStyle = gl.foreColorString;
+    }
   }
   gl.measureTextWidth = function (str) {
     return ctx.measureText(str).width;
@@ -113,34 +115,42 @@ export function TextRenderContext(gl, canvas) {
   }
 
   gl.drawPolygon = function (points, color) {
-    if (points.length < 2)
+    if (points.length < 2) {
       return;
+    }
 
-    if (color)
+    if (color) {
       ctx.fillStyle = color;
+    }
     ctx.beginPath();
     ctx.moveTo(points[0][0], points[0][1]);
-    for (var i = 1; i < points.length; ++i)
+    for (var i = 1; i < points.length; ++i) {
       ctx.lineTo(points[i][0], points[i][1]);
+    }
     ctx.closePath();
     ctx.stroke();
-    if (color)
+    if (color) {
       ctx.fillStyle = gl.foreColorString;
+    }
   }
   gl.fillPolygon = function (points, color) {
-    if (points.length < 2)
+    if (points.length < 2) {
       return;
+    }
 
-    if (color)
+    if (color) {
       ctx.fillStyle = color;
+    }
     ctx.beginPath();
     ctx.moveTo(points[0][0], points[0][1]);
-    for (var i = 1; i < points.length; ++i)
+    for (var i = 1; i < points.length; ++i) {
       ctx.lineTo(points[i][0], points[i][1]);
+    }
     ctx.closePath();
     ctx.fill();
-    if (color)
+    if (color) {
       ctx.fillStyle = gl.foreColorString;
+    }
   }
 
   this.setFont = function (font) {
@@ -178,8 +188,9 @@ export function TextRenderContext(gl, canvas) {
 
   var offscreenRendering = null;
   this.enableOffscreenRendering = function (width, height) {
-    if (offscreenRendering !== null)
+    if (offscreenRendering !== null) {
       return;
+    }
     offscreenRendering = {};
 
     offscreenRendering.width = width;
@@ -192,8 +203,9 @@ export function TextRenderContext(gl, canvas) {
     this.onResize();
   }
   this.disableOffscreenRendering = function () {
-    if (offscreenRendering === null)
+    if (offscreenRendering === null) {
       return;
+    }
 
     textCanvas = offscreenRendering.oldCanvas;
     ctx = offscreenRendering.oldContext;

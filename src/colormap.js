@@ -108,8 +108,9 @@ export function Colormap(gl, globalView) {
 
   this.visible = true;
   this.render = function (flipY, plotBounds) {
-    if (!this.visible)
+    if (!this.visible) {
       return;
+    }
 
     // >>> Draw colormap
 
@@ -118,8 +119,9 @@ export function Colormap(gl, globalView) {
 
     var mattrans = libGlMatrix.mat4.create();
     libGlMatrix.mat4.identity(mattrans);
-    if (flipY === true)
+    if (flipY === true) {
       libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+    }
     libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + plotBounds.width + 0.5) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
     libGlMatrix.mat4.scale(mattrans, mattrans, [2 * COLORMAP_WIDTH / gl.width, 2 * plotBounds.height / gl.height, 1]);
     sdrColormap.matWorldViewProj(mattrans);
@@ -138,8 +140,9 @@ export function Colormap(gl, globalView) {
     // Draw y-axis ticks and tick labels
     var tickLabel_left = 0.0;
     libGlMatrix.mat4.identity(mattrans);
-    if (flipY === true)
+    if (flipY === true) {
       libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+    }
     libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + plotBounds.width + COLORMAP_WIDTH + 0.5) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
     libGlMatrix.mat4.scale(mattrans, mattrans, [2 * axis.tickLength / gl.width, 2 * plotBounds.height / gl.height, 1]);
     sdrLine.matWorldViewProj(mattrans);
@@ -165,8 +168,9 @@ export function Colormap(gl, globalView) {
 
     // >>> Draw axis label
 
-    if (axis.label)
+    if (axis.label) {
       gl.drawText(axis.label, tickLabel_left, gl.height - plotBounds.y - plotBounds.height / 2, 'topcenter', -Math.PI / 2);
+    }
   }
 
   function checkOverlap() {
@@ -201,13 +205,16 @@ export function Colormap(gl, globalView) {
           axis.tickDistance = Math.round(axis.tickDistance / base) * base; // Round tickDistance to base
           axis.tickOffset = Math.ceil(minimum / axis.tickDistance) * axis.tickDistance;
           axis.tickCount = Math.floor((maximum - axis.tickOffset) / axis.tickDistance) + 1;
-          if (axis.tickCount >= numTicks - 2 && axis.tickCount <= numTicks + 2) // Condition: numTicks - 2 <= tickCount <= numTicks + 2
+          if (axis.tickCount >= numTicks - 2 && axis.tickCount <= numTicks + 2) {
+            // Condition: numTicks - 2 <= tickCount <= numTicks + 2
             break;
+          }
         }
       }
 
-      if (checkOverlap())
+      if (checkOverlap()) {
         break;
+      }
     }
   }
   this.setEnumRange = function (minimum, maximum, values) {
@@ -236,8 +243,9 @@ export function Colormap(gl, globalView) {
         texColormap = colormaps[pointColor];
       } else {
         var c = parseColormap(pointColor);
-        if (c)
+        if (c) {
           texColormap = libGraphics.LoadTextureFromByteArray(gl, c, c.length / 4, 1);
+        }
       }
     }
   }
@@ -258,20 +266,23 @@ export function Colormap(gl, globalView) {
 
 export function validateColor(color) {
   if (libUtility.isString(color)) {
-    if (!libUtility.isUndefined(libUtility.colorNameToHex(color)))
-      return true; // color is known color name
+    if (!libUtility.isUndefined(libUtility.colorNameToHex(color))) {
+      return true;
+    } // color is known color name
     var rgb;
     if ((rgb = libUtility.hexToRgb(color)) !== null &&
       rgb.r >= 0x00 && rgb.r <= 0xFF &&
       rgb.g >= 0x00 && rgb.g <= 0xFF &&
-      rgb.b >= 0x00 && rgb.b <= 0xFF)
-      return true; // color is hex color
+      rgb.b >= 0x00 && rgb.b <= 0xFF) {
+      return true;
+    } // color is hex color
     return 'Unknown color ' + color;
   }
 
   if (libUtility.isArray(color)) {
-    if (color.length !== 4)
+    if (color.length !== 4) {
       return 'Color array needs to have 4 components (RGBA).';
+    }
     return true;
   }
 
@@ -285,35 +296,45 @@ export function parseColor(color) {
     return rgb ? new Uint8Array([rgb.r, rgb.g, rgb.b, 255]) : null;
   }
 
-  if (libUtility.isArray(color))
+  if (libUtility.isArray(color)) {
     return color.length >= 4 ? new Uint8Array([color[0], color[1], color[2], color[3]]) : null;
+  }
 
   return null;
 }
 
 export function validateColormap(colormap) {
-  if (colormap === null) return true;
+  if (colormap === null) {
+    return true;
+  }
   if (libUtility.isString(colormap)) {
-    if (colormaps[colormap])
+    if (colormaps[colormap]) {
       return true;
+    }
     return validateColor(colormap);
   }
 
   if (libUtility.isArray(colormap)) {
-    if (colormap.length === 0)
+    if (colormap.length === 0) {
       return 'Colormap array cannot be empty.';
+    }
     if (libUtility.isString(colormap[0])) {
       var err;
-      for (var i = 0; i < colormap.length; ++i)
-        if ((err = validateColor(colormap[i])) !== true)
+      for (var i = 0; i < colormap.length; ++i) {
+        if ((err = validateColor(colormap[i])) !== true) {
           return err;
+        }
+      }
       return true;
     } else {
-      if (colormap.length % 4 !== 0)
+      if (colormap.length % 4 !== 0) {
         return 'Colormap array length must be multiple of 4.';
-      for (var i = 0; i < colormap.length; ++i)
-        if (!libUtility.isNumber(colormap[i]) || colormap[i] < 0x00 || colormap[i] > 0xFF)
+      }
+      for (var i = 0; i < colormap.length; ++i) {
+        if (!libUtility.isNumber(colormap[i]) || colormap[i] < 0x00 || colormap[i] > 0xFF) {
           return 'Colormap array must contain numbers between 0 and 255.';
+        }
+      }
       return true;
     }
   }
@@ -322,23 +343,28 @@ export function validateColormap(colormap) {
 }
 
 export function parseColormap(colormap) {
-  if (libUtility.isString(colormap))
+  if (libUtility.isString(colormap)) {
     return parseColor(colormap);
+  }
 
   if (libUtility.isArray(colormap)) {
-    if (colormap.length === 0)
+    if (colormap.length === 0) {
       return null;
+    }
     if (libUtility.isString(colormap[0])) {
       var array = [],
         color;
-      for (var i = 0; i < colormap.length; ++i)
-        if ((color = parseColor(colormap[i])))
+      for (var i = 0; i < colormap.length; ++i) {
+        if ((color = parseColor(colormap[i]))) {
           Array.prototype.push.apply(array, color);
-        else
+        } else {
           return null;
+        }
+      }
       return new Uint8Array(array);
-    } else if(libUtility.isNumber(colormap[0]))
+    } else if(libUtility.isNumber(colormap[0])) {
       return new Uint8Array(colormap);
+    }
   }
 
   return null;

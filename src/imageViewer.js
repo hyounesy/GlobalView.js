@@ -183,12 +183,13 @@ export function ImageViewer(gl, globalView) {
 
   /** @type Array<Thumbnail> */ var images = [];
 
-  var PixelAlignX = x => (Math.floor(x * gl.width / 2.0) + 0.5) * 2.0 / gl.width;
-  var PixelAlignY = y => (Math.floor(y * gl.height / 2.0) + 0.5) * 2.0 / gl.height;
+  var PixelAlignX = (x) => (Math.floor(x * gl.width / 2.0) + 0.5) * 2.0 / gl.width;
+  var PixelAlignY = (y) => (Math.floor(y * gl.height / 2.0) + 0.5) * 2.0 / gl.height;
 
   this.render = function (flipY, tf) {
-    if (images.length === 0)
+    if (images.length === 0) {
       return;
+    }
     var mattrans = libGlMatrix.mat4.create();
     var imagePos = libGlMatrix.vec2.create(),
       refPos = libGlMatrix.vec2.create(),
@@ -200,14 +201,16 @@ export function ImageViewer(gl, globalView) {
       // Draw labels at image.refPos
       var label = 1;
       images.forEach(function (image) {
-        if (image.imagePos === image.refPos)
+        if (image.imagePos === image.refPos) {
           return;
+        }
         tf.transformPos(refPos, image.refPos);
 
         sdrLine.bind();
         libGlMatrix.mat4.identity(mattrans);
-        if (flipY === true)
+        if (flipY === true) {
           libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+        }
         refPos[0] = PixelAlignX(refPos[0]);
         refPos[1] = PixelAlignY(refPos[1]);
         libGlMatrix.mat4.translate(mattrans, mattrans, [refPos[0], refPos[1], 0]);
@@ -233,11 +236,13 @@ export function ImageViewer(gl, globalView) {
       sdrLine.bind();
       meshLine.bind(sdrLine, null);
       images.forEach(function (image) {
-        if (!image.imagePos || image.imagePos === image.refPos)
+        if (!image.imagePos || image.imagePos === image.refPos) {
           return;
+        }
         libGlMatrix.mat4.identity(mattrans);
-        if (flipY === true)
+        if (flipY === true) {
           libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+        }
         tf.transformPos(imagePos, image.imagePos);
         tf.transformPos(refPos, image.refPos);
         libGlMatrix.mat4.translate(mattrans, mattrans, [imagePos[0], imagePos[1], 0.0]);
@@ -256,8 +261,9 @@ export function ImageViewer(gl, globalView) {
     sdrImage.bind();
     var label = 1;
     images.forEach(function (image) {
-      if (!image.imagePos)
+      if (!image.imagePos) {
         return;
+      }
 
       // var normalizedImagePos = vec2.create();
       // tf.transformPos(normalizedImagePos, image.imagePos);
@@ -272,10 +278,11 @@ export function ImageViewer(gl, globalView) {
         h = image.tex.image.height;
       // imageSize[0] *= 2 / gl.width; imageSize[1] *= 2 / gl.height; // Transform imageSize from normalized space to device space
       var scale;
-      if (Math.max(imageSize[0], imageSize[0] * h / w, 1.0) < Math.max(imageSize[1] * w / h, imageSize[1]))
+      if (Math.max(imageSize[0], imageSize[0] * h / w, 1.0) < Math.max(imageSize[1] * w / h, imageSize[1])) {
         scale = [2 * Math.floor(imageSize[0]) / gl.width, 2 * Math.floor(imageSize[0] * h / w) / gl.height, 1];
-      else
+      } else {
         scale = [2 * Math.floor(imageSize[1] * w / h) / gl.width, 2 * Math.floor(imageSize[1]) / gl.height, 1];
+      }
 
       var borderWidth = image.borderWidth ? image.borderWidth : defaultImageBorderWidth;
       if (borderWidth > 0) {
@@ -284,8 +291,9 @@ export function ImageViewer(gl, globalView) {
 
         meshQuad.bind(sdrLine);
         libGlMatrix.mat4.identity(mattrans);
-        if (flipY === true)
+        if (flipY === true) {
           libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+        }
         imagePos[0] = PixelAlignX(imagePos[0]);
         libGlMatrix.mat4.translate(mattrans, mattrans, [imagePos[0], PixelAlignY(imagePos[1]), 0.0]);
         libGlMatrix.mat4.scale(mattrans, mattrans, scale);
@@ -300,8 +308,9 @@ export function ImageViewer(gl, globalView) {
 
       meshQuad.bind(sdrImage, image.tex);
       libGlMatrix.mat4.identity(mattrans);
-      if (flipY === true)
+      if (flipY === true) {
         libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+      }
       imagePos[0] = PixelAlignX(imagePos[0]);
       libGlMatrix.mat4.translate(mattrans, mattrans, [imagePos[0], PixelAlignY(imagePos[1]), 0.0]);
       libGlMatrix.mat4.scale(mattrans, mattrans, scale);
@@ -312,8 +321,9 @@ export function ImageViewer(gl, globalView) {
       if (options['labelThumbnails']) {
         // Draw thumbnail label below thumbnail
         libGlMatrix.mat4.identity(mattrans);
-        if (flipY === true)
+        if (flipY === true) {
           libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+        }
         imagePos[0] += image.imageAnchor[0] * scale[0]; // Move stripe position depending on image anchor
         imagePos[1] += image.imageAnchor[1] * scale[1]; // Move stripe position depending on image anchor
 
@@ -353,9 +363,9 @@ export function ImageViewer(gl, globalView) {
   this.onOptionsChanged = function (_options) {
     options = _options;
     defaultImageBorderWidth = options['thumbnailBorderWidth'];
-    defaultImageBorderColor = options['thumbnailBorderColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailBorderColor'])).map(c => c / 255.0) : gl.foreColor;
-    defaultImageLineColor = options['thumbnailLineColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailLineColor'])).map(c => c / 255.0) : gl.foreColor;
-    defaultImageLabelColor = options['thumbnailLabelColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailLabelColor'])).map(c => c / 255.0) : gl.backColor;
+    defaultImageBorderColor = options['thumbnailBorderColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailBorderColor'])).map((c) => c / 255.0) : gl.foreColor;
+    defaultImageLineColor = options['thumbnailLineColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailLineColor'])).map((c) => c / 255.0) : gl.foreColor;
+    defaultImageLabelColor = options['thumbnailLabelColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailLabelColor'])).map((c) => c / 255.0) : gl.backColor;
   }
   this.onPlotBoundsChanged = function (plotBounds) {}
 
@@ -409,42 +419,46 @@ export function ImageViewer(gl, globalView) {
       b = libGlMatrix.vec2.create(),
       c = libGlMatrix.vec2.create(),
       d = libGlMatrix.vec2.create();
-    for (var i = 1; i < images.length; ++i)
+    for (var i = 1; i < images.length; ++i) {
       if (images[i].imagePos) {
         tf.transformPos(a, images[i].imagePos);
         tf.transformPos(b, images[i].refPos);
-        for (var j = 0; j < i; ++j)
+        for (var j = 0; j < i; ++j) {
           if (images[j].imagePos) {
             tf.transformPos(c, images[j].imagePos);
             tf.transformPos(d, images[j].refPos);
 
             if (libGlMatrix.vec2.sqrDist(a, b) + libGlMatrix.vec2.sqrDist(c, d) > libGlMatrix.vec2.sqrDist(a, d) + libGlMatrix.vec2.sqrDist(c, b) && !libAlgorithm.linesIntersect(a, d, c, b)) {
-              // console.log("exchange {0} - {1}".format(i, j));
+            // console.log("exchange {0} - {1}".format(i, j));
               var tmp = images[j].imagePos;
               images[j].imagePos = images[i].imagePos;
               images[i].imagePos = tmp;
               i = j = 0; break; // EDIT: How neccessary is this?
             }
           }
+        }
       }
-    for (var i = 1; i < images.length; ++i)
+    }
+    for (var i = 1; i < images.length; ++i) {
       if (images[i].imagePos) {
         tf.transformPos(a, images[i].imagePos);
         tf.transformPos(b, images[i].refPos);
-        for (var j = 0; j < i; ++j)
+        for (var j = 0; j < i; ++j) {
           if (images[j].imagePos) {
             tf.transformPos(c, images[j].imagePos);
             tf.transformPos(d, images[j].refPos);
 
             if (libAlgorithm.linesIntersect(a, b, c, d)) {
-              // console.log("intersection {0} - {1}".format(i, j));
+            // console.log("intersection {0} - {1}".format(i, j));
               var tmp = images[j].imagePos;
               images[j].imagePos = images[i].imagePos;
               images[i].imagePos = tmp;
               i = j = 0; break; // EDIT: How neccessary is this?
             }
           }
+        }
       }
+    }
   }
 
   this.imageFromPoint = function (tf, p) {
@@ -454,8 +468,9 @@ export function ImageViewer(gl, globalView) {
 
     var selectedImage = null;
     images.forEach(function (image) {
-      if (!image.imagePos)
+      if (!image.imagePos) {
         return;
+      }
 
       tf.transformPos(imagePos, image.imagePos);
 
@@ -463,18 +478,20 @@ export function ImageViewer(gl, globalView) {
       var w = image.tex.image.width,
         h = image.tex.image.height;
       var size;
-      if (Math.max(imageSize[0], imageSize[0] * h / w, 1.0) < Math.max(imageSize[1] * w / h, imageSize[1]))
+      if (Math.max(imageSize[0], imageSize[0] * h / w, 1.0) < Math.max(imageSize[1] * w / h, imageSize[1])) {
         size = [Math.floor(imageSize[0]) * 2 / gl.width, Math.floor(imageSize[0] * h / w) * 2 / gl.height, 1];
-      else
+      } else {
         size = [Math.floor(imageSize[1] * w / h) * 2 / gl.width, Math.floor(imageSize[1]) * 2 / gl.height, 1];
+      }
       var imageBounds = [
         imagePos[0] + (image.imageAnchor[0]) * size[0],
         imagePos[0] + (image.imageAnchor[0] + 1.0) * size[0],
         imagePos[1] + (image.imageAnchor[1]) * size[1],
         imagePos[1] + (image.imageAnchor[1] + 1.0) * size[1]]
 
-      if (options['labelThumbnails'])
+      if (options['labelThumbnails']) {
         imageBounds[2] -= LABEL_HEIGHT * 2 / gl.height;
+      }
 
       if (p[0] >= imageBounds[0] && p[0] <= imageBounds[1] &&
         p[1] >= imageBounds[2] && p[1] <= imageBounds[3]) {

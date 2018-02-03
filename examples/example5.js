@@ -46,7 +46,7 @@ domready(function () {
     hasHeader: true,
     nameColumn: 1,
     columnLabels: COLUMN_NAMES,
-    imageFilenames: data => imagesPath + data[1] + '.png'
+    imageFilenames: (data) => imagesPath + data[1] + '.png'
   }, function (dataset) {
     plot.load(dataset, 2, 4, 0, 3);
     plot.getCharacteristicPoints(8, 1, function (characteristicPoints) {
@@ -57,13 +57,15 @@ domready(function () {
     for (var i = 0, nc = dataset.numColumns; i < dataset.length; ++i) {
       var protein = dataset.data[i * nc + 0];
       var proteinPoints = pointsByProtein[protein];
-      if (!proteinPoints)
+      if (!proteinPoints) {
         pointsByProtein[protein] = proteinPoints = new globalView.HashSet();
+      }
       proteinPoints.push(i);
     }
 
-    for (var i = 0; i < COLUMN_HINTS.length; ++i)
+    for (var i = 0; i < COLUMN_HINTS.length; ++i) {
       dataset.dataVectors[i].hint = COLUMN_HINTS[i];
+    }
   });
   addAllEventListeners();
 });
@@ -115,29 +117,32 @@ function addAllEventListeners() {
 
 function cmdSelectAll_onClick(sender) {
   var elements = document.querySelectorAll("input[type='checkbox']");
-  for (var i = 0; i < elements.length; ++i)
+  for (var i = 0; i < elements.length; ++i) {
     if (elements[i].checked === false) {
       elements[i].checked = true;
       cbProtein_onChange(elements[i]);
     }
+  }
 }
 
 function cmdDeselectAll_onClick(sender) {
   var elements = document.querySelectorAll("input[type='checkbox']");
-  for (var i = 0; i < elements.length; ++i)
+  for (var i = 0; i < elements.length; ++i) {
     if (elements[i].checked === true) {
       elements[i].checked = false;
       cbProtein_onChange(elements[i]);
     }
+  }
 }
 
 function cbProtein_onChange(sender) {
   var protein = sender.id;
   var proteinPoints = pointsByProtein[protein];
-  if (sender.checked)
+  if (sender.checked) {
     plot.points.append(proteinPoints);
-  else
+  } else {
     plot.points.remove(proteinPoints);
+  }
 }
 
 function cbXAxis_onChange(sender) {
@@ -164,9 +169,9 @@ function plot_onMouseDown(event) {
 }
 
 function plot_onMouseOverDatapoint(dataset, index) {
-  if (index === -1)
+  if (index === -1) {
     plot.highlightedPoints.clear();
-  else {
+  } else {
     plot.highlightedPoints.set(index);
     document.getElementById('imgCell').src = dataset.imageFilenames[index];
 

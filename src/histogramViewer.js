@@ -67,16 +67,18 @@ export function HistogramViewer(gl, globalView) {
       sdrLine.bind();
       meshLine.bind(sdrLine, null);
       libGlMatrix.mat4.identity(mattrans);
-      if (flipY === true)
+      if (flipY === true) {
         libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+      }
       libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5) / gl.width - 1, 2 * (plotBounds.y + 0.5 - 64) / gl.height - 1, 0]); // 0.5 ... center inside pixel
       libGlMatrix.mat4.scale(mattrans, mattrans, [2 * plotBounds.width / gl.width, 1, 1]);
       sdrLine.matWorldViewProj(mattrans);
       meshLine.draw();
 
       libGlMatrix.mat4.identity(mattrans);
-      if (flipY === true)
+      if (flipY === true) {
         libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+      }
       libGlMatrix.mat4.translate(mattrans, mattrans, [pos[0] + 0.5 * 2 / gl.width, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0.0]); // 0.5 ... center inside pixel
       libGlMatrix.mat4.scale(mattrans, mattrans, [scl[0], -64 * 2 / gl.height, 1.0]);
 
@@ -102,8 +104,9 @@ export function HistogramViewer(gl, globalView) {
       sdrLine.bind();
       meshLine.bind(sdrLine, null);
       libGlMatrix.mat4.identity(mattrans);
-      if (flipY === true)
+      if (flipY === true) {
         libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+      }
       libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5 - 64) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
       libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
       libGlMatrix.mat4.scale(mattrans, mattrans, [2 * plotBounds.height / gl.height, 1, 1]);
@@ -111,8 +114,9 @@ export function HistogramViewer(gl, globalView) {
       meshLine.draw();
 
       libGlMatrix.mat4.identity(mattrans);
-      if (flipY === true)
+      if (flipY === true) {
         libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+      }
       libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + 0.5) / gl.width - 1, pos[1] + 0.5 * 2 / gl.height, 0.0]); // 0.5 ... center inside pixel
       libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
       libGlMatrix.mat4.scale(mattrans, mattrans, [scl[1], 64 * 2 / gl.width, 1.0]);
@@ -139,8 +143,9 @@ export function HistogramViewer(gl, globalView) {
       sdrLine.bind();
       meshLine.bind(sdrLine, null);
       libGlMatrix.mat4.identity(mattrans);
-      if (flipY === true)
+      if (flipY === true) {
         libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+      }
       libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + plotBounds.width + libColormap.COLORMAP_WIDTH + 0.5 + 64) / gl.width - 1, 2 * (plotBounds.y + 0.5) / gl.height - 1, 0]); // 0.5 ... center inside pixel
       libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
       libGlMatrix.mat4.scale(mattrans, mattrans, [2 * plotBounds.height / gl.height, 1, 1]);
@@ -148,8 +153,9 @@ export function HistogramViewer(gl, globalView) {
       meshLine.draw();
 
       libGlMatrix.mat4.identity(mattrans);
-      if (flipY === true)
+      if (flipY === true) {
         libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+      }
       libGlMatrix.mat4.translate(mattrans, mattrans, [2 * (plotBounds.x + plotBounds.width + libColormap.COLORMAP_WIDTH + 0.5) / gl.width - 1, pos[2] + 0.5 * 2 / gl.height, 0.0]); // 0.5 ... center inside pixel
       libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
       libGlMatrix.mat4.scale(mattrans, mattrans, [scl[2], -64 * 2 / gl.width, 1.0]);
@@ -188,19 +194,24 @@ export function HistogramViewer(gl, globalView) {
   function recreateHistograms() {
     if (dataset && options['histogramHeight'] > 0) {
       var numBins = options['numHistogramBins'];
-      if (options['showXAxisHistogram'])
+      if (options['showXAxisHistogram']) {
         createHistogram(axes[0], dataset, activeInputs[0], numBins);
-      if (options['showYAxisHistogram'])
+      }
+      if (options['showYAxisHistogram']) {
         createHistogram(axes[1], dataset, activeInputs[1], numBins);
-      if (options['showColormapHistogram'])
+      }
+      if (options['showColormapHistogram']) {
         createHistogram(axes[2], dataset, activeInputs[2], numBins);
+      }
     }
   }
   function createHistogram(axis, dataset, d, numBins) {
-    if (d < 0 || d >= dataset.dataVectors.length)
-      return; // Validate inputs
-    if (axis.histogram && axis.histogram.width === numBins && axis.d === d)
-      return; // Requested histogram already exists
+    if (d < 0 || d >= dataset.dataVectors.length) {
+      return;
+    } // Validate inputs
+    if (axis.histogram && axis.histogram.width === numBins && axis.d === d) {
+      return;
+    } // Requested histogram already exists
 
     axis.histogram = libAlgorithm.computeHistogram(dataset, axis.d = d, numBins);
     libAlgorithm.addTransformFunctions(axis.histogram);

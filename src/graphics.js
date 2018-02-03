@@ -11,10 +11,12 @@ var currentShader = null;
  * @param {boolean=} debug = false
  */
 export function Shader(gl, vs, fs, debug) {
-  if (libUtility.isArray(vs))
+  if (libUtility.isArray(vs)) {
     vs = vs.join('\n');
-  if (libUtility.isArray(fs))
+  }
+  if (libUtility.isArray(fs)) {
     fs = fs.join('\n');
+  }
   if (debug === true) {
     console.log(vs);
     console.log(fs);
@@ -75,119 +77,137 @@ export function Shader(gl, vs, fs, debug) {
   this.u1i = function (uniformString) {
     this.bind();
     var uniform = gl.getUniformLocation(sdr, uniformString);
-    if (uniform)
+    if (uniform) {
       return function (i) {
         this.bind();
         gl.uniform1i(uniform, i);
-        if (debug)
+        if (debug) {
           console.log('gl.uniform1i({0}, {1})'.format(uniformString, i));
+        }
       };
-    else
-      return debug ? i => console.log('Passing value to unused uniform ' + uniformString) : null;
+    } else {
+      return debug ? (i) => console.log('Passing value to unused uniform ' + uniformString) : null;
+    }
   }
   this.u1f = function (uniformString) {
     this.bind();
     var uniform = gl.getUniformLocation(sdr, uniformString);
-    if (uniform)
+    if (uniform) {
       return function (f) {
         this.bind();
         gl.uniform1f(uniform, f);
-        if (debug)
+        if (debug) {
           console.log('gl.uniform1f({0}, {1})'.format(uniformString, f));
+        }
       };
-    else
-      return debug ? f => console.log('Passing value to unused uniform ' + uniformString) : null;
+    } else {
+      return debug ? (f) => console.log('Passing value to unused uniform ' + uniformString) : null;
+    }
   }
   this.u2f = function (uniformString) {
     this.bind();
     var uniform = gl.getUniformLocation(sdr, uniformString);
-    if (uniform)
+    if (uniform) {
       return function (x, y) {
         this.bind();
         gl.uniform2f(uniform, x, y);
-        if (debug)
+        if (debug) {
           console.log('gl.uniform2f({0}, {1}, {2})'.format(uniformString, x, y));
+        }
       };
-    else
-      return debug ? f => console.log('Passing value to unused uniform ' + uniformString) : null;
+    } else {
+      return debug ? (f) => console.log('Passing value to unused uniform ' + uniformString) : null;
+    }
   }
   this.u2x2f = function (uniformString) {
     this.bind();
     var uniform = gl.getUniformLocation(sdr, uniformString);
-    if (uniform)
+    if (uniform) {
       return function (m) {
         this.bind();
         gl.uniformMatrix2fv(uniform, false, m);
-        if (debug)
+        if (debug) {
           console.log('gl.uniformMatrix2fv({0}, {1})'.format(uniformString, m));
+        }
       };
-    else
-      return debug ? f => console.log('Passing value to unused uniform ' + uniformString) : null;
+    } else {
+      return debug ? (f) => console.log('Passing value to unused uniform ' + uniformString) : null;
+    }
   }
   this.u3f = function (uniformString) {
     this.bind();
     var uniform = gl.getUniformLocation(sdr, uniformString);
-    if (uniform)
+    if (uniform) {
       return function (x, y, z) {
         this.bind();
         gl.uniform3f(uniform, x, y, z);
-        if (debug)
+        if (debug) {
           console.log('gl.uniform3f({0}, {1}, {2}, {3})'.format(uniformString, x, y, z));
+        }
       };
-    else
-      return debug ? f => console.log('Passing value to unused uniform ' + uniformString) : null;
+    } else {
+      return debug ? (f) => console.log('Passing value to unused uniform ' + uniformString) : null;
+    }
   }
   this.u4f = function (uniformString) {
     this.bind();
     var uniform = gl.getUniformLocation(sdr, uniformString);
-    if (uniform)
+    if (uniform) {
       return function (x, y, z, w) {
         this.bind();
         gl.uniform4f(uniform, x, y, z, w);
-        if (debug)
+        if (debug) {
           console.log('gl.uniform4f({0}, {1}, {2}, {3}, {4})'.format(uniformString, x, y, z, w));
+        }
       };
-    else
-      return debug ? f => console.log('Passing value to unused uniform ' + uniformString) : null;
+    } else {
+      return debug ? (f) => console.log('Passing value to unused uniform ' + uniformString) : null;
+    }
   }
   this.u1fv = function (uniformString) {
     this.bind();
     var uniform = gl.getUniformLocation(sdr, uniformString);
-    if (uniform)
+    if (uniform) {
       return function (v) {
         this.bind();
         gl.uniform1fv(uniform, v);
-        if (debug)
+        if (debug) {
           console.log('gl.uniform1fv({0}, {1})'.format(uniformString, v));
+        }
       };
-    else
-      return debug ? f => console.log('Passing value to unused uniform ' + uniformString) : null;
+    } else {
+      return debug ? (f) => console.log('Passing value to unused uniform ' + uniformString) : null;
+    }
   }
   this.u4fv = function (uniformString) {
     this.bind();
     var uniform = gl.getUniformLocation(sdr, uniformString);
-    if (uniform)
+    if (uniform) {
       return function (v) {
         this.bind();
         gl.uniform4fv(uniform, v);
-        if (debug)
+        if (debug) {
           console.log('gl.uniform4fv({0}, {1})'.format(uniformString, v));
+        }
       };
-    else
-      return debug ? f => console.log('Passing value to unused uniform ' + uniformString) : null;
+    } else {
+      return debug ? (f) => console.log('Passing value to unused uniform ' + uniformString) : null;
+    }
   }
   this.u4x4f = function (uniformString) {
     this.bind();
     var uniform = gl.getUniformLocation(sdr, uniformString);
-    if (uniform)
+    if (uniform) {
       return function (m) {
         this.bind();
         gl.uniformMatrix4fv(uniform, false, m);
-        if (debug)
+        if (debug) {
           console.log('gl.uniformMatrix4fv({0}, {1})'.format(uniformString, m));
+        }
       };
-    else
-      return debug ? f => console.log('Passing value to unused uniform ' + uniformString) : null;
+    } else {
+      return debug ? (f) => console.log('Passing value to unused uniform ' + uniformString) : null;
+    }
   }
 
   this.getAttribLocation = function (attributeName) {
@@ -195,8 +215,9 @@ export function Shader(gl, vs, fs, debug) {
   }
 
   this.free = function () {
-    if (vertexShader != null || fragmentShader != null || sdr != null)
+    if (vertexShader != null || fragmentShader != null || sdr != null) {
       gl.useProgram(null);
+    }
 
     if (vertexShader != null) {
       gl.deleteShader(vertexShader);
@@ -261,87 +282,103 @@ export function Mesh(_gl, positions, normals, tangents, binormals, texcoords, in
     numvertices = Math.floor(positions.length / ndim);
     numindices = 0;
 
-    if(!posbuffer)
+    if(!posbuffer) {
       posbuffer = gl.createBuffer();
+    }
     gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
     gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
     if(normals) {
-      if(!nmlbuffer)
+      if(!nmlbuffer) {
         nmlbuffer = gl.createBuffer();
+      }
       gl.bindBuffer(gl.ARRAY_BUFFER, nmlbuffer);
       gl.bufferData(gl.ARRAY_BUFFER, normals, gl.STATIC_DRAW);
-    } else if(!nmlbuffer)
+    } else if(!nmlbuffer) {
       gl.deleteBuffer(nmlbuffer);
+    }
     if(tangents) {
-      if(!tgtbuffer)
+      if(!tgtbuffer) {
         tgtbuffer = gl.createBuffer();
+      }
       gl.bindBuffer(gl.ARRAY_BUFFER, tgtbuffer);
       gl.bufferData(gl.ARRAY_BUFFER, tangents, gl.STATIC_DRAW);
-    } else if(!tgtbuffer)
+    } else if(!tgtbuffer) {
       gl.deleteBuffer(tgtbuffer);
+    }
     if(binormals) {
-      if(!bnmbuffer)
+      if(!bnmbuffer) {
         bnmbuffer = gl.createBuffer();
+      }
       gl.bindBuffer(gl.ARRAY_BUFFER, bnmbuffer);
       gl.bufferData(gl.ARRAY_BUFFER, binormals, gl.STATIC_DRAW);
-    } else if(!bnmbuffer)
+    } else if(!bnmbuffer) {
       gl.deleteBuffer(bnmbuffer);
+    }
     if(texcoords) {
-      if(!texcoordbuffer)
+      if(!texcoordbuffer) {
         texcoordbuffer = gl.createBuffer();
+      }
       gl.bindBuffer(gl.ARRAY_BUFFER, texcoordbuffer);
       gl.bufferData(gl.ARRAY_BUFFER, texcoords, gl.STATIC_DRAW);
-    } else if(!texcoordbuffer)
+    } else if(!texcoordbuffer) {
       gl.deleteBuffer(texcoordbuffer);
+    }
     if(indices) {
-      if(!idxbuffer)
+      if(!idxbuffer) {
         idxbuffer = gl.createBuffer();
+      }
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxbuffer);
       gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
       numindices = indices.length;
-      if(typeof primitivetype === 'undefined')
-        primitivetype = gl.TRIANGLES; // Default primitive type for indexed geometry is TRIANGLES
+      if(typeof primitivetype === 'undefined') {
+        primitivetype = gl.TRIANGLES;
+      } // Default primitive type for indexed geometry is TRIANGLES
     } else {
-      if(!idxbuffer)
+      if(!idxbuffer) {
         gl.deleteBuffer(idxbuffer);
-      if(typeof primitivetype === 'undefined')
-        primitivetype = gl.TRIANGLE_STRIP; // Default primitive type for non-indexed geometry is TRIANGLE_STRIP
+      }
+      if(typeof primitivetype === 'undefined') {
+        primitivetype = gl.TRIANGLE_STRIP;
+      } // Default primitive type for non-indexed geometry is TRIANGLE_STRIP
     }
   }
-  if(positions) // Mesh vertex positions array can't be null
+  if(positions) { // Mesh vertex positions array can't be null
     this.reset(positions, normals, tangents, binormals, texcoords, indices, _primitivetype, _ndim);
+  }
 
   this.bind = function (sdr, texture) {
-    if(!posbuffer) // Mesh without vertex positions can't be rendered
+    if(!posbuffer) { // Mesh without vertex positions can't be rendered
       return;
+    }
 
     sdr.bind();
 
     for(var i = 0; i < 16; i++) {
       gl.disableVertexAttribArray(i);
-      if (gl.ext)
+      if (gl.ext) {
         gl.ext.vertexAttribDivisorANGLE(i, 0);
+      }
     }
 
     gl.enableVertexAttribArray(sdr.vertexPositionAttribute);
     gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
     gl.vertexAttribPointer(sdr.vertexPositionAttribute, ndim, gl.FLOAT, false, 0, 0);
-    if(nmlbuffer && sdr.vertexNormalAttribute != -1) {
+    if(nmlbuffer && sdr.vertexNormalAttribute !== -1) {
       gl.enableVertexAttribArray(sdr.vertexNormalAttribute);
       gl.bindBuffer(gl.ARRAY_BUFFER, nmlbuffer);
       gl.vertexAttribPointer(sdr.vertexNormalAttribute, ndim, gl.FLOAT, false, 0, 0);
     }
-    if(tgtbuffer && sdr.vertexTangentAttribute != -1) {
+    if(tgtbuffer && sdr.vertexTangentAttribute !== -1) {
       gl.enableVertexAttribArray(sdr.vertexTangentAttribute);
       gl.bindBuffer(gl.ARRAY_BUFFER, tgtbuffer);
       gl.vertexAttribPointer(sdr.vertexTangentAttribute, ndim, gl.FLOAT, false, 0, 0);
     }
-    if(bnmbuffer && sdr.vertexBinormalAttribute != -1) {
+    if(bnmbuffer && sdr.vertexBinormalAttribute !== -1) {
       gl.enableVertexAttribArray(sdr.vertexBinormalAttribute);
       gl.bindBuffer(gl.ARRAY_BUFFER, bnmbuffer);
       gl.vertexAttribPointer(sdr.vertexBinormalAttribute, ndim, gl.FLOAT, false, 0, 0);
     }
-    if(texcoordbuffer && sdr.VertexTexCoordAttribute != -1) {
+    if(texcoordbuffer && sdr.VertexTexCoordAttribute !== -1) {
       gl.enableVertexAttribArray(sdr.VertexTexCoordAttribute);
       gl.bindBuffer(gl.ARRAY_BUFFER, texcoordbuffer);
       gl.vertexAttribPointer(sdr.VertexTexCoordAttribute, 2, gl.FLOAT, false, 0, 0);
@@ -360,24 +397,29 @@ export function Mesh(_gl, positions, normals, tangents, binormals, texcoords, in
       } else {
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, texture);
-        if(sdr.samplerUniform)
+        if(sdr.samplerUniform) {
           gl.uniform1i(sdr.samplerUniform, 0);
-        if(sdr.samplerArrayUniform)
+        }
+        if(sdr.samplerArrayUniform) {
           gl.uniform1iv(sdr.samplerArrayUniform, [0]);
+        }
       }
     }
-    if(idxbuffer)
+    if(idxbuffer) {
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxbuffer);
+    }
   }
 
   this.draw = function () {
-    if(!posbuffer) // Mesh without vertex positions can't be rendered
+    if(!posbuffer) { // Mesh without vertex positions can't be rendered
       return;
+    }
 
-    if(idxbuffer)
+    if(idxbuffer) {
       gl.drawElements(primitivetype, numindices, gl.UNSIGNED_SHORT, 0);
-    else
+    } else {
       gl.drawArrays(primitivetype, 0, numvertices);
+    }
   }
 
   this.free = function () {
@@ -422,8 +464,9 @@ function handleLoadedTexture(gl, texture, onload) {
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   gl.bindTexture(gl.TEXTURE_2D, null);
 
-  if(typeof(onload) == 'function')
+  if(typeof(onload) === 'function') {
     onload(texture);
+  }
 }
 export function LoadTexture(gl, filename, onload) {
   var texture = gl.createTexture();

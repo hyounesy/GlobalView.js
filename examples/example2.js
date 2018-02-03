@@ -38,6 +38,7 @@ function tOptions_onChange(sender) {
   if ((err = plot.validateOptions(options)) === true) {
     plot.setOptions(options);
     preStatus.innerText = '';
-  } else
+  } else {
     preStatus.innerText = err;
+  }
 }

@@ -6,14 +6,15 @@ domready(function () {
     measureTime = function (phase, iterations) {
       var tEnd = performance.now();
       var time = (tEnd - tStart) / iterations;
-      if (time >= 1e3)
+      if (time >= 1e3) {
         preResults.innerText += phase + ': ' + (time * 1e-3) + ' seconds\n';
-      else if (time >= 1e0)
+      } else if (time >= 1e0) {
         preResults.innerText += phase + ': ' + (time * 1e0) + ' milliseconds\n';
-      else if (time >= 1e-3)
+      } else if (time >= 1e-3) {
         preResults.innerText += phase + ': ' + (time * 1e3) + ' microseconds\n';
-      else
+      } else {
         preResults.innerText += phase + ': ' + (time * 1e6) + ' nanoseconds\n';
+      }
       tStart = performance.now();
     },
     tStart = performance.now();
@@ -31,7 +32,8 @@ domready(function () {
   });
   measureTime('Random dataset generation', 1);
 
-  for (var frames = 0; performance.now() - tStart < 1000; ++frames)
+  for (var frames = 0; performance.now() - tStart < 1000; ++frames) {
     plot.renderOffscreenBuffer();
+  }
   measureTime('Render time', frames);
 });
