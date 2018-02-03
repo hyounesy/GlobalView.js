@@ -168,7 +168,7 @@ export function GlobalView(div, startupOptions) {
       densityViewer.render(flipY, tf, d0, d1);
       pointViewer.render(flipY, tf, colormap.getTexture(), pointDrag);
       // if (!isAnimating)
-        imageViewer.render(flipY, tf);
+      imageViewer.render(flipY, tf);
     }
 
     gl.disable(gl.SCISSOR_TEST);
@@ -473,14 +473,14 @@ export function GlobalView(div, startupOptions) {
     var computedPadding;
     if (libUtility.isArray(padding) && padding.length === 4)
       computedPadding = padding.map((v, i) => Math.floor(libUtility.isString(v) ?
-          Number.parseFloat(v) * (v.endsWith('%') ? (i % 2 === 0 ? canvas.width : canvas.height) / 100 : 1) :
-          padding[i])
-        );
+        Number.parseFloat(v) * (v.endsWith('%') ? (i % 2 === 0 ? canvas.width : canvas.height) / 100 : 1) :
+        padding[i])
+      );
     else if(libUtility.isNumber(padding) || libUtility.isString(padding))
       computedPadding = Array.create(4, i => Math.floor(libUtility.isString(padding) ?
-          Number.parseFloat(padding) * (padding.endsWith('%') ? (i % 2 === 0 ? canvas.width : canvas.height) / 100 : 1) :
-          padding)
-        );
+        Number.parseFloat(padding) * (padding.endsWith('%') ? (i % 2 === 0 ? canvas.width : canvas.height) / 100 : 1) :
+        padding)
+      );
 
     var newPlotBounds = {
       x: computedPadding[3],
@@ -844,7 +844,7 @@ export function GlobalView(div, startupOptions) {
         console.warn('GlobalView warning: Invalid value for option ' + option + ': ' + value);
         if (libUtility.isString(validationResult)) {
           // HY:
-            validationResult = optionDefinition.valid(value)
+          validationResult = optionDefinition.valid(value)
           console.warn('                    ' + validationResult);
         }
         continue;
@@ -1462,11 +1462,11 @@ export function GlobalView(div, startupOptions) {
    */
   this.showImage = function (index, placement) {
     switch(placement) {
-    case 'none': return this.showImage_none(index);
-    case 'adjacent': return this.showImage_adjacent(index);
-    case 'lowDensity': return this.showImage_lowDensity(index);
-    case 'project': console.warn("GlobalView warning: Can't place a single image using the 'project'-strategy"); return false;
-    default: console.warn('GlobalView warning: Unknown image placement strategy: ' + placement); return false;
+      case 'none': return this.showImage_none(index);
+      case 'adjacent': return this.showImage_adjacent(index);
+      case 'lowDensity': return this.showImage_lowDensity(index);
+      case 'project': console.warn("GlobalView warning: Can't place a single image using the 'project'-strategy"); return false;
+      default: console.warn('GlobalView warning: Unknown image placement strategy: ' + placement); return false;
     }
   }
   this['showImages'] =
@@ -1482,11 +1482,11 @@ export function GlobalView(div, startupOptions) {
    */
   this.showImages = function (points, placement) {
     switch(placement) {
-    case 'none': return this.showImages_none(points);
-    case 'adjacent': return this.showImages_adjacent(points);
-    case 'lowDensity': return this.showImages_lowDensity(points);
-    case 'project': return this.showImages_project(points);
-    default: console.warn('GlobalView warning: Unknown image placement strategy: ' + placement); return false;
+      case 'none': return this.showImages_none(points);
+      case 'adjacent': return this.showImages_adjacent(points);
+      case 'lowDensity': return this.showImages_lowDensity(points);
+      case 'project': return this.showImages_project(points);
+      default: console.warn('GlobalView warning: Unknown image placement strategy: ' + placement); return false;
     }
   }
 
@@ -1542,23 +1542,23 @@ export function GlobalView(div, startupOptions) {
     switch (event.button) {
       // On left mouse button: Enable point selection and dragging events.
       //                       If control button is pressed, initiate view dragging, else, enable lasso selection
-    case 0:
-      event['pointSelection'] = true;
-      event['pointDragging'] = true;
-      if (ctrlPressed)
-        event['viewDragging'] = true;
-      else
-        event['lassoSelection'] = true;
-      break;
+      case 0:
+        event['pointSelection'] = true;
+        event['pointDragging'] = true;
+        if (ctrlPressed)
+          event['viewDragging'] = true;
+        else
+          event['lassoSelection'] = true;
+        break;
 
       // On middle mouse button: Initiate view dragging
-    case 1:
-      event['viewDragging'] = true;
-      break;
+      case 1:
+        event['viewDragging'] = true;
+        break;
 
       // On right mouse button: Do nothing
-    case 2:
-      break;
+      case 2:
+        break;
     }
   };
   /**

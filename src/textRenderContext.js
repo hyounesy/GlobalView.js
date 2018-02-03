@@ -35,42 +35,42 @@ export function TextRenderContext(gl, canvas) {
 
     var offsetV;
     switch (anchor) {
-    default: // 'topleft'
-      ctx.textAlign = 'left';
-      offsetV = fontHeight;
-      break;
-    case 'topcenter':
-      ctx.textAlign = 'center';
-      offsetV = fontHeight;
-      break;
-    case 'topright':
-      ctx.textAlign = 'right';
-      offsetV = fontHeight;
-      break;
-    case 'middleleft':
-      ctx.textAlign = 'left';
-      offsetV = fontHeight * 0.53;
-      break;
-    case 'middlecenter':
-      ctx.textAlign = 'center';
-      offsetV = fontHeight * 0.53;
-      break;
-    case 'middleright':
-      ctx.textAlign = 'right';
-      offsetV = fontHeight * 0.53;
-      break;
-    case 'bottomleft':
-      ctx.textAlign = 'left';
-      offsetV = 0;
-      break;
-    case 'bottomcenter':
-      ctx.textAlign = 'center';
-      offsetV = 0;
-      break;
-    case 'bottomright':
-      ctx.textAlign = 'right';
-      offsetV = 0;
-      break;
+      default: // 'topleft'
+        ctx.textAlign = 'left';
+        offsetV = fontHeight;
+        break;
+      case 'topcenter':
+        ctx.textAlign = 'center';
+        offsetV = fontHeight;
+        break;
+      case 'topright':
+        ctx.textAlign = 'right';
+        offsetV = fontHeight;
+        break;
+      case 'middleleft':
+        ctx.textAlign = 'left';
+        offsetV = fontHeight * 0.53;
+        break;
+      case 'middlecenter':
+        ctx.textAlign = 'center';
+        offsetV = fontHeight * 0.53;
+        break;
+      case 'middleright':
+        ctx.textAlign = 'right';
+        offsetV = fontHeight * 0.53;
+        break;
+      case 'bottomleft':
+        ctx.textAlign = 'left';
+        offsetV = 0;
+        break;
+      case 'bottomcenter':
+        ctx.textAlign = 'center';
+        offsetV = 0;
+        break;
+      case 'bottomright':
+        ctx.textAlign = 'right';
+        offsetV = 0;
+        break;
     }
     if (rotation == 0)
       ctx.fillText(str, x, y + offsetV);

@@ -57,13 +57,13 @@ export function Shader(gl, vs, fs, debug) {
   for (var i = 0; i < count; ++i)
     console.log(gl.getActiveUniform(sdr, i).name); */
 
-this.vertexPositionAttribute = gl.getAttribLocation(sdr, 'vpos');
-this.vertexNormalAttribute = gl.getAttribLocation(sdr, 'vnml');
-this.vertexTangentAttribute = gl.getAttribLocation(sdr, 'vtng');
-this.vertexBinormalAttribute = gl.getAttribLocation(sdr, 'vbnml');
-this.VertexTexCoordAttribute = gl.getAttribLocation(sdr, 'vtexcoord');
-this.samplerUniform = gl.getUniformLocation(sdr, 'uSampler');
-this.samplerArrayUniform = gl.getUniformLocation(sdr, 'uSamplers');
+  this.vertexPositionAttribute = gl.getAttribLocation(sdr, 'vpos');
+  this.vertexNormalAttribute = gl.getAttribLocation(sdr, 'vnml');
+  this.vertexTangentAttribute = gl.getAttribLocation(sdr, 'vtng');
+  this.vertexBinormalAttribute = gl.getAttribLocation(sdr, 'vbnml');
+  this.VertexTexCoordAttribute = gl.getAttribLocation(sdr, 'vtexcoord');
+  this.samplerUniform = gl.getUniformLocation(sdr, 'uSampler');
+  this.samplerArrayUniform = gl.getUniformLocation(sdr, 'uSamplers');
 
   this.bind = function () {
     if (currentShader !== this) {
@@ -120,7 +120,7 @@ this.samplerArrayUniform = gl.getUniformLocation(sdr, 'uSamplers');
         gl.uniformMatrix2fv(uniform, false, m);
         if (debug)
           console.log('gl.uniformMatrix2fv({0}, {1})'.format(uniformString, m));
-        };
+      };
     else
       return debug ? f => console.log('Passing value to unused uniform ' + uniformString) : null;
   }

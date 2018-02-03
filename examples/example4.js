@@ -3,18 +3,18 @@ const domready = require('domready');
 
 domready(function () {
   var preResults = document.getElementById('preResults'), measureTime = function (phase, iterations) {
-    var tEnd = performance.now();
-    var time = (tEnd - tStart) / iterations;
-    if (time >= 1e3)
-      preResults.innerText += phase + ': ' + (time * 1e-3) + ' seconds\n';
-    else if (time >= 1e0)
-      preResults.innerText += phase + ': ' + (time * 1e0) + ' milliseconds\n';
-    else if (time >= 1e-3)
-      preResults.innerText += phase + ': ' + (time * 1e3) + ' microseconds\n';
-    else
-      preResults.innerText += phase + ': ' + (time * 1e6) + ' nanoseconds\n';
-    tStart = performance.now();
-  }, tStart = performance.now();
+      var tEnd = performance.now();
+      var time = (tEnd - tStart) / iterations;
+      if (time >= 1e3)
+        preResults.innerText += phase + ': ' + (time * 1e-3) + ' seconds\n';
+      else if (time >= 1e0)
+        preResults.innerText += phase + ': ' + (time * 1e0) + ' milliseconds\n';
+      else if (time >= 1e-3)
+        preResults.innerText += phase + ': ' + (time * 1e3) + ' microseconds\n';
+      else
+        preResults.innerText += phase + ': ' + (time * 1e6) + ' nanoseconds\n';
+      tStart = performance.now();
+    }, tStart = performance.now();
 
   var plot = new globalView.GlobalView(document.getElementById('divGlobalView'), {
     pointSize: 1,

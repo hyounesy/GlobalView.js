@@ -8,8 +8,8 @@ function EmptyDataset(n) {
 
 domready(function () {
   var plot = new globalView.GlobalView(document.getElementById('divGlobalView'), {
-  pointSize: 1.5,
-  pointColor: 'white'
+    pointSize: 1.5,
+    pointColor: 'white'
   });
   var dataset = new EmptyDataset(10000);
   dataset.dataVectors.push(new globalView.DataVector(dataset, 'i'));

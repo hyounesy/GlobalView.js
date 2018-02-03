@@ -147,13 +147,13 @@ function plot_onMouseOverDatapoint(dataset, index) {
 Tagged Protein: {1}
 {2}: {3}
 {4}: {5}`.format(
-      dataset.names[index],
-      dataset.data[index * nc + 0],
-      COLUMN_NAMES[xAxisColumn],
-      dataset.data[index * nc + xAxisColumn],
-      COLUMN_NAMES[yAxisColumn],
-      dataset.data[index * nc + yAxisColumn]
-    );
+        dataset.names[index],
+        dataset.data[index * nc + 0],
+        COLUMN_NAMES[xAxisColumn],
+        dataset.data[index * nc + xAxisColumn],
+        COLUMN_NAMES[yAxisColumn],
+        dataset.data[index * nc + yAxisColumn]
+      );
   }
 }
 

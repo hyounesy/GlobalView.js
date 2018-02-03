@@ -243,12 +243,12 @@ export function hsv2rgb(hsv) {
   t = hsv[2] * (1.0 - (hsv[1] * (1.0 - ff)));
 
   switch(i) {
-  case 0: return [hsv[2], t, p];
-  case 1: return [q, hsv[2], p];
-  case 2: return [p, hsv[2], t];
-  case 3: return [p, q, hsv[2]];
-  case 4: return [t, p, hsv[2]];
-  default: return [hsv[2], p, q];
+    case 0: return [hsv[2], t, p];
+    case 1: return [q, hsv[2], p];
+    case 2: return [p, hsv[2], t];
+    case 3: return [p, q, hsv[2]];
+    case 4: return [t, p, hsv[2]];
+    default: return [hsv[2], p, q];
   }
 }
 
@@ -542,7 +542,7 @@ export function HashSet(onchanged) {
    * @param  {Object} values
    */
   this.append = function (values) {
-// var t = performance.now();
+    // var t = performance.now();
     var invalidate = false, self = this;
     values.forEach(function (value) {
       if (hash[value] !== true) {
@@ -551,7 +551,7 @@ export function HashSet(onchanged) {
         invalidate = true;
       }
     });
-// console.log('append ' + values.length + ': ' + (performance.now() - t));
+    // console.log('append ' + values.length + ': ' + (performance.now() - t));
     if (invalidate)
       this.onchanged();
   }
@@ -581,7 +581,7 @@ export function HashSet(onchanged) {
       return;
     }
 
-// var t = performance.now();
+    // var t = performance.now();
     var newHash = {}, identical = (values.length === this.length);
     values.forEach(function (value) {
       if (identical && hash[value] !== true)
@@ -591,7 +591,7 @@ export function HashSet(onchanged) {
 
     hash = newHash;
     this.length = values.length;
-// console.log('assign ' + values.length + ': ' + (performance.now() - t));
+    // console.log('assign ' + values.length + ': ' + (performance.now() - t));
 
     if (identical === false)
       this.onchanged();
@@ -605,11 +605,11 @@ export function HashSet(onchanged) {
   this.assignRange = function (n) {
     if (n <= 0)
       return;
-// var t = performance.now();
+    // var t = performance.now();
     hash = new Array(n);
     hash.fill(true);
     this.length = n;
-// console.log('assignRange ' + n + ': ' + (performance.now() - t));
+    // console.log('assignRange ' + n + ': ' + (performance.now() - t));
     this.onchanged();
   }
 
@@ -632,7 +632,7 @@ export function HashSet(onchanged) {
    * @param  {Object} values The values to remove
    */
   this.remove = function (values) {
-// var t = performance.now();
+    // var t = performance.now();
     var invalidate = false, self = this;
     values.forEach(function (value) {
       if (hash[value] === true) {
@@ -641,7 +641,7 @@ export function HashSet(onchanged) {
         invalidate = true;
       }
     });
-// console.log('remove ' + values.length + ': ' + (performance.now() - t));
+    // console.log('remove ' + values.length + ': ' + (performance.now() - t));
     if (invalidate)
       this.onchanged();
   }
@@ -672,13 +672,13 @@ export function HashSet(onchanged) {
    * @param  {function(number)} callback
    */
   this.forEach = function (callback) {
-// var last = Number.MIN_SAFE_INTEGER, badOrder = 0;
+    // var last = Number.MIN_SAFE_INTEGER, badOrder = 0;
     for (var value in hash) {
       value = Number.parseInt(value, 10);
-// if (value < last) ++badOrder; last = value;
+      // if (value < last) ++badOrder; last = value;
       callback(value);
     }
-// if (badOrder !== 0) console.log('bad order: ' + badOrder + ' times');
+    // if (badOrder !== 0) console.log('bad order: ' + badOrder + ' times');
   }
 
   this['get'] =

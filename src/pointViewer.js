@@ -263,26 +263,26 @@ vec{1} getPos()
       // Create shader code for opacityMap() function -> opacityMapCoe
       var opacityMapCoe = 'float opacityMap(in vec2 p) ';
       switch (options['pointShape']) {
-      case 'Circle':
-        opacityMapCoe += '{ return 1.0 - pow(p.x*p.x + p.y*p.y, pointSize / 4.0); }';
-        // opacityMapCoe += "{ return p.x*p.x + p.y*p.y < 1.0 ? 1.0 : 0.0; }";
-        break;
-      case 'Cross':
-        opacityMapCoe += '{ return pointSize / 4.0 * (max(4.0 / pointSize - abs(p.x - p.y), 0.0) + max(4.0 / pointSize - abs(-p.x - p.y), 0.0)); }';
-        break;
-      case 'Diamond':
-        opacityMapCoe += '{ return 1.0 - pow(abs(p.x) + abs(p.y), 2.0 + pointSize / 4.0); }';
-        break;
-      case 'Gaussian':
+        case 'Circle':
+          opacityMapCoe += '{ return 1.0 - pow(p.x*p.x + p.y*p.y, pointSize / 4.0); }';
+          // opacityMapCoe += "{ return p.x*p.x + p.y*p.y < 1.0 ? 1.0 : 0.0; }";
+          break;
+        case 'Cross':
+          opacityMapCoe += '{ return pointSize / 4.0 * (max(4.0 / pointSize - abs(p.x - p.y), 0.0) + max(4.0 / pointSize - abs(-p.x - p.y), 0.0)); }';
+          break;
+        case 'Diamond':
+          opacityMapCoe += '{ return 1.0 - pow(abs(p.x) + abs(p.y), 2.0 + pointSize / 4.0); }';
+          break;
+        case 'Gaussian':
         // opacityMapCoe += "{ return exp({0} * (p.x*p.x + p.y*p.y)); }".format(Math.log(0.001));
-        opacityMapCoe += '{ return exp(-7.0 * (p.x*p.x + p.y*p.y)); }';
-        break;
-      case 'Custom':
-        opacityMapCoe += options['customPointShape'];
-        break;
-      default:
-        opacityMapCoe += '{ return 1.0; }';
-        break;
+          opacityMapCoe += '{ return exp(-7.0 * (p.x*p.x + p.y*p.y)); }';
+          break;
+        case 'Custom':
+          opacityMapCoe += options['customPointShape'];
+          break;
+        default:
+          opacityMapCoe += '{ return 1.0; }';
+          break;
       }
 
       // Compile shaders
@@ -406,7 +406,7 @@ vec{1} getPos()
         gl.bindBuffer(gl.ARRAY_BUFFER, vidbuffer);
         gl.enableVertexAttribArray(this.sdr.vidattr);
         gl.vertexAttribPointer(this.sdrLine.vidattr, 1, gl.FLOAT, false, 4, offset * 4);
-          gl.ext.vertexAttribDivisorANGLE(this.sdrLine.vidattr, 1);
+        gl.ext.vertexAttribDivisorANGLE(this.sdrLine.vidattr, 1);
       }
 
       if(texture && this.sdrLine.samplerUniform) {

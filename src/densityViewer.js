@@ -61,7 +61,7 @@ export function DensityViewer(gl, globalView) {
         // If clusterMap is ready
         var clusterMap = dataset.requestClusterMap(d0, d1, clusterMapOptions); // Retrieve clusterMap synchronously (since we already know it's ready)
         if (clusterMap.width === 0 || clusterMap.height === 0)
-            return;
+          return;
 
         // Create texture if it wasn't already created
         var texture = this.showDensityMap ? clusterMap.dtex : clusterMap.tex;

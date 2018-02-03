@@ -41,23 +41,23 @@ domready(function () {
     switch (event.button) {
       // On left mouse button: Enable point selection and dragging events.
       //                       If control button is pressed, initiate view dragging, else, enable lasso selection
-    case 0:
-      event['pointSelection'] = true;
-      event['pointDragging'] = true;
-      if (ctrlPressed)
-        event['viewDragging'] = true;
-      else
-        event['polygonLassoSelection'] = true;
-      break;
+      case 0:
+        event['pointSelection'] = true;
+        event['pointDragging'] = true;
+        if (ctrlPressed)
+          event['viewDragging'] = true;
+        else
+          event['polygonLassoSelection'] = true;
+        break;
 
       // On middle mouse button: Initiate view dragging
-    case 1:
-      event['viewDragging'] = true;
-      break;
+      case 1:
+        event['viewDragging'] = true;
+        break;
 
       // On right mouse button: Do nothing
-    case 2:
-      break;
+      case 2:
+        break;
     }
   }
   plot.onMouseOverAxisLabel = onMouseOverAxisLabel;
@@ -184,21 +184,21 @@ function dataset_onLoad(_dataset) {
     option.text = dataset.columns[i].label;
     cbColumnS.add(option);
   }
-if (dataset.numColumns > 3) {
-  dataset.dataVectors.push(new globalView.DataVector(dataset, '0.0'/* "0.5 * c1 + 0.5 * c3" */));// "i"));
-  var option = document.createElement('option');
-  option.text = 'formula';
-  cbColumnX.add(option);
-  option = document.createElement('option');
-  option.text = 'formula';
-  cbColumnY.add(option);
-  option = document.createElement('option');
-  option.text = 'formula';
-  cbColumnC.add(option);
-  option = document.createElement('option');
-  option.text = 'formula';
-  cbColumnS.add(option);
-}
+  if (dataset.numColumns > 3) {
+    dataset.dataVectors.push(new globalView.DataVector(dataset, '0.0'/* "0.5 * c1 + 0.5 * c3" */));// "i"));
+    var option = document.createElement('option');
+    option.text = 'formula';
+    cbColumnX.add(option);
+    option = document.createElement('option');
+    option.text = 'formula';
+    cbColumnY.add(option);
+    option = document.createElement('option');
+    option.text = 'formula';
+    cbColumnC.add(option);
+    option = document.createElement('option');
+    option.text = 'formula';
+    cbColumnS.add(option);
+  }
   var activeColumnX = globalView.readIntCookie('activeColumnX'), activeColumnY = globalView.readIntCookie('activeColumnY'), activeColumnC = globalView.readIntCookie('activeColumnC'), activeColumnS = globalView.readIntCookie('activeColumnS');
   cbColumnX.selectedIndex = Math.max(0, Math.min(dataset.numColumns - 1, activeColumnX !== null && activeColumnX < dataset.numColumns ? activeColumnX : 0));
   cbColumnY.selectedIndex = Math.max(0, Math.min(dataset.numColumns - 1, activeColumnY !== null && activeColumnY < dataset.numColumns ? activeColumnY : 1));
@@ -445,16 +445,16 @@ function handleKeyDown(event) {
     shiftPressed = true;
 
   switch(event.keyCode) {
-  case 46: // DELETE key
-    plot.points.remove(plot.selectedPoints.get());
-    plot.selectedPoints.clear();
-    break;
+    case 46: // DELETE key
+      plot.points.remove(plot.selectedPoints.get());
+      plot.selectedPoints.clear();
+      break;
 
-  case 36: // HOME key
-    plot.enableOffscreenRendering(1024, 1024);
-    plot.renderOffscreenBuffer();
-    globalView.download('globalView.png', plot.saveOffscreenBuffer());
-    plot.disableOffscreenRendering();
+    case 36: // HOME key
+      plot.enableOffscreenRendering(1024, 1024);
+      plot.renderOffscreenBuffer();
+      globalView.download('globalView.png', plot.saveOffscreenBuffer());
+      plot.disableOffscreenRendering();
   }
 }
 function handleKeyUp(event) {

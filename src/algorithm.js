@@ -492,7 +492,7 @@ export function computeDensityMap(histogram, options) {
     if (resizedDensities.length !== 0)
       for (var y = 0, i = 0, j = newBounds_l + newBounds_t * densitMapWidth; y < resizedDensitMapHeight; ++y, j += densitMapWidth - resizedDensitMapWidth)
         for (var x = 0; x < resizedDensitMapWidth; ++x, ++i, ++j)
-        resizedDensities[i] = densities[j];
+          resizedDensities[i] = densities[j];
     densities = resizedDensities;
     densitMapWidth = resizedDensitMapWidth;
     densitMapHeight = resizedDensitMapHeight;
@@ -601,17 +601,17 @@ export function findRepresentativePoints(dataset, d0, d1, densityMap, k, dist, t
     var di_1 = densityMap.transformY(v1.getValue(di)) / densityMap.height;
 
     if (representativePoints.every(function (p) {
-        var p0 = densityMap.transformX(v0.getValue(p)) / densityMap.width;
-        var p1 = densityMap.transformY(v1.getValue(p)) / densityMap.height;
-        return Math.pow(p0 - di_0, 2) + Math.pow(p1 - di_1, 2) > sqDist;
-      })) {
+      var p0 = densityMap.transformX(v0.getValue(p)) / densityMap.width;
+      var p1 = densityMap.transformY(v1.getValue(p)) / densityMap.height;
+      return Math.pow(p0 - di_0, 2) + Math.pow(p1 - di_1, 2) > sqDist;
+    })) {
       representativePoints.push(di);
       numHighRepresentativePoints += pointIsHigh;
       ratio = numHighRepresentativePoints / representativePoints.length;
     }
   }
-// console.log([targetRatio, ratio]);
-// console.log("[" + representativePoints.join(", ") + "]");
+  // console.log([targetRatio, ratio]);
+  // console.log("[" + representativePoints.join(", ") + "]");
   return representativePoints;
 }
 
@@ -694,18 +694,18 @@ export function findRepresentativePointsND(dataset, densityMap, k, dist) {
       p[c] = data[di * nc + c] * scales[c];
 
     if (representativePoints.every(function (r) {
-        for (var c = 0; c < nc; ++c)
-          dpsq[c] = Math.pow(data[r * nc + c] * scales[c] - p[c], 2);
+      for (var c = 0; c < nc; ++c)
+        dpsq[c] = Math.pow(data[r * nc + c] * scales[c] - p[c], 2);
 
-        for (var d0 = 0; d0 < nc; ++d0)
-          for (var d1 = d0 + 1; d1 < nc; ++d1)
-            if (dpsq[d0] + dpsq[d1] <= sqDist)
-              return false;
-        return true;
-      }))
+      for (var d0 = 0; d0 < nc; ++d0)
+        for (var d1 = d0 + 1; d1 < nc; ++d1)
+          if (dpsq[d0] + dpsq[d1] <= sqDist)
+            return false;
+      return true;
+    }))
       representativePoints.push(di);
   }
-// console.log("[" + representativePoints.join(", ") + "]");
+  // console.log("[" + representativePoints.join(", ") + "]");
   return representativePoints;
 }
 /**
@@ -897,8 +897,8 @@ export function findClosePointOfLowDensity_descend(dataset, d0, d1, p, densityMa
   // Transform data point from data space to density map space
   var p0 = (data[p * nc + d0] * s0 + o0) * width;
   var p1 = (data[p * nc + d1] * s1 + o1) * height;
-// console.log(p0);
-// console.log(p1);
+  // console.log(p0);
+  // console.log(p1);
 
   // Transform density, minDistX, minDistY from [0 ... 1] space to density map space
   densityOffset *= (width + height) / 2;
@@ -1053,17 +1053,17 @@ export function findClosePointOfLowDensityND_descend(dataset, p, densityMap, min
       return sqDensity;
     }
   };
-// var tStart = performance.now();
+  // var tStart = performance.now();
   // BreadthFirstSearch(searchProblem);
   // DepthFirstSearch(searchProblem);
   SimpleUniformCostSearch(searchProblem);
   // SimpleAStarSearch(searchProblem);
   // SimpleGreedySearch(searchProblem);
-// var tEnd = performance.now();
-// console.log((tEnd - tStart) / 1000.0);
+  // var tEnd = performance.now();
+  // console.log((tEnd - tStart) / 1000.0);
   var closestPoint = bestState.p;
 
-/* var xMin = Math.max(0, closestPoint[0] - 2 * minDistX), xMax = Math.min(size, closestPoint[0] + 2 * minDistX);
+  /* var xMin = Math.max(0, closestPoint[0] - 2 * minDistX), xMax = Math.min(size, closestPoint[0] + 2 * minDistX);
 var yMin = Math.max(0, closestPoint[1] - 2 * minDistY), yMax = Math.min(size, closestPoint[1] + 2 * minDistY);
 for (var y = yMin; y < yMax; ++y)
   for (var x = xMin; x < xMax; ++x)
@@ -1495,7 +1495,7 @@ export function computeClusterMap_method3(densityMap, d0, d1, options) {
 
   var clusterMinDensities = Array.apply(null, Array(numClusters)).map(Number.prototype.valueOf, densityThreshold);
 
-    if (false) {
+  if (false) {
     // Extend clusters to fill entire density != 0 area
 
     var neighborQueue = new PriorityQueue('d'); // Queue of all neighbors of clusters (candidates ro be included in the cluster)

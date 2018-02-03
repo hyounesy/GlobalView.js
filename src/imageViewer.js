@@ -160,8 +160,8 @@ export function ImageViewer(gl, globalView) {
   ]), null, null, null, null, null, gl.LINE_LOOP);
 
   // Create a 2D arrow mesh
-LABEL_HEIGHT = gl.measureTextHeight() + 2 * LABEL_TEXT_PADDING;
-LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
+  LABEL_HEIGHT = gl.measureTextHeight() + 2 * LABEL_TEXT_PADDING;
+  LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
   var meshLabel = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
     0.0,  0.0, 0,
@@ -363,15 +363,15 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
     // Convert imageAnchor from string to vec3
     var imageAnchorVector;
     switch(imageAnchor) {
-    case 'topleft':      imageAnchorVector = [-0.0, -1.0, 0.0]; break;
-    case 'topcenter':    imageAnchorVector = [-0.5, -1.0, 0.0]; break;
-    case 'topright':     imageAnchorVector = [-1.0, -1.0, 0.0]; break;
-    case 'middleleft':   imageAnchorVector = [-0.0, -0.5, 0.0]; break;
-    default:             imageAnchorVector = [-0.5, -0.5, 0.0]; break;
-    case 'middleright':  imageAnchorVector = [-1.0, -0.5, 0.0]; break;
-    case 'bottomleft':   imageAnchorVector = [-0.0, -0.0, 0.0]; break;
-    case 'bottomcenter': imageAnchorVector = [-0.5, -0.0, 0.0]; break;
-    case 'bottomright':  imageAnchorVector = [-1.0, -0.0, 0.0]; break;
+      case 'topleft':      imageAnchorVector = [-0.0, -1.0, 0.0]; break;
+      case 'topcenter':    imageAnchorVector = [-0.5, -1.0, 0.0]; break;
+      case 'topright':     imageAnchorVector = [-1.0, -1.0, 0.0]; break;
+      case 'middleleft':   imageAnchorVector = [-0.0, -0.5, 0.0]; break;
+      default:             imageAnchorVector = [-0.5, -0.5, 0.0]; break;
+      case 'middleright':  imageAnchorVector = [-1.0, -0.5, 0.0]; break;
+      case 'bottomleft':   imageAnchorVector = [-0.0, -0.0, 0.0]; break;
+      case 'bottomcenter': imageAnchorVector = [-0.5, -0.0, 0.0]; break;
+      case 'bottomright':  imageAnchorVector = [-1.0, -0.0, 0.0]; break;
     }
 
     var newImage = new Thumbnail(globalView);

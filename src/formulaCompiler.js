@@ -80,39 +80,39 @@ export var FormulaCompiler = {
       do {
         repeat = false;
         switch (chr) {
-        case '':
-          curTok = null; // End
-          return true;
-        case '+':
-          switch (getch()) {
-          case '+': getch(); curTok = '++'; return true;
-          case '=': getch(); curTok = '+='; return true;
-          default: curTok = '+'; return true;
-          }
-        case '-':
-          switch (getch()) {
-          case '-': getch(); curTok = '--'; return true;
-          case '=': getch(); curTok = '-='; return true;
-          default:
-            if (chr >= '0' && chr <= '9') { sign = -1; break; } else { curTok = '-'; return true; }
-          }
-        case '*':
-          switch (getch()) {
-          case '=': getch(); curTok = '*='; return true;
-          default: curTok = '*'; return true;
-          }
-        case '/':
-          switch (getch()) {
-          case '=': getch(); curTok = '/='; return true;
-          default: curTok = '/'; return true;
-          }
-        case '(': case ')': case ',': case '=': case ';': case '.': // Misc. recognized characters
-          curTok = chr;
-          getch();
-          return true;
-        case ' ': case '\t': case '\r': case '\n': // Ignored characters
-          getch();
-          repeat = true;
+          case '':
+            curTok = null; // End
+            return true;
+          case '+':
+            switch (getch()) {
+              case '+': getch(); curTok = '++'; return true;
+              case '=': getch(); curTok = '+='; return true;
+              default: curTok = '+'; return true;
+            }
+          case '-':
+            switch (getch()) {
+              case '-': getch(); curTok = '--'; return true;
+              case '=': getch(); curTok = '-='; return true;
+              default:
+                if (chr >= '0' && chr <= '9') { sign = -1; break; } else { curTok = '-'; return true; }
+            }
+          case '*':
+            switch (getch()) {
+              case '=': getch(); curTok = '*='; return true;
+              default: curTok = '*'; return true;
+            }
+          case '/':
+            switch (getch()) {
+              case '=': getch(); curTok = '/='; return true;
+              default: curTok = '/'; return true;
+            }
+          case '(': case ')': case ',': case '=': case ';': case '.': // Misc. recognized characters
+            curTok = chr;
+            getch();
+            return true;
+          case ' ': case '\t': case '\r': case '\n': // Ignored characters
+            getch();
+            repeat = true;
         }
       }
       while (repeat);
@@ -365,9 +365,9 @@ export var FormulaCompiler = {
       }
       function primaryAST() {
         switch (curTok) {
-        case 'identifier': return identifierAndPostAST();
-        case 'float': case 'int': return numberAST();
-        default: return error("unknown token '{0}' when expecting an expression".format(curTok));
+          case 'identifier': return identifierAndPostAST();
+          case 'float': case 'int': return numberAST();
+          default: return error("unknown token '{0}' when expecting an expression".format(curTok));
         /* case (int)Lexer.Token.tok_int: return ParseIntExpr();
         case (int)Lexer.Token.tok_float: return ParseFloatExpr();
         case (int)Lexer.Token.tok_string: return ParseStringExpr();
@@ -443,22 +443,22 @@ export var FormulaCompiler = {
     while (++IP < code.length) {
       postOpScope = global; // By default, reset scope after operation
       switch (code[IP]) {
-      case 'float = float': scope[stack[--SP]] = stack[SP - 1]; break;
-      case 'float += float': scope[stack[--SP]] += stack[--SP]; break;
-      case 'float -= float': scope[stack[--SP]] -= stack[--SP]; break;
-      case 'float *= float': scope[stack[--SP]] *= stack[--SP]; break;
-      case 'float /= float': scope[stack[--SP]] /= stack[--SP]; break;
-      case 'float + float': stack[SP - 2] += stack[--SP]; break;
-      case 'float * float': stack[SP - 2] *= stack[--SP]; break;
-      case 'float / float': stack[SP - 2] /= stack[--SP]; break;
+        case 'float = float': scope[stack[--SP]] = stack[SP - 1]; break;
+        case 'float += float': scope[stack[--SP]] += stack[--SP]; break;
+        case 'float -= float': scope[stack[--SP]] -= stack[--SP]; break;
+        case 'float *= float': scope[stack[--SP]] *= stack[--SP]; break;
+        case 'float /= float': scope[stack[--SP]] /= stack[--SP]; break;
+        case 'float + float': stack[SP - 2] += stack[--SP]; break;
+        case 'float * float': stack[SP - 2] *= stack[--SP]; break;
+        case 'float / float': stack[SP - 2] /= stack[--SP]; break;
 
-      case 'sin(float)': stack[SP - 1] = Math.sin(stack[SP - 1]); break;
-      case 'cos(float)': stack[SP - 1] = Math.cos(stack[SP - 1]); break;
-      case 'tan(float)': stack[SP - 1] = Math.tan(stack[SP - 1]); break;
-      case 'asin(float)': stack[SP - 1] = Math.asin(stack[SP - 1]); break;
-      case 'acos(float)': stack[SP - 1] = Math.acos(stack[SP - 1]); break;
-      case 'atan(float)': stack[SP - 1] = Math.atan(stack[SP - 1]); break;
-      /* case 'pow': FormulaCompiler.types.float,
+        case 'sin(float)': stack[SP - 1] = Math.sin(stack[SP - 1]); break;
+        case 'cos(float)': stack[SP - 1] = Math.cos(stack[SP - 1]); break;
+        case 'tan(float)': stack[SP - 1] = Math.tan(stack[SP - 1]); break;
+        case 'asin(float)': stack[SP - 1] = Math.asin(stack[SP - 1]); break;
+        case 'acos(float)': stack[SP - 1] = Math.acos(stack[SP - 1]); break;
+        case 'atan(float)': stack[SP - 1] = Math.atan(stack[SP - 1]); break;
+          /* case 'pow': FormulaCompiler.types.float,
       case 'exp': FormulaCompiler.types.float,
       case 'log': FormulaCompiler.types.float,
       case 'exp2': FormulaCompiler.types.float,
@@ -471,9 +471,9 @@ export var FormulaCompiler = {
       case 'ceil': FormulaCompiler.types.float,
       case 'fract': FormulaCompiler.types.float,
       case 'mod': FormulaCompiler.types.float, */
-      case 'min(float, float)': stack[SP - 2] = Math.min(stack[SP - 2], stack[--SP]); break;
-      case 'max(float, float)': stack[SP - 2] = Math.max(stack[SP - 2], stack[--SP]); break;
-      /* case 'clamp': FormulaCompiler.types.float,
+        case 'min(float, float)': stack[SP - 2] = Math.min(stack[SP - 2], stack[--SP]); break;
+        case 'max(float, float)': stack[SP - 2] = Math.max(stack[SP - 2], stack[--SP]); break;
+          /* case 'clamp': FormulaCompiler.types.float,
       case 'mix': FormulaCompiler.types.float,
       case 'step': FormulaCompiler.types.float,
       case 'smoothstep': FormulaCompiler.types.float,
@@ -483,25 +483,25 @@ export var FormulaCompiler = {
       case 'cross': FormulaCompiler.types.float,
       case 'normalize': FormulaCompiler.types.float, */
 
-      case 'vec3(float, float, float)': /* Nothing to do */ break;
-      case 'vec3 = vec3': scope[stack[--SP]] = [stack[SP - 3], stack[SP - 2], stack[SP - 1]]; break;
-      case 'vec3 + vec3': stack[SP - 6] += stack[SP - 3]; stack[SP - 5] += stack[SP - 2]; stack[SP - 4] += stack[SP - 1]; SP -= 3; break;
-      case 'vec3 * float': var f = stack[--SP]; stack[SP - 3] *= f; stack[SP - 2] *= f; stack[SP - 1] *= f; break;
+        case 'vec3(float, float, float)': /* Nothing to do */ break;
+        case 'vec3 = vec3': scope[stack[--SP]] = [stack[SP - 3], stack[SP - 2], stack[SP - 1]]; break;
+        case 'vec3 + vec3': stack[SP - 6] += stack[SP - 3]; stack[SP - 5] += stack[SP - 2]; stack[SP - 4] += stack[SP - 1]; SP -= 3; break;
+        case 'vec3 * float': var f = stack[--SP]; stack[SP - 3] *= f; stack[SP - 2] *= f; stack[SP - 1] *= f; break;
 
-      case '@': stack[SP - 1] = scope[stack[SP - 1]]; break; // Load scalar from scope
-      case '@[]': // Load array from scope
-        var variable = scope[stack[--SP]];
-        for (var i = 0; i < variable.length; ++i)
-          stack[SP++] = variable[i];
-        break;
-      case '.': scope = scope[stack[--SP]]; // Dereference member
-        postOpScope = scope; // Don't reset scope after operation
-        break;
-      case ';': SP = 0; break;
+        case '@': stack[SP - 1] = scope[stack[SP - 1]]; break; // Load scalar from scope
+        case '@[]': // Load array from scope
+          var variable = scope[stack[--SP]];
+          for (var i = 0; i < variable.length; ++i)
+            stack[SP++] = variable[i];
+          break;
+        case '.': scope = scope[stack[--SP]]; // Dereference member
+          postOpScope = scope; // Don't reset scope after operation
+          break;
+        case ';': SP = 0; break;
 
-      default:
-        stack[SP++] = code[IP];
-        postOpScope = scope; // Don't reset scope after operation
+        default:
+          stack[SP++] = code[IP];
+          postOpScope = scope; // Don't reset scope after operation
       }
       scope = postOpScope;
     }

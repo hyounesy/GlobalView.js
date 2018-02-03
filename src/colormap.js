@@ -292,7 +292,7 @@ export function parseColor(color) {
 }
 
 export function validateColormap(colormap) {
-if (colormap === null) return true;
+  if (colormap === null) return true;
   if (libUtility.isString(colormap)) {
     if (colormaps[colormap])
       return true;

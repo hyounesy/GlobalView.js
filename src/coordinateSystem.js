@@ -142,28 +142,28 @@ export function CoordinateSystem(gl, globalView) {
   function checkOverlap(d) {
     const MIN_TICK_LABEL_DISTANCE = gl.measureTextWidth('  '); // Minimum distance between tick labels in pixel
     switch (d) {
-    case 0:
-      var axis = axes[0], overlap = Number.MIN_VALUE, plotBounds = globalView.getPlotBounds();
-      for (var i = 0; i < axis.tickCount; ++i) {
-        var x = axis.tickOffset + i * axis.tickDistance;
-        var tickPos = (x - axis.minimum) / (axis.maximum - axis.minimum);
+      case 0:
+        var axis = axes[0], overlap = Number.MIN_VALUE, plotBounds = globalView.getPlotBounds();
+        for (var i = 0; i < axis.tickCount; ++i) {
+          var x = axis.tickOffset + i * axis.tickDistance;
+          var tickPos = (x - axis.minimum) / (axis.maximum - axis.minimum);
 
-        var tickLabel = axis.values ? axis.values[x] : x.toPrecision(6) / 1;
+          var tickLabel = axis.values ? axis.values[x] : x.toPrecision(6) / 1;
 
-        var labelWidth = gl.measureTextWidth(tickLabel);
-        var leftLabelBound = plotBounds.x + plotBounds.width * tickPos - labelWidth / 2;
-        if (leftLabelBound < overlap + MIN_TICK_LABEL_DISTANCE)
-          return false;
+          var labelWidth = gl.measureTextWidth(tickLabel);
+          var leftLabelBound = plotBounds.x + plotBounds.width * tickPos - labelWidth / 2;
+          if (leftLabelBound < overlap + MIN_TICK_LABEL_DISTANCE)
+            return false;
 
-        overlap = leftLabelBound + labelWidth;
-      }
-      return true;
+          overlap = leftLabelBound + labelWidth;
+        }
+        return true;
 
-    case 1:
-      var axis = axes[1], plotBounds = globalView.getPlotBounds();
-      return plotBounds.height * axis.tickDistance / (axis.maximum - axis.minimum) >= gl.measureTextHeight() + MIN_TICK_LABEL_DISTANCE;
+      case 1:
+        var axis = axes[1], plotBounds = globalView.getPlotBounds();
+        return plotBounds.height * axis.tickDistance / (axis.maximum - axis.minimum) >= gl.measureTextHeight() + MIN_TICK_LABEL_DISTANCE;
 
-    default: return true;
+      default: return true;
     }
   }
 
@@ -248,19 +248,19 @@ export function CoordinateSystem(gl, globalView) {
   }
   this.getLabelBounds = function (plotBounds, d) {
     switch (d) {
-    case 0:
-      if (!this.visible[0])
-        return null;
-      var halfTextWidth = gl.measureTextWidth(axes[0].label) / 2;
-      var plotCenter = plotBounds.x + plotBounds.width / 2;
-      return {'l': plotCenter - halfTextWidth, 'r': plotCenter + halfTextWidth, 't': xTickLabel_top, 'b': xTickLabel_top + gl.measureTextHeight() + 2};
+      case 0:
+        if (!this.visible[0])
+          return null;
+        var halfTextWidth = gl.measureTextWidth(axes[0].label) / 2;
+        var plotCenter = plotBounds.x + plotBounds.width / 2;
+        return {'l': plotCenter - halfTextWidth, 'r': plotCenter + halfTextWidth, 't': xTickLabel_top, 'b': xTickLabel_top + gl.measureTextHeight() + 2};
 
-    case 1:
-      if (!this.visible[1])
-        return null;
-      var halfTextWidth = gl.measureTextWidth(axes[1].label) / 2;
-      var plotCenter = gl.height - plotBounds.y - plotBounds.height / 2;
-      return {'l': yTickLabel_left - gl.measureTextHeight(), 'r': yTickLabel_left + 2, 't': plotCenter - halfTextWidth, 'b': plotCenter + halfTextWidth};
+      case 1:
+        if (!this.visible[1])
+          return null;
+        var halfTextWidth = gl.measureTextWidth(axes[1].label) / 2;
+        var plotCenter = gl.height - plotBounds.y - plotBounds.height / 2;
+        return {'l': yTickLabel_left - gl.measureTextHeight(), 'r': yTickLabel_left + 2, 't': plotCenter - halfTextWidth, 'b': plotCenter + halfTextWidth};
     }
     return null;
   }
