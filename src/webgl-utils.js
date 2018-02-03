@@ -65,7 +65,7 @@ export function WebGLUtils () {
      * @param {string} msg
      * @return {string} The html.
      */
-  let makeFailHTML = function (msg) {
+  const makeFailHTML = function (msg) {
     return '' +
         '<table style="background-color: #8CE; width: 100%; height: 100%;"><tr>' +
         '<td align="center">' +
@@ -79,7 +79,7 @@ export function WebGLUtils () {
      * Message for getting a webgl browser
      * @type {string}
      */
-  let GET_A_WEBGL_BROWSER = '' +
+  const GET_A_WEBGL_BROWSER = '' +
       'This page requires a browser that supports WebGL.<br/>' +
       '<a href="http://get.webgl.org">Click here to upgrade your browser.</a>';
 
@@ -87,7 +87,7 @@ export function WebGLUtils () {
      * Mesasge for need better hardware
      * @type {string}
      */
-  let OTHER_PROBLEM = '' +
+  const OTHER_PROBLEM = '' +
       "It doesn't appear your computer can support WebGL.<br/>" +
       '<a href="http://get.webgl.org/troubleshooting/">Click here for more information.</a>';
 
@@ -100,9 +100,9 @@ export function WebGLUtils () {
      * @param {function(string)=} opt_onError A function to call if there is an error during creation.
      * @return {WebGLRenderingContext} The created context.
      */
-  let setupWebGL = function (canvas, opt_attribs, opt_onError) {
+  const setupWebGL = function (canvas, opt_attribs, opt_onError) {
     function handleCreationError(msg) {
-      let container = canvas.parentNode;
+      const container = canvas.parentNode;
       if (container) {
         let str = window.WebGLRenderingContext ?
           OTHER_PROBLEM :
@@ -121,7 +121,7 @@ export function WebGLUtils () {
         opt_onError(event.statusMessage);
       }, false);
     }
-    let context = create3DContext(canvas, opt_attribs);
+    const context = create3DContext(canvas, opt_attribs);
     if (!context) {
       if (!window.WebGLRenderingContext) {
         opt_onError('');
@@ -137,7 +137,7 @@ export function WebGLUtils () {
      * @return {WebGLRenderingContext|null} The created context.
      */
   function create3DContext(canvas, opt_attribs) {
-    let names = ['webgl', 'experimental-webgl', 'webkit-3d', 'moz-webgl'];
+    const names = ['webgl', 'experimental-webgl', 'webkit-3d', 'moz-webgl'];
     let context = null;
     for (let ii = 0; ii < names.length; ++ii) {
       try {

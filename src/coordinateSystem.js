@@ -14,7 +14,7 @@ export function CoordinateSystem(gl, globalView) {
   const TICK_LENGTH = 6; // [pixel]
   const NUM_TICKS = 10;
 
-  let sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
+  const sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
   sdrLine.color = sdrLine.u4f('color');
   sdrLine.color.apply(sdrLine, gl.foreColor);
   sdrLine.matWorldViewProj = sdrLine.u4x4f('matWorldViewProj');
@@ -23,13 +23,13 @@ export function CoordinateSystem(gl, globalView) {
   }
 
   // Create a 2D line mesh
-  let meshLine = new libGraphics.Mesh(gl, new Float32Array([
+  const meshLine = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
     0, 0, 0,
     1, 0, 0
   ]), null, null, null, null, null, gl.LINES);
 
-  let axes = [
+  const axes = [
     {minimum: 0, maximum: 100, values: null, tickOffset: 0, tickDistance: 10, tickCount: 11, tickLength: TICK_LENGTH},
     {minimum: 0, maximum: 100, values: null, tickOffset: 0, tickDistance: 10, tickCount: 11, tickLength: TICK_LENGTH}
   ];
@@ -39,7 +39,7 @@ export function CoordinateSystem(gl, globalView) {
 
   this.visible = [true, true];
   this.render = function (flipY, plotBounds) {
-    let mattrans = libGlMatrix.mat4.create();
+    const mattrans = libGlMatrix.mat4.create();
 
     // >>> Draw axes
 
@@ -116,7 +116,7 @@ export function CoordinateSystem(gl, globalView) {
     // Draw y-axis ticks and tick labels
     yTickLabel_left = 0;
     if (this.visible[1]) {
-      let axis = axes[1];
+      const axis = axes[1];
       libGlMatrix.mat4.identity(mattrans);
       if (flipY === true) {
         libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
@@ -134,15 +134,15 @@ export function CoordinateSystem(gl, globalView) {
       meshLine.draw();
       libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -1.0, 0.0]);
       for (let i = 0; i < axis.tickCount; ++i) {
-        let y = axis.tickOffset + (i * axis.tickDistance);
-        let tickPos = (y - axis.minimum) / (axis.maximum - axis.minimum);
+        const y = axis.tickOffset + (i * axis.tickDistance);
+        const tickPos = (y - axis.minimum) / (axis.maximum - axis.minimum);
 
         libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, tickPos, 0.0]);
         sdrLine.matWorldViewProj(mattrans);
         meshLine.draw();
         libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -tickPos, 0.0]);
 
-        let tickLabel = axis.values ? axis.values[y] : y.toPrecision(6) / 1;
+        const tickLabel = axis.values ? axis.values[y] : y.toPrecision(6) / 1;
         yTickLabel_left = Math.max(yTickLabel_left, gl.measureTextWidth(tickLabel));
         gl.drawText(tickLabel, plotBounds.x - axis.tickLength - 2,
           gl.height - plotBounds.y - (plotBounds.height * tickPos), 'middleright');
@@ -172,13 +172,13 @@ export function CoordinateSystem(gl, globalView) {
         let overlap = Number.MIN_VALUE;
         plotBounds = globalView.getPlotBounds();
         for (let i = 0; i < axis.tickCount; ++i) {
-          let x = axis.tickOffset + (i * axis.tickDistance);
-          let tickPos = (x - axis.minimum) / (axis.maximum - axis.minimum);
+          const x = axis.tickOffset + (i * axis.tickDistance);
+          const tickPos = (x - axis.minimum) / (axis.maximum - axis.minimum);
 
-          let tickLabel = axis.values ? axis.values[x] : x.toPrecision(6) / 1;
+          const tickLabel = axis.values ? axis.values[x] : x.toPrecision(6) / 1;
 
-          let labelWidth = gl.measureTextWidth(tickLabel);
-          let leftLabelBound = (plotBounds.x + (plotBounds.width * tickPos)) - (labelWidth / 2);
+          const labelWidth = gl.measureTextWidth(tickLabel);
+          const leftLabelBound = (plotBounds.x + (plotBounds.width * tickPos)) - (labelWidth / 2);
           if (leftLabelBound < overlap + MIN_TICK_LABEL_DISTANCE) {
             return false;
           }
@@ -204,7 +204,7 @@ export function CoordinateSystem(gl, globalView) {
    * @param  {boolean=} changeTickDistance=true
    */
   this.setNumericRange = function (d, minimum, maximum, changeTickDistance) {
-    let axis = axes[d];
+    const axis = axes[d];
     axis.minimum = minimum;
     axis.maximum = maximum;
     axis.values = null;
@@ -221,7 +221,7 @@ export function CoordinateSystem(gl, globalView) {
         for (let i = 0; i < 10; ++i) {
           // Maximum 10 iterations
           axis.tickDistance = (maximum - minimum) / numTicks;
-          let base = Math.pow(10, exp--);
+          const base = Math.pow(10, exp--);
           axis.tickDistance = Math.round(axis.tickDistance / base) * base; // Round tickDistance to base
           axis.tickOffset = Math.ceil(minimum / axis.tickDistance) * axis.tickDistance;
           axis.tickCount = Math.floor((maximum - axis.tickOffset) / axis.tickDistance) + 1;
@@ -238,7 +238,7 @@ export function CoordinateSystem(gl, globalView) {
     }
   }
   this.setEnumRange = function (d, minimum, maximum, values) {
-    let axis = axes[d];
+    const axis = axes[d];
     axis.minimum = minimum -= 0.5; // 0.5 ... Move to center of value-bin
     axis.maximum = maximum -= 0.5; // 0.5 ... Move to center of value-bin
     axis.values = values;

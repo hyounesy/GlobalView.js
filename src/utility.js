@@ -1,8 +1,8 @@
 export function linspace(first, second, last) {
   const offset = second - first;
   const halfOffset = 0.5 * offset;
-  let values = [first],
-    i = 0;
+  const values = [first];
+  let i = 0;
   while (values[i] + halfOffset < last) {
     i += 1;
     values.push(first + (i * offset));
@@ -34,7 +34,7 @@ export function isNumber(x) {
 }
 
 export function isObject(x) {
-  let t = typeof x;
+  const t = typeof x;
   return t !== 'undefined' && t !== 'function' && t !== 'string' && t !== 'number' && Object.prototype.toString.call(x) !== '[object Array]'
 }
 export function isCloneable(x) {
@@ -50,7 +50,7 @@ export function debugLog(x) {
 }
 
 Array.create = function (n, func) {
-  let array = new Array(n);
+  const array = new Array(n);
   if (isFunction(func)) {
     for (let i = 0; i < n; ++i) {
       array[i] = func(i);
@@ -73,7 +73,7 @@ if (!String.prototype.format) {
    * @param {...*} var_args
    */
   String.prototype.format = function (var_args) {
-    let args = arguments;
+    const args = arguments;
     return this.replace(/{(\d+)}/g, function (match, number) {
       return typeof args[number] !== 'undefined' ? args[number] : match;
     });
@@ -86,7 +86,7 @@ if (!String.prototype.format) {
    * @param {...*} var_args
    */
 String.prototype.format2 = function (pattern, mismatch, var_args) {
-  let args = arguments;
+  const args = arguments;
   return this.replace(pattern, function (match, number) {
     number = Number.parseInt(number, 10) + 2;
     return typeof args[number] !== 'undefined' ? args[number] : mismatch;
@@ -104,7 +104,7 @@ export function makeCloneable(obj) {
     if (!isCloneable(obj[prop])) {
     // If obj has at least on non-cloneable property
     // Create a new object and clone all cloneable properties into that new object
-      let obj_subset = {};
+      const obj_subset = {};
       for (prop in obj) {
         if (isCloneable(obj[prop])) {
           obj_subset[prop] = obj[prop];
@@ -120,7 +120,7 @@ export function makeCloneable(obj) {
 
 
 function getScript(id) {
-  let shaderScript = document.getElementById(id);
+  const shaderScript = document.getElementById(id);
   if (!shaderScript) {
     return null;
   }
@@ -139,7 +139,7 @@ function getScript(id) {
 
 export function colorNameToHex(color) {
 // Source: https://stackoverflow.com/a/1573141
-  let colors = {
+  const colors = {
     'aliceblue':'#f0f8ff', 'antiquewhite':'#faebd7', 'aqua':'#00ffff', 'aquamarine':'#7fffd4', 'azure':'#f0ffff',
     'beige':'#f5f5dc', 'bisque':'#ffe4c4', 'black':'#000000', 'blanchedalmond':'#ffebcd', 'blue':'#0000ff', 'blueviolet':'#8a2be2',
     'brown':'#a52a2a', 'burlywood':'#deb887', 'cadetblue':'#5f9ea0', 'chartreuse':'#7fff00', 'chocolate':'#d2691e', 'coral':'#ff7f50',
@@ -172,12 +172,12 @@ export function colorNameToHex(color) {
 export function hexToRgb(hex) {
   // Source: https://stackoverflow.com/a/5624139
   // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
-  let shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+  const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
   hex = hex.replace(shorthandRegex, function (m, r, g, b) {
     return r + r + g + g + b + b;
   });
 
-  let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result ? {
     r: parseInt(result[1], 16),
     g: parseInt(result[2], 16),
@@ -186,7 +186,7 @@ export function hexToRgb(hex) {
 }
 
 export function rgbStringToFloatArray(rgbstr) {
-  let rgb = rgbstr.match(/\d+/g);
+  const rgb = rgbstr.match(/\d+/g);
   for (let i = 0; i < 4; ++i) {
     rgb[i] = i < rgb.length ? Math.max(0x00, Math.min(0xFF, rgb[i] / 0xFF)) : 1.0;
   }
@@ -198,10 +198,10 @@ export function i24ToFloatArray(clr) {
 }
 
 export function F32toI24(floats, bounds) {
-  let bytes = new Uint8Array(4 * floats.length);
-  let i = 0,
-    voffset = -bounds[0],
-    vscale = 0xFFFFFE / (bounds[1] - bounds[0]);
+  const bytes = new Uint8Array(4 * floats.length);
+  let i = 0;
+  const voffset = -bounds[0];
+  const vscale = 0xFFFFFE / (bounds[1] - bounds[0]);
   floats.forEach(function (value) {
     value += voffset;
     value *= vscale;
@@ -218,10 +218,10 @@ export function F32toI24(floats, bounds) {
   return bytes;
 }
 export function F32toI24flipY(floats, bounds, width, height) {
-  let bytes = new Uint8Array(4 * floats.length);
-  let i = 0,
-    voffset = -bounds[0],
-    vscale = 0xFFFFFE / (bounds[1] - bounds[0]);
+  const bytes = new Uint8Array(4 * floats.length);
+  let i = 0;
+  const voffset = -bounds[0];
+  const vscale = 0xFFFFFE / (bounds[1] - bounds[0]);
   for(let y = 0; y < height; ++y) {
     for(let x = 0; x < width; ++x) {
     // var value = Math.floor((floats[(height - y - 1) * width + x] - bounds[0]) * vscale) + 1;
@@ -247,24 +247,19 @@ export function hsv2rgb(hsv) {
   if(hsv[1] <= 0.000001) {
     return [hsv[2], hsv[2], hsv[2]];
   }
-  let hh,
-    p,
-    q,
-    t,
-    ff,
-    i,
-    out;
+  let hh;
+  let out;
 
   hh = hsv[0];
   if(hh >= 1.0) {
     hh = 0.0;
   }
   hh *= 6.0;
-  i = Math.floor(hh);
-  ff = hh - i;
-  p = hsv[2] * (1.0 - hsv[1]);
-  q = hsv[2] * (1.0 - (hsv[1] * ff));
-  t = hsv[2] * (1.0 - (hsv[1] * (1.0 - ff)));
+  const i = Math.floor(hh);
+  const ff = hh - i;
+  const p = hsv[2] * (1.0 - hsv[1]);
+  const q = hsv[2] * (1.0 - (hsv[1] * ff));
+  const t = hsv[2] * (1.0 - (hsv[1] * (1.0 - ff)));
 
   switch(i) {
     case 0: return [hsv[2], t, p];
@@ -278,7 +273,7 @@ export function hsv2rgb(hsv) {
 
 
 export function urlExists(url, onTrue, onFalse, isAsync) {
-  let request = new XMLHttpRequest();
+  const request = new XMLHttpRequest();
   request.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 404 && onFalse) {
       onFalse();
@@ -312,10 +307,10 @@ export function imageUrlFromBytes(bytes, width, height) {
   tempCanvas.height = height;
 
   // Copy the pixels to the 2D canvas
-  let imageData = tempCanvas.getContext('2d').createImageData(width, height);
+  const imageData = tempCanvas.getContext('2d').createImageData(width, height);
   imageData.data.set(bytes);
   tempCanvas.getContext('2d').putImageData(imageData, 0, 0);
-  let dataURL = tempCanvas.toDataURL();
+  const dataURL = tempCanvas.toDataURL();
 
   // Free tempCanvas
   tempCanvas = null;
@@ -326,7 +321,7 @@ export function imageUrlFromBytes(bytes, width, height) {
 
 let _seededRandom_seed = 1;
 Math.seededRandom = function () { // Source: https://stackoverflow.com/a/19303725
-  let x = Math.sin(_seededRandom_seed++) * 10000;
+  const x = Math.sin(_seededRandom_seed++) * 10000;
   return x - Math.floor(x);
 }
 
@@ -339,7 +334,7 @@ export function createCookie(name, value, days) {
   // Source: http://www.quirksmode.org/js/cookies.html
   let expires = '';
   if (days) {
-    let date = new Date();
+    const date = new Date();
     date.setTime(date.getTime() + (days*24*60*60*1000));
     expires = '; expires=' + date.toUTCString();
   }
@@ -347,8 +342,8 @@ export function createCookie(name, value, days) {
 }
 export function readCookie(name) {
   // Source: http://www.quirksmode.org/js/cookies.html
-  let nameEQ = name + '=';
-  let ca = document.cookie.split(';');
+  const nameEQ = name + '=';
+  const ca = document.cookie.split(';');
   for(let i = 0; i < ca.length; ++i) {
     let c = ca[i];
     while (c.charAt(0) === ' ') {
@@ -381,8 +376,8 @@ export function getParameterByName(name, url) {
     url = window.location.href;
   }
   name = name.replace(/[\[\]]/g, '\\$&');
-  let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-    results = regex.exec(url);
+  const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+  const results = regex.exec(url);
   if (!results) {
     return null;
   }
@@ -395,7 +390,7 @@ export function getParameterByName(name, url) {
 
 export function addMouseWheelHandler(onmousewheel) {
   // Source: http://www.javascriptkit.com/javatutors/onmousewheel.shtml
-  let mousewheelevt = (/Firefox/i.test(navigator.userAgent)) ? 'DOMMouseScroll' : 'mousewheel';
+  const mousewheelevt = (/Firefox/i.test(navigator.userAgent)) ? 'DOMMouseScroll' : 'mousewheel';
   if (document.attachEvent) {
     document.attachEvent('on' + mousewheelevt, onmousewheel);
   } else if(document.addEventListener) {
@@ -443,7 +438,7 @@ export function ForwardList(value) {
 
   this.push = function (value) {
     // Pushes to front
-    let newnode = new ForwardList(this.value);
+    const newnode = new ForwardList(this.value);
     newnode.next = this.next;
     this.next = newnode;
     this.value = value;
@@ -453,7 +448,7 @@ export function ForwardList(value) {
     while (back.next !== null) {
       back = back.next;
     }
-    let newnode = new ForwardList(value);
+    const newnode = new ForwardList(value);
     back.next = newnode;
   }
   this.sortedPush = function (value) {
@@ -464,20 +459,20 @@ export function ForwardList(value) {
       while (node.next !== null && node.next.value < value) {
         node = node.next;
       }
-      let newnode = new ForwardList(value);
+      const newnode = new ForwardList(value);
       newnode.next = node.next;
       node.next = newnode;
     }
   }
   this.toArray = function () {
-    let array = [];
+    const array = [];
     for (let node = this; node; node = node.next) {
       array.push(node.value);
     }
     return array;
   }
   this.print = function () {
-    let array = [];
+    const array = [];
     for (let node = this; node; node = node.next) {
       array.push(node.value);
     }
@@ -497,18 +492,18 @@ export function ForwardList(value) {
   }
   ForwardList.sortedMerge = function (a, b) {
     // Source: http://www.geeksforgeeks.org/merge-two-sorted-linked-lists/
-    let dummy = new ForwardList(null);
+    const dummy = new ForwardList(null);
     let tail = dummy;
 
     while (a !== null && b!= null) {
       // While neither a nor b run out
       if (a.value <= b.value) {
-        let newNode = a;
+        const newNode = a;
         a = newNode.next;
         newNode.next = tail.next;
         tail.next = newNode;
       } else {
-        let newNode = b;
+        const newNode = b;
         b = newNode.next;
         newNode.next = tail.next;
         tail.next = newNode;
@@ -532,12 +527,12 @@ export function ForwardList(value) {
  * @param {string} priorityProperty
  */
 export function PriorityQueue(priorityProperty) {
-  let data = [];
+  const data = [];
   this.length = 0;
   this.push = function (element) {
     ++this.length;
-    let i,
-      p = element[priorityProperty];
+    let i;
+    const p = element[priorityProperty];
     for (i = 0; i < data.length && data[i][priorityProperty] >= p; i++) {}
     data.splice(i, 0, element);
   }
@@ -592,8 +587,8 @@ export function HashSet(onchanged) {
    */
   this.append = function (values) {
     // var t = performance.now();
-    let invalidate = false,
-      self = this;
+    let invalidate = false;
+    const self = this;
     values.forEach(function (value) {
       if (hash[value] !== true) {
         hash[value] = true;
@@ -633,8 +628,8 @@ export function HashSet(onchanged) {
     }
 
     // var t = performance.now();
-    let newHash = {},
-      identical = (values.length === this.length);
+    const newHash = {};
+    let identical = (values.length === this.length);
     values.forEach(function (value) {
       if (identical && hash[value] !== true) {
         identical = false;
@@ -688,8 +683,8 @@ export function HashSet(onchanged) {
    */
   this.remove = function (values) {
     // var t = performance.now();
-    let invalidate = false,
-      self = this;
+    let invalidate = false;
+    const self = this;
     values.forEach(function (value) {
       if (hash[value] === true) {
         delete hash[value];

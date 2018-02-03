@@ -2,10 +2,10 @@ const globalView = require('../dist/global-view.js');
 const domready = require('domready');
 
 domready(function () {
-  let preResults = document.getElementById('preResults');
-  let measureTime = function (phase, iterations) {
-    let tEnd = performance.now();
-    let time = (tEnd - tStart) / iterations;
+  const preResults = document.getElementById('preResults');
+  const measureTime = function (phase, iterations) {
+    const tEnd = performance.now();
+    const time = (tEnd - tStart) / iterations;
     if (time >= 1e3) {
       preResults.innerText += phase + ': ' + (time * 1e-3) + ' seconds\n';
     } else if (time >= 1e0) {
@@ -19,7 +19,7 @@ domready(function () {
   };
   let tStart = performance.now();
 
-  let plot = new globalView.GlobalView(document.getElementById('divGlobalView'), {
+  const plot = new globalView.GlobalView(document.getElementById('divGlobalView'), {
     pointSize: 1,
     pointOpacity: 1,
     enableTransparency: false,

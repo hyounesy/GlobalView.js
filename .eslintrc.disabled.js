@@ -376,7 +376,10 @@ module.exports = {
         'no-var': 'error',                      // require let or const instead of var
         "object-shorthand": 0,                  // require or disallow method and property shorthand syntax for object literals
         "prefer-arrow-callback": 0,             // require using arrow functions for callbacks
-        "prefer-const": 0,                      // require const declarations for variables that are never reassigned after declared
+        'prefer-const': ['error', {
+          destructuring: 'any',
+          ignoreReadBeforeAssign: true,
+        }],                                     // require const declarations for variables that are never reassigned after declared
         "prefer-destructuring": 0,              // require destructuring from arrays and/or objects
         "prefer-numeric-literals": 0,           // disallow parseInt() and Number.parseInt() in favor of binary, octal, and hexadecimal literals
         "prefer-rest-params": 0,                // require rest parameters instead of arguments

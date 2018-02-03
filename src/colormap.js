@@ -74,14 +74,14 @@ export function Colormap(gl, globalView) {
   let texColormap = colormaps.exhue;
 
   // Create a 2D line mesh
-  let meshLine = new libGraphics.Mesh(gl, new Float32Array([
+  const meshLine = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
     0, 0, 0,
     1, 0, 0
   ]), null, null, null, null, null, gl.LINES);
 
   // Create a 2D line quad mesh
-  let meshLineQuad = new libGraphics.Mesh(gl, new Float32Array([
+  const meshLineQuad = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
     0, 0, 0,
     1, 0, 0,
@@ -90,7 +90,7 @@ export function Colormap(gl, globalView) {
   ]), null, null, null, null, null, gl.LINE_LOOP);
 
   // Create a 2D quad mesh
-  let meshQuad = new libGraphics.Mesh(gl, new Float32Array([
+  const meshQuad = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
     0, 1, 0,
     0, 0, 0,
@@ -104,7 +104,7 @@ export function Colormap(gl, globalView) {
     1, 0
   ]));
 
-  let axis = {minimum: 0, maximum: 100, values: null, tickOffset: 0, tickDistance: 10, tickCount: 11, tickLength: TICK_LENGTH};
+  const axis = {minimum: 0, maximum: 100, values: null, tickOffset: 0, tickDistance: 10, tickCount: 11, tickLength: TICK_LENGTH};
 
   this.visible = true;
   this.render = function (flipY, plotBounds) {
@@ -117,7 +117,7 @@ export function Colormap(gl, globalView) {
     sdrColormap.bind();
     meshQuad.bind(sdrColormap, texColormap);
 
-    let mattrans = libGlMatrix.mat4.create();
+    const mattrans = libGlMatrix.mat4.create();
     libGlMatrix.mat4.identity(mattrans);
     if (flipY === true) {
       libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
@@ -156,15 +156,15 @@ export function Colormap(gl, globalView) {
     meshLine.draw();
     libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -1.0, 0.0]);
     for (let i = 0; i < axis.tickCount; ++i) {
-      let y = axis.tickOffset + (i * axis.tickDistance);
-      let tickPos = (y - axis.minimum) / (axis.maximum - axis.minimum);
+      const y = axis.tickOffset + (i * axis.tickDistance);
+      const tickPos = (y - axis.minimum) / (axis.maximum - axis.minimum);
 
       libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, tickPos, 0.0]);
       sdrLine.matWorldViewProj(mattrans);
       meshLine.draw();
       libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -tickPos, 0.0]);
 
-      let tickLabel = axis.values ? axis.values[y] : y.toPrecision(6) / 1;
+      const tickLabel = axis.values ? axis.values[y] : y.toPrecision(6) / 1;
       tickLabel_left = Math.max(tickLabel_left, gl.measureTextWidth(tickLabel));
       gl.drawText(tickLabel, plotBounds.x + plotBounds.width + COLORMAP_WIDTH + axis.tickLength + 2, gl.height - plotBounds.y - (plotBounds.height * tickPos), 'middleleft');
     }
@@ -179,7 +179,7 @@ export function Colormap(gl, globalView) {
 
   function checkOverlap() {
     const MIN_TICK_LABEL_DISTANCE = gl.measureTextWidth('  '); // Minimum distance between tick labels in pixel
-    let plotBounds = globalView.getPlotBounds();
+    const plotBounds = globalView.getPlotBounds();
     return (plotBounds.height * axis.tickDistance) / (axis.maximum - axis.minimum) >= gl.measureTextHeight() + MIN_TICK_LABEL_DISTANCE;
   }
 
@@ -205,7 +205,7 @@ export function Colormap(gl, globalView) {
         for (let i = 0; i < 10; ++i) {
           // Maximum 10 iterations
           axis.tickDistance = (maximum - minimum) / numTicks;
-          let base = Math.pow(10, exp--);
+          const base = Math.pow(10, exp--);
           axis.tickDistance = Math.round(axis.tickDistance / base) * base; // Round tickDistance to base
           axis.tickOffset = Math.ceil(minimum / axis.tickDistance) * axis.tickDistance;
           axis.tickCount = Math.floor((maximum - axis.tickOffset) / axis.tickDistance) + 1;
@@ -246,7 +246,7 @@ export function Colormap(gl, globalView) {
       } else if (colormaps[pointColor]) {
         texColormap = colormaps[pointColor];
       } else {
-        let c = parseColormap(pointColor);
+        const c = parseColormap(pointColor);
         if (c) {
           texColormap = libGraphics.LoadTextureFromByteArray(gl, c, c.length / 4, 1);
         }
@@ -295,8 +295,8 @@ export function validateColor(color) {
 
 export function parseColor(color) {
   if (libUtility.isString(color)) {
-    let hex = libUtility.colorNameToHex(color);
-    let rgb = libUtility.hexToRgb(hex ? hex : color);
+    const hex = libUtility.colorNameToHex(color);
+    const rgb = libUtility.hexToRgb(hex ? hex : color);
     return rgb ? new Uint8Array([rgb.r, rgb.g, rgb.b, 255]) : null;
   }
 
@@ -356,8 +356,8 @@ export function parseColormap(colormap) {
       return null;
     }
     if (libUtility.isString(colormap[0])) {
-      let array = [],
-        color;
+      const array = [];
+      let color;
       for (let i = 0; i < colormap.length; ++i) {
         if ((color = parseColor(colormap[i]))) {
           Array.prototype.push.apply(array, color);

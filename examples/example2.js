@@ -1,9 +1,9 @@
 const globalView = require('../dist/global-view.js');
 const domready = require('domready');
 
-let plot,
-  taOptions = document.getElementById('taOptions'),
-  preStatus = document.getElementById('preStatus');
+let plot;
+const taOptions = document.getElementById('taOptions');
+const preStatus = document.getElementById('preStatus');
 
 
 domready(function () {

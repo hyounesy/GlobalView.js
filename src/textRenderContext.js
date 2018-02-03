@@ -157,9 +157,9 @@ export function TextRenderContext(gl, canvas) {
     ctx.font = _font = font;
 
     // Compute fontHeight (Source: http://stackoverflow.com/a/7462767)
-    let body = document.getElementsByTagName('body')[0];
-    let dummy = document.createElement('div');
-    let dummyText = document.createTextNode('M');
+    const body = document.getElementsByTagName('body')[0];
+    const dummy = document.createElement('div');
+    const dummyText = document.createTextNode('M');
     dummy.appendChild(dummyText);
     dummy.style.font = font;
     body.appendChild(dummy);
@@ -180,7 +180,7 @@ export function TextRenderContext(gl, canvas) {
       textCanvas.width = offscreenRendering.width;
       textCanvas.height = offscreenRendering.height;
     } else {
-      let rect = textCanvas.getBoundingClientRect();
+      const rect = textCanvas.getBoundingClientRect();
       textCanvas.style.marginTop = -(rect.bottom - rect.top) + 'px';
       textCanvas.width = rect.right - rect.left;
       textCanvas.height = rect.bottom - rect.top;

@@ -81,7 +81,7 @@ export function PointViewer(gl, globalView) {
     }
   }
 
-  let pointSets = [this.points = new PointGroup()];
+  const pointSets = [this.points = new PointGroup()];
   /**
    * Create a subset of points that can be rendered independently
    * Optional parameters color and opacity overwrite the default values
@@ -90,11 +90,11 @@ export function PointViewer(gl, globalView) {
    * @return {HashSet}
    */
   this.createPointSet = function (color, opacity) {
-    let pointSet = new PointGroup();
+    const pointSet = new PointGroup();
     if (color) {
       let validationResult;
       if ((validationResult = libColormap.validateColormap(color)) === true) {
-        let c = libColormap.parseColormap(color);
+        const c = libColormap.parseColormap(color);
         if (c) {
           pointSet.colormap = libGraphics.LoadTextureFromByteArray(gl, c, c.length / 4, 1);
         }
@@ -115,7 +115,7 @@ export function PointViewer(gl, globalView) {
    * @param  {HashSet} pointSet
    */
   this.removePointSet = function (pointSet) {
-    let index = pointSets.indexOf(pointSet);
+    const index = pointSets.indexOf(pointSet);
     if (index !== -1) {
       pointSets.splice(index, 1);
     }
@@ -221,11 +221,11 @@ export function PointViewer(gl, globalView) {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, -1, 0, 1, 2, 1, 2, -1]), gl.STATIC_DRAW);
 
     // Create vertex ID buffer
-    let vertexIds = new Float32Array(numvertices);
+    const vertexIds = new Float32Array(numvertices);
     for (let i = 0; i < numvertices; ++i) {
       vertexIds[i] = i;
     }
-    let vidbuffer = gl.createBuffer();
+    const vidbuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vidbuffer);
     gl.bufferData(gl.ARRAY_BUFFER, vertexIds, gl.STATIC_DRAW);
 
@@ -241,12 +241,12 @@ vec{1} getPos()
   return offsets + vec{1}({2}) * scales + vec{1}({3}) * animatedScales;
 }
 `;
-      let attrDeclCode = '',
-        inputs = [/c(\d+)/g, '0.0'],
-        inputCode = [],
-        animatedInputCode = [];
+      let attrDeclCode = '';
+      const inputs = [/c(\d+)/g, '0.0'];
+      const inputCode = [];
+      const animatedInputCode = [];
       for (let d = 0, i = 0; d < ndim; d += 4, ++i) {
-        let attrLen = Math.min(4, ndim - d);
+        const attrLen = Math.min(4, ndim - d);
         attrDeclCode += 'attribute ' + (attrLen === 1 ? 'float' : 'vec' + attrLen) + ' p' + i + ';\n';
         for (let a = 0; a < attrLen; ++a) {
           inputs.push('p' + i + (attrLen === 1 ? '' : '[' + a + ']'));
@@ -457,7 +457,7 @@ vec{1} getPos()
       }
 
       // Compute line vertices
-      let lineTransform = libGlMatrix.mat2.create();
+      const lineTransform = libGlMatrix.mat2.create();
       libGlMatrix.mat2.scale(lineTransform, lineTransform, libGlMatrix.vec2.fromValues(Math.sqrt((line[0] * line[0]) + (line[1] * line[1])), Math.max(1, options['pointSize'] /* / 10 */)));
       libGlMatrix.mat2.rotate(lineTransform, lineTransform, Math.atan2(line[1], line[0]));
       libGlMatrix.mat2.scale(lineTransform, lineTransform, libGlMatrix.vec2.fromValues(1 / gl.width, 1 / gl.height));

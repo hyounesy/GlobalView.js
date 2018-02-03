@@ -120,23 +120,23 @@ function Thumbnail(globalView) {
  * @param {Object} globalView // {GlobalView}
  */
 export function ImageViewer(gl, globalView) {
-  let sdrImage = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured, libShaders.Shaders.fsTextured);
+  const sdrImage = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured, libShaders.Shaders.fsTextured);
   sdrImage.matWorldViewProj = sdrImage.u4x4f('matWorldViewProj');
 
-  let sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
+  const sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
   sdrLine.color = sdrLine.u4f('color');
   sdrLine.color.apply(sdrLine, gl.foreColor);
   sdrLine.matWorldViewProj = sdrLine.u4x4f('matWorldViewProj');
 
   // Create a 2D line mesh
-  let meshLine = new libGraphics.Mesh(gl, new Float32Array([
+  const meshLine = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
     0, 0, 0,
     1, 0, 0
   ]), null, null, null, null, null, gl.LINES);
 
   // Create a 2D quad mesh
-  let meshQuad = new libGraphics.Mesh(gl, new Float32Array([
+  const meshQuad = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
     0, 1, 0,
     0, 0, 0,
@@ -151,7 +151,7 @@ export function ImageViewer(gl, globalView) {
   ]));
 
   // Create a 2D line quad mesh
-  let meshLineQuad = new libGraphics.Mesh(gl, new Float32Array([
+  const meshLineQuad = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
     0, 0, 0,
     0, 1, 0,
@@ -162,7 +162,7 @@ export function ImageViewer(gl, globalView) {
   // Create a 2D arrow mesh
   LABEL_HEIGHT = gl.measureTextHeight() + (2 * LABEL_TEXT_PADDING);
   LABEL_WIDTH = gl.measureTextWidth('888') + (2 * LABEL_TEXT_PADDING);
-  let meshLabel = new libGraphics.Mesh(gl, new Float32Array([
+  const meshLabel = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
     0.0,  0.0, 0,
     (0.5 * LABEL_HEIGHT),  0.5 * LABEL_HEIGHT, 0,
@@ -172,7 +172,7 @@ export function ImageViewer(gl, globalView) {
   ]), null, null, null, null, null, gl.TRIANGLE_FAN);
 
   // Create a 2D line arrow mesh
-  let meshLineLabel = new libGraphics.Mesh(gl, new Float32Array([
+  const meshLineLabel = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
     0.0,  0.0, 0,
     (0.5 * LABEL_HEIGHT),  0.5 * LABEL_HEIGHT, 0,
@@ -183,17 +183,17 @@ export function ImageViewer(gl, globalView) {
 
   /** @type Array<Thumbnail> */ let images = [];
 
-  let PixelAlignX = x => ((Math.floor((x * gl.width) / 2.0) + 0.5) * 2.0) / gl.width;
-  let PixelAlignY = y => ((Math.floor((y * gl.height) / 2.0) + 0.5) * 2.0) / gl.height;
+  const PixelAlignX = x => ((Math.floor((x * gl.width) / 2.0) + 0.5) * 2.0) / gl.width;
+  const PixelAlignY = y => ((Math.floor((y * gl.height) / 2.0) + 0.5) * 2.0) / gl.height;
 
   this.render = function (flipY, tf) {
     if (images.length === 0) {
       return;
     }
-    let mattrans = libGlMatrix.mat4.create();
-    let imagePos = libGlMatrix.vec2.create(),
-      refPos = libGlMatrix.vec2.create(),
-      imageSize = libGlMatrix.vec2.create();
+    const mattrans = libGlMatrix.mat4.create();
+    const imagePos = libGlMatrix.vec2.create();
+    const refPos = libGlMatrix.vec2.create();
+    const imageSize = libGlMatrix.vec2.create();
 
     // gl.disable(gl.SCISSOR_TEST);
 
@@ -246,8 +246,8 @@ export function ImageViewer(gl, globalView) {
         tf.transformPos(imagePos, image.imagePos);
         tf.transformPos(refPos, image.refPos);
         libGlMatrix.mat4.translate(mattrans, mattrans, [imagePos[0], imagePos[1], 0.0]);
-        let dx = refPos[0] - imagePos[0],
-          dy = refPos[1] - imagePos[1];
+        const dx = refPos[0] - imagePos[0];
+        const dy = refPos[1] - imagePos[1];
         libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.atan2(dy, dx));
         libGlMatrix.mat4.scale(mattrans, mattrans, [Math.sqrt((dx * dx) + (dy * dy)), 1.0, 1.0]);
         sdrLine.matWorldViewProj(mattrans);
@@ -274,8 +274,8 @@ export function ImageViewer(gl, globalView) {
 
       // Set image size
       tf.transformNml2(imageSize, image.imageSize);
-      let w = image.tex.image.width,
-        h = image.tex.image.height;
+      const w = image.tex.image.width;
+      const h = image.tex.image.height;
       // imageSize[0] *= 2 / gl.width; imageSize[1] *= 2 / gl.height; // Transform imageSize from normalized space to device space
       let scale;
       if (Math.max(imageSize[0], (imageSize[0] * h) / w, 1.0) < Math.max((imageSize[1] * w) / h, imageSize[1])) {
@@ -284,7 +284,7 @@ export function ImageViewer(gl, globalView) {
         scale = [(2 * Math.floor((imageSize[1] * w) / h)) / gl.width, (2 * Math.floor(imageSize[1])) / gl.height, 1];
       }
 
-      let borderWidth = image.borderWidth ? image.borderWidth : defaultImageBorderWidth;
+      const borderWidth = image.borderWidth ? image.borderWidth : defaultImageBorderWidth;
       if (borderWidth > 0) {
         scale[0] += (2 * borderWidth) / gl.width;
         scale[1] += (2 * borderWidth) / gl.height;
@@ -392,7 +392,7 @@ export function ImageViewer(gl, globalView) {
       case 'bottomright':  imageAnchorVector = [-1.0, -0.0, 0.0]; break;
     }
 
-    let newImage = new Thumbnail(globalView);
+    const newImage = new Thumbnail(globalView);
     newImage.tex = libGraphics.LoadTexture(gl, imageFilename, function () {
       globalView.invalidate();
     });
@@ -415,10 +415,10 @@ export function ImageViewer(gl, globalView) {
   }
 
   this.resolveIntersections = function (tf) {
-    let a = libGlMatrix.vec2.create(),
-      b = libGlMatrix.vec2.create(),
-      c = libGlMatrix.vec2.create(),
-      d = libGlMatrix.vec2.create();
+    const a = libGlMatrix.vec2.create();
+    const b = libGlMatrix.vec2.create();
+    const c = libGlMatrix.vec2.create();
+    const d = libGlMatrix.vec2.create();
     for (let i = 1; i < images.length; ++i) {
       if (images[i].imagePos) {
         tf.transformPos(a, images[i].imagePos);
@@ -430,7 +430,7 @@ export function ImageViewer(gl, globalView) {
 
             if (libGlMatrix.vec2.sqrDist(a, b) + libGlMatrix.vec2.sqrDist(c, d) > libGlMatrix.vec2.sqrDist(a, d) + libGlMatrix.vec2.sqrDist(c, b) && !libAlgorithm.linesIntersect(a, d, c, b)) {
             // console.log("exchange {0} - {1}".format(i, j));
-              let tmp = images[j].imagePos;
+              const tmp = images[j].imagePos;
               images[j].imagePos = images[i].imagePos;
               images[i].imagePos = tmp;
               i = j = 0; break; // EDIT: How neccessary is this?
@@ -450,7 +450,7 @@ export function ImageViewer(gl, globalView) {
 
             if (libAlgorithm.linesIntersect(a, b, c, d)) {
             // console.log("intersection {0} - {1}".format(i, j));
-              let tmp = images[j].imagePos;
+              const tmp = images[j].imagePos;
               images[j].imagePos = images[i].imagePos;
               images[i].imagePos = tmp;
               i = j = 0; break; // EDIT: How neccessary is this?
@@ -462,9 +462,9 @@ export function ImageViewer(gl, globalView) {
   }
 
   this.imageFromPoint = function (tf, p) {
-    let imagePos = libGlMatrix.vec2.create(),
-      refPos = libGlMatrix.vec2.create(),
-      imageSize = libGlMatrix.vec2.create();
+    const imagePos = libGlMatrix.vec2.create();
+    const refPos = libGlMatrix.vec2.create();
+    const imageSize = libGlMatrix.vec2.create();
 
     let selectedImage = null;
     images.forEach(function (image) {
@@ -475,15 +475,15 @@ export function ImageViewer(gl, globalView) {
       tf.transformPos(imagePos, image.imagePos);
 
       tf.transformNml2(imageSize, image.imageSize);
-      let w = image.tex.image.width,
-        h = image.tex.image.height;
+      const w = image.tex.image.width;
+      const h = image.tex.image.height;
       let size;
       if (Math.max(imageSize[0], (imageSize[0] * h) / w, 1.0) < Math.max((imageSize[1] * w) / h, imageSize[1])) {
         size = [(Math.floor(imageSize[0]) * 2) / gl.width, (Math.floor((imageSize[0] * h) / w) * 2) / gl.height, 1];
       } else {
         size = [(Math.floor((imageSize[1] * w) / h) * 2) / gl.width, (Math.floor(imageSize[1]) * 2) / gl.height, 1];
       }
-      let imageBounds = [
+      const imageBounds = [
         imagePos[0] + ((image.imageAnchor[0]) * size[0]),
         imagePos[0] + ((image.imageAnchor[0] + 1.0) * size[0]),
         imagePos[1] + ((image.imageAnchor[1]) * size[1]),

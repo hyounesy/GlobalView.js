@@ -7,11 +7,11 @@ function EmptyDataset(n) {
 }
 
 domready(function () {
-  let plot = new globalView.GlobalView(document.getElementById('divGlobalView'), {
+  const plot = new globalView.GlobalView(document.getElementById('divGlobalView'), {
     pointSize: 1.5,
     pointColor: 'white'
   });
-  let dataset = new EmptyDataset(10000);
+  const dataset = new EmptyDataset(10000);
   dataset.dataVectors.push(new globalView.DataVector(dataset, 'i'));
   dataset.dataVectors.push(new globalView.DataVector(dataset, 'sin(i * 8.0 * PI / n)'));
   dataset.dataVectors.push(new globalView.DataVector(dataset, '0.0'));

@@ -1,10 +1,10 @@
 function DepthFirstSearch(problem) {
-  let fringe = [];
-  let closed = {};
+  const fringe = [];
+  const closed = {};
   let result = null;
 
   // Create start node with empty path
-  let startnode = {state: problem.getStartState()};
+  const startnode = {state: problem.getStartState()};
   let node = startnode;
   if (problem.isGoalState(node.state)) {
     return node.state;
@@ -21,7 +21,7 @@ function DepthFirstSearch(problem) {
       }
 
       // Avoid already pushed states (graph search)
-      let successor_hash = problem.computeHash(successor);
+      const successor_hash = problem.computeHash(successor);
       if (libUtility.isUndefined(closed[successor_hash])) {
         fringe.push({state: successor});
         closed[successor_hash] = successor;
@@ -43,9 +43,9 @@ function DepthFirstSearch(problem) {
 
 function BreadthFirstSearch(problem) {
   let fringe = [];
-  let closed = {};
+  const closed = {};
 
-  let startnode = {state: problem.getStartState()};
+  const startnode = {state: problem.getStartState()};
   let node = startnode;
   if (problem.isGoalState(node.state)) {
     return node.state;
@@ -54,7 +54,7 @@ function BreadthFirstSearch(problem) {
 
   while (true) {
     problem.forEachSuccessor(node.state, function (successor) {
-      let successor_hash = problem.computeHash(successor);
+      const successor_hash = problem.computeHash(successor);
       if (libUtility.isUndefined(closed[successor_hash])) {
         fringe.push({state: successor});
         closed[successor_hash] = successor;
@@ -74,9 +74,9 @@ function BreadthFirstSearch(problem) {
 
 function UniformCostSearch(problem) {
   let fringe = new libUtility.PriorityQueue('cost');
-  let closed = {};
+  const closed = {};
 
-  let startnode = {state: problem.getStartState(), cost: 0.0};
+  const startnode = {state: problem.getStartState(), cost: 0.0};
   let node = startnode;
   if (problem.isGoalState(node.state)) {
     return node.state;
@@ -85,8 +85,8 @@ function UniformCostSearch(problem) {
 
   while (true) {
     problem.forEachSuccessor(node.state, function (successor, successor_cost) {
-      let successor_hash = problem.computeHash(successor),
-        _successor;
+      const successor_hash = problem.computeHash(successor);
+      let _successor;
       if (libUtility.isUndefined(_successor = closed[successor_hash]) || node.cost + successor_cost < _successor.prevCost) {
         fringe.push({state: successor, cost: node.cost + successor_cost});
         closed[successor_hash] = {state: successor, prevCost: node.cost + successor_cost};
@@ -105,9 +105,9 @@ function UniformCostSearch(problem) {
 }
 function SimpleUniformCostSearch(problem) {
   let fringe = new libUtility.PriorityQueue('cost');
-  let closed = {};
+  const closed = {};
 
-  let startnode = {state: problem.getStartState(), cost: 0.0};
+  const startnode = {state: problem.getStartState(), cost: 0.0};
   let node = startnode;
   if (problem.isGoalState(node.state)) {
     return node.state;
@@ -116,7 +116,7 @@ function SimpleUniformCostSearch(problem) {
 
   while (true) {
     problem.forEachSuccessor(node.state, function (successor, successor_cost) {
-      let successor_hash = problem.computeHash(successor);
+      const successor_hash = problem.computeHash(successor);
       if (libUtility.isUndefined(closed[successor_hash])) {
         fringe.push({state: successor, cost: successor_cost});
         closed[successor_hash] = successor;
@@ -136,11 +136,11 @@ function SimpleUniformCostSearch(problem) {
 
 function SimpleAStarSearch(problem, heuristic) {
   let fringe = new libUtility.PriorityQueue('cost');
-  let closed = {};
+  const closed = {};
 
-  let CHECK_CONSISTENCY = false;
+  const CHECK_CONSISTENCY = false;
 
-  let startnode = {state: problem.getStartState(), f: 0.0, g: 0.0};
+  const startnode = {state: problem.getStartState(), f: 0.0, g: 0.0};
   let node = startnode;
   if (problem.isGoalState(node.state)) {
     return node.state;
@@ -149,12 +149,12 @@ function SimpleAStarSearch(problem, heuristic) {
 
   while (true) {
     problem.forEachSuccessor(node.state, function (successor, successor_cost) {
-      let h = problem.heuristic(successor);
-      let g = successor_cost;
+      const h = problem.heuristic(successor);
+      const g = successor_cost;
       if (CHECK_CONSISTENCY && g + h < node.f) {
         throw 'Inconsistency found in A*-search heuristic';
       }
-      let successor_hash = problem.computeHash(successor);
+      const successor_hash = problem.computeHash(successor);
       if (libUtility.isUndefined(closed[successor_hash])) {
         fringe.push({state: successor, f: g + h, g: g});
         closed[successor_hash] = successor;
@@ -173,7 +173,7 @@ function SimpleAStarSearch(problem, heuristic) {
 }
 
 function SimpleGreedySearch(problem) {
-  let startstate = problem.getStartState();
+  const startstate = problem.getStartState();
   let state = startstate;
   if (problem.isGoalState(state)) {
     return state;

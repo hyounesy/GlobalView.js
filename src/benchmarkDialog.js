@@ -20,11 +20,11 @@ function BenchmarkDialog() {
     }
   });
 
-  let pbOverall = $('#pbOverall'),
-    pbPass = $('#pbPass'),
-    progressLabel = $('.progress-label'),
-    tblResults = $('#tblResults'),
-    tblResults_body;
+  const pbOverall = $('#pbOverall');
+  const pbPass = $('#pbPass');
+  const progressLabel = $('.progress-label');
+  const tblResults = $('#tblResults');
+  let tblResults_body;
   pbOverall.progressbar({
     value: false,
     change: function () {
@@ -98,8 +98,8 @@ function BenchmarkDialog() {
     globalView.enableOffscreenRendering(1024, 1024);
 
     // Set default options
-    let allElements = document.getElementsByTagName('*');
-    for (let i in allElements) {
+    const allElements = document.getElementsByTagName('*');
+    for (const i in allElements) {
       if (allElements[i].className === 'option') {
         if (allElements[i].onchange) {
           allElements[i].onchange(allElements[i]);
@@ -119,7 +119,7 @@ function BenchmarkDialog() {
       zip = new JSZip();
     }
 
-    let csvHeader = ['fps', 'options'];
+    const csvHeader = ['fps', 'options'];
     for (option in benchmarkOptions) {
       csvHeader.push('' + option);
     }
@@ -167,13 +167,13 @@ function BenchmarkDialog() {
   }
 
   function renderBenchmark() {
-    let tStart = performance.now();
+    const tStart = performance.now();
     globalView.renderOffscreenBuffer();
-    let tEnd = performance.now();
+    const tEnd = performance.now();
 
     time += (tEnd - tStart) / 1000.0;
     ++frames;
-    let passTime = (tEnd - passStartTime) / 1000.0;
+    const passTime = (tEnd - passStartTime) / 1000.0;
 
     if (reportProgress(benchmarkCounter / numBenchmarks, passTime / SECONDS_PER_BENCHMARK)) {
       setTimeout(passTime < SECONDS_PER_BENCHMARK ? renderBenchmark : finishBenchmarkPass, 0);
@@ -184,9 +184,9 @@ function BenchmarkDialog() {
 
   function finishBenchmarkPass() {
     time = (performance.now() - passStartTime) / 1000.0;
-    let fps = frames / time;
+    const fps = frames / time;
     let name = JSON.stringify(currentOptions).replaceAll('"', "'");
-    let csvRow = [fps, name];
+    const csvRow = [fps, name];
     for (option in currentOptions) {
       csvRow.push(currentOptions[option]);
     }
@@ -202,7 +202,7 @@ function BenchmarkDialog() {
     // console.log(++benchmarkCounter / numBenchmarks);
     // <<<<<<<<<< END RUN BENCHMARK >>>>>>>>>>
 
-    let getKeyByIndex = function (map, idx) {
+    const getKeyByIndex = function (map, idx) {
       for (key in map) {
         if (idx-- === 0) {
           return key;

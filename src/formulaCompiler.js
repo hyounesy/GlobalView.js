@@ -194,7 +194,7 @@ export const FormulaCompiler = {
     // >>> Abstract Syntax Tree builder
 
     function buildAST() {
-      let scope = symbolTypes ? symbolTypes : {};
+      const scope = symbolTypes ? symbolTypes : {};
 
       function prefixOpAST(op) {
         if (!libUtility.isString(curTok)) {
@@ -206,7 +206,7 @@ export const FormulaCompiler = {
       function bineryOpAST(exprPrec, lhs) {
         // If this is a binop, find its precedence.
         while (true) {
-          let tokPrec = getOperatorPrecedence(curTok);
+          const tokPrec = getOperatorPrecedence(curTok);
 
           // If this is an operator that binds at least as tightly as the current binop, consume it, otherwise return lhs
           if (tokPrec < exprPrec) {
@@ -214,7 +214,7 @@ export const FormulaCompiler = {
           }
           // curTok is an operator
 
-          let binOp = curTok;
+          const binOp = curTok;
           if (!getTok()) {
             return null;
           }  // eat binop
@@ -227,7 +227,7 @@ export const FormulaCompiler = {
             }
 
             // If binOp binds less tightly with rhs than the operator after rhs, let the pending operator take rhs as its lhs.
-            let nextPrec = getOperatorPrecedence(curTok);
+            const nextPrec = getOperatorPrecedence(curTok);
             if (tokPrec < nextPrec) {
               rhs = bineryOpAST(tokPrec + 1, rhs);
               if (rhs == null) {
@@ -236,10 +236,10 @@ export const FormulaCompiler = {
             }
 
             // Create operator function signature from operator name and argument FormulaCompiler.types
-            let funcSignature = lhs.type.name + ' ' + binOp + ' ' + rhs.type.name;
+            const funcSignature = lhs.type.name + ' ' + binOp + ' ' + rhs.type.name;
 
             // Lookup operator function and return type
-            let returnType = functionsReturnTypes[funcSignature];
+            const returnType = functionsReturnTypes[funcSignature];
             if (libUtility.isUndefined(returnType)) {
               return error('Undefined operator ' + binOp + ' on FormulaCompiler.types ' + lhs.type.name + ' and ' + rhs.type.name);
             }
@@ -247,7 +247,7 @@ export const FormulaCompiler = {
             // Merge lhs/rhs.
             if (tokPrec === 10) {
               // If binOp is '=', '+=' or '-='
-              let lastOp = lhs.code.pop();
+              const lastOp = lhs.code.pop();
               if (lastOp !== '@' && lastOp !== '@[]') {
                 return error('Cannot assign to non-variable');
               }
@@ -266,8 +266,8 @@ export const FormulaCompiler = {
         }
       }
       function identifierAST() {
-        let identifier = curVal;
-        let variable = [identifier];
+        const identifier = curVal;
+        const variable = [identifier];
         if (!getTok()) {
           return null;
         } // eat identifier
@@ -283,8 +283,8 @@ export const FormulaCompiler = {
           if (libUtility.isUndefined(type)) {
             return error('Undefined variable: ' + identifier);
           }
-          let parentType = type;
-          let member = type.members[curVal];
+          const parentType = type;
+          const member = type.members[curVal];
           if (libUtility.isUndefined(member)) {
             return error(parentType.name + ' does not contain a member: ' + curVal);
           }
@@ -320,7 +320,7 @@ export const FormulaCompiler = {
         return { code: variable, type: type }; // Variable reference
       }
       function identifierAndPostAST() {
-        let identifier = identifierAST();
+        const identifier = identifierAST();
         if (!identifier) {
           return null;
         }
@@ -328,7 +328,7 @@ export const FormulaCompiler = {
         return identifier;
       }
       function numberAST() {
-        let number = curVal;
+        const number = curVal;
         if (!getTok()) {
           return null;
         } // Eat number
@@ -341,13 +341,13 @@ export const FormulaCompiler = {
         }
 
         // Update scope
-        let prev = scope[curVal];
+        const prev = scope[curVal];
         if (!libUtility.isUndefined(prev)) {
           return error('Redefinition of variable: ' + curVal);
         }
         scope[curVal] = type; // Store variable type in scope
 
-        let variable = [curVal];
+        const variable = [curVal];
         if (!getTok()) {
           return null;
         } // eat identifier
@@ -363,24 +363,24 @@ export const FormulaCompiler = {
           return null;
         } // Eat '('
 
-        let args = listAST(')');
+        const args = listAST(')');
         if (!args) {
           return null;
         }
-        let numArgs = args.type.length;
+        const numArgs = args.type.length;
 
         // Create function signature from function name and argument FormulaCompiler.types
-        let argTypeNames = args.type.map(type => type.name).join(', ')
-        let funcSignature = funcName + '(' + argTypeNames + ')';
+        const argTypeNames = args.type.map(type => type.name).join(', ')
+        const funcSignature = funcName + '(' + argTypeNames + ')';
 
         // Lookup function and return type
-        let returnType = functionsReturnTypes[funcSignature];
+        const returnType = functionsReturnTypes[funcSignature];
         if (libUtility.isUndefined(returnType)) {
           return error('Undefined function ' + funcSignature);
         }
 
         // Store as args, funcSignature
-        let funcCode = args.code;
+        const funcCode = args.code;
         funcCode.push(funcSignature)
         return { code: funcCode, type: returnType };
       }
@@ -392,11 +392,11 @@ export const FormulaCompiler = {
           return [0]; // List of length 0
         }
 
-        let code = [],
-          typeList = [],
-          len = 1;
+        let code = [];
+        const typeList = [];
+        let len = 1;
         while (true) {
-          let expr = exprAST();
+          const expr = exprAST();
           if (!expr) {
             return null;
           }
@@ -455,7 +455,7 @@ export const FormulaCompiler = {
           exprPrec = 0;
         }
 
-        let lhs = primaryAST();
+        const lhs = primaryAST();
         if (!lhs) {
           return null;
         }
@@ -467,12 +467,12 @@ export const FormulaCompiler = {
           return null;
         } // Get first token
         while (curTok !== null) {
-          let lhs = primaryAST();
+          const lhs = primaryAST();
           if (!lhs) {
             return null;
           }
 
-          let binOp = bineryOpAST(0, lhs);
+          const binOp = bineryOpAST(0, lhs);
           if (!binOp) {
             return null;
           }
@@ -495,7 +495,7 @@ export const FormulaCompiler = {
         return code;
       }
 
-      let expr = topLevelAST();
+      const expr = topLevelAST();
       return expr ? expr : err;
     }
 
@@ -601,13 +601,13 @@ FormulaCompiler.types.vec3.members = {
 };
 
 function verboseTest(formula, symbols, symbolTypes) {
-  let code = FormulaCompiler.compile(formula, symbolTypes ? symbolTypes : {});
+  const code = FormulaCompiler.compile(formula, symbolTypes ? symbolTypes : {});
 
   console.log('formula: ' + formula);
   if (libUtility.isString(code)) {
     console.log('err: ' + code);
   } else {
-    let globalScope = symbols ? symbols : {};
+    const globalScope = symbols ? symbols : {};
     console.log('code: ' + code.map(c => libUtility.isString(c) ? '"' + c + '"' : c).join(' '));
     console.log('result: ' + FormulaCompiler.run(code, new Array(16), globalScope));
     console.log('locals: ' + JSON.stringify(globalScope));
@@ -615,11 +615,11 @@ function verboseTest(formula, symbols, symbolTypes) {
 }
 
 function verify(formula, result) {
-  let code = FormulaCompiler.compile(formula);
+  const code = FormulaCompiler.compile(formula);
   if (libUtility.isString(code)) {
     console.log("Formula '{0}' failed with error '{1}'".format(formula, code));
   } else {
-    let computedResult = FormulaCompiler.run(code, new Array(16), {});
+    const computedResult = FormulaCompiler.run(code, new Array(16), {});
 
     let match;
     if (libUtility.isArray(result) && libUtility.isArray(computedResult) && result.length === computedResult.length) {
@@ -655,8 +655,8 @@ function benchmark(nIter, javascriptCode, formulaCode, evalCode) {
 
   sum = 0.0;
   tStart = performance.now();
-  let code = FormulaCompiler.compile(formulaCode);
-  let stack = new Array(16);
+  const code = FormulaCompiler.compile(formulaCode);
+  const stack = new Array(16);
   for (let i = 0; i < nIter; ++i) {
     sum += FormulaCompiler.run(code, stack, {});
   }
