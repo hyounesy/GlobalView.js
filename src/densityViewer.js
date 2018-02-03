@@ -76,10 +76,10 @@ export function DensityViewer(gl, globalView) {
             var c = clusterMap.data[i];
 
             if (c === 0) {
-              rgba[4 * i + 0] = 0;
-              rgba[4 * i + 1] = 0;
-              rgba[4 * i + 2] = 0;
-              rgba[4 * i + 3] = 0;
+              rgba[(4 * i) + 0] = 0;
+              rgba[(4 * i) + 1] = 0;
+              rgba[(4 * i) + 2] = 0;
+              rgba[(4 * i) + 3] = 0;
             } else {
               // Use random RGB color (deprecated)
               /* var clr = [Math.sin(++c) * 10000, Math.sin(++c) * 10000, Math.sin(++c) * 10000];
@@ -101,10 +101,10 @@ export function DensityViewer(gl, globalView) {
               var clr = [c, 0.5, 1]; // 0.5 ... Use 50% saturated colors
               clr = libUtility.hsv2rgb(clr);
 
-              rgba[4 * i + 0] = Math.floor(clr[0] * 255);
-              rgba[4 * i + 1] = Math.floor(clr[1] * 255);
-              rgba[4 * i + 2] = Math.floor(clr[2] * 255);
-              rgba[4 * i + 3] = Math.floor(d * 255);
+              rgba[(4 * i) + 0] = Math.floor(clr[0] * 255);
+              rgba[(4 * i) + 1] = Math.floor(clr[1] * 255);
+              rgba[(4 * i) + 2] = Math.floor(clr[2] * 255);
+              rgba[(4 * i) + 3] = Math.floor(d * 255);
             }
           }
           // libUtility.download("clustermap.png", libUtility.imageUrlFromBytes(rgba, clusterMap.width, clusterMap.height));
@@ -222,7 +222,7 @@ export function DensityViewer(gl, globalView) {
     var repellPoint = function (body, point_x, point_y, minDist, minDistMagnitude, maxDist, maxDistMagnitude) {
       var dx = body.x - point_x,
         dy = body.y - point_y;
-      var dist = Math.sqrt(dx*dx + dy*dy);
+      var dist = Math.sqrt((dx * dx) + (dy * dy));
 
       if (dist < minDist) {
         dist -= minDist;
@@ -241,14 +241,14 @@ export function DensityViewer(gl, globalView) {
     for (let i = 0; i < bodies.length; ++i) {
       var sample_x = Math.floor(bodies[i].x),
         sample_y = Math.floor(bodies[i].y);
-      var density = densityMap[sample_x * width + sample_y];
+      var density = densityMap[(sample_x * width) + sample_y];
       var bestDir = null,
         lowestDensity = density;
       [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]].forEach(function (dir) {
         var x = sample_x + dir[0];
         var y = sample_y + dir[1];
         if (x >= xMin && x < xMax && y >= yMin && y < yMax) {
-          var density = densityMap[y * width + x];
+          var density = densityMap[(y * width) + x];
           if (density < lowestDensity) {
             lowestDensity = density;
             bestDir = dir;

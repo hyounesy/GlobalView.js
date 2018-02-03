@@ -27,7 +27,7 @@ function BenchmarkDialog() {
   pbOverall.progressbar({
     value: false,
     change: function () {
-      progressLabel.text('Progress: ' + Math.floor(pbOverall.progressbar('value') * 100) / 100 + '%');
+      progressLabel.text('Progress: ' + (Math.floor(pbOverall.progressbar('value') * 100) / 100) + '%');
     },
     complete: function () {
       progressLabel.text('Complete!');

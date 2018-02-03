@@ -365,7 +365,7 @@ vec{1} getPos()
         for(var d = 0, i = 0; d < ndim; d += 4, ++i) {
           if (this.sdr.posattr[i] !== -1) {
             gl.enableVertexAttribArray(this.sdr.posattr[i]);
-            gl.vertexAttribPointer(this.sdr.posattr[i], Math.min(4, ndim - d), gl.FLOAT, false, ndim * 4, (offset * ndim + d) * 4);
+            gl.vertexAttribPointer(this.sdr.posattr[i], Math.min(4, ndim - d), gl.FLOAT, false, ndim * 4, ((offset * ndim) + d) * 4);
           }
         }
       }
@@ -437,7 +437,7 @@ vec{1} getPos()
         for(let d = 0, i = 0; d < ndim; d += 4, ++i) {
           if (this.sdrLine.posattr[i] !== -1) {
             gl.enableVertexAttribArray(this.sdrLine.posattr[i]);
-            gl.vertexAttribPointer(this.sdrLine.posattr[i], Math.min(4, ndim - d), gl.FLOAT, false, ndim * 4, (offset * ndim + d) * 4);
+            gl.vertexAttribPointer(this.sdrLine.posattr[i], Math.min(4, ndim - d), gl.FLOAT, false, ndim * 4, ((offset * ndim) + d) * 4);
             gl.ext.vertexAttribDivisorANGLE(this.sdrLine.posattr[i], 1);
           }
         }
@@ -458,7 +458,7 @@ vec{1} getPos()
 
       // Compute line vertices
       var lineTransform = libGlMatrix.mat2.create();
-      libGlMatrix.mat2.scale(lineTransform, lineTransform, libGlMatrix.vec2.fromValues(Math.sqrt(line[0]*line[0] + line[1]*line[1]), Math.max(1, options['pointSize'] /* / 10 */)));
+      libGlMatrix.mat2.scale(lineTransform, lineTransform, libGlMatrix.vec2.fromValues(Math.sqrt((line[0] * line[0]) + (line[1] * line[1])), Math.max(1, options['pointSize'] /* / 10 */)));
       libGlMatrix.mat2.rotate(lineTransform, lineTransform, Math.atan2(line[1], line[0]));
       libGlMatrix.mat2.scale(lineTransform, lineTransform, libGlMatrix.vec2.fromValues(1 / gl.width, 1 / gl.height));
       this.sdrLine.lineTransform(lineTransform);

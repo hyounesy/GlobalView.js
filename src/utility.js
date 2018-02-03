@@ -4,7 +4,8 @@ export function linspace(first, second, last) {
   let values = [first],
     i = 0;
   while (values[i] + halfOffset < last) {
-    values.push(first + ++i * offset);
+    i += 1;
+    values.push(first + (i * offset));
   }
   values[i] = last;
   console.log(values);
@@ -224,7 +225,7 @@ export function F32toI24flipY(floats, bounds, width, height) {
   for(var y = 0; y < height; ++y) {
     for(var x = 0; x < width; ++x) {
     // var value = Math.floor((floats[(height - y - 1) * width + x] - bounds[0]) * vscale) + 1;
-      var value = floats[(height - y - 1) * width + x];
+      var value = floats[((height - y - 1) * width) + x];
       value += voffset;
       value *= vscale;
       value = Math.floor(value);

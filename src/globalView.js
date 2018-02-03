@@ -210,7 +210,7 @@ export function GlobalView(div, startupOptions) {
       if (t - fpsStart > 10000.0 || frameCounter > 1000) {
         // Refresh FPS after 10s or 1000 frames
         // fps = (frameCounter == 1 ? 10000.0 : 1000 * frameCounter) / (t - fpsStart);
-        fps = 1000 * frameCounter / (t - fpsStart);
+        fps = (1000 * frameCounter) / (t - fpsStart);
         fpsStart = t;
         frameCounter = 0;
       }
@@ -279,7 +279,7 @@ export function GlobalView(div, startupOptions) {
     this.setFromMinMax = function (d, minimum, maximum) {
       dataset.dataVectors[d].scale = maximum - minimum;
       if (dataset.dataVectors[d].scale > -1e-5 && dataset.dataVectors[d].scale < 1e-5) {
-        dataset.dataVectors[d].offset = 0.5 - 0.5 * (minimum + maximum) * (dataset.dataVectors[d].scale = 0.5);
+        dataset.dataVectors[d].offset = 0.5 - (0.5 * (minimum + maximum) * (dataset.dataVectors[d].scale = 0.5));
       } else {
         dataset.dataVectors[d].offset = -minimum * (dataset.dataVectors[d].scale = 1 / dataset.dataVectors[d].scale);
       }
@@ -399,7 +399,7 @@ export function GlobalView(div, startupOptions) {
         recompute();
       }
       for (var d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; ++d) {
-        vOut[d] = offsets[d] + vIn[d] * scales[d];
+        vOut[d] = offsets[d] + (vIn[d] * scales[d]);
       }
       return vOut;
     }
@@ -419,7 +419,7 @@ export function GlobalView(div, startupOptions) {
         recompute();
       }
       for (var d = 0, nd = vOut.length; d < nd; ++d) {
-        vOut[d] = offsets[d] + vIn[activeInputs[d]] * scales[d];
+        vOut[d] = offsets[d] + (vIn[activeInputs[d]] * scales[d]);
       }
       return vOut;
     }
@@ -456,14 +456,14 @@ export function GlobalView(div, startupOptions) {
       }
 
       // Transform first two dimensions offsets and scales into device coordinates
-      offsets[0] *= 2 * plotBounds.width / gl.width;
-      offsets[0] += 2 * plotBounds.x / gl.width - 1;
-      offsets[1] *= 2 * plotBounds.height / gl.height;
-      offsets[1] += 2 * plotBounds.y / gl.height - 1;
-      scales[0] *= 2 * plotBounds.width / gl.width;
-      scales[1] *= 2 * plotBounds.height / gl.height;
-      animatedScales[0] *= 2 * plotBounds.width / gl.width;
-      animatedScales[1] *= 2 * plotBounds.height / gl.height;
+      offsets[0] *= (2 * plotBounds.width) / gl.width;
+      offsets[0] += ((2 * plotBounds.x) / gl.width) - 1;
+      offsets[1] *= (2 * plotBounds.height) / gl.height;
+      offsets[1] += ((2 * plotBounds.y) / gl.height) - 1;
+      scales[0] *= (2 * plotBounds.width) / gl.width;
+      scales[1] *= (2 * plotBounds.height) / gl.height;
+      animatedScales[0] *= (2 * plotBounds.width) / gl.width;
+      animatedScales[1] *= (2 * plotBounds.height) / gl.height;
 
       return offsets;
     }
@@ -488,7 +488,7 @@ export function GlobalView(div, startupOptions) {
           var ot = dataset.dataVectors[oi[d]].offset;
 
           var alpha = animatedInputs[d].f;
-          offsets[d] = alpha * tt + (1 - alpha) * ot;
+          offsets[d] = (alpha * tt) + ((1 - alpha) * ot);
           alpha *= Math.PI / 2.0;
           scales[d] = Math.sin(alpha) * ts;
           animatedScales[d] = Math.cos(alpha) * os;
@@ -503,14 +503,14 @@ export function GlobalView(div, startupOptions) {
       }
 
       // Transform first two dimensions offsets and scales into device coordinates
-      offsets[0] *= 2 * plotBounds.width / gl.width;
-      offsets[0] += 2 * plotBounds.x / gl.width - 1;
-      offsets[1] *= 2 * plotBounds.height / gl.height;
-      offsets[1] += 2 * plotBounds.y / gl.height - 1;
-      scales[0] *= 2 * plotBounds.width / gl.width;
-      scales[1] *= 2 * plotBounds.height / gl.height;
-      animatedScales[0] *= 2 * plotBounds.width / gl.width;
-      animatedScales[1] *= 2 * plotBounds.height / gl.height;
+      offsets[0] *= (2 * plotBounds.width) / gl.width;
+      offsets[0] += ((2 * plotBounds.x) / gl.width) - 1;
+      offsets[1] *= (2 * plotBounds.height) / gl.height;
+      offsets[1] += ((2 * plotBounds.y) / gl.height) - 1;
+      scales[0] *= (2 * plotBounds.width) / gl.width;
+      scales[1] *= (2 * plotBounds.height) / gl.height;
+      animatedScales[0] *= (2 * plotBounds.width) / gl.width;
+      animatedScales[1] *= (2 * plotBounds.height) / gl.height;
 
       return isAnimating;
     }
@@ -1229,7 +1229,10 @@ export function GlobalView(div, startupOptions) {
           if (dataset.imageFilenames[r]) {
             var dataPos = dataset.dataVectors.map(v => v.getValue(r));
             var imagePos = dataPos.slice(0);
-            var p = libAlgorithm.findClosePointOfLowDensity(dataset, d0, d1, r, densityMap, densityMap.stencilMap, 0.6 * options['thumbnailSize'] / gl.width, 0.6 * (options['thumbnailSize'] + libImageViewer.LABEL_HEIGHT) / gl.height); // EDIT: Factor 0.6: WHY?
+            var p = libAlgorithm.findClosePointOfLowDensity(dataset, d0, d1, r,
+              densityMap, densityMap.stencilMap,
+              (0.6 * options['thumbnailSize']) / gl.width,
+              (0.6 * (options['thumbnailSize'] + libImageViewer.LABEL_HEIGHT)) / gl.height); // EDIT: Factor 0.6: WHY?
             imagePos[d0] = p[0];
             imagePos[d1] = p[1];
             var imageSize = dataset.dataVectors.map(v => options['thumbnailSize'] * (v.maximum - v.minimum));
@@ -1254,8 +1257,8 @@ export function GlobalView(div, startupOptions) {
       // dataset.requestDensityMap(d0, d1, undefined, undefined, function(densityMap) { console.log(densityMap); });
 
       dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
-        var imageWidth = 0.6 * options['thumbnailSize'] / gl.width,
-          imageHeight = (0.6 * options['thumbnailSize'] + libImageViewer.LABEL_HEIGHT) / gl.height; // EDIT: Factor 0.6: WHY?
+        var imageWidth = (0.6 * options['thumbnailSize']) / gl.width,
+          imageHeight = ((0.6 * options['thumbnailSize']) + libImageViewer.LABEL_HEIGHT) / gl.height; // EDIT: Factor 0.6: WHY?
         if (d1 < d0) {
           // Swap d0 <-> d1
           var temp = d0;
@@ -1271,7 +1274,8 @@ export function GlobalView(div, startupOptions) {
         var dataPos = dataset.dataVectors.map(v => v.getValue(index));
         var imagePos;
         if (libUtility.isUndefined(densityMap.data)) { // If densityMap is nD
-          imagePos = libAlgorithm.findClosePointOfLowDensityND_descend(dataset, index, densityMap, 0.6 * options['thumbnailSize'] / Math.min(gl.width, gl.height));
+          imagePos = libAlgorithm.findClosePointOfLowDensityND_descend(dataset, index, densityMap,
+            (0.6 * options['thumbnailSize']) / Math.min(gl.width, gl.height));
         } else { // EDIT: Factor 0.6: WHY?
           imagePos = dataPos.slice(0);
 
@@ -1283,7 +1287,9 @@ export function GlobalView(div, startupOptions) {
             imagePos[d0] = p[0];
             imagePos[d1] = p[1];
           } else {
-            var halfImageSize = [1.1 * options['thumbnailSize'] / gl.width, 1.1 * options['thumbnailSize'] / gl.height];
+            var halfImageSize = [
+              (1.1 * options['thumbnailSize']) / gl.width,
+              (1.1 * options['thumbnailSize']) / gl.height];
             tf.deviceDistToDatasetDist(halfImageSize, halfImageSize);
             imagePos[d0] += halfImageSize[0];
             imagePos[d1] += halfImageSize[1];
@@ -1304,8 +1310,8 @@ export function GlobalView(div, startupOptions) {
       var d0 = activeInputs[0],
         d1 = activeInputs[1];
       dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
-        var imageWidth = 0.6 * options['thumbnailSize'] / gl.width,
-          imageHeight = (0.6 * options['thumbnailSize'] + libImageViewer.LABEL_HEIGHT) / gl.height; // EDIT: Factor 0.6: WHY?
+        var imageWidth = (0.6 * options['thumbnailSize']) / gl.width,
+          imageHeight = ((0.6 * options['thumbnailSize']) + libImageViewer.LABEL_HEIGHT) / gl.height; // EDIT: Factor 0.6: WHY?
         if (d1 < d0) {
           // Swap d0 <-> d1
           var temp = d0;
@@ -1394,37 +1400,49 @@ export function GlobalView(div, startupOptions) {
     // Compute covariance matrix of points -> cov [symetrical 2D matrix]
     var cov = [0, 0, 0];
     points.forEach(function (p) {
-      var x0 = dataset.dataVectors[d0].getValue(p) * scales[0] - E[0];
-      var x1 = dataset.dataVectors[d1].getValue(p) * scales[1] - E[1];
-      cov[0] += x0*x0;
-      cov[1] += x0*x1;
-      cov[2] += x1*x1;
+      var x0 = (dataset.dataVectors[d0].getValue(p) * scales[0]) - E[0];
+      var x1 = (dataset.dataVectors[d1].getValue(p) * scales[1]) - E[1];
+      cov[0] += x0 * x0;
+      cov[1] += x0 * x1;
+      cov[2] += x1 * x1;
     });
     cov[0] /= points.length;
     cov[1] /= points.length;
     cov[2] /= points.length;
 
     // Compute eigen values
-    var disc = Math.sqrt((cov[0] - cov[2])*(cov[0] - cov[2]) + 4 * cov[1]*cov[1]) / 2;
-    var eigenval1 = (cov[0] + cov[2]) / 2 + disc;
-    var eigenval2 = (cov[0] + cov[2]) / 2 - disc;
+    var disc = Math.sqrt(((cov[0] - cov[2]) * (cov[0] - cov[2])) + (4 * cov[1] * cov[1])) / 2;
+    var eigenval1 = ((cov[0] + cov[2]) / 2) + disc;
+    var eigenval2 = ((cov[0] + cov[2]) / 2) - disc;
 
     // Compute eigen vector with smallest eigen value (for second principal component)
     var eigenvec = [-cov[1], cov[0] - Math.min(eigenval1, eigenval2)];
 
     // Normalize eigen vector
-    var eigenvec_length = Math.sqrt(eigenvec[0]*eigenvec[0] + eigenvec[1]*eigenvec[1]);
+    var eigenvec_length = Math.sqrt((eigenvec[0] * eigenvec[0]) + (eigenvec[1] * eigenvec[1]));
     eigenvec[0] /= eigenvec_length;
     eigenvec[1] /= eigenvec_length;
 
     // Define corners of AABB
     var imageSize = dataset.dataVectors.map(v => options['thumbnailSize'] * (v.maximum - v.minimum));
-    const labelHeightOffset = 1.0 + libImageViewer.LABEL_HEIGHT / options['thumbnailSize'];
-    const labelWidthOffset = 1.0 + (libImageViewer.LABEL_HEIGHT + 2 * libImageViewer.LABEL_WIDTH) / options['thumbnailSize'];
-    var bl = [tf.getMinimum(0) - imageSize[d0] * 0.6 / plotBounds.width, tf.getMinimum(1) - imageSize[d1] * 0.6 / plotBounds.height];
-    var tl = [tf.getMinimum(0) - imageSize[d0] * 0.6 / plotBounds.width, tf.getMaximum(1) + imageSize[d1] * labelHeightOffset * 0.8 / plotBounds.height];
-    var tr = [tf.getMaximum(0) + imageSize[d0] * labelWidthOffset * 0.6 / plotBounds.width, tf.getMaximum(1) + imageSize[d1] * labelHeightOffset * 0.8 / plotBounds.height];
-    var br = [tf.getMaximum(0) + imageSize[d0] * labelWidthOffset * 0.6 / plotBounds.width, tf.getMinimum(1) - imageSize[d1] * 0.6 / plotBounds.height];
+    const labelHeightOffset = 1.0 + (libImageViewer.LABEL_HEIGHT / options['thumbnailSize']);
+    const labelWidthOffset = 1.0 + ((libImageViewer.LABEL_HEIGHT + (2 * libImageViewer.LABEL_WIDTH)) / options['thumbnailSize']);
+    var bl = [
+      tf.getMinimum(0) - ((imageSize[d0] * 0.6) / plotBounds.width),
+      tf.getMinimum(1) - ((imageSize[d1] * 0.6) / plotBounds.height)
+    ];
+    var tl = [
+      tf.getMinimum(0) - ((imageSize[d0] * 0.6) / plotBounds.width),
+      tf.getMaximum(1) + ((imageSize[d1] * labelHeightOffset * 0.8) / plotBounds.height)
+    ];
+    var tr = [
+      tf.getMaximum(0) + ((imageSize[d0] * labelWidthOffset * 0.6) / plotBounds.width),
+      tf.getMaximum(1) + ((imageSize[d1] * labelHeightOffset * 0.8) / plotBounds.height)
+    ];
+    var br = [
+      tf.getMaximum(0) + ((imageSize[d0] * labelWidthOffset * 0.6) / plotBounds.width),
+      tf.getMinimum(1) - ((imageSize[d1] * 0.6) / plotBounds.height)
+    ];
     tf.datasetCoordToDeviceCoord(bl, bl);
     tf.datasetCoordToDeviceCoord(tl, tl);
     tf.datasetCoordToDeviceCoord(tr, tr);
@@ -1447,13 +1465,13 @@ export function GlobalView(div, startupOptions) {
       var p,
         li = Math.floor(l);
       switch (li) {
-        case 0: p = [0, li + 1 - l]; break;
+        case 0: p = [0, (li + 1) - l]; break;
         case 1: p = [l - li, 0]; break;
         case 2: p = [1, l - li]; break;
-        case 3: p = [li + 1 - l, 1]; break;
+        case 3: p = [(li + 1) - l, 1]; break;
       }
-      p[0] = p[0] * (br[0] - tl[0]) + tl[0]; // Denormalize p[0] from [0 ... 1] to [l ... r]
-      p[1] = p[1] * (br[1] - tl[1]) + tl[1]; // Denormalize p[1] from [0 ... 1] to [t ... b]
+      p[0] = (p[0] * (br[0] - tl[0])) + tl[0]; // Denormalize p[0] from [0 ... 1] to [l ... r]
+      p[1] = (p[1] * (br[1] - tl[1])) + tl[1]; // Denormalize p[1] from [0 ... 1] to [t ... b]
       return p;
     };
 
@@ -1799,9 +1817,9 @@ export function GlobalView(div, startupOptions) {
       }
 
       // Transform mousepos from canvas space to device coordinates
-      p[0] = 2 * p[0] / canvasBounds.width - 1;
-      p[1] = 1 - 2 * p[1] / canvasBounds.height;
-      p[2] = 1 - (p[2] - plotBounds.y) / plotBounds.height;
+      p[0] = ((2 * p[0]) / canvasBounds.width) - 1;
+      p[1] = 1 - ((2 * p[1]) / canvasBounds.height);
+      p[2] = 1 - ((p[2] - plotBounds.y) / plotBounds.height);
 
       if (viewDragX || viewDragY || viewDragZ) {
         viewDragStartPos = p;
@@ -1809,8 +1827,8 @@ export function GlobalView(div, startupOptions) {
       return; // Prevent other mouse-down events
     } else {
       // Transform mousepos from canvas space to device coordinates
-      p[0] = 2 * p[0] / canvasBounds.width - 1;
-      p[1] = 1 - 2 * p[1] / canvasBounds.height;
+      p[0] = ((2 * p[0]) / canvasBounds.width) - 1;
+      p[1] = 1 - ((2 * p[1]) / canvasBounds.height);
     }
 
     var selectedImage = imageViewer.imageFromPoint(tf, p);
@@ -1852,7 +1870,8 @@ export function GlobalView(div, startupOptions) {
     var v0 = dataset.dataVectors[activeInputs[0]],
       v1 = dataset.dataVectors[activeInputs[1]];
     pointViewer.points.forEach(function (i) {
-      sqDist = sqscl0 * Math.pow(p[0] - v0.getValue(i), 2) + sqscl1 * Math.pow(p[1] - v1.getValue(i), 2);
+      sqDist = (sqscl0 * Math.pow(p[0] - v0.getValue(i), 2)) +
+        (sqscl1 * Math.pow(p[1] - v1.getValue(i), 2));
       if (sqDist < closest) {
         closest = sqDist;
         closestIndex = i;
@@ -1864,8 +1883,8 @@ export function GlobalView(div, startupOptions) {
 
     // Transform dp from dataset coordinates to canvas coordinates
     tf.datasetCoordToDeviceCoord(dp, dp);
-    dp[0] = (0.5 + 0.5 * dp[0]) * canvasBounds.width;
-    dp[1] = (0.5 - 0.5 * dp[1]) * canvasBounds.height;
+    dp[0] = (0.5 + (0.5 * dp[0])) * canvasBounds.width;
+    dp[1] = (0.5 - (0.5 * dp[1])) * canvasBounds.height;
 
     sqDist = Math.pow((event.clientX - canvasBounds.left) - dp[0], 2) + Math.pow((event.clientY - canvasBounds.top) - dp[1], 2);
     if (sqDist > Math.pow(options['pointSize'] / 2.0, 2)) {
@@ -1915,7 +1934,7 @@ export function GlobalView(div, startupOptions) {
     }
 
     if (pointDragDownPos) {
-      var scale = 1 / (dataset.dataVectors[activeInputs[3]].getValue(pointDragDownPos[2]) * tf.getScale(3)) + tf.getOffset(3);
+      var scale = (1 / (dataset.dataVectors[activeInputs[3]].getValue(pointDragDownPos[2]) * tf.getScale(3))) + tf.getOffset(3);
       // console.log(scale);
 
       pointDrag = [scale * (p[0] - pointDragDownPos[0]), scale * (p[1] - pointDragDownPos[1])];
@@ -1935,9 +1954,9 @@ export function GlobalView(div, startupOptions) {
     }
 
     // Transform mousepos from canvas space to device coordinates
-    p[0] = 2 * p[0] / canvasBounds.width - 1;
-    p[1] = 1 - 2 * p[1] / canvasBounds.height;
-    p[2] = 1 - (p[2] - plotBounds.y) / plotBounds.height;
+    p[0] = ((2 * p[0]) / canvasBounds.width) - 1;
+    p[1] = 1 - ((2 * p[1]) / canvasBounds.height);
+    p[2] = 1 - ((p[2] - plotBounds.y) / plotBounds.height);
 
     var d0 = activeInputs[0],
       d1 = activeInputs[1];
@@ -2003,7 +2022,8 @@ export function GlobalView(div, startupOptions) {
     var v0 = dataset.dataVectors[d0],
       v1 = dataset.dataVectors[d1];
     pointViewer.points.forEach(function (i) {
-      sqDist = sqscl0 * Math.pow(p[0] - v0.getValue(i), 2) + sqscl1 * Math.pow(p[1] - v1.getValue(i), 2);
+      sqDist = (sqscl0 * Math.pow(p[0] - v0.getValue(i), 2)) +
+        (sqscl1 * Math.pow(p[1] - v1.getValue(i), 2));
       if (sqDist < closest) {
         closest = sqDist;
         closestIndex = i;
@@ -2015,8 +2035,8 @@ export function GlobalView(div, startupOptions) {
 
     // Transform dp from dataset coordinates to canvas coordinates
     tf.datasetCoordToDeviceCoord(dp, dp);
-    dp[0] = (0.5 + 0.5 * dp[0]) * canvasBounds.width;
-    dp[1] = (0.5 - 0.5 * dp[1]) * canvasBounds.height;
+    dp[0] = (0.5 + (0.5 * dp[0])) * canvasBounds.width;
+    dp[1] = (0.5 - (0.5 * dp[1])) * canvasBounds.height;
 
     sqDist = Math.pow((event.clientX - canvasBounds.left) - dp[0], 2) + Math.pow((event.clientY - canvasBounds.top) - dp[1], 2);
     if (sqDist > Math.pow(options['pointSize'] / 2.0, 2)) {
@@ -2055,8 +2075,8 @@ export function GlobalView(div, startupOptions) {
           const p = mousePolygon[i];
 
           // Transform p from canvas space to device coordinates
-          p[0] = 2 * p[0] / canvas.width - 1;
-          p[1] = 1 - 2 * p[1] / canvas.height;
+          p[0] = ((2 * p[0]) / canvas.width) - 1;
+          p[1] = 1 - ((2 * p[1]) / canvas.height);
 
           // Transform p from device coordinates to dataset coordinates
           tf.deviceCoordToDatasetCoord(p, p);
@@ -2096,10 +2116,10 @@ export function GlobalView(div, startupOptions) {
         }
 
         // Transform mouseRect from canvas space to device coordinates
-        mouseRect.l = 2 * mouseRect.x / canvas.width - 1;
-        mouseRect.r = 2 * (mouseRect.x + mouseRect.width) / canvas.width - 1;
-        mouseRect.t = 1 - 2 * (mouseRect.y + mouseRect.height) / canvas.height;
-        mouseRect.b = 1 - 2 * mouseRect.y / canvas.height;
+        mouseRect.l = ((2 * mouseRect.x) / canvas.width) - 1;
+        mouseRect.r = ((2 * (mouseRect.x + mouseRect.width)) / canvas.width) - 1;
+        mouseRect.t = 1 - ((2 * (mouseRect.y + mouseRect.height)) / canvas.height);
+        mouseRect.b = 1 - ((2 * mouseRect.y) / canvas.height);
 
         // Transform mouseRect from device coordinates to dataset coordinates
         var p = new Float32Array([mouseRect.l, mouseRect.t]);
@@ -2171,9 +2191,9 @@ export function GlobalView(div, startupOptions) {
     }
 
     // Transform mousepos from canvas space to device coordinates
-    p[0] = 2 * p[0] / canvasBounds.width - 1;
-    p[1] = 1 - 2 * p[1] / canvasBounds.height;
-    p[2] = 1 - (p[2] - plotBounds.y) / plotBounds.height;
+    p[0] = ((2 * p[0]) / canvasBounds.width) - 1;
+    p[1] = 1 - ((2 * p[1]) / canvasBounds.height);
+    p[2] = 1 - ((p[2] - plotBounds.y) / plotBounds.height);
 
     var d0 = activeInputs[0],
       d1 = activeInputs[1],
@@ -2183,7 +2203,7 @@ export function GlobalView(div, startupOptions) {
     tf.deviceCoordToDatasetCoord(p, p);
 
     // Zoom towards mouse position
-    var zoom = 1.0 - deltaZ / 50.0;
+    var zoom = 1.0 - (deltaZ / 50.0);
     libGlMatrix.vec3.scaleAndAdd(p, p, p, -zoom); // Offset is difference between p in current zoom level and p after zooming
     if (scrollX) {
       tf.translate(d0, p[0]);

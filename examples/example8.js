@@ -407,8 +407,8 @@ function onMouseOverAxisLabel(dataVector, labelRect) {
     tooltip.innerText = 'tooltip of ' + dataVector.label;
 
     var tooltipRect = tooltip.getBoundingClientRect();
-    tooltip.style.top = labelRect.t - (tooltipRect.bottom - tooltipRect.top) - 10 + 'px';
-    tooltip.style.left = (labelRect.l + labelRect.r) / 2 - (tooltipRect.right - tooltipRect.left) * 0.1 + 'px';
+    tooltip.style.top = (labelRect.t - (tooltipRect.bottom - tooltipRect.top) - 10) + 'px';
+    tooltip.style.left = (((labelRect.l + labelRect.r) / 2) - ((tooltipRect.right - tooltipRect.left) * 0.1)) + 'px';
     tooltip.style.visibility = 'visible';
     tooltip.style.transition = '';
     tooltip.style.opacity = 1;

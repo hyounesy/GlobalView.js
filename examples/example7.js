@@ -57,8 +57,8 @@ domready(function () {
       ++x;
       ++y;
 
-      var thumbnailWidth = OPTIONS.thumbnailSize * (dataset.dataVectors[x].maximum - dataset.dataVectors[x].minimum) / (PLOT_SIZE - OPTIONS.padding[1] - OPTIONS.padding[3]);
-      var thumbnailHeight = OPTIONS.thumbnailSize * (dataset.dataVectors[y].maximum - dataset.dataVectors[y].minimum) / (PLOT_SIZE - OPTIONS.padding[0] - OPTIONS.padding[2]);
+      var thumbnailWidth = (OPTIONS.thumbnailSize * (dataset.dataVectors[x].maximum - dataset.dataVectors[x].minimum)) / (PLOT_SIZE - OPTIONS.padding[1] - OPTIONS.padding[3]);
+      var thumbnailHeight = (OPTIONS.thumbnailSize * (dataset.dataVectors[y].maximum - dataset.dataVectors[y].minimum)) / (PLOT_SIZE - OPTIONS.padding[0] - OPTIONS.padding[2]);
       console.log(thumbnailWidth, thumbnailHeight);
 
       var plot = new globalView.GlobalView(divPlots, OPTIONS);

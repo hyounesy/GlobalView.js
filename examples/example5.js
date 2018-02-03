@@ -55,7 +55,7 @@ domready(function () {
     });
 
     for (let i = 0, nc = dataset.numColumns; i < dataset.length; ++i) {
-      var protein = dataset.data[i * nc + 0];
+      var protein = dataset.data[(i * nc) + 0];
       var proteinPoints = pointsByProtein[protein];
       if (!proteinPoints) {
         pointsByProtein[protein] = proteinPoints = new globalView.HashSet();
@@ -183,11 +183,11 @@ Tagged Protein: {1}
 {2}: {3}
 {4}: {5}`.format(
         dataset.names[index],
-        dataset.data[index * nc + 0],
+        dataset.data[(index * nc) + 0],
         COLUMN_NAMES[xAxisColumn],
-        dataset.data[index * nc + xAxisColumn],
+        dataset.data[(index * nc) + xAxisColumn],
         COLUMN_NAMES[yAxisColumn],
-        dataset.data[index * nc + yAxisColumn]
+        dataset.data[(index * nc) + yAxisColumn]
       );
   }
 }
@@ -199,8 +199,8 @@ function plot_onMouseOverAxisLabel(dataVector, labelRect) {
 
     var plotRect = document.getElementById('divPlot').getBoundingClientRect();
     var tooltipRect = tooltip.getBoundingClientRect();
-    tooltip.style.top = plotRect.top + labelRect.t - (tooltipRect.bottom - tooltipRect.top) - 20 + 'px';
-    tooltip.style.left = plotRect.left + (labelRect.l + labelRect.r) / 2 - (tooltipRect.right - tooltipRect.left) * 0.1 + 'px';
+    tooltip.style.top = ((plotRect.top + labelRect.t) - (tooltipRect.bottom - tooltipRect.top) - 20) + 'px';
+    tooltip.style.left = ((plotRect.left + ((labelRect.l + labelRect.r) / 2)) - ((tooltipRect.right - tooltipRect.left) * 0.1)) + 'px';
     tooltip.style.visibility = 'visible';
     tooltip.style.transition = '';
     tooltip.style.opacity = 1;

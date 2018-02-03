@@ -35,7 +35,7 @@ export function DataVector(dataset, source) {
     const c = Math.round(source);
     this['getValue'] = this.getValue = function (i) {
       // return Math.log(dataset.fdata[i * nc + c]);
-      return dataset.fdata[i * nc + c];
+      return dataset.fdata[(i * nc) + c];
     }
 
     // this.getValueCode = "log(c{0})".format(c);
@@ -74,7 +74,7 @@ export function DataVector(dataset, source) {
     this['getValue'] = this.getValue = function (i) {
       globals['i'] = i;
       for (var c = 0; c < nc; ++c) {
-        globals['c' + c] = dataset.fdata[i * nc + c];
+        globals['c' + c] = dataset.fdata[(i * nc) + c];
       }
 
       return libFormulaCompiler.FormulaCompiler.run(code, stack, globals);
@@ -92,7 +92,7 @@ export function DataVector(dataset, source) {
     // console.log([this.minimum, this.maximum]);
     this.scale = this.maximum - this.minimum;
     if (this.scale > -1e-5 && this.scale < 1e-5) {
-      this.offset = 0.5 - 0.5 * (this.minimum + this.maximum) * (this.scale = 0.5);
+      this.offset = 0.5 - (0.5 * (this.minimum + this.maximum) * (this.scale = 0.5));
     } else {
       this.offset = -this.minimum * (this.scale = 1 / this.scale);
     }
@@ -477,16 +477,16 @@ export function Dataset() {
       samples = libAlgorithm.sampleDensityMapChain(densityMapChain);
       for (var c = 0; c < nc; ++c) {
         column = this.columns[c];
-        sample = column.minimum + (column.maximum - column.minimum) * samples[c] * sampleScale;
+        sample = column.minimum + ((column.maximum - column.minimum) * samples[c] * sampleScale);
 
         if (column.values) {
           // If column is qualitative
-          fdata_inflated[i_inflated * nc + c] = sample = Math.max(0, Math.min(column.values.length - 1, Math.round(sample)));
-          data_inflated[i_inflated * nc + c] = column.values[sample];
+          fdata_inflated[(i_inflated * nc) + c] = sample = Math.max(0, Math.min(column.values.length - 1, Math.round(sample)));
+          data_inflated[(i_inflated * nc) + c] = column.values[sample];
         } else {
           // If column is numeric
-          fdata_inflated[i_inflated * nc + c] = sample;
-          data_inflated[i_inflated * nc + c] = sample;
+          fdata_inflated[(i_inflated * nc) + c] = sample;
+          data_inflated[(i_inflated * nc) + c] = sample;
         }
       }
     }
@@ -552,7 +552,7 @@ export function Dataset() {
           row[c] = this.names[i];
           --ci;
         } else {
-          row[c] = this.data[i * nc + ci];
+          row[c] = this.data[(i * nc) + ci];
         }
       }
       csv[i + 1] = row; // +1 ... Header row
@@ -772,8 +772,8 @@ export function CsvDataset(file, options, onload) {
           break;
         }
 
-        dataset.data[di * nc + ci] = value;
-        dataset.fdata[di * nc + ci] = fvalue;
+        dataset.data[(di * nc) + ci] = value;
+        dataset.fdata[(di * nc) + ci] = fvalue;
         min = Math.min(min, fvalue);
         max = Math.max(max, fvalue);
       }
@@ -803,8 +803,8 @@ export function CsvDataset(file, options, onload) {
 
           fvalue += 0.5;
 
-          dataset.data[di * nc + ci] = value;
-          dataset.fdata[di * nc + ci] = fvalue;
+          dataset.data[(di * nc) + ci] = value;
+          dataset.fdata[(di * nc) + ci] = fvalue;
         }
         min = 0;
         max = valueList.length;
