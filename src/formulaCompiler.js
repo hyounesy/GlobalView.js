@@ -222,7 +222,7 @@ export var FormulaCompiler = {
           if (binOp !== '?') {
             // Parse the expression after the binary operator.
             var rhs = exprAST(tokPrec);
-            if (rhs == null) {
+            if (rhs === null) {
               return null;
             }
 

@@ -74,7 +74,7 @@ if (!String.prototype.format) {
   String.prototype.format = function (var_args) {
     var args = arguments;
     return this.replace(/{(\d+)}/g, function (match, number) {
-      return typeof args[number] != 'undefined' ? args[number] : match;
+      return typeof args[number] !== 'undefined' ? args[number] : match;
     });
   };
 }
@@ -88,7 +88,7 @@ String.prototype.format2 = function (pattern, mismatch, var_args) {
   var args = arguments;
   return this.replace(pattern, function (match, number) {
     number = Number.parseInt(number, 10) + 2;
-    return typeof args[number] != 'undefined' ? args[number] : mismatch;
+    return typeof args[number] !== 'undefined' ? args[number] : mismatch;
   });
 };
 
@@ -127,7 +127,7 @@ function getScript(id) {
   var str = '';
   var k = shaderScript.firstChild;
   while (k) {
-    if (k.nodeType == 3) {
+    if (k.nodeType === 3) {
       str += k.textContent;
     }
     k = k.nextSibling;
@@ -279,17 +279,17 @@ export function hsv2rgb(hsv) {
 export function urlExists(url, onTrue, onFalse, isAsync) {
   var request = new XMLHttpRequest();
   request.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status == 404 && onFalse) {
+    if (this.readyState === 4 && this.status === 404 && onFalse) {
       onFalse();
     }
-    if (this.readyState == 4 && this.status != 404 && onTrue) {
+    if (this.readyState === 4 && this.status !== 404 && onTrue) {
       onTrue();
     }
   }
   request.open('HEAD', url, !(isAsync === false));
   request.overrideMimeType('text/csv; charset=utf8');
   request.send();
-  return request.status != 404;
+  return request.status !== 404;
 }
 
 
@@ -350,10 +350,10 @@ export function readCookie(name) {
   var ca = document.cookie.split(';');
   for(var i = 0; i < ca.length; ++i) {
     var c = ca[i];
-    while (c.charAt(0) == ' ') {
+    while (c.charAt(0) === ' ') {
       c = c.substring(1, c.length);
     }
-    if (c.indexOf(nameEQ) == 0) {
+    if (c.indexOf(nameEQ) === 0) {
       return c.substring(nameEQ.length, c.length);
     }
   }

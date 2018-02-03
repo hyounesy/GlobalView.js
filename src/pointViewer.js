@@ -247,9 +247,9 @@ vec{1} getPos()
         animatedInputCode = [];
       for (var d = 0, i = 0; d < ndim; d += 4, ++i) {
         var attrLen = Math.min(4, ndim - d);
-        attrDeclCode += 'attribute ' + (attrLen == 1 ? 'float' : 'vec' + attrLen) + ' p' + i + ';\n';
+        attrDeclCode += 'attribute ' + (attrLen === 1 ? 'float' : 'vec' + attrLen) + ' p' + i + ';\n';
         for (var a = 0; a < attrLen; ++a) {
-          inputs.push('p' + i + (attrLen == 1 ? '' : '[' + a + ']'));
+          inputs.push('p' + i + (attrLen === 1 ? '' : '[' + a + ']'));
         }
       }
       // HY:

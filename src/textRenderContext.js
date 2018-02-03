@@ -73,7 +73,7 @@ export function TextRenderContext(gl, canvas) {
         offsetV = 0;
         break;
     }
-    if (rotation == 0) {
+    if (rotation === 0) {
       ctx.fillText(str, x, y + offsetV);
     } else {
       ctx.save();

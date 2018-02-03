@@ -506,7 +506,7 @@ function ondrop(event) {
 
 var ctrlPressed = false,
   shiftPressed = false;
-var CTRL = navigator.appVersion.indexOf('Mac') == -1 ? 17 : 224;
+var CTRL = navigator.appVersion.indexOf('Mac') === -1 ? 17 : 224;
 function handleKeyDown(event) {
   if(event.keyCode === CTRL) {
     ctrlPressed = true;

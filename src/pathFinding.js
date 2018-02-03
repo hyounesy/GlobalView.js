@@ -32,7 +32,7 @@ function DepthFirstSearch(problem) {
     }
 
     // Test if maze has been completly traversed without finding any goal state
-    if (fringe.length == 0) {
+    if (fringe.length === 0) {
       return null;
     } // Goal not found
 
@@ -93,7 +93,7 @@ function UniformCostSearch(problem) {
       }
     });
 
-    if (fringe.length == 0) {
+    if (fringe.length === 0) {
       return null;
     } // Goal not found
     node = fringe.pop();
@@ -123,7 +123,7 @@ function SimpleUniformCostSearch(problem) {
       }
     });
 
-    if (fringe.length == 0) {
+    if (fringe.length === 0) {
       return null;
     } // Goal not found
     node = fringe.pop();
@@ -161,7 +161,7 @@ function SimpleAStarSearch(problem, heuristic) {
       }
     });
 
-    if (fringe.length == 0) {
+    if (fringe.length === 0) {
       return null;
     } // Goal not found
     node = fringe.pop();

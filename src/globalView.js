@@ -1972,13 +1972,13 @@ export function GlobalView(div, startupOptions) {
       return;
     }
 
-    if (mouseOverImage != null && imageDragImages.indexOf(mouseOverImage) === -1) {
+    if (mouseOverImage !== null && imageDragImages.indexOf(mouseOverImage) === -1) {
       mouseOverImage.highlighted = false;
       this.invalidate();
       mouseOverImage = null;
     }
     mouseOverImage = imageViewer.imageFromPoint(tf, p);
-    if (mouseOverImage != null) {
+    if (mouseOverImage !== null) {
       if (imageDragImages.indexOf(mouseOverImage) === -1) {
         mouseOverImage.highlighted = true;
         this.invalidate();
