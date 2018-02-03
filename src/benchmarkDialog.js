@@ -14,10 +14,16 @@ function BenchmarkDialog() {
       }
     }],
     open: startBenchmark,
-    beforeClose: function () { cancel = true; }
+    beforeClose: function () {
+      cancel = true;
+    }
   });
 
-  var pbOverall = $('#pbOverall'), pbPass = $('#pbPass'), progressLabel = $('.progress-label'), tblResults = $('#tblResults'), tblResults_body;
+  var pbOverall = $('#pbOverall'),
+    pbPass = $('#pbPass'),
+    progressLabel = $('.progress-label'),
+    tblResults = $('#tblResults'),
+    tblResults_body;
   pbOverall.progressbar({
     value: false,
     change: function () {
@@ -75,7 +81,16 @@ function BenchmarkDialog() {
   benchmarkDialog.dialog('open');
 
 
-  var zip, csv, numBenchmarks, benchmarkCounter, benchmarkOptionIndices, currentOptions, n, time, frames, passStartTime;
+  var zip,
+    csv,
+    numBenchmarks,
+    benchmarkCounter,
+    benchmarkOptionIndices,
+    currentOptions,
+    n,
+    time,
+    frames,
+    passStartTime;
 
   function startBenchmark() {
     globalView.pushOptions();
@@ -182,7 +197,8 @@ function BenchmarkDialog() {
       return null;
     };
 
-    var o = 0, option = getKeyByIndex(benchmarkOptionIndices, o);
+    var o = 0,
+      option = getKeyByIndex(benchmarkOptionIndices, o);
     while (option !== null && ++benchmarkOptionIndices[option] === benchmarkOptions[option].length) {
       benchmarkOptionIndices[option] = 0;
       option = getKeyByIndex(benchmarkOptionIndices, ++o);

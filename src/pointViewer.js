@@ -51,7 +51,9 @@ export function PointViewer(gl, globalView) {
       else if (this.size() !== 0) {
         // drawLines doesn't support index buffers
         // Therefore, draw point group as continuous index sequences
-        var startIndex = 0, lastIndex = -1, count = 0;
+        var startIndex = 0,
+          lastIndex = -1,
+          count = 0;
         this.forEach(function (index) {
           if (index === lastIndex + 1)
             ++count;
@@ -180,7 +182,8 @@ export function PointViewer(gl, globalView) {
     }
   }
 
-  var activeInputVectors = null, animatedInputVectors = null;
+  var activeInputVectors = null,
+    animatedInputVectors = null;
   this.onInputChanged = function (activeInputs, animatedInputs, options) {
     activeInputVectors = activeInputs.map(i => _dataset.dataVectors[i]);
     animatedInputVectors = animatedInputs.map(animatedInput => _dataset.dataVectors[animatedInput.origin]);
@@ -226,7 +229,10 @@ vec{1} getPos()
   return offsets + vec{1}({2}) * scales + vec{1}({3}) * animatedScales;
 }
 `;
-      var attrDeclCode = '', inputs = [/c(\d+)/g, '0.0'], inputCode = [], animatedInputCode = [];
+      var attrDeclCode = '',
+        inputs = [/c(\d+)/g, '0.0'],
+        inputCode = [],
+        animatedInputCode = [];
       for (var d = 0, i = 0; d < ndim; d += 4, ++i) {
         var attrLen = Math.min(4, ndim - d);
         attrDeclCode += 'attribute ' + (attrLen == 1 ? 'float' : 'vec' + attrLen) + ' p' + i + ';\n';
@@ -250,7 +256,8 @@ vec{1} getPos()
       return getPosCode;
     }
 
-    var posattr, lineattr;
+    var posattr,
+      lineattr;
     this.sdr = null;
     this.sdrLine = null;
     this.recompileShader = function (options) {

@@ -125,7 +125,11 @@ export function GlobalView(div, startupOptions) {
     this.invalidate();
   }
 
-  var t = performance.now(), dt = 0.1, fps = null, fpsStart = t, frameCounter = 0;
+  var t = performance.now(),
+    dt = 0.1,
+    fps = null,
+    fpsStart = t,
+    frameCounter = 0;
 
   var pointViewer = new libPointViewer.PointViewer(gl, this);
   var imageViewer = new libImageViewer.ImageViewer(gl, this);
@@ -137,14 +141,17 @@ export function GlobalView(div, startupOptions) {
 
   var dataset = null;
   var activeInputs = Array.create(ND, -1);
-  var animatedInputs = Array.create(ND, function () { return {target: null, f: 0}; });
+  var animatedInputs = Array.create(ND, function () {
+    return {target: null, f: 0};
+  });
 
   this['points'] = this.points = pointViewer.points;
   pointViewer.representativePoints = pointViewer.createPointSet([0, 255, 0, 255], 1);
   this['createPointSet'] = this.createPointSet = pointViewer.createPointSet;
   this['removePointSet'] = this.removePointSet = pointViewer.removePointSet;
 
-  var mouseRect = null, mousePolygon = null;
+  var mouseRect = null,
+    mousePolygon = null;
   var pointDrag = null;
 
   function render(flipY) {
@@ -163,7 +170,8 @@ export function GlobalView(div, startupOptions) {
       if (isAnimating)
         globalView.invalidate();
 
-      var d0 = activeInputs[0], d1 = activeInputs[1];
+      var d0 = activeInputs[0],
+        d1 = activeInputs[1];
       // densityViewer.updateImages(imageViewer.getImages(), d0, d1);
       densityViewer.render(flipY, tf, d0, d1);
       pointViewer.render(flipY, tf, colormap.getTexture(), pointDrag);
@@ -203,7 +211,9 @@ export function GlobalView(div, startupOptions) {
         gl.drawText('approx. ' + Math.floor((frameCounter == 1 ? 10000.0 : 1000 * frameCounter) / (t - fpsStart)) + ' FPS', canvas.width - 8, 8, 'topright');
     }
     if (SIMULATE_LOW_FPS)
-      setTimeout(function () {globalView.invalidate();}, 100);
+      setTimeout(function () {
+        globalView.invalidate();
+      }, 100);
     else if (ENABLE_CONTINUOUS_RENDERING)
       globalView.invalidate();
   }
@@ -221,7 +231,9 @@ export function GlobalView(div, startupOptions) {
   }
   var reresizeTimer = null;
   var onresize = function () {
-    var rect = canvas.getBoundingClientRect(), width = rect.right - rect.left, height = rect.bottom - rect.top;
+    var rect = canvas.getBoundingClientRect(),
+      width = rect.right - rect.left,
+      height = rect.bottom - rect.top;
     if (!offscreenRendering && (width !== gl.width || height !== gl.height)) {
       gl.viewport(0, 0, gl.width = canvas.width = width, gl.height = canvas.height = height);
       trc.onResize();
@@ -245,7 +257,9 @@ export function GlobalView(div, startupOptions) {
    * @package
    */
   function Transform() {
-    var offsets = new Float32Array(ND), scales = new Float32Array(ND), animatedScales = new Float32Array(ND);
+    var offsets = new Float32Array(ND),
+      scales = new Float32Array(ND),
+      animatedScales = new Float32Array(ND);
     var invalid = false;
 
     // Setter methods
@@ -468,7 +482,9 @@ export function GlobalView(div, startupOptions) {
 
 
   var plotBounds = {x: 0, y: 0, width: 0, height: 0}; // Plot bounds [pixel]
-  this.getPlotBounds = function () { return plotBounds; }
+  this.getPlotBounds = function () {
+    return plotBounds;
+  }
   function setPlotBounds(padding) {
     var computedPadding;
     if (libUtility.isArray(padding) && padding.length === 4)
@@ -514,7 +530,8 @@ export function GlobalView(div, startupOptions) {
    * @summary Zoom currently visible x- and y- dimensions to exactly fit all data points
    */
   this.zoomFit2D = function () {
-    var d0 = activeInputs[0], d1 = activeInputs[1];
+    var d0 = activeInputs[0],
+      d1 = activeInputs[1];
 
     // Compute offsets and scales to fit dataset inside view
     tf.setFromMinMax(d0, dataset.dataVectors[d0].minimum, dataset.dataVectors[d0].maximum);
@@ -526,7 +543,8 @@ export function GlobalView(div, startupOptions) {
    * @param  {{l: number, t: number, r: number, b: number}} rect Bounds of the visible region
    */
   this.zoomRect = function (rect) {
-    var d0 = activeInputs[0], d1 = activeInputs[1];
+    var d0 = activeInputs[0],
+      d1 = activeInputs[1];
 
     tf.setFromMinMax(d0, rect['l'], rect['r']);
     tf.setFromMinMax(d1, rect['t'], rect['b']);
@@ -610,7 +628,9 @@ export function GlobalView(div, startupOptions) {
     'pointClusterThreshold': {
       description: "Controls the realtive threshold between clusters and outliers when showing clusters (see 'showPointClusters')",
       default: (new libAlgorithm.ClusterMapOptions()).threshold,
-      valid: value => { return value > 0; },
+      valid: value => {
+        return value > 0;
+      },
       requireRedraw: false, // Requests redraw internally
       requireRecompile: false
     },
@@ -644,7 +664,9 @@ export function GlobalView(div, startupOptions) {
     'numHistogramBins': {
       description: 'Controls the number of bins within each histogram in the scatterplot.',
       default: 50,
-      valid: value => { return value >= 1; },
+      valid: value => {
+        return value >= 1;
+      },
       requireRedraw: true,
       requireRecompile: false
     },
@@ -652,7 +674,9 @@ export function GlobalView(div, startupOptions) {
     'histogramHeight': {
       description: 'Controls the height of each histogram in the scatterplot (in pixels).',
       default: 64,
-      valid: value => { return value >= 0; },
+      valid: value => {
+        return value >= 0;
+      },
       requireRedraw: true,
       requireRecompile: false
     },
@@ -670,7 +694,9 @@ export function GlobalView(div, startupOptions) {
     'customPointShape': {
       description: "When 'pointShape' is set to 'Custom', this defines a GLSL function given vec2 p, that returns opacity in the range [0.0 ... 1.0] at location p.",
       default: '{ return 1.0; }',
-      valid: value => { return libGraphics.validateGLSL(gl, 'float opacityMap(in vec2 p) ' + value); },
+      valid: value => {
+        return libGraphics.validateGLSL(gl, 'float opacityMap(in vec2 p) ' + value);
+      },
       requireRedraw: true,
       requireRecompile: true
     },
@@ -678,7 +704,9 @@ export function GlobalView(div, startupOptions) {
     'pointSize': {
       description: 'Controls the diameter of data points in the scatterplot (in pixels).',
       default: 6,
-      valid: value => { return value >= 0; },
+      valid: value => {
+        return value >= 0;
+      },
       requireRedraw: true,
       requireRecompile: false
     },
@@ -686,7 +714,9 @@ export function GlobalView(div, startupOptions) {
     'pointOpacity': {
       description: 'Controls the visibility of data points in the scatterplot between 0 (invisible) and 1 (fully opaque).',
       default: 1,
-      valid: value => { return value >= 0 && value <= 1; },
+      valid: value => {
+        return value >= 0 && value <= 1;
+      },
       requireRedraw: true,
       requireRecompile: false
     },
@@ -694,7 +724,9 @@ export function GlobalView(div, startupOptions) {
     'pointColor': {
       description: 'Controls the color of data points in the scatterplot. Valid values are an array of bytes in RGBA order or a colormap name.',
       default: 'exhue',
-      valid: value => { return libColormap.validateColormap(value); },
+      valid: value => {
+        return libColormap.validateColormap(value);
+      },
       requireRedraw: true,
       requireRecompile: false
     },
@@ -704,7 +736,9 @@ export function GlobalView(div, startupOptions) {
     'thumbnailSize': {
       description: 'Controls the width/height of thumbnails in the scatterplot (in pixels).',
       default: 64,
-      valid: value => { return value > 0; },
+      valid: value => {
+        return value > 0;
+      },
       requireRedraw: true,
       requireRecompile: false
     },
@@ -712,7 +746,9 @@ export function GlobalView(div, startupOptions) {
     'thumbnailBorderWidth': {
       description: 'Controls the width of thumbnail borders in the scatterplot.',
       default: 1,
-      valid: value => { return value >= 0; },
+      valid: value => {
+        return value >= 0;
+      },
       requireRedraw: true,
       requireRecompile: false
     },
@@ -722,7 +758,9 @@ export function GlobalView(div, startupOptions) {
       description: "Controls the color of thumbnail borders in the scatterplot. Valid values are an array of bytes in RGBA order, a color name or 'null'. " +
         "If set to 'null', the CSS foreground color will be used.",
       default: null,
-      valid: value => { return value === null || libColormap.validateColor(value); },
+      valid: value => {
+        return value === null || libColormap.validateColor(value);
+      },
       requireRedraw: true,
       requireRecompile: false
     },
@@ -732,7 +770,9 @@ export function GlobalView(div, startupOptions) {
       description: "Controls the color of thumbnail line in the scatterplot. Valid values are an array of bytes in RGBA order, a color name or 'null'. " +
         "If set to 'null', the CSS foreground color will be used.",
       default: null,
-      valid: value => { return value === null || libColormap.validateColor(value); },
+      valid: value => {
+        return value === null || libColormap.validateColor(value);
+      },
       requireRedraw: true,
       requireRecompile: false
     },
@@ -742,7 +782,9 @@ export function GlobalView(div, startupOptions) {
       description: "Controls the color of thumbnail labels in the scatterplot. Valid values are an array of bytes in RGBA order, a color name or 'null'. " +
         "If set to 'null', the CSS foreground color will be used.",
       default: null,
-      valid: value => { return value === null || libColormap.validateColor(value); },
+      valid: value => {
+        return value === null || libColormap.validateColor(value);
+      },
       requireRedraw: true,
       requireRecompile: false
     },
@@ -825,7 +867,8 @@ export function GlobalView(div, startupOptions) {
    * @param  {Object} newOptions A JavaScript object of options
    */
   this.setOptions = function (newOptions) {
-    var requireRecompile = false, requireRedraw = false;
+    var requireRecompile = false,
+      requireRedraw = false;
     for (var option in newOptions) {
       if (!newOptions.hasOwnProperty(option))
         continue;
@@ -838,7 +881,8 @@ export function GlobalView(div, startupOptions) {
       var optionDefinition = OPTIONS[option];
 
       // Validate value
-      var value = newOptions[option], validationResult;
+      var value = newOptions[option],
+        validationResult;
       if ((libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1) ||
         (libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true)) {
         console.warn('GlobalView warning: Invalid value for option ' + option + ': ' + value);
@@ -926,7 +970,8 @@ export function GlobalView(div, startupOptions) {
       var optionDefinition = OPTIONS[option];
 
       // Validate value
-      var value = newOptions[option], validationResult;
+      var value = newOptions[option],
+        validationResult;
       if ((libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1) ||
         (libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true)) {
         errors.push('Invalid value for option ' + option + ': ' + value + (libUtility.isString(validationResult) ? '\n    ' + validationResult : ''));
@@ -1091,7 +1136,8 @@ export function GlobalView(div, startupOptions) {
   this.getCharacteristicPoints = function (n, densityRatio, ondone) {
     if (!dataset)
       return;
-    var d0 = activeInputs[0], d1 = activeInputs[1];
+    var d0 = activeInputs[0],
+      d1 = activeInputs[1];
     dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
       if (d1 < d0) {
         // Swap d0 <-> d1
@@ -1127,7 +1173,8 @@ export function GlobalView(div, startupOptions) {
   this['showData2D'] = this.showData2D = function () {
     imageViewer.clearImages();
 
-    var d0 = activeInputs[0], d1 = activeInputs[1];
+    var d0 = activeInputs[0],
+      d1 = activeInputs[1];
     dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
       if (d1 < d0) {
         // Swap d0 <-> d1
@@ -1163,12 +1210,14 @@ export function GlobalView(div, startupOptions) {
    */
   this.showImage_lowDensity = function (index) {
     if (dataset.imageFilenames && dataset.imageFilenames[index]) {
-      var d0 = activeInputs[0], d1 = activeInputs[1];
+      var d0 = activeInputs[0],
+        d1 = activeInputs[1];
       // console.log(dataset.requestDensityMap(d0, d1, undefined, undefined));
       // dataset.requestDensityMap(d0, d1, undefined, undefined, function(densityMap) { console.log(densityMap); });
 
       dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
-        var imageWidth = 0.6 * options['thumbnailSize'] / gl.width, imageHeight = (0.6 * options['thumbnailSize'] + libImageViewer.LABEL_HEIGHT) / gl.height; // EDIT: Factor 0.6: WHY?
+        var imageWidth = 0.6 * options['thumbnailSize'] / gl.width,
+          imageHeight = (0.6 * options['thumbnailSize'] + libImageViewer.LABEL_HEIGHT) / gl.height; // EDIT: Factor 0.6: WHY?
         if (d1 < d0) {
           // Swap d0 <-> d1
           var temp = d0;
@@ -1212,9 +1261,11 @@ export function GlobalView(div, startupOptions) {
    */
   this.showImages_lowDensity = function (points) {
     if (dataset.imageFilenames) {
-      var d0 = activeInputs[0], d1 = activeInputs[1];
+      var d0 = activeInputs[0],
+        d1 = activeInputs[1];
       dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
-        var imageWidth = 0.6 * options['thumbnailSize'] / gl.width, imageHeight = (0.6 * options['thumbnailSize'] + libImageViewer.LABEL_HEIGHT) / gl.height; // EDIT: Factor 0.6: WHY?
+        var imageWidth = 0.6 * options['thumbnailSize'] / gl.width,
+          imageHeight = (0.6 * options['thumbnailSize'] + libImageViewer.LABEL_HEIGHT) / gl.height; // EDIT: Factor 0.6: WHY?
         if (d1 < d0) {
           // Swap d0 <-> d1
           var temp = d0;
@@ -1283,8 +1334,10 @@ export function GlobalView(div, startupOptions) {
     if (!dataset.imageFilenames)
       return;
 
-    var d0 = activeInputs[0], d1 = activeInputs[1];
-    var offsets = tf.getOffsets(), scales = tf.getScales();
+    var d0 = activeInputs[0],
+      d1 = activeInputs[1];
+    var offsets = tf.getOffsets(),
+      scales = tf.getScales();
 
     // Computed expected value (= mean) of points -> E
     var E = [0, 0];
@@ -1348,7 +1401,8 @@ export function GlobalView(div, startupOptions) {
     };
     var locToPos = function (l) {
       l = (l + 4) % 4;
-      var p, li = Math.floor(l);
+      var p,
+        li = Math.floor(l);
       switch (li) {
         case 0: p = [0, li + 1 - l]; break;
         case 1: p = [l - li, 0]; break;
@@ -1361,7 +1415,9 @@ export function GlobalView(div, startupOptions) {
     };
 
     var imageLocations = [];
-    var dest, v0 = dataset.dataVectors[activeInputs[0]], v1 = dataset.dataVectors[activeInputs[1]];
+    var dest,
+      v0 = dataset.dataVectors[activeInputs[0]],
+      v1 = dataset.dataVectors[activeInputs[1]];
     points.forEach(function (p) {
       if (!dataset.imageFilenames[p])
         return;
@@ -1518,8 +1574,16 @@ export function GlobalView(div, startupOptions) {
 
   // >>> Mouse handlers
 
-  var mouseOverDatapoint = -1, pointDragDownPos = null, viewDragStartPos = null, viewDragX, viewDragY, viewDragZ;
-  var mouseOverAxisLabel = null, mouseOverImage = null, imageDragStartPos = null, imageDragImages = [];
+  var mouseOverDatapoint = -1,
+    pointDragDownPos = null,
+    viewDragStartPos = null,
+    viewDragX,
+    viewDragY,
+    viewDragZ;
+  var mouseOverAxisLabel = null,
+    mouseOverImage = null,
+    imageDragStartPos = null,
+    imageDragImages = [];
 
   /**
    * @callback onMouseDownCallback
@@ -1635,7 +1699,8 @@ export function GlobalView(div, startupOptions) {
    * @type {onThumbnailSelectionChangedCallback}
    */
   this['onThumbnailSelectionChanged'] = null;
-  var ctrlPressed = false, shiftPressed = false;
+  var ctrlPressed = false,
+    shiftPressed = false;
   const CTRL = navigator.appVersion.indexOf('Mac') == -1 ? 17 : 224;
   libUtility.addKeyDownHandler(function (event) {
     if(event.keyCode === CTRL)
@@ -1649,7 +1714,9 @@ export function GlobalView(div, startupOptions) {
     else if(event.keyCode === 16)
       shiftPressed = false;
   });
-  canvas.oncontextmenu = function () { return false; }; // Disable canvas context menu
+  canvas.oncontextmenu = function () {
+    return false;
+  }; // Disable canvas context menu
   canvas.onmousedown = function (event) {
     if (tf === null || offscreenRendering !== null)
       return;
@@ -1712,9 +1779,13 @@ export function GlobalView(div, startupOptions) {
     // Transform p from device coordinates to dataset coordinates
     tf.deviceCoordToDatasetCoord(p, p);
 
-    var closest = Number.MAX_VALUE, closestIndex = -1, sqDist;
-    var sqscl0 = tf.getScale(0)*tf.getScale(0), sqscl1 = tf.getScale(1)*tf.getScale(1);
-    var v0 = dataset.dataVectors[activeInputs[0]], v1 = dataset.dataVectors[activeInputs[1]];
+    var closest = Number.MAX_VALUE,
+      closestIndex = -1,
+      sqDist;
+    var sqscl0 = tf.getScale(0)*tf.getScale(0),
+      sqscl1 = tf.getScale(1)*tf.getScale(1);
+    var v0 = dataset.dataVectors[activeInputs[0]],
+      v1 = dataset.dataVectors[activeInputs[1]];
     pointViewer.points.forEach(function (i) {
       sqDist = sqscl0 * Math.pow(p[0] - v0.getValue(i), 2) + sqscl1 * Math.pow(p[1] - v1.getValue(i), 2);
       if (sqDist < closest) {
@@ -1797,7 +1868,8 @@ export function GlobalView(div, startupOptions) {
     p[1] = 1 - 2 * p[1] / canvasBounds.height;
     p[2] = 1 - (p[2] - plotBounds.y) / plotBounds.height;
 
-    var d0 = activeInputs[0], d1 = activeInputs[1];
+    var d0 = activeInputs[0],
+      d1 = activeInputs[1];
 
     if (viewDragStartPos) {
       var d2 = activeInputs[2];
@@ -1848,9 +1920,13 @@ export function GlobalView(div, startupOptions) {
     // Transform p from device coordinates to dataset coordinates
     tf.deviceCoordToDatasetCoord(p, p);
 
-    var closest = Number.MAX_VALUE, closestIndex = -1, sqDist;
-    var sqscl0 = tf.getScale(0)*tf.getScale(0), sqscl1 = tf.getScale(1)*tf.getScale(1);
-    var v0 = dataset.dataVectors[d0], v1 = dataset.dataVectors[d1];
+    var closest = Number.MAX_VALUE,
+      closestIndex = -1,
+      sqDist;
+    var sqscl0 = tf.getScale(0)*tf.getScale(0),
+      sqscl1 = tf.getScale(1)*tf.getScale(1);
+    var v0 = dataset.dataVectors[d0],
+      v1 = dataset.dataVectors[d1];
     pointViewer.points.forEach(function (i) {
       sqDist = sqscl0 * Math.pow(p[0] - v0.getValue(i), 2) + sqscl1 * Math.pow(p[1] - v1.getValue(i), 2);
       if (sqDist < closest) {
@@ -1913,8 +1989,11 @@ export function GlobalView(div, startupOptions) {
         // Close polygon
         mousePolygon.push(mousePolygon[0]);
 
-        var px, py, selection = [];
-        var v0 = dataset.dataVectors[activeInputs[0]], v1 = dataset.dataVectors[activeInputs[1]];
+        var px,
+          py,
+          selection = [];
+        var v0 = dataset.dataVectors[activeInputs[0]],
+          v1 = dataset.dataVectors[activeInputs[1]];
         pointViewer.points.forEach(function (i) {
           px = v0.getValue(i);
           py = v1.getValue(i);
@@ -1954,8 +2033,11 @@ export function GlobalView(div, startupOptions) {
         tf.deviceCoordToDatasetCoord(p, p);
         mouseRect.r = p[0]; mouseRect.b = p[1];
 
-        var px, py, selection = [];
-        var v0 = dataset.dataVectors[activeInputs[0]], v1 = dataset.dataVectors[activeInputs[1]];
+        var px,
+          py,
+          selection = [];
+        var v0 = dataset.dataVectors[activeInputs[0]],
+          v1 = dataset.dataVectors[activeInputs[1]];
         pointViewer.points.forEach(function (i) {
           px = v0.getValue(i);
           py = v1.getValue(i);
@@ -1997,7 +2079,9 @@ export function GlobalView(div, startupOptions) {
     var canvasBounds = canvas.getBoundingClientRect();
     var p = new Float32Array([event.clientX - canvasBounds.left, event.clientY - canvasBounds.top, event.clientY - canvasBounds.top]);
 
-    var scrollX, scrollY, scrollZ;
+    var scrollX,
+      scrollY,
+      scrollZ;
     if (p[0] > plotBounds.x + plotBounds.width) {
       scrollX = scrollY = false;
       scrollZ = true;
@@ -2012,7 +2096,9 @@ export function GlobalView(div, startupOptions) {
     p[1] = 1 - 2 * p[1] / canvasBounds.height;
     p[2] = 1 - (p[2] - plotBounds.y) / plotBounds.height;
 
-    var d0 = activeInputs[0], d1 = activeInputs[1], d2 = activeInputs[2];
+    var d0 = activeInputs[0],
+      d1 = activeInputs[1],
+      d2 = activeInputs[2];
 
     // Transform p from device coordinates to dataset coordinates
     tf.deviceCoordToDatasetCoord(p, p);

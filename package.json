@@ -18,7 +18,7 @@
     "build": "npm run transpile:commonjs && npm run transpile:es && npm run bundle",
     "bundle": "cross-env BABEL_ENV=es NODE_ENV=production webpack --config webpack.config.js",
     "clean": "rimraf es lib dist",
-    "lint": "eslint src/",
+    "lint": "eslint src/*.js src/test/*.js src/test/tests/*.js examples/",
     "preversion": "npm run clean && npm run lint && npm run test",
     "postversion": "git push && git push --tags",
     "transpile:commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir lib",

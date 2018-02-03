@@ -45,9 +45,11 @@ domready(function () {
     imageFilenames: data => imagesPath + data[1] + '.png'
   }, function (dataset) {
     const ndim = Math.min(2, dataset.dataVectors.length - 1); // -1 ... Adjust number of dataVectors, since we don't plot dataVectors[0] (tagged protein)
-    var subPlotWidth = PLOT_SIZE / ndim, subPlotHeight = subPlotWidth;
+    var subPlotWidth = PLOT_SIZE / ndim,
+      subPlotHeight = subPlotWidth;
     plots = Array.create(ndim * ndim, function (d) {
-      var x = d % ndim, y = Math.floor(d / ndim);
+      var x = d % ndim,
+        y = Math.floor(d / ndim);
 
       OPTIONS.padding = [y * subPlotHeight, (ndim - x - 1) * subPlotWidth, (ndim - y - 1) * subPlotHeight, x * subPlotWidth];
 

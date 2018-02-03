@@ -29,7 +29,9 @@ export function HistogramViewer(gl, globalView) {
     1, 0, 0
   ]), null, null, null, null, null, gl.LINES);
 
-  var dataset = null, activeInputs = null, options = {};
+  var dataset = null,
+    activeInputs = null,
+    options = {};
   var axes = [
     {histogram: null, d: -1, meshHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.TRIANGLES), meshLineHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP)},
     {histogram: null, d: -1, meshHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.TRIANGLES), meshLineHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP)},
@@ -39,7 +41,8 @@ export function HistogramViewer(gl, globalView) {
   this.render = function (flipY, tf, plotBounds) {
     var mattrans = libGlMatrix.mat4.create();
 
-    var pos = libGlMatrix.vec3.create(), scl = libGlMatrix.vec3.create();
+    var pos = libGlMatrix.vec3.create(),
+      scl = libGlMatrix.vec3.create();
     tf.datasetCoordToDeviceCoord(pos, [
       axes[0].histogram ? axes[0].histogram.invTransformX(0) : 0.0,
       axes[1].histogram ? axes[1].histogram.invTransformX(0) : 0.0,
@@ -204,7 +207,9 @@ export function HistogramViewer(gl, globalView) {
     // console.log(axis.histogram);
 
     var positions = new Float32Array((6 * numBins) * 3);
-    var v3_set = function (i, x, y) { i *= 3; positions[i++] = x; positions[i++] = y; positions[i++] = 0.0; };
+    var v3_set = function (i, x, y) {
+      i *= 3; positions[i++] = x; positions[i++] = y; positions[i++] = 0.0;
+    };
     for (var b = 0, i = -1, x_scale = 1 / numBins; b < numBins; ++b) {
       var y = axis.histogram.data[b] / axis.histogram.maximum;
 

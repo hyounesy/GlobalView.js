@@ -45,7 +45,9 @@ export function DensityViewer(gl, globalView) {
   this.setClusterMapThreshold = function (threshold) {
     if (this.showDensityMap && clusterMapOptions.threshold !== threshold) {
       clusterMapOptions.threshold = threshold;
-      dataset.requestClusterMap(globalView.getActiveColumn(0), globalView.getActiveColumn(1), clusterMapOptions, function () { globalView.invalidate(); }); // Request clusterMap and redraw once it's computed
+      dataset.requestClusterMap(globalView.getActiveColumn(0), globalView.getActiveColumn(1), clusterMapOptions, function () {
+        globalView.invalidate();
+      }); // Request clusterMap and redraw once it's computed
     } else
       clusterMapOptions.threshold = threshold;
   };
@@ -128,7 +130,9 @@ export function DensityViewer(gl, globalView) {
         sdrClusterMap.matTexCoordTransform(new Float32Array(d0 > d1 ? [0, 1, 1, 0] : [1, 0, 0, 1]));
         meshQuad.draw();
       } else // If clusterMap isn't ready yet
-        dataset.requestClusterMap(d0, d1, clusterMapOptions, function () { globalView.invalidate(); }); // Request clusterMap and redraw once it's computed
+        dataset.requestClusterMap(d0, d1, clusterMapOptions, function () {
+          globalView.invalidate();
+        }); // Request clusterMap and redraw once it's computed
     } else if (this.showDensityMap) {
       if (dataset && dataset.isDensityMapReady(d0, d1)) {
         // If densityMap is ready
@@ -165,11 +169,15 @@ export function DensityViewer(gl, globalView) {
         sdrDensityMap.color(gl.foreColor[0], gl.foreColor[1], gl.foreColor[2]);
         meshQuad.draw();
       } else // If densityMap isn't ready yet
-        dataset.requestDensityMap(d0, d1, undefined, undefined, function () { globalView.invalidate(); }); // Request densityMap and redraw once it's computed
+        dataset.requestDensityMap(d0, d1, undefined, undefined, function () {
+          globalView.invalidate();
+        }); // Request densityMap and redraw once it's computed
     }
   }
 
-  this.setDataset = function (_dataset, options) { dataset = _dataset; }
+  this.setDataset = function (_dataset, options) {
+    dataset = _dataset;
+  }
   this.onInputChanged = function (activeInputs, animatedInputs, options) {}
   this.onOptionsChanged = function (options) {}
   this.onPlotBoundsChanged = function (plotBounds) {}
@@ -179,10 +187,15 @@ export function DensityViewer(gl, globalView) {
     if (densityMap.texture === null || d0 === d1)
       return;
 
-    var width = densityMap.width, height = densityMap.height, densityScale = densityMap.scale, densityOffset = -densityMap.offset;
+    var width = densityMap.width,
+      height = densityMap.height,
+      densityScale = densityMap.scale,
+      densityOffset = -densityMap.offset;
 
-    var xMin = 0, xMax = width;
-    var yMin = 0, yMax = height;
+    var xMin = 0,
+      xMax = width;
+    var yMin = 0,
+      yMax = height;
 
     var bodies = images.map(function (image) {
       var x = densityMap.transformX(image.imagePos[d0]);
@@ -193,7 +206,8 @@ export function DensityViewer(gl, globalView) {
     });
 
     var repellPoint = function (body, point_x, point_y, minDist, minDistMagnitude, maxDist, maxDistMagnitude) {
-      var dx = body.x - point_x, dy = body.y - point_y;
+      var dx = body.x - point_x,
+        dy = body.y - point_y;
       var dist = Math.sqrt(dx*dx + dy*dy);
 
       if (dist < minDist) {
@@ -211,9 +225,11 @@ export function DensityViewer(gl, globalView) {
     }
 
     for (var i = 0; i < bodies.length; ++i) {
-      var sample_x = Math.floor(bodies[i].x), sample_y = Math.floor(bodies[i].y);
+      var sample_x = Math.floor(bodies[i].x),
+        sample_y = Math.floor(bodies[i].y);
       var density = densityMap[sample_x * width + sample_y];
-      var bestDir = null, lowestDensity = density;
+      var bestDir = null,
+        lowestDensity = density;
       [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]].forEach(function (dir) {
         var x = sample_x + dir[0];
         var y = sample_y + dir[1];

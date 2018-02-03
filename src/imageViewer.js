@@ -190,7 +190,9 @@ export function ImageViewer(gl, globalView) {
     if (images.length === 0)
       return;
     var mattrans = libGlMatrix.mat4.create();
-    var imagePos = libGlMatrix.vec2.create(), refPos = libGlMatrix.vec2.create(), imageSize = libGlMatrix.vec2.create();
+    var imagePos = libGlMatrix.vec2.create(),
+      refPos = libGlMatrix.vec2.create(),
+      imageSize = libGlMatrix.vec2.create();
 
     // gl.disable(gl.SCISSOR_TEST);
 
@@ -239,7 +241,8 @@ export function ImageViewer(gl, globalView) {
         tf.transformPos(imagePos, image.imagePos);
         tf.transformPos(refPos, image.refPos);
         libGlMatrix.mat4.translate(mattrans, mattrans, [imagePos[0], imagePos[1], 0.0]);
-        var dx = refPos[0] - imagePos[0], dy = refPos[1] - imagePos[1];
+        var dx = refPos[0] - imagePos[0],
+          dy = refPos[1] - imagePos[1];
         libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.atan2(dy, dx));
         libGlMatrix.mat4.scale(mattrans, mattrans, [Math.sqrt(dx*dx + dy*dy), 1.0, 1.0]);
         sdrLine.matWorldViewProj(mattrans);
@@ -265,7 +268,8 @@ export function ImageViewer(gl, globalView) {
 
       // Set image size
       tf.transformNml2(imageSize, image.imageSize);
-      var w = image.tex.image.width, h = image.tex.image.height;
+      var w = image.tex.image.width,
+        h = image.tex.image.height;
       // imageSize[0] *= 2 / gl.width; imageSize[1] *= 2 / gl.height; // Transform imageSize from normalized space to device space
       var scale;
       if (Math.max(imageSize[0], imageSize[0] * h / w, 1.0) < Math.max(imageSize[1] * w / h, imageSize[1]))
@@ -339,7 +343,11 @@ export function ImageViewer(gl, globalView) {
     // gl.enable(gl.SCISSOR_TEST);
   }
 
-  var options = {}, defaultImageBorderWidth = 1, defaultImageBorderColor = gl.foreColor, defaultImageLineColor = gl.foreColor, defaultImageLabelColor = gl.backColor;
+  var options = {},
+    defaultImageBorderWidth = 1,
+    defaultImageBorderColor = gl.foreColor,
+    defaultImageLineColor = gl.foreColor,
+    defaultImageLabelColor = gl.backColor;
   this.setDataset = function (dataset, options) {}
   this.onInputChanged = function (activeInputs, animatedInputs, options) {}
   this.onOptionsChanged = function (_options) {
@@ -375,7 +383,9 @@ export function ImageViewer(gl, globalView) {
     }
 
     var newImage = new Thumbnail(globalView);
-    newImage.tex = libGraphics.LoadTexture(gl, imageFilename, function () { globalView.invalidate(); });
+    newImage.tex = libGraphics.LoadTexture(gl, imageFilename, function () {
+      globalView.invalidate();
+    });
     newImage.imagePos = imagePos;
     newImage.refIndex = refIndex;
     newImage.refPos = refPos;
@@ -395,7 +405,10 @@ export function ImageViewer(gl, globalView) {
   }
 
   this.resolveIntersections = function (tf) {
-    var a = libGlMatrix.vec2.create(), b = libGlMatrix.vec2.create(), c = libGlMatrix.vec2.create(), d = libGlMatrix.vec2.create();
+    var a = libGlMatrix.vec2.create(),
+      b = libGlMatrix.vec2.create(),
+      c = libGlMatrix.vec2.create(),
+      d = libGlMatrix.vec2.create();
     for (var i = 1; i < images.length; ++i)
       if (images[i].imagePos) {
         tf.transformPos(a, images[i].imagePos);
@@ -435,7 +448,9 @@ export function ImageViewer(gl, globalView) {
   }
 
   this.imageFromPoint = function (tf, p) {
-    var imagePos = libGlMatrix.vec2.create(), refPos = libGlMatrix.vec2.create(), imageSize = libGlMatrix.vec2.create();
+    var imagePos = libGlMatrix.vec2.create(),
+      refPos = libGlMatrix.vec2.create(),
+      imageSize = libGlMatrix.vec2.create();
 
     var selectedImage = null;
     images.forEach(function (image) {
@@ -445,7 +460,8 @@ export function ImageViewer(gl, globalView) {
       tf.transformPos(imagePos, image.imagePos);
 
       tf.transformNml2(imageSize, image.imageSize);
-      var w = image.tex.image.width, h = image.tex.image.height;
+      var w = image.tex.image.width,
+        h = image.tex.image.height;
       var size;
       if (Math.max(imageSize[0], imageSize[0] * h / w, 1.0) < Math.max(imageSize[1] * w / h, imageSize[1]))
         size = [Math.floor(imageSize[0]) * 2 / gl.width, Math.floor(imageSize[0] * h / w) * 2 / gl.height, 1];

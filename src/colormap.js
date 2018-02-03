@@ -66,8 +66,8 @@ export function Colormap(gl, globalView) {
     2: libGraphics.LoadTextureFromByteArray(
       gl,
       new Uint8Array([255, 0, 0, 255, 0, 255, 0, 255]),
-      2, 1,
-    ),
+      2, 1
+    )
   };
   // not used:
   // this.builtinColormaps = ['exhue', 'rainbow'];
@@ -329,7 +329,8 @@ export function parseColormap(colormap) {
     if (colormap.length === 0)
       return null;
     if (libUtility.isString(colormap[0])) {
-      var array = [], color;
+      var array = [],
+        color;
       for (var i = 0; i < colormap.length; ++i)
         if ((color = parseColor(colormap[i])))
           Array.prototype.push.apply(array, color);

@@ -1,7 +1,8 @@
 export function linspace(first, second, last) {
-  var offset = second - first;
-  var halfOffset = 0.5 * offset;
-  var values = [first], i = 0;
+  const offset = second - first;
+  const halfOffset = 0.5 * offset;
+  let values = [first],
+    i = 0;
   while (values[i] + halfOffset < last)
     values.push(first + ++i * offset);
   values[i] = last;
@@ -189,7 +190,9 @@ export function i24ToFloatArray(clr) {
 
 export function F32toI24(floats, bounds) {
   var bytes = new Uint8Array(4 * floats.length);
-  var i = 0, voffset = -bounds[0], vscale = 0xFFFFFE / (bounds[1] - bounds[0]);
+  var i = 0,
+    voffset = -bounds[0],
+    vscale = 0xFFFFFE / (bounds[1] - bounds[0]);
   floats.forEach(function (value) {
     value += voffset;
     value *= vscale;
@@ -207,7 +210,9 @@ export function F32toI24(floats, bounds) {
 }
 export function F32toI24flipY(floats, bounds, width, height) {
   var bytes = new Uint8Array(4 * floats.length);
-  var i = 0, voffset = -bounds[0], vscale = 0xFFFFFE / (bounds[1] - bounds[0]);
+  var i = 0,
+    voffset = -bounds[0],
+    vscale = 0xFFFFFE / (bounds[1] - bounds[0]);
   for(var y = 0; y < height; ++y)
     for(var x = 0; x < width; ++x) {
       // var value = Math.floor((floats[(height - y - 1) * width + x] - bounds[0]) * vscale) + 1;
@@ -231,7 +236,13 @@ export function hsv2rgb(hsv) {
   // Source: https://stackoverflow.com/a/6930407
   if(hsv[1] <= 0.000001)
     return [hsv[2], hsv[2], hsv[2]];
-  var hh, p, q, t, ff, i, out;
+  var hh,
+    p,
+    q,
+    t,
+    ff,
+    i,
+    out;
 
   hh = hsv[0];
   if(hh >= 1.0) hh = 0.0;
@@ -303,7 +314,9 @@ Math.seededRandom = function () { // Source: https://stackoverflow.com/a/1930372
   return x - Math.floor(x);
 }
 
-Math.clamp = function (f, minimum, maximum) { return Math.min(Math.max(f, minimum), maximum); };
+Math.clamp = function (f, minimum, maximum) {
+  return Math.min(Math.max(f, minimum), maximum);
+};
 
 
 export function createCookie(name, value, days) {
@@ -488,7 +501,8 @@ export function PriorityQueue(priorityProperty) {
   this.length = 0;
   this.push = function (element) {
     ++this.length;
-    var i, p = element[priorityProperty];
+    var i,
+      p = element[priorityProperty];
     for (i = 0; i < data.length && data[i][priorityProperty] >= p; i++) {}
     data.splice(i, 0, element);
   }
@@ -543,7 +557,8 @@ export function HashSet(onchanged) {
    */
   this.append = function (values) {
     // var t = performance.now();
-    var invalidate = false, self = this;
+    var invalidate = false,
+      self = this;
     values.forEach(function (value) {
       if (hash[value] !== true) {
         hash[value] = true;
@@ -582,7 +597,8 @@ export function HashSet(onchanged) {
     }
 
     // var t = performance.now();
-    var newHash = {}, identical = (values.length === this.length);
+    var newHash = {},
+      identical = (values.length === this.length);
     values.forEach(function (value) {
       if (identical && hash[value] !== true)
         identical = false;
@@ -633,7 +649,8 @@ export function HashSet(onchanged) {
    */
   this.remove = function (values) {
     // var t = performance.now();
-    var invalidate = false, self = this;
+    var invalidate = false,
+      self = this;
     values.forEach(function (value) {
       if (hash[value] === true) {
         delete hash[value];

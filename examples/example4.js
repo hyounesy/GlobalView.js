@@ -2,7 +2,8 @@ const globalView = require('../dist/global-view.js');
 const domready = require('domready');
 
 domready(function () {
-  var preResults = document.getElementById('preResults'), measureTime = function (phase, iterations) {
+  var preResults = document.getElementById('preResults'),
+    measureTime = function (phase, iterations) {
       var tEnd = performance.now();
       var time = (tEnd - tStart) / iterations;
       if (time >= 1e3)
@@ -14,7 +15,8 @@ domready(function () {
       else
         preResults.innerText += phase + ': ' + (time * 1e6) + ' nanoseconds\n';
       tStart = performance.now();
-    }, tStart = performance.now();
+    },
+    tStart = performance.now();
 
   var plot = new globalView.GlobalView(document.getElementById('divGlobalView'), {
     pointSize: 1,
@@ -24,7 +26,9 @@ domready(function () {
   });
   measureTime('Initialization', 1);
 
-  new globalView.RandomDataset(1e6, 2, function (dataset) { plot.load(dataset, 0, 1, 1, 1); });
+  new globalView.RandomDataset(1e6, 2, function (dataset) {
+    plot.load(dataset, 0, 1, 1, 1);
+  });
   measureTime('Random dataset generation', 1);
 
   for (var frames = 0; performance.now() - tStart < 1000; ++frames)

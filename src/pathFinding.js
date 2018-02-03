@@ -79,7 +79,8 @@ function UniformCostSearch(problem) {
 
   while (true) {
     problem.forEachSuccessor(node.state, function (successor, successor_cost) {
-      var successor_hash = problem.computeHash(successor), _successor;
+      var successor_hash = problem.computeHash(successor),
+        _successor;
       if (libUtility.isUndefined(_successor = closed[successor_hash]) || node.cost + successor_cost < _successor.prevCost) {
         fringe.push({state: successor, cost: node.cost + successor_cost});
         closed[successor_hash] = {state: successor, prevCost: node.cost + successor_cost};
@@ -165,7 +166,8 @@ function SimpleGreedySearch(problem) {
   if (problem.isGoalState(state))
     return state; // Start state is goal
 
-  var cheapestCost = Number.MAX_VALUE, cheapestSuccessor;
+  var cheapestCost = Number.MAX_VALUE,
+    cheapestSuccessor;
   while (true) {
     cheapestSuccessor = null;
     problem.forEachSuccessor(state, function (successor, successor_cost) {

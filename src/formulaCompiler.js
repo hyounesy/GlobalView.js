@@ -73,10 +73,16 @@ export var FormulaCompiler = {
 
     // >>> Tokenizer
 
-    var chrPos = 0, chr = formula.charAt(0), curTok = null, curVal;
-    function getch() { return chr = formula.charAt(++chrPos); }
+    var chrPos = 0,
+      chr = formula.charAt(0),
+      curTok = null,
+      curVal;
+    function getch() {
+      return chr = formula.charAt(++chrPos);
+    }
     function getTok() {
-      var sign = 1, repeat = false;
+      var sign = 1,
+        repeat = false;
       do {
         repeat = false;
         switch (chr) {
@@ -94,7 +100,11 @@ export var FormulaCompiler = {
               case '-': getch(); curTok = '--'; return true;
               case '=': getch(); curTok = '-='; return true;
               default:
-                if (chr >= '0' && chr <= '9') { sign = -1; break; } else { curTok = '-'; return true; }
+                if (chr >= '0' && chr <= '9') {
+                  sign = -1; break;
+                } else {
+                  curTok = '-'; return true;
+                }
             }
           case '*':
             switch (getch()) {
@@ -118,7 +128,8 @@ export var FormulaCompiler = {
       while (repeat);
 
       if (chr >= '0' && chr <= '9') {
-        var numberString = chr, hasDot = false;
+        var numberString = chr,
+          hasDot = false;
         while (getch() !== '') {
           if (chr >= '0' && chr <= '9')
             numberString += chr;
@@ -346,7 +357,9 @@ export var FormulaCompiler = {
           return [0]; // List of length 0
         }
 
-        var code = [], typeList = [], len = 1;
+        var code = [],
+          typeList = [],
+          len = 1;
         while (true) {
           var expr = exprAST();
           if (!expr) return null;
@@ -557,7 +570,8 @@ function verify(formula, result) {
 }
 
 function benchmark(nIter, javascriptCode, formulaCode, evalCode) {
-  var sum, tStart;
+  var sum,
+    tStart;
 
   sum = 0.0;
   tStart = performance.now();

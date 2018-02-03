@@ -1,10 +1,18 @@
 const libUtility = require('./utility.js');
 
 export function addTransformFunctions(cls) {
-  cls.transformX = function (x) { return cls.transform[0] * x + cls.transform[1]; };
-  cls.transformY = function (y) { return cls.transform[2] * y + cls.transform[3]; };
-  cls.invTransformX = function (x) { return (x - cls.transform[1]) / cls.transform[0]; };
-  cls.invTransformY = function (y) { return (y - cls.transform[3]) / cls.transform[2]; };
+  cls.transformX = function (x) {
+    return cls.transform[0] * x + cls.transform[1];
+  };
+  cls.transformY = function (y) {
+    return cls.transform[2] * y + cls.transform[3];
+  };
+  cls.invTransformX = function (x) {
+    return (x - cls.transform[1]) / cls.transform[0];
+  };
+  cls.invTransformY = function (y) {
+    return (y - cls.transform[3]) / cls.transform[2];
+  };
 }
 
 /**
@@ -21,10 +29,18 @@ export function DensityMap(obj) {
   this.offset = obj.offset;
   this.transform = obj.transform;
   this.options = obj.options;
-  this.transformX = function (x) { return this.transform[0] * x + this.transform[1]; };
-  this.transformY = function (y) { return this.transform[2] * y + this.transform[3]; };
-  this.invTransformX = function (x) { return (x - this.transform[1]) / this.transform[0]; };
-  this.invTransformY = function (y) { return (y - this.transform[3]) / this.transform[2]; };
+  this.transformX = function (x) {
+    return this.transform[0] * x + this.transform[1];
+  };
+  this.transformY = function (y) {
+    return this.transform[2] * y + this.transform[3];
+  };
+  this.invTransformX = function (x) {
+    return (x - this.transform[1]) / this.transform[0];
+  };
+  this.invTransformY = function (y) {
+    return (y - this.transform[3]) / this.transform[2];
+  };
 }
 
 /**
@@ -119,10 +135,18 @@ export function ClusterMap(obj) {
   this.width = obj.width;
   this.height = obj.height;
   this.transform = obj.transform;
-  this.transformX = function (x) { return this.transform[0] * x + this.transform[1]; };
-  this.transformY = function (y) { return this.transform[2] * y + this.transform[3]; };
-  this.invTransformX = function (x) { return (x - this.transform[1]) / this.transform[0]; };
-  this.invTransformY = function (y) { return (y - this.transform[3]) / this.transform[2]; };
+  this.transformX = function (x) {
+    return this.transform[0] * x + this.transform[1];
+  };
+  this.transformY = function (y) {
+    return this.transform[2] * y + this.transform[3];
+  };
+  this.invTransformX = function (x) {
+    return (x - this.transform[1]) / this.transform[0];
+  };
+  this.invTransformY = function (y) {
+    return (y - this.transform[3]) / this.transform[2];
+  };
 }
 
 /**
@@ -197,7 +221,8 @@ export function computeHistogram(dataset, d, width) {
  */
 export function computeHistogram2D(dataset, d0, d1, width, height) {
   var n = dataset.length;
-  var v0 = dataset.dataVectors[d0], v1 = dataset.dataVectors[d1];
+  var v0 = dataset.dataVectors[d0],
+    v1 = dataset.dataVectors[d1];
   var s0 = width / (v0.maximum - v0.minimum);
   var o0 = -v0.minimum * s0;
   var s1 = height / (v1.maximum - v1.minimum);
@@ -240,12 +265,20 @@ export function computeHistogram2D(dataset, d0, d1, width, height) {
  */
 export function computeDensityMap(histogram, options) {
   var _tiktok_start;
-  var tik = function () { _tiktok_start = performance.now(); }
-  var tok = function () { return (performance.now() - _tiktok_start) / 1000; }
+  var tik = function () {
+    _tiktok_start = performance.now();
+  }
+  var tok = function () {
+    return (performance.now() - _tiktok_start) / 1000;
+  }
 
   // Get required information from histogram
-  var width = histogram.width, height = histogram.height, transform = histogram.transform.slice(), initialDensities = histogram.data;
-  var minDensity, maxDensity = histogram.maximum;
+  var width = histogram.width,
+    height = histogram.height,
+    transform = histogram.transform.slice(),
+    initialDensities = histogram.data;
+  var minDensity,
+    maxDensity = histogram.maximum;
 
   // Set parameters
   const cutoffIntensity = options['cutoffIntensity'];
@@ -257,7 +290,10 @@ export function computeDensityMap(histogram, options) {
 
   // Compute a measure of expected runtime
   var expectedRuntime = 0;
-  var newBounds_l = Number.MAX_VALUE, newBounds_r = Number.MIN_VALUE, newBounds_t = Number.MAX_VALUE, newBounds_b = Number.MIN_VALUE;
+  var newBounds_l = Number.MAX_VALUE,
+    newBounds_r = Number.MIN_VALUE,
+    newBounds_t = Number.MAX_VALUE,
+    newBounds_b = Number.MIN_VALUE;
   tik();
   if (inflateToFit) {
     for (var y = 0; y < height; ++y)
@@ -294,7 +330,8 @@ export function computeDensityMap(histogram, options) {
 
   while (expectedRuntime > options['maxExpectedRuntime'] && width >= 2 && height >= 2) {
     // Downscale density map size by a factor of 2
-    var downScaledWidth = width >> 1, downScaledHeight = height >> 1;
+    var downScaledWidth = width >> 1,
+      downScaledHeight = height >> 1;
     // console.log("Expected runtime too high. Down-scaling to: " + downScaledWidth + "x" + downScaledHeight);
 
     transform[0] *= downScaledWidth / width;
@@ -357,7 +394,8 @@ export function computeDensityMap(histogram, options) {
   }
   // console.log("Expected runtime acceptable");
 
-  var densitMapWidth, densitMapHeight;
+  var densitMapWidth,
+    densitMapHeight;
   if (inflateToFit) {
     if (options['shrinkToFit']) {
       // Inflate output size to keep a 1-pixel-wide frame of zeros around the density map
@@ -487,7 +525,9 @@ export function computeDensityMap(histogram, options) {
     transform[3] -= newBounds_t;
 
     // Shrink density map to exclude non-empty area
-    var resizedDensitMapWidth = Math.max(0, newBounds_r - newBounds_l + 1), resizedDensitMapHeight = Math.max(0, newBounds_b - newBounds_t + 1), resizedDensityMapLength = resizedDensitMapWidth * resizedDensitMapHeight;
+    var resizedDensitMapWidth = Math.max(0, newBounds_r - newBounds_l + 1),
+      resizedDensitMapHeight = Math.max(0, newBounds_b - newBounds_t + 1),
+      resizedDensityMapLength = resizedDensitMapWidth * resizedDensitMapHeight;
     var resizedDensities = new Float32Array(resizedDensityMapLength);
     if (resizedDensities.length !== 0)
       for (var y = 0, i = 0, j = newBounds_l + newBounds_t * densitMapWidth; y < resizedDensitMapHeight; ++y, j += densitMapWidth - resizedDensitMapWidth)
@@ -557,8 +597,11 @@ export function findRepresentativePoints(dataset, d0, d1, densityMap, k, dist, t
     return []; // No representative points
 
   var n = dataset.length;
-  var densities = densityMap.data, width = densityMap.width, height = densityMap.height;
-  var v0 = dataset.dataVectors[d0], v1 = dataset.dataVectors[d1];
+  var densities = densityMap.data,
+    width = densityMap.width,
+    height = densityMap.height;
+  var v0 = dataset.dataVectors[d0],
+    v1 = dataset.dataVectors[d1];
 
   // Compute density at each datapoint
   var pointDensities = new Float32Array(n);
@@ -571,7 +614,9 @@ export function findRepresentativePoints(dataset, d0, d1, densityMap, k, dist, t
 
   // Create indices sorted by density
   var indices = Array.from(pointDensities.keys());
-  indices.sort(function (idxA, idxB) { return pointDensities[idxA] - pointDensities[idxB]; });
+  indices.sort(function (idxA, idxB) {
+    return pointDensities[idxA] - pointDensities[idxB];
+  });
 
   /* // If k >= n, all points are representative
   if (k >= n)
@@ -579,8 +624,11 @@ export function findRepresentativePoints(dataset, d0, d1, densityMap, k, dist, t
 
   // Find k representative points
   var sqDist = dist * dist;
-  var d_high = indices.length - 1, d_low = 0;
-  var pointIsHigh, numHighRepresentativePoints = 0, ratio = 0.5; // Initial ratio is "fifty-fifty"
+  var d_high = indices.length - 1,
+    d_low = 0;
+  var pointIsHigh,
+    numHighRepresentativePoints = 0,
+    ratio = 0.5; // Initial ratio is "fifty-fifty"
   var next = function () {
     if (ratio < targetRatio || (ratio === targetRatio && targetRatio >= 0.5)) {
       // If ratio is too low or ratio is perfect and targetRatio is high
@@ -656,7 +704,9 @@ export function findRepresentativePointsND(dataset, densityMap, k, dist) {
   var n = dataset.length;
   var nc = dataset.numColumns;
   var size = densityMap[0][0].width;
-  var offsets = new Float32Array(nc), scales = new Float32Array(nc), p = new Float32Array(nc);
+  var offsets = new Float32Array(nc),
+    scales = new Float32Array(nc),
+    p = new Float32Array(nc);
   for (var c = 0; c < nc; ++c) {
     scales[c] = 1 / (dataset.columns[c].maximum - dataset.columns[c].minimum);
     offsets[c] = -dataset.columns[c].minimum * scales[c];
@@ -678,15 +728,19 @@ export function findRepresentativePointsND(dataset, densityMap, k, dist) {
 
   // Create indices sorted by density
   var indices = Array.from(pointDensities.keys());
-  indices.sort(function (idxA, idxB) { return pointDensities[idxA] - pointDensities[idxB]; });
+  indices.sort(function (idxA, idxB) {
+    return pointDensities[idxA] - pointDensities[idxB];
+  });
 
   /* // If k >= n, all points are representative
   if (k >= n)
     return indices; */
 
   // Find k representative points
-  var sqDist = dist * dist, dpsq = new Float32Array(nc);
-  var d_high = indices.length - 1, d_low = 0;
+  var sqDist = dist * dist,
+    dpsq = new Float32Array(nc);
+  var d_high = indices.length - 1,
+    d_low = 0;
   var representativePoints = [ indices[d_high--] ]; // First represenatative point is point with highest density
   while (d_high >= d_low && representativePoints.length < k) {
     var di = indices[representativePoints.length & 0x1 ? d_low++ : d_high--];
@@ -739,8 +793,13 @@ export function findRepresentativePointsND2(dataset, densityMap, k) {
  * @return {Array<number>} 2D coordinates of the found point in data space
  */
 export function findClosePointOfLowDensity(dataset, d0, d1, p, densityMap, stencilMap, minDistX, minDistY) {
-  var densities = densityMap.data, width = densityMap.width, height = densityMap.height, densityScale = densityMap.scale, densityOffset = -densityMap.offset;
-  var v0 = dataset.dataVectors[d0], v1 = dataset.dataVectors[d1];
+  var densities = densityMap.data,
+    width = densityMap.width,
+    height = densityMap.height,
+    densityScale = densityMap.scale,
+    densityOffset = -densityMap.offset;
+  var v0 = dataset.dataVectors[d0],
+    v1 = dataset.dataVectors[d1];
 
   // Transform density, minDistX, minDistY from [0 ... 1] space to density map space
   densityOffset *= (width + height) / 2;
@@ -763,18 +822,23 @@ export function findClosePointOfLowDensity(dataset, d0, d1, p, densityMap, stenc
   var stencil = stencilMap.data;
 
   // Mark p in stencil map
-  var imgxmin = Math.max(xmin, Math.floor(p0) - minDistX), imgxmax = Math.min(xmax, Math.floor(p0) + minDistX);
-  var imgymin = Math.max(ymin, Math.floor(p1) - minDistY), imgymax = Math.min(ymax, Math.floor(p1) + minDistY);
+  var imgxmin = Math.max(xmin, Math.floor(p0) - minDistX),
+    imgxmax = Math.min(xmax, Math.floor(p0) + minDistX);
+  var imgymin = Math.max(ymin, Math.floor(p1) - minDistY),
+    imgymax = Math.min(ymax, Math.floor(p1) + minDistY);
   for (var y = imgymin; y < imgymax; ++y)
     for (var x = imgxmin; x < imgxmax; ++x)
       stencil[(y - ymin) * stencilStride + (x - xmin)] = 1;
 
   // Square minimum distances
-  var sqMinDistX = minDistX*minDistX, sqMinDistY = minDistY*minDistY;
+  var sqMinDistX = minDistX*minDistX,
+    sqMinDistY = minDistY*minDistY;
   var sqDensityOffset = densityOffset*densityOffset;
 
-  var closestPoint = null, closestPointPenalty = Number.MAX_VALUE;
-  var sqdx, sqdy
+  var closestPoint = null,
+    closestPointPenalty = Number.MAX_VALUE;
+  var sqdx,
+    sqdy
   for (var y = ymin; y < ymax; ++y)
     for (var x = xmin; x < xmax; ++x)
       if (stencil[(y - ymin) * stencilStride + (x - xmin)] === 0) {
@@ -823,8 +887,10 @@ export function findClosePointOfLowDensity(dataset, d0, d1, p, densityMap, stenc
  * @param  {number} minDistY Minimum distance to reserve around the marked points in y-direction of normalized space (in percentage of overall data space height)
  */
 export function markPointsInStencilMap(dataset, d0, d1, points, densityMap, stencilMap, minDistX, minDistY) {
-  var width = densityMap.width, height = densityMap.height;
-  var v0 = dataset.dataVectors[d0], v1 = dataset.dataVectors[d1];
+  var width = densityMap.width,
+    height = densityMap.height;
+  var v0 = dataset.dataVectors[d0],
+    v1 = dataset.dataVectors[d1];
 
   // Transform minDistX, minDistY from [0 ... 1] space to density map space
   minDistX = Math.ceil(minDistX * width);
@@ -845,8 +911,10 @@ export function markPointsInStencilMap(dataset, d0, d1, points, densityMap, sten
   points.forEach(function (p) {
     var p0 = Math.floor(densityMap.transformX(v0.getValue(p)));
     var p1 = Math.floor(densityMap.transformY(v1.getValue(p)));
-    var imgxmin = Math.max(xmin, p0 - minDistX), imgxmax = Math.min(xmax, p0 + minDistX);
-    var imgymin = Math.max(ymin, p1 - minDistY), imgymax = Math.min(ymax, p1 + minDistY);
+    var imgxmin = Math.max(xmin, p0 - minDistX),
+      imgxmax = Math.min(xmax, p0 + minDistX);
+    var imgymin = Math.max(ymin, p1 - minDistY),
+      imgymax = Math.min(ymax, p1 + minDistY);
     for (var y = imgymin; y < imgymax; ++y)
       for (var x = imgxmin; x < imgxmax; ++x)
         stencil[(y - ymin) * stencilStride + (x - xmin)] = 1;
@@ -892,7 +960,11 @@ export function findClosePointOfLowDensity_descend(dataset, d0, d1, p, densityMa
   var o0 = -dataset.columns[d0].minimum * s0;
   var s1 = 1 / (dataset.columns[d1].maximum - dataset.columns[d1].minimum);
   var o1 = -dataset.columns[d1].minimum * s1;
-  var densities = densityMap.data, width = densityMap.width, height = densityMap.height, densityScale = densityMap.scale, densityOffset = -densityMap.offset;
+  var densities = densityMap.data,
+    width = densityMap.width,
+    height = densityMap.height,
+    densityScale = densityMap.scale,
+    densityOffset = -densityMap.offset;
 
   // Transform data point from data space to density map space
   var p0 = (data[p * nc + d0] * s0 + o0) * width;
@@ -907,8 +979,10 @@ export function findClosePointOfLowDensity_descend(dataset, d0, d1, p, densityMa
   minDistY = Math.ceil(minDistY * height);
 
   // Define overall bounds
-  var xMin = minDistX, xMax = width - minDistX;
-  var yMin = minDistY, yMax = height - minDistY;
+  var xMin = minDistX,
+    xMax = width - minDistX;
+  var yMin = minDistY,
+    yMax = height - minDistY;
 
   var computePenalty = function (x, y) {
     var sqDensity = Math.pow(densityOffset + densities[y * width + x] * densityScale, 2);
@@ -916,7 +990,8 @@ export function findClosePointOfLowDensity_descend(dataset, d0, d1, p, densityMa
     return 1e5 * sqDensity + sqDist;
   };
 
-  var bestState = {penalty: Number.MAX_VALUE}, maxIterations = 5000;
+  var bestState = {penalty: Number.MAX_VALUE},
+    maxIterations = 5000;
   var searchProblem = {
     getStartState: function () {
       return {
@@ -970,7 +1045,9 @@ export function findClosePointOfLowDensityND_descend(dataset, p, densityMap, min
   var data = dataset.fdata;
   var n = dataset.length;
   var nc = dataset.numColumns;
-  var size = densityMap[0][0].width, densityScale = densityMap[0][0].scale, densityOffset = -densityMap[0][0].offset; // EDIT: Take offset/scale over all density maps
+  var size = densityMap[0][0].width,
+    densityScale = densityMap[0][0].scale,
+    densityOffset = -densityMap[0][0].offset; // EDIT: Take offset/scale over all density maps
 
   // Transform data point from data space to [0 ... size] space
   var start = new Float32Array(nc);
@@ -983,15 +1060,19 @@ export function findClosePointOfLowDensityND_descend(dataset, p, densityMap, min
   minDist = Math.ceil(minDist * size);
 
   // Define overall bounds
-  var min = minDist, max = size - minDist;
+  var min = minDist,
+    max = size - minDist;
 
 
   var actions = [];
-  var a = new Float32Array(nc), i;
+  var a = new Float32Array(nc),
+    i;
   for (var c = 0; c < nc; ++c)
     a[c] = -1;
   do {
-    if (!a.every(function (aa){ return aa === 0; }))
+    if (!a.every(function (aa){
+      return aa === 0;
+    }))
       actions.push(a.slice());
     i = 0;
     while (i !== a.length && ++a[i] === 2) {
@@ -1012,7 +1093,8 @@ export function findClosePointOfLowDensityND_descend(dataset, p, densityMap, min
     return sqDensity + sqDist;
   };
 
-  var bestState = {penalty: Number.MAX_VALUE}, maxIterations = 100;// 5000;
+  var bestState = {penalty: Number.MAX_VALUE},
+    maxIterations = 100;// 5000;
   var searchProblem = {
     getStartState: function () {
       var _start = new Float32Array(nc);
@@ -1038,7 +1120,8 @@ export function findClosePointOfLowDensityND_descend(dataset, p, densityMap, min
       });
     },
     computeHash: function (state) {
-      var factor = 1.0, hash = 0.0;
+      var factor = 1.0,
+        hash = 0.0;
       for (var c = 0; c < nc; ++c) {
         hash += state.p[c] * factor;
         factor *= size;
@@ -1083,9 +1166,13 @@ for (var y = yMin; y < yMax; ++y)
  * @return {Array<number>} 2D coordinates of the sampled point in density map coordinates
  */
 export function sampleDensityMap(densityMap) {
-  var width = densityMap.width, height = densityMap.height, scale = densityMap.maximum;
+  var width = densityMap.width,
+    height = densityMap.height,
+    scale = densityMap.maximum;
 
-  var sample_x, sample_y, sample_d;
+  var sample_x,
+    sample_y,
+    sample_d;
   // var nAttempts = 0;
   do {
     sample_x = Math.random() * width;
@@ -1108,10 +1195,13 @@ export function sampleDensityMap(densityMap) {
 export function sampleDensityMapRow(densityMap, sample_y, maxIterations) {
   if (libUtility.isUndefined(maxIterations)) maxIterations = Number.MAX_SAFE_INTEGER;
 
-  var width = densityMap.width, height = densityMap.height, scale = densityMap.maximum;
+  var width = densityMap.width,
+    height = densityMap.height,
+    scale = densityMap.maximum;
   sample_y = Math.floor(sample_y) * height;
 
-  var sample_x, sample_d;
+  var sample_x,
+    sample_d;
   do {
     sample_x = Math.random() * width;
     sample_d = Math.random() * scale;
@@ -1131,10 +1221,13 @@ export function sampleDensityMapRow(densityMap, sample_y, maxIterations) {
 export function sampleDensityMapColumn(densityMap, sample_x, maxIterations) {
   if (libUtility.isUndefined(maxIterations)) maxIterations = Number.MAX_SAFE_INTEGER;
 
-  var width = densityMap.width, height = densityMap.height, scale = densityMap.maximum;
+  var width = densityMap.width,
+    height = densityMap.height,
+    scale = densityMap.maximum;
   sample_x = Math.floor(sample_x);
 
-  var sample_y, sample_d;
+  var sample_y,
+    sample_d;
   do {
     sample_y = Math.random() * height;
     sample_d = Math.random() * scale;
@@ -1151,7 +1244,8 @@ export function sampleDensityMapColumn(densityMap, sample_x, maxIterations) {
  * @return {Array<number>} n-dimensional coordinates of the sampled point in density map coordinates
  */
 export function sampleDensityMapChain(densityMapChain) {
-  var chainLength = densityMapChain.length, sample = new Array(chainLength + 1);
+  var chainLength = densityMapChain.length,
+    sample = new Array(chainLength + 1);
 
   // Pick an initial densityMap from the chain
   var sample_m = Math.floor(Math.random() * chainLength);
@@ -1196,7 +1290,9 @@ export function computeClusterMap_method1(dataset, d0, d1, densityMap) {
   var o0 = -dataset.columns[d0].minimum * s0;
   var s1 = 1 / (dataset.columns[d1].maximum - dataset.columns[d1].minimum);
   var o1 = -dataset.columns[d1].minimum * s1;
-  var densities = densityMap.data, width = densityMap.width, height = densityMap.height;
+  var densities = densityMap.data,
+    width = densityMap.width,
+    height = densityMap.height;
 
   // Compute density at each datapoints -> pointDensities
   var pointDensities = new Float32Array(n);
@@ -1210,7 +1306,9 @@ export function computeClusterMap_method1(dataset, d0, d1, densityMap) {
 
   // Create indices sorted by density
   var indices = Array.from(pointDensities.keys());
-  indices.sort(function (idxA, idxB) { return pointDensities[idxA] - pointDensities[idxB]; });
+  indices.sort(function (idxA, idxB) {
+    return pointDensities[idxA] - pointDensities[idxB];
+  });
 
   // Allocate cluster map
   var clustermap = new Uint32Array(width*height);
@@ -1313,7 +1411,9 @@ export function computeClusterMap_method2(dataset, d0, d1, densityMap) {
   var o0 = -dataset.columns[d0].minimum * s0;
   var s1 = 1 / (dataset.columns[d1].maximum - dataset.columns[d1].minimum);
   var o1 = -dataset.columns[d1].minimum * s1;
-  var densities = densityMap.data, width = densityMap.width, height = densityMap.height;
+  var densities = densityMap.data,
+    width = densityMap.width,
+    height = densityMap.height;
 
   // Compute density at each datapoints -> pointDensities
   var pointDensities = new Float32Array(n);
@@ -1327,7 +1427,9 @@ export function computeClusterMap_method2(dataset, d0, d1, densityMap) {
 
   // Create indices sorted by density
   var indices = Array.from(pointDensities.keys());
-  indices.sort(function (idxA, idxB) { return pointDensities[idxA] - pointDensities[idxB]; });
+  indices.sort(function (idxA, idxB) {
+    return pointDensities[idxA] - pointDensities[idxB];
+  });
 
   // Allocate cluster map
   var clustermap = new Uint32Array(width*height);
@@ -1383,7 +1485,10 @@ export function computeClusterMap_method2(dataset, d0, d1, densityMap) {
 
   while (neighborQueue.length) {
     var neighbor = neighborQueue.shift();
-    var x = neighbor.x, y = neighbor.y, d = neighbor.d, id = neighbor.c;
+    var x = neighbor.x,
+      y = neighbor.y,
+      d = neighbor.d,
+      id = neighbor.c;
 
     if (--x !== -1) {
       var nd = densities[y * width + x];
@@ -1434,14 +1539,18 @@ const PriorityQueue = libUtility.PriorityQueue;
  * To get a {@link ClusterMap} from the output object, call `new ClusterMap(clusterMap)`
  */
 export function computeClusterMap_method3(densityMap, d0, d1, options) {
-  var densities = densityMap.data, width = densityMap.width, height = densityMap.height, len = width*height;
+  var densities = densityMap.data,
+    width = densityMap.width,
+    height = densityMap.height,
+    len = width*height;
   var densityThreshold = options.threshold * densityMap.maximum;
 
   // Allocate cluster map
   var clustermap = new Uint32Array(len);
 
   // Walk through density map and combine regions of density>=densityThreshold into clusters -> clusters, clustermap
-  var leftClusterId, topClusterId;
+  var leftClusterId,
+    topClusterId;
   var clusters = [];
   for (var y = 0; y < height; ++y) {
     leftClusterId = 0;
@@ -1513,7 +1622,10 @@ export function computeClusterMap_method3(densityMap, d0, d1, options) {
 
     while (neighborQueue.length) {
       var neighbor = neighborQueue.shift();
-      var x = neighbor.x, y = neighbor.y, d = neighbor.d, id = neighbor.c;
+      var x = neighbor.x,
+        y = neighbor.y,
+        d = neighbor.d,
+        id = neighbor.c;
 
       if (--x !== -1) {
         var nd = densities[y * width + x];
@@ -1592,8 +1704,14 @@ export function downloadDensityMap(densityMap, fileName) {
  * @return {Array<number>} Point of intersection or null if no intersection occured
  */
 export function vectorLineIntersection2D(vpos, vdir, a, b) {
-  var x1 = vpos[0], y1 = vpos[1], x2 = vpos[0] + vdir[0], y2 = vpos[1] + vdir[1];
-  var x3 = a[0], y3 = a[1], x4 = b[0], y4 = b[1];
+  var x1 = vpos[0],
+    y1 = vpos[1],
+    x2 = vpos[0] + vdir[0],
+    y2 = vpos[1] + vdir[1];
+  var x3 = a[0],
+    y3 = a[1],
+    x4 = b[0],
+    y4 = b[1];
 
   var denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
   if (denom > -1e-5 && denom < 1e-5)
@@ -1666,9 +1784,12 @@ export function linesIntersect(a, b, c, d) {
  * @return {boolean} True if point P is included by polygon V
  */
 export function pointInsidePolygon(P, V) {
-  var n = V.length - 1, wn = 0; // wn: The winding number counter
+  var n = V.length - 1,
+    wn = 0; // wn: The winding number counter
 
-  var isLeft = function (P0, P1, P2) { return ((P1[0] - P0[0]) * (P2[1] - P0[1]) - (P2[0] -  P0[0]) * (P1[1] - P0[1])); };
+  var isLeft = function (P0, P1, P2) {
+    return ((P1[0] - P0[0]) * (P2[1] - P0[1]) - (P2[0] -  P0[0]) * (P1[1] - P0[1]));
+  };
 
   // loop through all edges of the polygon
   for (var i = 0; i < n; i++) {

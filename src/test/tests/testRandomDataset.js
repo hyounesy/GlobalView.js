@@ -9,6 +9,8 @@ export default function testRandomDataSet(div, ondone) {
   const data = new globalView.RandomDataset(1000, 3, (dataset) => {
     plot.load(dataset, 0, 1, 2, 2);
 
-    setTimeout(() => { ondone(); }, 500);
+    setTimeout(() => {
+      ondone();
+    }, 500);
   });
 }

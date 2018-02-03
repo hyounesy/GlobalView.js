@@ -6,7 +6,9 @@ function testCustomOptions(div, options, ondone, timeout = 500) {
   const data = new globalView.CsvDataset('tests/datasets/iris.data', {}, (dataset) => {
     plot.load(dataset, 0, 1, 4, 1);
 
-    setTimeout(() => { ondone(); }, timeout); // boiler-plate code
+    setTimeout(() => {
+      ondone();
+    }, timeout); // boiler-plate code
   });
   return plot;
 }

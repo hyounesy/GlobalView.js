@@ -27,6 +27,8 @@ export default function testThumbnails(div, ondone) {
       thumbnailLabelColor: 'yellow',
       labelThumbnails: true,
     });
-    setTimeout(() => { ondone(); }, 1000);
+    setTimeout(() => {
+      ondone();
+    }, 1000);
   });
 }

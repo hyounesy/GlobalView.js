@@ -3,9 +3,14 @@ const domready = require('domready');
 
 // Global variables
 // var gl;
-var plot, dataset;
+var plot,
+  dataset;
 
-var cbDataset, cbColumnX, cbColumnY, cbColumnC, cbColumnS;
+var cbDataset,
+  cbColumnX,
+  cbColumnY,
+  cbColumnC,
+  cbColumnS;
 
 domready(function () {
   cbDataset = document.getElementById('cbDataset');
@@ -23,7 +28,9 @@ domready(function () {
     {name: '1.000.000 random points', create: () => new globalView.RandomDataset(1000000, 3, dataset_onLoad)},
     {name: '10.000.000 random points', create: () => new globalView.RandomDataset(10000000, 3, dataset_onLoad)},
     {name: 'iris', url: 'datasets/iris.data', create: () => new globalView.CsvDataset('datasets/iris.data', {columnLabels: ['Sepal Length [cm]', 'Sepal Width [cm]', 'Petal Length [cm]', 'Petal Width [cm]', 'Class']}, dataset_onLoad)},
-    {name: 'allencell', url: 'datasets/AICS_Cell-feature-analysis_v1.5.csv', create: () => new globalView.CsvDataset('datasets/AICS_Cell-feature-analysis_v1.5.csv', {hasHeader: true, nameColumn: 1, imageFilenames: function (data) { return 'datasets/AICS_Cell-feature-analysis_v1.5_images/' + data[1] + '.png'; }}, dataset_onLoad)},
+    {name: 'allencell', url: 'datasets/AICS_Cell-feature-analysis_v1.5.csv', create: () => new globalView.CsvDataset('datasets/AICS_Cell-feature-analysis_v1.5.csv', {hasHeader: true, nameColumn: 1, imageFilenames: function (data) {
+      return 'datasets/AICS_Cell-feature-analysis_v1.5_images/' + data[1] + '.png';
+    }}, dataset_onLoad)},
     // {name: "allencell x2", url: "datasets/AICS_Cell-feature-analysis_v1.5_x2.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x2.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
     // {name: "allencell x10", url: "datasets/AICS_Cell-feature-analysis_v1.5_x10.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x10.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
     // {name: "allencell x100", url: "datasets/AICS_Cell-feature-analysis_v1.5_x100.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x100.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
@@ -116,27 +123,67 @@ addAllEventListeners();
 function addAllEventListeners() {
   window.addEventListener('resize', onResize);
 
-  document.getElementById('cbDataset').addEventListener('change', function () {cbDataset_onChange()});
-  document.getElementById('cbColumnX').addEventListener('change', function () {cbColumnX_onChange()});
-  document.getElementById('cbColumnY').addEventListener('change', function () {cbColumnY_onChange()});
-  document.getElementById('cbColumnC').addEventListener('change', function () {cbColumnC_onChange()});
-  document.getElementById('cbColumnS').addEventListener('change', function () {cbColumnS_onChange()});
-  document.getElementById('cbRenderStyle').addEventListener('change', function () {cbRenderStyle_onChange(document.getElementById('cbRenderStyle'))});
-  document.getElementById('cbTransparency').addEventListener('change', function () {cbTransparency_onChange(document.getElementById('cbTransparency'))});
-  document.getElementById('cbPointShape').addEventListener('change', function () {cbPointShape_onChange(document.getElementById('cbPointShape'))});
-  document.getElementById('rPointSize').addEventListener('input', function () {rPointSize_onChange(document.getElementById('rPointSize'))});
-  document.getElementById('rPointOpacity').addEventListener('input', function () {rPointOpacity_onChange(document.getElementById('rPointOpacity'))});
-  document.getElementById('cbShowDensity').addEventListener('change', function () {cbShowDensity_onChange(document.getElementById('cbShowDensity'))});
-  document.getElementById('cbShowClusters').addEventListener('change', function () {cbShowClusters_onChange(document.getElementById('cbShowClusters'))});
-  document.getElementById('cbShowHistograms').addEventListener('change', function () {cbShowHistograms_onChange(document.getElementById('cbShowHistograms'))});
-  document.getElementById('rVariance').addEventListener('input', function () {rVariance_onChange(document.getElementById('rVariance'))});
-  document.getElementById('rNumBins').addEventListener('input', function () {rNumBins_onChange(document.getElementById('rNumBins'))});
-  document.getElementById('cmdRunBenchmark').addEventListener('click', function () {cmdRunBenchmark_onClick(document.getElementById('cmdRunBenchmark'))});
+  document.getElementById('cbDataset').addEventListener('change', function () {
+    cbDataset_onChange()
+  });
+  document.getElementById('cbColumnX').addEventListener('change', function () {
+    cbColumnX_onChange()
+  });
+  document.getElementById('cbColumnY').addEventListener('change', function () {
+    cbColumnY_onChange()
+  });
+  document.getElementById('cbColumnC').addEventListener('change', function () {
+    cbColumnC_onChange()
+  });
+  document.getElementById('cbColumnS').addEventListener('change', function () {
+    cbColumnS_onChange()
+  });
+  document.getElementById('cbRenderStyle').addEventListener('change', function () {
+    cbRenderStyle_onChange(document.getElementById('cbRenderStyle'))
+  });
+  document.getElementById('cbTransparency').addEventListener('change', function () {
+    cbTransparency_onChange(document.getElementById('cbTransparency'))
+  });
+  document.getElementById('cbPointShape').addEventListener('change', function () {
+    cbPointShape_onChange(document.getElementById('cbPointShape'))
+  });
+  document.getElementById('rPointSize').addEventListener('input', function () {
+    rPointSize_onChange(document.getElementById('rPointSize'))
+  });
+  document.getElementById('rPointOpacity').addEventListener('input', function () {
+    rPointOpacity_onChange(document.getElementById('rPointOpacity'))
+  });
+  document.getElementById('cbShowDensity').addEventListener('change', function () {
+    cbShowDensity_onChange(document.getElementById('cbShowDensity'))
+  });
+  document.getElementById('cbShowClusters').addEventListener('change', function () {
+    cbShowClusters_onChange(document.getElementById('cbShowClusters'))
+  });
+  document.getElementById('cbShowHistograms').addEventListener('change', function () {
+    cbShowHistograms_onChange(document.getElementById('cbShowHistograms'))
+  });
+  document.getElementById('rVariance').addEventListener('input', function () {
+    rVariance_onChange(document.getElementById('rVariance'))
+  });
+  document.getElementById('rNumBins').addEventListener('input', function () {
+    rNumBins_onChange(document.getElementById('rNumBins'))
+  });
+  document.getElementById('cmdRunBenchmark').addEventListener('click', function () {
+    cmdRunBenchmark_onClick(document.getElementById('cmdRunBenchmark'))
+  });
   // document.getElementById("cbThumbnailPositioning") // ???
-  document.getElementById('rNumThumbnails').addEventListener('input', function () {rNumThumbnails_onChange(document.getElementById('rNumThumbnails'))});
-  document.getElementById('rDensityRatio').addEventListener('input', function () {rDensityRatio_onChange(document.getElementById('rDensityRatio'))});
-  document.getElementById('cmdShowData2D').addEventListener('click', function () {cmdShowData2D_onClick(document.getElementById('cmdShowData2D'))});
-  document.getElementById('cbLabelThumbnails').addEventListener('change', function () {cbLabelThumbnails_onChange(document.getElementById('cbLabelThumbnails'))});
+  document.getElementById('rNumThumbnails').addEventListener('input', function () {
+    rNumThumbnails_onChange(document.getElementById('rNumThumbnails'))
+  });
+  document.getElementById('rDensityRatio').addEventListener('input', function () {
+    rDensityRatio_onChange(document.getElementById('rDensityRatio'))
+  });
+  document.getElementById('cmdShowData2D').addEventListener('click', function () {
+    cmdShowData2D_onClick(document.getElementById('cmdShowData2D'))
+  });
+  document.getElementById('cbLabelThumbnails').addEventListener('change', function () {
+    cbLabelThumbnails_onChange(document.getElementById('cbLabelThumbnails'))
+  });
 }
 
 function onResize() {
@@ -199,7 +246,10 @@ function dataset_onLoad(_dataset) {
     option.text = 'formula';
     cbColumnS.add(option);
   }
-  var activeColumnX = globalView.readIntCookie('activeColumnX'), activeColumnY = globalView.readIntCookie('activeColumnY'), activeColumnC = globalView.readIntCookie('activeColumnC'), activeColumnS = globalView.readIntCookie('activeColumnS');
+  var activeColumnX = globalView.readIntCookie('activeColumnX'),
+    activeColumnY = globalView.readIntCookie('activeColumnY'),
+    activeColumnC = globalView.readIntCookie('activeColumnC'),
+    activeColumnS = globalView.readIntCookie('activeColumnS');
   cbColumnX.selectedIndex = Math.max(0, Math.min(dataset.numColumns - 1, activeColumnX !== null && activeColumnX < dataset.numColumns ? activeColumnX : 0));
   cbColumnY.selectedIndex = Math.max(0, Math.min(dataset.numColumns - 1, activeColumnY !== null && activeColumnY < dataset.numColumns ? activeColumnY : 1));
   cbColumnC.selectedIndex = Math.max(0, Math.min(dataset.numColumns - 1, activeColumnC !== null && activeColumnC < dataset.numColumns ? activeColumnC : 2));
@@ -316,7 +366,8 @@ function cmdRunBenchmark_onClick(sender) {
   new BenchmarkDialog();
 }
 
-var numThumbnails, densityRatio;
+var numThumbnails,
+  densityRatio;
 function rNumThumbnails_onChange(sender) {
   numThumbnails = 1 << Number.parseInt(sender.value);
   pNumThumbnails.innerText = '# of thumbnails: ' + numThumbnails;
@@ -436,7 +487,8 @@ function ondrop(event) {
   }
 }
 
-var ctrlPressed = false, shiftPressed = false;
+var ctrlPressed = false,
+  shiftPressed = false;
 var CTRL = navigator.appVersion.indexOf('Mac') == -1 ? 17 : 224;
 function handleKeyDown(event) {
   if(event.keyCode === CTRL)

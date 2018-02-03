@@ -99,13 +99,17 @@ domready(() => {
       progress.text(`${failedTests.length} tests failed: ${failedTests.join(', ')}`);
     }
     progress.append($('<br><br>'));
-    progress.append($('<button>Download Generated Images</button>').click(() => { downloadAll(); }));
+    progress.append($('<button>Download Generated Images</button>').click(() => {
+      downloadAll();
+    }));
   }
 
   function runTest(i) {
     if (i >= allTests.length) {
       progress.text('Waiting for results ...');
-      setTimeout(() => { testsDone(); }, 5000); // wait 5 seconds for the results
+      setTimeout(() => {
+        testsDone();
+      }, 5000); // wait 5 seconds for the results
       return;
     }
 
@@ -159,7 +163,7 @@ domready(() => {
               expectedImageData.data, testImageData.data, diffData,
               imageWidth, imageHeight, {
                 threshold: 0.001,
-              },
+              }
             );
             if (errorPixels === 0) {
               testResult.success = true;

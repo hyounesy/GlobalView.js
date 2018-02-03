@@ -22,7 +22,8 @@ const COLUMN_HINTS = [
   '<b>Radial proximity:</b> an intensity-derived image feature, defined as the optical intensity of a structure found in the more external shell of a roughly columnar cell (closer to the cell exterior) as compared to the more internal columnar core of the same cell (closer to the cell center), scaled from -1 to 1. A cell in which all of the fluorescence intensity was at the center of the cell would have a radial proximity of -1; whereas a structure that was at cell boundary would have a radial proximity of 1.',
   '<b>Apical proximity:</b> an intensity-derived image feature, defined as the optical intensity of a structure found in the top (apical) half of a roughly columnar cell as compared to the basal (bottom) half of this cell, scaled from -1 to 1. A cell in which all of the fluorescent intensity was in the top half would have an apical proximity of 1; whereas a structure that was evenly distributed between the apical and basal halves would have an apical proximity of 0.'
 ];
-var plot, pointsByProtein = {}
+var plot,
+  pointsByProtein = {}
 
 domready(function () {
   plot = new globalView.GlobalView(document.getElementById('divPlot'), {
@@ -68,20 +69,48 @@ domready(function () {
 });
 
 function addAllEventListeners() {
-  document.getElementById('cmdSelectAll').addEventListener('click', function () {cmdSelectAll_onClick(document.getElementById('cmdSelectAll'))});
-  document.getElementById('cmdDeselectAll').addEventListener('click', function () {cmdDeselectAll_onClick(document.getElementById('cmdDeselectAll'))});
-  document.getElementById('Tom20').addEventListener('change', function () {cbProtein_onChange(document.getElementById('Tom20'))});
-  document.getElementById('Alpha tubulin').addEventListener('change', function () {cbProtein_onChange(document.getElementById('Alpha tubulin'))});
-  document.getElementById('Sec61 beta').addEventListener('change', function () {cbProtein_onChange(document.getElementById('Sec61 beta'))});
-  document.getElementById('Alpha actinin').addEventListener('change', function () {cbProtein_onChange(document.getElementById('Alpha actinin'))});
-  document.getElementById('Desmoplakin').addEventListener('change', function () {cbProtein_onChange(document.getElementById('Desmoplakin'))});
-  document.getElementById('Lamin B1').addEventListener('change', function () {cbProtein_onChange(document.getElementById('Lamin B1'))});
-  document.getElementById('Fibrillarin').addEventListener('change', function () {cbProtein_onChange(document.getElementById('Fibrillarin'))});
-  document.getElementById('Beta actin').addEventListener('change', function () {cbProtein_onChange(document.getElementById('Beta actin'))});
-  document.getElementById('ZO1').addEventListener('change', function () {cbProtein_onChange(document.getElementById('ZO1'))});
-  document.getElementById('Myosin IIB').addEventListener('change', function () {cbProtein_onChange(document.getElementById('Myosin IIB'))});
-  document.getElementById('cbXAxis').addEventListener('change', function () {cbXAxis_onChange(document.getElementById('cbXAxis'))});
-  document.getElementById('cbYAxis').addEventListener('change', function () {cbYAxis_onChange(document.getElementById('cbYAxis'))});
+  document.getElementById('cmdSelectAll').addEventListener('click', function () {
+    cmdSelectAll_onClick(document.getElementById('cmdSelectAll'))
+  });
+  document.getElementById('cmdDeselectAll').addEventListener('click', function () {
+    cmdDeselectAll_onClick(document.getElementById('cmdDeselectAll'))
+  });
+  document.getElementById('Tom20').addEventListener('change', function () {
+    cbProtein_onChange(document.getElementById('Tom20'))
+  });
+  document.getElementById('Alpha tubulin').addEventListener('change', function () {
+    cbProtein_onChange(document.getElementById('Alpha tubulin'))
+  });
+  document.getElementById('Sec61 beta').addEventListener('change', function () {
+    cbProtein_onChange(document.getElementById('Sec61 beta'))
+  });
+  document.getElementById('Alpha actinin').addEventListener('change', function () {
+    cbProtein_onChange(document.getElementById('Alpha actinin'))
+  });
+  document.getElementById('Desmoplakin').addEventListener('change', function () {
+    cbProtein_onChange(document.getElementById('Desmoplakin'))
+  });
+  document.getElementById('Lamin B1').addEventListener('change', function () {
+    cbProtein_onChange(document.getElementById('Lamin B1'))
+  });
+  document.getElementById('Fibrillarin').addEventListener('change', function () {
+    cbProtein_onChange(document.getElementById('Fibrillarin'))
+  });
+  document.getElementById('Beta actin').addEventListener('change', function () {
+    cbProtein_onChange(document.getElementById('Beta actin'))
+  });
+  document.getElementById('ZO1').addEventListener('change', function () {
+    cbProtein_onChange(document.getElementById('ZO1'))
+  });
+  document.getElementById('Myosin IIB').addEventListener('change', function () {
+    cbProtein_onChange(document.getElementById('Myosin IIB'))
+  });
+  document.getElementById('cbXAxis').addEventListener('change', function () {
+    cbXAxis_onChange(document.getElementById('cbXAxis'))
+  });
+  document.getElementById('cbYAxis').addEventListener('change', function () {
+    cbYAxis_onChange(document.getElementById('cbYAxis'))
+  });
 }
 
 function cmdSelectAll_onClick(sender) {
@@ -142,7 +171,8 @@ function plot_onMouseOverDatapoint(dataset, index) {
     document.getElementById('imgCell').src = dataset.imageFilenames[index];
 
     var nc = dataset.numColumns;
-    var xAxisColumn = plot.getActiveColumn(0), yAxisColumn = plot.getActiveColumn(1);
+    var xAxisColumn = plot.getActiveColumn(0),
+      yAxisColumn = plot.getActiveColumn(1);
     document.getElementById('pCellDesc').innerText = `Cell Name: {0}
 Tagged Protein: {1}
 {2}: {3}

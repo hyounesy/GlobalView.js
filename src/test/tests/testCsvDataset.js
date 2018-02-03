@@ -13,6 +13,8 @@ export default function testCsvDataSet(div, ondone) {
     const columnS = 1;
     plot.load(dataset, columnX, columnY, columnColor, columnS);
 
-    setTimeout(() => { ondone(); }, 500);
+    setTimeout(() => {
+      ondone();
+    }, 500);
   });
 }

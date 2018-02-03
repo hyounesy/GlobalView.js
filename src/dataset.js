@@ -277,7 +277,9 @@ export function Dataset() {
             _clusterMaps[d0][d1] = null;
 
           // Execute queued 'ondone' functions
-          pending.forEach(ondone => { ondone(densityMap); });
+          pending.forEach(ondone => {
+            ondone(densityMap);
+          });
         });
       } else if (!libUtility.isUndefined(densityMap.pending)) {
         // If _densityMaps[d0][d1] is currently being computed asynchronously
@@ -376,7 +378,9 @@ export function Dataset() {
             _clusterMaps[d0][d1] = clusterMap;
 
             // Execute queued 'ondone' functions
-            pending.forEach(ondone => { ondone(clusterMap); });
+            pending.forEach(ondone => {
+              ondone(clusterMap);
+            });
           });
         });
       } else if (!libUtility.isUndefined(clusterMap.pending)) {
@@ -409,18 +413,25 @@ export function Dataset() {
   }
 
   this['inflate'] = this.inflate = function (factor, densityMapChain) {
-    var n = this.length, n_inflated = Math.floor(factor * n), nc = this.numColumns;
+    var n = this.length,
+      n_inflated = Math.floor(factor * n),
+      nc = this.numColumns;
     if (isNaN(n_inflated) || n_inflated <= n)
       return;
-    var fdata = this.fdata, fdata_inflated = new Float32Array(n_inflated * nc);
-    var data = this.data, data_inflated = new Array(n_inflated * nc);
+    var fdata = this.fdata,
+      fdata_inflated = new Float32Array(n_inflated * nc);
+    var data = this.data,
+      data_inflated = new Array(n_inflated * nc);
 
     for (var i = 0, len = n * nc; i < len; ++i)
       fdata_inflated[i] = fdata[i];
     for (var i = 0, len = n * nc; i < len; ++i)
       data_inflated[i] = data[i];
 
-    var column, samples, sample, sampleScale = 1 / densityMapChain[0].size;
+    var column,
+      samples,
+      sample,
+      sampleScale = 1 / densityMapChain[0].size;
     for (var i, i_inflated = n, len = n * nc; i_inflated < n_inflated; ++i_inflated) {
       i = i_inflated % n;
 
@@ -444,7 +455,8 @@ export function Dataset() {
     this['data'] = this.data = data_inflated;
 
     if (this.names !== null) {
-      var names = /** @type {Array<string>} */ (this.names), names_inflated = new Array(n_inflated);
+      var names = /** @type {Array<string>} */ (this.names),
+        names_inflated = new Array(n_inflated);
       for (var i = 0, len = n; i < len; ++i)
         names_inflated[i] = names[i];
       for (var index = 0, i_inflated = n, len = n * nc; i_inflated < n_inflated; ++i_inflated)
@@ -453,7 +465,8 @@ export function Dataset() {
     }
 
     if (this.imageFilenames !== null) {
-      var imageFilenames = /** @type {Array<string>} */ (this.imageFilenames), imageFilenames_inflated = new Array(n_inflated);
+      var imageFilenames = /** @type {Array<string>} */ (this.imageFilenames),
+        imageFilenames_inflated = new Array(n_inflated);
       for (var i = 0, len = n; i < len; ++i)
         imageFilenames_inflated[i] = imageFilenames[i];
       for (var i_inflated = n, len = n * nc; i_inflated < n_inflated; ++i_inflated)
@@ -465,7 +478,8 @@ export function Dataset() {
   }
 
   this['save'] = this.save = function (filename, nameColumn, nameColumnLabel) {
-    var nc = this.numColumns, csv_nc;
+    var nc = this.numColumns,
+      csv_nc;
     if (this.names && !libUtility.isUndefined(nameColumn) && !libUtility.isUndefined(nameColumnLabel))
       csv_nc = nc + 1;
     else {
@@ -653,7 +667,9 @@ export function CsvDataset(file, options, onload) {
     }
 
 
-    var n = data.length, nc = data[0].length - (options['nameColumn'] ? 1 : 0), firstRow = (options['hasHeader'] ? 1 : 0);
+    var n = data.length,
+      nc = data[0].length - (options['nameColumn'] ? 1 : 0),
+      firstRow = (options['hasHeader'] ? 1 : 0);
     dataset['numColumns'] = dataset.numColumns = nc;
 
     // Generate column labels
@@ -679,7 +695,8 @@ export function CsvDataset(file, options, onload) {
 
     dataset['data'] = dataset.data = new Array(nc * n);
     dataset['fdata'] = dataset.fdata = new Float32Array(nc * n);
-    var i, di;
+    var i,
+      di;
     for (var c = 0, ci = 0; c < data[0].length; ++c, ++ci) {
       if (c == options['nameColumn']) {
         --ci;
@@ -687,7 +704,9 @@ export function CsvDataset(file, options, onload) {
       }
 
       // Loop through all values of column c -> value, fvalue, min, max
-      var min = Number.MAX_VALUE, max = Number.MIN_VALUE, isNumeric = true;
+      var min = Number.MAX_VALUE,
+        max = Number.MIN_VALUE,
+        isNumeric = true;
       for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
         // Skip blank lines
         if (data[i].length === 1 && data[i][0] === '') {
@@ -712,7 +731,8 @@ export function CsvDataset(file, options, onload) {
       if (!isNumeric) {
         // Loop through all values of column c again, generating a value map -> value, fvalue, min, max
         valueList = [];
-        var valueMap = {}, valueIdx = 0;
+        var valueMap = {},
+          valueIdx = 0;
         for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
           // Skip blank lines
           if (data[i].length === 1 && data[i][0] === '') {
@@ -813,7 +833,9 @@ export function CsvDataset(file, options, onload) {
   if (libUtility.isString(file)) {
     // $.get(file, parseCsv, "text");
     var request = new XMLHttpRequest();
-    request.onreadystatechange = function () {if (this.readyState == 4 && this.status == 200) parseCsv(this.responseText)};
+    request.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) parseCsv(this.responseText)
+    };
     request.open('GET', /** @type {string} */(file), true);
     request.overrideMimeType('text/csv; charset=utf8');
     request.send();

@@ -190,7 +190,9 @@ export function Shader(gl, vs, fs, debug) {
       return debug ? f => console.log('Passing value to unused uniform ' + uniformString) : null;
   }
 
-  this.getAttribLocation = function (attributeName) { return gl.getAttribLocation(sdr, attributeName); }
+  this.getAttribLocation = function (attributeName) {
+    return gl.getAttribLocation(sdr, attributeName);
+  }
 
   this.free = function () {
     if (vertexShader != null || fragmentShader != null || sdr != null)
@@ -242,8 +244,15 @@ export function validateGLSL(gl, code) {
  */
 export function Mesh(_gl, positions, normals, tangents, binormals, texcoords, indices, _primitivetype, _ndim) {
   var gl = _gl;
-  var posbuffer, nmlbuffer, tgtbuffer, bnmbuffer, texcoordbuffer, idxbuffer;
-  var primitivetype, numvertices, numindices;
+  var posbuffer,
+    nmlbuffer,
+    tgtbuffer,
+    bnmbuffer,
+    texcoordbuffer,
+    idxbuffer;
+  var primitivetype,
+    numvertices,
+    numindices;
   var ndim;
 
   this.reset = function (positions, normals, tangents, binormals, texcoords, indices, _primitivetype, _ndim) {
@@ -419,7 +428,9 @@ function handleLoadedTexture(gl, texture, onload) {
 export function LoadTexture(gl, filename, onload) {
   var texture = gl.createTexture();
   texture.image = new Image();
-  texture.image.onload = function () {handleLoadedTexture(gl, texture, onload)}
+  texture.image.onload = function () {
+    handleLoadedTexture(gl, texture, onload)
+  }
   texture.image.src = filename;
   return texture;
 }

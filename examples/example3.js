@@ -25,7 +25,9 @@ domready(function () {
   });
 
   const rangeNumLeafs = document.getElementById('rangeNumLeafs')
-  rangeNumLeafs.addEventListener('input', function () {rangeNumLeafs_oninput(rangeNumLeafs);}, false);
+  rangeNumLeafs.addEventListener('input', function () {
+    rangeNumLeafs_oninput(rangeNumLeafs);
+  }, false);
   rangeNumLeafs_oninput(rangeNumLeafs);
 });
 

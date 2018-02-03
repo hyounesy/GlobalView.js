@@ -143,7 +143,9 @@ export function CoordinateSystem(gl, globalView) {
     const MIN_TICK_LABEL_DISTANCE = gl.measureTextWidth('  '); // Minimum distance between tick labels in pixel
     switch (d) {
       case 0:
-        var axis = axes[0], overlap = Number.MIN_VALUE, plotBounds = globalView.getPlotBounds();
+        var axis = axes[0],
+          overlap = Number.MIN_VALUE,
+          plotBounds = globalView.getPlotBounds();
         for (var i = 0; i < axis.tickCount; ++i) {
           var x = axis.tickOffset + i * axis.tickDistance;
           var tickPos = (x - axis.minimum) / (axis.maximum - axis.minimum);
@@ -160,7 +162,8 @@ export function CoordinateSystem(gl, globalView) {
         return true;
 
       case 1:
-        var axis = axes[1], plotBounds = globalView.getPlotBounds();
+        var axis = axes[1],
+          plotBounds = globalView.getPlotBounds();
         return plotBounds.height * axis.tickDistance / (axis.maximum - axis.minimum) >= gl.measureTextHeight() + MIN_TICK_LABEL_DISTANCE;
 
       default: return true;

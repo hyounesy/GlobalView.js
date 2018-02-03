@@ -1,7 +1,9 @@
 const globalView = require('../dist/global-view.js');
 const domready = require('domready');
 
-var plot, taOptions = document.getElementById('taOptions'), preStatus = document.getElementById('preStatus');
+var plot,
+  taOptions = document.getElementById('taOptions'),
+  preStatus = document.getElementById('preStatus');
 
 
 domready(function () {
@@ -17,7 +19,9 @@ domready(function () {
 
   taOptions.value = JSON.stringify(plot.getOptions(), null, 4);
 
-  document.getElementById('taOptions').addEventListener('input', function () {tOptions_onChange(document.getElementById('taOptions'))});
+  document.getElementById('taOptions').addEventListener('input', function () {
+    tOptions_onChange(document.getElementById('taOptions'))
+  });
 });
 
 function tOptions_onChange(sender) {

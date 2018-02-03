@@ -17,5 +17,7 @@ export default function testFormula(div, ondone) {
   dataset.dataVectors.push(new globalView.DataVector(dataset, 'sin(i * 8.0 * PI / n)'));
   dataset.dataVectors.push(new globalView.DataVector(dataset, '0.0'));
   plot.load(dataset, 0, 1, 2, 2);
-  setTimeout(() => { ondone(); }, 500);
+  setTimeout(() => {
+    ondone();
+  }, 500);
 }
