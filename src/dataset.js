@@ -1,10 +1,10 @@
 const libUtility = require('./utility.js')
 const libAlgorithm = require('./algorithm.js');
 const libFormulaCompiler = require('./formulaCompiler.js')
-//import * as Parallel from '../src_lib/parallel.js';
-//import * as Parallel from '../node_modules/paralleljs/lib/parallel';
+// import * as Parallel from '../src_lib/parallel.js';
+// import * as Parallel from '../node_modules/paralleljs/lib/parallel';
 const Parallel = require('paralleljs');
-//const Parallel = require('../node_modules/paralleljs/lib/parallel'); // doesn't work: Module not found: Error: Can't resolve 'child_process' in Worker.js
+// const Parallel = require('../node_modules/paralleljs/lib/parallel'); // doesn't work: Module not found: Error: Can't resolve 'child_process' in Worker.js
 
 const $ = require('jquery'); // alternative: a
 window.jQuery = $;
@@ -34,12 +34,12 @@ export function DataVector(dataset, source) {
   if (libUtility.isNumber(source)) {
     var c = Math.round(source);
     this['getValue'] = this.getValue = function (i) {
-      //return Math.log(dataset.fdata[i * nc + c]);
+      // return Math.log(dataset.fdata[i * nc + c]);
       return dataset.fdata[i * nc + c];
     }
 
-    //this.getValueCode = "log(c{0})".format(c);
-    this.getValueCode = 'c' + c;//"{" + c + "}";
+    // this.getValueCode = "log(c{0})".format(c);
+    this.getValueCode = 'c' + c;// "{" + c + "}";
 
     var column = dataset.columns[c];
     this['minimum'] = this.minimum = column.minimum;
@@ -86,7 +86,7 @@ export function DataVector(dataset, source) {
     }
     this['minimum'] = this.minimum;
     this['maximum'] = this.maximum;
-    //console.log([this.minimum, this.maximum]);
+    // console.log([this.minimum, this.maximum]);
     this.scale = this.maximum - this.minimum;
     if (this.scale > -1e-5 && this.scale < 1e-5)
       this.offset = 0.5 - 0.5 * (this.minimum + this.maximum) * (this.scale = 0.5);
@@ -223,7 +223,7 @@ export function Dataset() {
       console.warn('GlobalView warning: Requesting density map for dimensions {0}, {1} on a dataset with only {2} data vectors'.format(d0, d1, this.dataVectors.length));
       return null;
     }
-    var isAsync = libUtility.isFunction(ondone) ;//&& !/Firefox/i.test(navigator.userAgent);// Firefox tends to crash with Parallel.js
+    var isAsync = libUtility.isFunction(ondone) ;// && !/Firefox/i.test(navigator.userAgent);// Firefox tends to crash with Parallel.js
 
     // Assure d0 < d1
     if (d0 === d1)
@@ -291,11 +291,11 @@ export function Dataset() {
     } else {
       if (!densityMap) {
         // If _densityMaps[d0][d1] isn't computed or being computed yet
-        //var tStart = performance.now();
+        // var tStart = performance.now();
         var histogram = libAlgorithm.computeHistogram2D(this, d0, d1, size, size);
         _densityMaps[d0][d1] = densityMap = new libAlgorithm.DensityMap(libAlgorithm.computeDensityMap(histogram, new libAlgorithm.DensityMapOptions(options)));
         histogram = null; // Free histogram
-        //console.log(performance.now() - tStart + "ms");
+        // console.log(performance.now() - tStart + "ms");
       } else if (densityMap.old && (!options || libAlgorithm.DensityMapOptions.equals(densityMap.old.options, options))) // If the deprecated densityMap satisfies our requested options
         densityMap = densityMap.old;
       else
@@ -332,7 +332,7 @@ export function Dataset() {
       console.warn('GlobalView warning: Requesting cluster map for dimensions {0}, {1} on a dataset with only {2} data vectors'.format(d0, d1, this.dataVectors.length));
       return null;
     }
-    var isAsync = libUtility.isFunction(ondone) ;//&& !/Firefox/i.test(navigator.userAgent);// Firefox tends to crash with Parallel.js
+    var isAsync = libUtility.isFunction(ondone) ;// && !/Firefox/i.test(navigator.userAgent);// Firefox tends to crash with Parallel.js
 
     // Assure d0 < d1
     if (d0 === d1)
@@ -392,9 +392,9 @@ export function Dataset() {
         // If _clusterMaps[d0][d1] isn't computed or being computed yet
         var densityMap = this.requestDensityMap(d0, d1, undefined, undefined);
         if (densityMap) {
-          //var tStart = performance.now();
+          // var tStart = performance.now();
           _clusterMaps[d0][d1] = clusterMap = new libAlgorithm.ClusterMap(libAlgorithm.computeClusterMap_method3(densityMap, d0, d1, new libAlgorithm.ClusterMapOptions(options)));
-          //console.log(performance.now() - tStart + "ms");
+          // console.log(performance.now() - tStart + "ms");
         } else
           _clusterMaps[d0][d1] = clusterMap = null;
       } else if (clusterMap.old && (!options || libAlgorithm.ClusterMapOptions.equals(clusterMap.old.options, options))) // If the deprecated clusterMap satisfies our requested options
@@ -811,7 +811,7 @@ export function CsvDataset(file, options, onload) {
 
 
   if (libUtility.isString(file)) {
-    //$.get(file, parseCsv, "text");
+    // $.get(file, parseCsv, "text");
     var request = new XMLHttpRequest();
     request.onreadystatechange = function () {if (this.readyState == 4 && this.status == 200) parseCsv(this.responseText)};
     request.open('GET', /** @type {string} */(file), true);

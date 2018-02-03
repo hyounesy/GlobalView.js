@@ -55,7 +55,7 @@ export function Shader(gl, vs, fs, debug) {
   /* // Print active uniforms
   var count = gl.getProgramParameter(sdr, gl.ACTIVE_UNIFORMS);
   for (var i = 0; i < count; ++i)
-    console.log(gl.getActiveUniform(sdr, i).name);*/
+    console.log(gl.getActiveUniform(sdr, i).name); */
 
 this.vertexPositionAttribute = gl.getAttribLocation(sdr, 'vpos');
 this.vertexNormalAttribute = gl.getAttribLocation(sdr, 'vnml');

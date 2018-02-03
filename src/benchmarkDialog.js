@@ -1,4 +1,4 @@
-//const libUtility = require('utility')
+// const libUtility = require('utility')
 
 function BenchmarkDialog() {
   var benchmarkDialog = $('#benchmarkDialog').dialog({
@@ -57,19 +57,19 @@ function BenchmarkDialog() {
 
 
 
-  /*var benchmarkOptions = {
+  /* var benchmarkOptions = {
     enableTransparency: [true, false],
     pointShape: ['Rectangle'],
     N: [1e5, 1e6, 1e7]
-  };*/
+  }; */
   const benchmarkOptions = {
-    //pointSize: [1, 5, 10, 25, 50, 100],//[1, 10],//[1, 10, 100],
-    //pointShape: ['Rectangle'],
-    //N: [1000000]//linspace(100000, 200000, 1000000)
-    //N: [1e1, 1e2, 1e3/*, 1e4, 1e5, 1e6*/]
+    // pointSize: [1, 5, 10, 25, 50, 100],//[1, 10],//[1, 10, 100],
+    // pointShape: ['Rectangle'],
+    // N: [1000000]//linspace(100000, 200000, 1000000)
+    // N: [1e1, 1e2, 1e3/*, 1e4, 1e5, 1e6*/]
     N: Array.create(1000, i => 10000 * i)
   };
-  const SECONDS_PER_BENCHMARK = 1;//10;
+  const SECONDS_PER_BENCHMARK = 1;// 10;
   const SAVE_SCREENSHOTS = false;
 
   benchmarkDialog.dialog('open');
@@ -79,7 +79,7 @@ function BenchmarkDialog() {
 
   function startBenchmark() {
     globalView.pushOptions();
-    //globalView.pushDataset();
+    // globalView.pushDataset();
     globalView.enableOffscreenRendering(1024, 1024);
 
     // Set default options
@@ -172,7 +172,7 @@ function BenchmarkDialog() {
       zip.file(name + '.png', image, { base64: true });
     }
 
-    //console.log(++benchmarkCounter / numBenchmarks);
+    // console.log(++benchmarkCounter / numBenchmarks);
     // <<<<<<<<<< END RUN BENCHMARK >>>>>>>>>>
 
     var getKeyByIndex = function (map, idx) {
@@ -201,7 +201,7 @@ function BenchmarkDialog() {
   function cancelBenchmark() {
     // globalView.disableOffscreenRendering();
     globalView.popOptions();
-    //globalView.popDataset();
+    // globalView.popDataset();
     cbDataset_onChange(); // Reload dataset
     globalView.disableOffscreenRendering();
     onResize();

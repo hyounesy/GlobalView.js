@@ -18,9 +18,9 @@ export function HistogramViewer(gl, globalView) {
   sdrLine.color.apply(sdrLine, gl.foreColor);
   sdrLine.matWorldViewProj = sdrLine.u4x4f('matWorldViewProj');
 
-  /*this.updateColorSchema = function() {
+  /* this.updateColorSchema = function() {
     sdrLine.color.apply(sdrLine, gl.foreColor);
-  }*/
+  } */
 
   // Create a 2D line mesh
   var meshLine = new libGraphics.Mesh(gl, new Float32Array([
@@ -201,7 +201,7 @@ export function HistogramViewer(gl, globalView) {
 
     axis.histogram = libAlgorithm.computeHistogram(dataset, axis.d = d, numBins);
     libAlgorithm.addTransformFunctions(axis.histogram);
-    //console.log(axis.histogram);
+    // console.log(axis.histogram);
 
     var positions = new Float32Array((6 * numBins) * 3);
     var v3_set = function (i, x, y) { i *= 3; positions[i++] = x; positions[i++] = y; positions[i++] = 0.0; };

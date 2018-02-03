@@ -1,6 +1,6 @@
-//const globalView = require('../lib/globalView.js');
+// const globalView = require('../lib/globalView.js');
 const domready = require('domready');
-//const libDataset = require("../lib/dataset.js");
+// const libDataset = require("../lib/dataset.js");
 
 const globalView = require('../dist/global-view.js');
 
@@ -39,8 +39,8 @@ domready(function () {
   plot.onLassoSelection = plot_onLassoSelection;
   plot.referencePoints = plot.createPointSet('red', 1);
   plot.highlightedPoints = plot.createPointSet('red', 1);
-  const csvPath = 'datasets/AICS_Cell-feature-analysis_v1.5.csv'; //'http://homepage.univie.ac.at/a0929188/GlobalView/AICS_Cell-feature-analysis_v1.5.csv"
-  const imagesPath = 'datasets/AICS_Cell-feature-analysis_v1.5_images/'; //'http://homepage.univie.ac.at/a0929188/GlobalView/images/"
+  const csvPath = 'datasets/AICS_Cell-feature-analysis_v1.5.csv'; // 'http://homepage.univie.ac.at/a0929188/GlobalView/AICS_Cell-feature-analysis_v1.5.csv"
+  const imagesPath = 'datasets/AICS_Cell-feature-analysis_v1.5_images/'; // 'http://homepage.univie.ac.at/a0929188/GlobalView/images/"
   new globalView.CsvDataset(csvPath, {
     hasHeader: true,
     nameColumn: 1,
@@ -170,7 +170,7 @@ function plot_onMouseOverAxisLabel(dataVector, labelRect) {
     tooltip.style.transition = '';
     tooltip.style.opacity = 1;
   } else {
-    //tooltip.style.visibility = 'hidden';
+    // tooltip.style.visibility = 'hidden';
     tooltip.style.transition = 'opacity 1s';
     tooltip.style.opacity = 0;
   }

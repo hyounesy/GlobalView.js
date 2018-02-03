@@ -8,7 +8,7 @@ export function linspace(first, second, last) {
   console.log(values);
   return new Float32Array(values);
 }
-//linspace(1, 1.1, 10);
+// linspace(1, 1.1, 10);
 
 export function isUndefined(x) {
   return typeof x === 'undefined'
@@ -35,7 +35,7 @@ export function isObject(x) {
   return t !== 'undefined' && t !== 'function' && t !== 'string' && t !== 'number' && Object.prototype.toString.call(x) !== '[object Array]'
 }
 export function isCloneable(x) {
-  return !(isFunction(x) || x instanceof WebGLTexture); //TODO: Add more
+  return !(isFunction(x) || x instanceof WebGLTexture); // TODO: Add more
 }
 
 const enableDebugLog = true;
@@ -210,7 +210,7 @@ export function F32toI24flipY(floats, bounds, width, height) {
   var i = 0, voffset = -bounds[0], vscale = 0xFFFFFE / (bounds[1] - bounds[0]);
   for(var y = 0; y < height; ++y)
     for(var x = 0; x < width; ++x) {
-      //var value = Math.floor((floats[(height - y - 1) * width + x] - bounds[0]) * vscale) + 1;
+      // var value = Math.floor((floats[(height - y - 1) * width + x] - bounds[0]) * vscale) + 1;
       var value = floats[(height - y - 1) * width + x];
       value += voffset;
       value *= vscale;
@@ -501,7 +501,7 @@ export function PriorityQueue(priorityProperty) {
     return data.shift();
   }
 }
-/*var queue = new PriorityQueue('p');
+/* var queue = new PriorityQueue('p');
 queue.push({str: 'high', p: 9});
 queue.push({str: 'low', p: 1});
 queue.push({str: 'medium-low', p: 3});
@@ -510,7 +510,7 @@ queue.push({str: 'medium-low-2', p: 3});
 queue.push({str: 'medium-high', p: 7});
 queue.push({str: 'very-high', p: 15});
 while (queue.length)
-  console.log(queue.shift());*/
+  console.log(queue.shift()); */
 
 
 /**
@@ -542,7 +542,7 @@ export function HashSet(onchanged) {
    * @param  {Object} values
    */
   this.append = function (values) {
-//var t = performance.now();
+// var t = performance.now();
     var invalidate = false, self = this;
     values.forEach(function (value) {
       if (hash[value] !== true) {
@@ -551,7 +551,7 @@ export function HashSet(onchanged) {
         invalidate = true;
       }
     });
-//console.log('append ' + values.length + ': ' + (performance.now() - t));
+// console.log('append ' + values.length + ': ' + (performance.now() - t));
     if (invalidate)
       this.onchanged();
   }
@@ -581,7 +581,7 @@ export function HashSet(onchanged) {
       return;
     }
 
-//var t = performance.now();
+// var t = performance.now();
     var newHash = {}, identical = (values.length === this.length);
     values.forEach(function (value) {
       if (identical && hash[value] !== true)
@@ -591,7 +591,7 @@ export function HashSet(onchanged) {
 
     hash = newHash;
     this.length = values.length;
-//console.log('assign ' + values.length + ': ' + (performance.now() - t));
+// console.log('assign ' + values.length + ': ' + (performance.now() - t));
 
     if (identical === false)
       this.onchanged();
@@ -605,11 +605,11 @@ export function HashSet(onchanged) {
   this.assignRange = function (n) {
     if (n <= 0)
       return;
-//var t = performance.now();
+// var t = performance.now();
     hash = new Array(n);
     hash.fill(true);
     this.length = n;
-//console.log('assignRange ' + n + ': ' + (performance.now() - t));
+// console.log('assignRange ' + n + ': ' + (performance.now() - t));
     this.onchanged();
   }
 
@@ -632,7 +632,7 @@ export function HashSet(onchanged) {
    * @param  {Object} values The values to remove
    */
   this.remove = function (values) {
-//var t = performance.now();
+// var t = performance.now();
     var invalidate = false, self = this;
     values.forEach(function (value) {
       if (hash[value] === true) {
@@ -641,7 +641,7 @@ export function HashSet(onchanged) {
         invalidate = true;
       }
     });
-//console.log('remove ' + values.length + ': ' + (performance.now() - t));
+// console.log('remove ' + values.length + ': ' + (performance.now() - t));
     if (invalidate)
       this.onchanged();
   }
@@ -672,13 +672,13 @@ export function HashSet(onchanged) {
    * @param  {function(number)} callback
    */
   this.forEach = function (callback) {
-//var last = Number.MIN_SAFE_INTEGER, badOrder = 0;
+// var last = Number.MIN_SAFE_INTEGER, badOrder = 0;
     for (var value in hash) {
       value = Number.parseInt(value, 10);
-//if (value < last) ++badOrder; last = value;
+// if (value < last) ++badOrder; last = value;
       callback(value);
     }
-//if (badOrder !== 0) console.log('bad order: ' + badOrder + ' times');
+// if (badOrder !== 0) console.log('bad order: ' + badOrder + ' times');
   }
 
   this['get'] =

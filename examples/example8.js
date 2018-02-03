@@ -2,7 +2,7 @@ const globalView = require('../dist/global-view.js');
 const domready = require('domready');
 
 // Global variables
-//var gl;
+// var gl;
 var plot, dataset;
 
 var cbDataset, cbColumnX, cbColumnY, cbColumnC, cbColumnS;
@@ -31,10 +31,10 @@ domready(function () {
 
   var divGlobalView = document.getElementById('divGlobalView');
   plot = new globalView.GlobalView(divGlobalView, {
-    //showXAxisHistogram: true,
-    //showYAxisHistogram: true,
-    //showColormapHistogram: true,
-    //pointColor: "white"//"#AAF"
+    // showXAxisHistogram: true,
+    // showYAxisHistogram: true,
+    // showColormapHistogram: true,
+    // pointColor: "white"//"#AAF"
     padding: [50, 80, 50, 50]
   });
   plot.onMouseDown = function (event) {
@@ -146,7 +146,7 @@ function onResize() {
   var b = document.body;
   var x = w.innerWidth || e.clientWidth || b.clientWidth;
   var y = w.innerHeight|| e.clientHeight|| b.clientHeight;
-  //plot.resize(x - 32 - 200, y - 32);
+  // plot.resize(x - 32 - 200, y - 32);
   document.getElementById('divGlobalView').style.width = (x - 32 - 200) + 'px';
   document.getElementById('divGlobalView').style.height = (y - 32) + 'px';
 }
@@ -185,7 +185,7 @@ function dataset_onLoad(_dataset) {
     cbColumnS.add(option);
   }
 if (dataset.numColumns > 3) {
-  dataset.dataVectors.push(new globalView.DataVector(dataset, '0.0'/*"0.5 * c1 + 0.5 * c3"*/));//"i"));
+  dataset.dataVectors.push(new globalView.DataVector(dataset, '0.0'/* "0.5 * c1 + 0.5 * c3" */));// "i"));
   var option = document.createElement('option');
   option.text = 'formula';
   cbColumnX.add(option);
@@ -244,14 +244,14 @@ function rPointSize_onChange(sender) {
 }
 
 var densityMapOptions = new globalView.DensityMapOptions();
-//densityMapOptions.logScale = false;
+// densityMapOptions.logScale = false;
 function cbShowDensity_onChange(sender) {
   if (sender.checked)
     requestVariance(densityMapOptions.gaussScale, true);
   plot.setOption('showPointDensity', sender.checked);
 }
 function cbShowClusters_onChange(sender) {
-  //plot.setOption("pointClusterThreshold", 0.01);
+  // plot.setOption("pointClusterThreshold", 0.01);
   plot.setOption('showPointClusters', sender.checked);
 }
 function cbShowHistograms_onChange(sender) {
@@ -300,7 +300,7 @@ String.prototype.replaceAll = function (oldstr, newstr) {
   return this.split(oldstr).join(newstr);
 }
 
-/*function cmdRunBenchmark_onClick() {
+/* function cmdRunBenchmark_onClick() {
   new CsvDataset("AICS_Cell-feature-analysis_v1.5.csv", {}, function(dataset) {
     var wgetstr = "";
     dataset.names.forEach(function(name) {
@@ -311,7 +311,7 @@ String.prototype.replaceAll = function (oldstr, newstr) {
     var data = new Blob([wgetstr.replace(/\n/g, "\r\n")], {type: 'text/plain'});
     download("wget.sh", window.URL.createObjectURL(data));
   });
-}*/
+} */
 function cmdRunBenchmark_onClick(sender) {
   new BenchmarkDialog();
 }
@@ -348,7 +348,7 @@ function onMouseOverAxisLabel(dataVector, labelRect) {
     tooltip.style.transition = '';
     tooltip.style.opacity = 1;
   } else {
-    //tooltip.style.visibility = 'hidden';
+    // tooltip.style.visibility = 'hidden';
     tooltip.style.transition = 'opacity 1s';
     tooltip.style.opacity = 0;
   }
@@ -398,7 +398,7 @@ function ondragenter(event) {
     dragOverCanvas.setAttribute('id', 'dragOverCanvas');
     dragOverCanvas.style.pointerEvents = 'none';
     dragOverCanvas.style.zIndex = 100000;
-    dragOverCanvas.style.position = 'static';//"absolute";
+    dragOverCanvas.style.position = 'static';// "absolute";
     dragOverCanvas.style.width = dragOverCanvas.style.height = '100%';
     dragOverCanvas.style.backgroundColor = 'green';
     dragOverCanvas.style.opacity = 0.1;
@@ -426,11 +426,11 @@ function ondrop(event) {
   event = event || window.event;
   var files = (event.files || event.dataTransfer.files);
   if(files) {
-    /*fileDropIsCopy = fileDropIsCopy || event.ctrlKey || event.metaKey;
+    /* fileDropIsCopy = fileDropIsCopy || event.ctrlKey || event.metaKey;
     var targetRect = event.target.getBoundingClientRect()
     var eventX = event.clientX - targetRect.left;
     var eventY = event.clientY - targetRect.top;
-    var fileExt = files[0].name;*/
+    var fileExt = files[0].name; */
 
     new CsvDataset(files[0], {autoDetect: true}, dataset_onLoad);
   }

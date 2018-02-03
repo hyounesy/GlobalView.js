@@ -4,7 +4,7 @@ const libAlgorithm = require('./algorithm.js');
 const libColormap = require('./colormap.js');
 const libGlMatrix = require('gl-matrix');
 
-//const LABEL_HEIGHT = 12, LABEL_WIDTH = 16.5;
+// const LABEL_HEIGHT = 12, LABEL_WIDTH = 16.5;
 export var LABEL_HEIGHT = 12;
 export var LABEL_WIDTH = 16.5;
 const LABEL_TEXT_PADDING = 2;
@@ -192,7 +192,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
     var mattrans = libGlMatrix.mat4.create();
     var imagePos = libGlMatrix.vec2.create(), refPos = libGlMatrix.vec2.create(), imageSize = libGlMatrix.vec2.create();
 
-    //gl.disable(gl.SCISSOR_TEST);
+    // gl.disable(gl.SCISSOR_TEST);
 
     if (options['labelThumbnails']) {
       // Draw labels at image.refPos
@@ -248,7 +248,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
       });
     }
 
-    //gl.disable(gl.SCISSOR_TEST);
+    // gl.disable(gl.SCISSOR_TEST);
 
     sdrImage.bind();
     var label = 1;
@@ -256,9 +256,9 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
       if (!image.imagePos)
         return;
 
-      //var normalizedImagePos = vec2.create();
-      //tf.transformPos(normalizedImagePos, image.imagePos);
-      //if (normalizedImagePos[0] < 0.0 || normalizedImagePos[0] >= 1.0 || normalizedImagePos[1] < 0.0 || normalizedImagePos[1] >= 1.0)
+      // var normalizedImagePos = vec2.create();
+      // tf.transformPos(normalizedImagePos, image.imagePos);
+      // if (normalizedImagePos[0] < 0.0 || normalizedImagePos[0] >= 1.0 || normalizedImagePos[1] < 0.0 || normalizedImagePos[1] >= 1.0)
       //  return;
 
       tf.transformPos(imagePos, image.imagePos);
@@ -266,7 +266,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
       // Set image size
       tf.transformNml2(imageSize, image.imageSize);
       var w = image.tex.image.width, h = image.tex.image.height;
-      //imageSize[0] *= 2 / gl.width; imageSize[1] *= 2 / gl.height; // Transform imageSize from normalized space to device space
+      // imageSize[0] *= 2 / gl.width; imageSize[1] *= 2 / gl.height; // Transform imageSize from normalized space to device space
       var scale;
       if (Math.max(imageSize[0], imageSize[0] * h / w, 1.0) < Math.max(imageSize[1] * w / h, imageSize[1]))
         scale = [2 * Math.floor(imageSize[0]) / gl.width, 2 * Math.floor(imageSize[0] * h / w) / gl.height, 1];
@@ -316,7 +316,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
         libGlMatrix.mat4.translate(mattrans, mattrans, [imagePos[0], PixelAlignY(imagePos[1]), 0.0]);
         scale[1] = 2 * LABEL_HEIGHT / gl.height;
         scale[1] = PixelAlignY(scale[1]);
-        //scale[0] += 2 / gl.width; // Widen by 1 pixel
+        // scale[0] += 2 / gl.width; // Widen by 1 pixel
         libGlMatrix.mat4.scale(mattrans, mattrans, scale);
         libGlMatrix.mat4.translate(mattrans, mattrans, [-0.0, -1.0, 0.0]); // Move anchor to top of stripe
         sdrLine.matWorldViewProj(mattrans);
@@ -336,7 +336,7 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
       }
     });
 
-    //gl.enable(gl.SCISSOR_TEST);
+    // gl.enable(gl.SCISSOR_TEST);
   }
 
   var options = {}, defaultImageBorderWidth = 1, defaultImageBorderColor = gl.foreColor, defaultImageLineColor = gl.foreColor, defaultImageLabelColor = gl.backColor;
@@ -406,11 +406,11 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
             tf.transformPos(d, images[j].refPos);
 
             if (libGlMatrix.vec2.sqrDist(a, b) + libGlMatrix.vec2.sqrDist(c, d) > libGlMatrix.vec2.sqrDist(a, d) + libGlMatrix.vec2.sqrDist(c, b) && !libAlgorithm.linesIntersect(a, d, c, b)) {
-              //console.log("exchange {0} - {1}".format(i, j));
+              // console.log("exchange {0} - {1}".format(i, j));
               var tmp = images[j].imagePos;
               images[j].imagePos = images[i].imagePos;
               images[i].imagePos = tmp;
-              i = j = 0; break; //EDIT: How neccessary is this?
+              i = j = 0; break; // EDIT: How neccessary is this?
             }
           }
       }
@@ -424,11 +424,11 @@ LABEL_WIDTH = gl.measureTextWidth('888') + 2 * LABEL_TEXT_PADDING;
             tf.transformPos(d, images[j].refPos);
 
             if (libAlgorithm.linesIntersect(a, b, c, d)) {
-              //console.log("intersection {0} - {1}".format(i, j));
+              // console.log("intersection {0} - {1}".format(i, j));
               var tmp = images[j].imagePos;
               images[j].imagePos = images[i].imagePos;
               images[i].imagePos = tmp;
-              i = j = 0; break; //EDIT: How neccessary is this?
+              i = j = 0; break; // EDIT: How neccessary is this?
             }
           }
       }

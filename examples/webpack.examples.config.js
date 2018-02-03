@@ -1,4 +1,5 @@
 const p = require('path');
+
 module.exports = {
   entry: {
     'example1.min': './examples/example1.js',

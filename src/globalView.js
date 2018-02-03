@@ -38,7 +38,7 @@ var ENABLE_CONTINUOUS_RENDERING = false;
 var SHOW_FPS = false;
 var SIMULATE_LOW_FPS = false;
 
-//var IMAGE_SIZE = 64 // Image width/height are smaller or equal to IMAGE_SIZE, maintaining aspect ratio
+// var IMAGE_SIZE = 64 // Image width/height are smaller or equal to IMAGE_SIZE, maintaining aspect ratio
 
 const ND = 4; // Number of dimensions
 
@@ -70,7 +70,7 @@ export function GlobalView(div, startupOptions) {
   if (canvas === null) {
     canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
     canvas.setAttribute('id', 'webGLCanvas');
-    canvas.style.position = 'static';//"absolute";
+    canvas.style.position = 'static';// "absolute";
     canvas.style.left = canvas.style.top = '0px';
     canvas.style.width = canvas.style.height = '100%';
     canvas.style.backgroundColor = 'transparent';
@@ -105,14 +105,14 @@ export function GlobalView(div, startupOptions) {
     gl.backColor = divStyle.backgroundColor == 'transparent' ? [0, 0, 0, 0] : libUtility.rgbStringToFloatArray(divStyle.backgroundColor);
     gl.foreColor = libUtility.rgbStringToFloatArray(gl.foreColorString = divStyle.color);
     gl.clearColor.apply(gl, gl.backColor);
-    //histogramViewer.updateColorSchema();
+    // histogramViewer.updateColorSchema();
     coordSys.updateColorSchema();
     colormap.updateColorSchema();
     this.invalidate();
   }
 
   var trc = new libTextRenderContext.TextRenderContext(gl, canvas);
-  //trc.setFont("10px monospace");
+  // trc.setFont("10px monospace");
   trc.setFont(divStyle.fontSize + ' ' + divStyle.fontFamily);
   this['updateFont'] =
   /**
@@ -167,7 +167,7 @@ export function GlobalView(div, startupOptions) {
       // densityViewer.updateImages(imageViewer.getImages(), d0, d1);
       densityViewer.render(flipY, tf, d0, d1);
       pointViewer.render(flipY, tf, colormap.getTexture(), pointDrag);
-      //if (!isAnimating)
+      // if (!isAnimating)
         imageViewer.render(flipY, tf);
     }
 
@@ -192,7 +192,7 @@ export function GlobalView(div, startupOptions) {
       ++frameCounter;
       if (t - fpsStart > 10000.0 || frameCounter > 1000) {
         // Refresh FPS after 10s or 1000 frames
-        //fps = (frameCounter == 1 ? 10000.0 : 1000 * frameCounter) / (t - fpsStart);
+        // fps = (frameCounter == 1 ? 10000.0 : 1000 * frameCounter) / (t - fpsStart);
         fps = 1000 * frameCounter / (t - fpsStart);
         fpsStart = t;
         frameCounter = 0;
@@ -843,7 +843,7 @@ export function GlobalView(div, startupOptions) {
         (libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true)) {
         console.warn('GlobalView warning: Invalid value for option ' + option + ': ' + value);
         if (libUtility.isString(validationResult)) {
-          //HY:
+          // HY:
             validationResult = optionDefinition.valid(value)
           console.warn('                    ' + validationResult);
         }
@@ -959,7 +959,7 @@ export function GlobalView(div, startupOptions) {
    */
   this.pushOptions = function () {
     pushedOptions.push(options);
-    //options = {};
+    // options = {};
   }
   this['popOptions'] =
   /**
@@ -998,7 +998,7 @@ export function GlobalView(div, startupOptions) {
     colormap.setLabel(dataset.dataVectors[columnIdx].label);
   }
 
-  //var pushedDatasets = [];
+  // var pushedDatasets = [];
   this['load'] =
   /**
    * @summary Load a dataset into the plot
@@ -1020,8 +1020,8 @@ export function GlobalView(div, startupOptions) {
     animatedInputs[1].origin = activeInputs[1] = activeColumnY;
     animatedInputs[2].origin = activeInputs[2] = activeColumnC;
     animatedInputs[3].origin = activeInputs[3] = activeColumnS;
-    //dataset.dataVectors.push(new DataVector(dataset, "({1} + {2}) / 2.0"));//"i"));
-    //dataset.dataVectors.push(new DataVector(dataset, "{2} + 2.0"));//"i"));
+    // dataset.dataVectors.push(new DataVector(dataset, "({1} + {2}) / 2.0"));//"i"));
+    // dataset.dataVectors.push(new DataVector(dataset, "{2} + 2.0"));//"i"));
 
 
     // Reset transform
@@ -1031,11 +1031,11 @@ export function GlobalView(div, startupOptions) {
     // Update viewers
     viewers.forEach(viewer => viewer.setDataset(dataset, options));
     viewers.forEach(viewer => viewer.onInputChanged(activeInputs, animatedInputs, options));
-    /*pointViewer.setDataset(dataset, options);
+    /* pointViewer.setDataset(dataset, options);
     pointViewer.onInputChanged(activeInputs, animatedInputs, options);
     densityViewer.setDataset(dataset, options);
     histogramViewer.setDataset(dataset, options);
-    histogramViewer.onInputChanged(activeInputs, animatedInputs, options);*/
+    histogramViewer.onInputChanged(activeInputs, animatedInputs, options); */
 
     // Reset FPS counter
     fps = null;
@@ -1063,8 +1063,8 @@ export function GlobalView(div, startupOptions) {
 
     tf.onInputChanged();
     viewers.forEach(viewer => viewer.onInputChanged(activeInputs, animatedInputs, options));
-    /*pointViewer.onInputChanged(activeInputs, animatedInputs, options);
-    histogramViewer.onInputChanged(activeInputs, animatedInputs, options);*/
+    /* pointViewer.onInputChanged(activeInputs, animatedInputs, options);
+    histogramViewer.onInputChanged(activeInputs, animatedInputs, options); */
     if (d < 2)
       updateCoorinateSystem(d, activeInputs[d]);
     else
@@ -1138,21 +1138,21 @@ export function GlobalView(div, startupOptions) {
 
       if (!densityMap.stencilMap) densityMap.stencilMap = {};
 
-      //downloadDensityMap(densityMap);
+      // downloadDensityMap(densityMap);
       pointViewer.representativePoints.assign(libAlgorithm.findRepresentativePoints2(dataset, d0, d1, densityMap, 16, 0.3));
       if (dataset.imageFilenames)
         pointViewer.representativePoints.forEach(function (r) {
           if (dataset.imageFilenames[r]) {
             var dataPos = dataset.dataVectors.map(v => v.getValue(r));
             var imagePos = dataPos.slice(0);
-            var p = libAlgorithm.findClosePointOfLowDensity(dataset, d0, d1, r, densityMap, densityMap.stencilMap, 0.6 * options['thumbnailSize'] / gl.width, 0.6 * (options['thumbnailSize'] + libImageViewer.LABEL_HEIGHT) / gl.height); //EDIT: Factor 0.6: WHY?
+            var p = libAlgorithm.findClosePointOfLowDensity(dataset, d0, d1, r, densityMap, densityMap.stencilMap, 0.6 * options['thumbnailSize'] / gl.width, 0.6 * (options['thumbnailSize'] + libImageViewer.LABEL_HEIGHT) / gl.height); // EDIT: Factor 0.6: WHY?
             imagePos[d0] = p[0];
             imagePos[d1] = p[1];
             var imageSize = dataset.dataVectors.map(v => options['thumbnailSize'] * (v.maximum - v.minimum));
             imageViewer.showImage(dataset.imageFilenames[r], r, dataPos, imagePos, imageSize);
           }
         });
-      //downloadDensityMap(densityMap);
+      // downloadDensityMap(densityMap);
     });
   }
 
@@ -1164,11 +1164,11 @@ export function GlobalView(div, startupOptions) {
   this.showImage_lowDensity = function (index) {
     if (dataset.imageFilenames && dataset.imageFilenames[index]) {
       var d0 = activeInputs[0], d1 = activeInputs[1];
-      //console.log(dataset.requestDensityMap(d0, d1, undefined, undefined));
-      //dataset.requestDensityMap(d0, d1, undefined, undefined, function(densityMap) { console.log(densityMap); });
+      // console.log(dataset.requestDensityMap(d0, d1, undefined, undefined));
+      // dataset.requestDensityMap(d0, d1, undefined, undefined, function(densityMap) { console.log(densityMap); });
 
       dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
-        var imageWidth = 0.6 * options['thumbnailSize'] / gl.width, imageHeight = (0.6 * options['thumbnailSize'] + libImageViewer.LABEL_HEIGHT) / gl.height; //EDIT: Factor 0.6: WHY?
+        var imageWidth = 0.6 * options['thumbnailSize'] / gl.width, imageHeight = (0.6 * options['thumbnailSize'] + libImageViewer.LABEL_HEIGHT) / gl.height; // EDIT: Factor 0.6: WHY?
         if (d1 < d0) {
           // Swap d0 <-> d1
           var temp = d0;
@@ -1184,7 +1184,7 @@ export function GlobalView(div, startupOptions) {
         var dataPos = dataset.dataVectors.map(v => v.getValue(index));
         var imagePos;
         if (libUtility.isUndefined(densityMap.data)) // If densityMap is nD
-          imagePos = libAlgorithm.findClosePointOfLowDensityND_descend(dataset, index, densityMap, 0.6 * options['thumbnailSize'] / Math.min(gl.width, gl.height)); //EDIT: Factor 0.6: WHY?
+          imagePos = libAlgorithm.findClosePointOfLowDensityND_descend(dataset, index, densityMap, 0.6 * options['thumbnailSize'] / Math.min(gl.width, gl.height)); // EDIT: Factor 0.6: WHY?
         else {
           imagePos = dataPos.slice(0);
 
@@ -1214,7 +1214,7 @@ export function GlobalView(div, startupOptions) {
     if (dataset.imageFilenames) {
       var d0 = activeInputs[0], d1 = activeInputs[1];
       dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
-        var imageWidth = 0.6 * options['thumbnailSize'] / gl.width, imageHeight = (0.6 * options['thumbnailSize'] + libImageViewer.LABEL_HEIGHT) / gl.height; //EDIT: Factor 0.6: WHY?
+        var imageWidth = 0.6 * options['thumbnailSize'] / gl.width, imageHeight = (0.6 * options['thumbnailSize'] + libImageViewer.LABEL_HEIGHT) / gl.height; // EDIT: Factor 0.6: WHY?
         if (d1 < d0) {
           // Swap d0 <-> d1
           var temp = d0;
@@ -1340,7 +1340,7 @@ export function GlobalView(div, startupOptions) {
       p[0] = Math.max(0, Math.min(1, (p[0] - tl[0]) / (br[0] - tl[0]))); // Normalize p[0] from [l ... r] to [0 ... 1]
       p[1] = Math.max(0, Math.min(1, (p[1] - tl[1]) / (br[1] - tl[1]))); // Normalize p[1] from [t ... b] to [0 ... 1]
       switch ([p[0], p[1], 1 - p[0], 1 - p[1]].minIndex()) {
-        default: /*case 0:*/ return 1 - p[1];
+        default: /* case 0: */ return 1 - p[1];
         case 1: return 1 + p[0];
         case 2: return 2 + p[1];
         case 3: return 4 - p[0];
@@ -1414,11 +1414,11 @@ export function GlobalView(div, startupOptions) {
 
       var P = detectOverlap(R, overlapThreshold);
       for (var iter = 0; iter < maxNumIterations && P.length !== 0; ++iter) {
-        //TODO: Shuffle P
+        // TODO: Shuffle P
         P.forEach(pair => removeOverlap(R, pair[0], pair[1], rank, overlapThreshold + 0.0001));
         P = detectOverlap(R, overlapThreshold);
       }
-      //console.log(iter, overlapThreshold);
+      // console.log(iter, overlapThreshold);
 
       // Repair order
       var newRank = Array.create(R.length, i => i);
@@ -1775,7 +1775,7 @@ export function GlobalView(div, startupOptions) {
 
     if (pointDragDownPos) {
       var scale = 1 / (dataset.dataVectors[activeInputs[3]].getValue(pointDragDownPos[2]) * tf.getScale(3)) + tf.getOffset(3);
-      //console.log(scale);
+      // console.log(scale);
 
       pointDrag = [scale * (p[0] - pointDragDownPos[0]), scale * (p[1] - pointDragDownPos[1])];
       this.invalidate();
@@ -1894,7 +1894,7 @@ export function GlobalView(div, startupOptions) {
     viewDragStartPos = imageDragStartPos = null;
     if (mousePolygon !== null) {
       if (this['onSelectionChanged'] !== null && mousePolygon.length >= 3) {
-        //TODO: Find points within mousePolygon -> selection
+        // TODO: Find points within mousePolygon -> selection
 
         // Transform mousePolygon from canvas space to dataset coordinates
         for (var i = 0; i < mousePolygon.length; ++i) {
@@ -2077,10 +2077,10 @@ export function GlobalView(div, startupOptions) {
     /* // Create depth buffer -> offscreenRendering.rttRenderbuffer
     offscreenRendering.rttRenderbuffer = gl.createRenderbuffer();
     gl.bindRenderbuffer(gl.RENDERBUFFER, offscreenRendering.rttRenderbuffer);
-    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);*/
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height); */
 
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, offscreenRendering.rttTexture, 0); // Bind framebuffer
-    //gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, offscreenRendering.rttRenderbuffer); // Bind depth buffer
+    // gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, offscreenRendering.rttRenderbuffer); // Bind depth buffer
 
     gl.bindTexture(gl.TEXTURE_2D, null);
     gl.bindRenderbuffer(gl.RENDERBUFFER, null);
@@ -2108,7 +2108,7 @@ export function GlobalView(div, startupOptions) {
     gl.viewportHeight = canvas.height;
     gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
 
-    //if (options['padding'])
+    // if (options['padding'])
     //  setPlotBounds(options['padding']);
 
     // Reenable continuous rendering

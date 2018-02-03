@@ -30,7 +30,7 @@
     "examples": "webpack --config ./examples/webpack.examples.config.js && webpack-dev-server --config ./examples/webpack.examples.config.js",
     "tests": "webpack --config ./src/test/webpack.test.config.js && webpack-dev-server --config ./src/test/webpack.test.config.js",
     "TODO_minify": "(TODO): cat bundle.js | uglifyjs -o bundle.js",
-    "nibble": "eslint-nibble src/ examples/"
+    "nibble": "eslint-nibble src/*.js src/test/*.js src/test/tests/*.js examples/"
   },
   "files": [
     "es",

@@ -35,8 +35,8 @@ domready(function () {
   divPlots.style.fontSize = FONT_SIZE;
   document.body.appendChild(divPlots);
 
-  const csvPath = 'datasets/AICS_Cell-feature-analysis_v1.5.csv'; //'http://homepage.univie.ac.at/a0929188/GlobalView/AICS_Cell-feature-analysis_v1.5.csv"
-  const imagesPath = 'datasets/AICS_Cell-feature-analysis_v1.5_images/'; //'http://homepage.univie.ac.at/a0929188/GlobalView/images/"
+  const csvPath = 'datasets/AICS_Cell-feature-analysis_v1.5.csv'; // 'http://homepage.univie.ac.at/a0929188/GlobalView/AICS_Cell-feature-analysis_v1.5.csv"
+  const imagesPath = 'datasets/AICS_Cell-feature-analysis_v1.5_images/'; // 'http://homepage.univie.ac.at/a0929188/GlobalView/images/"
 
   new globalView.CsvDataset(csvPath, {
     hasHeader: true,

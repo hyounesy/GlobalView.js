@@ -2,8 +2,8 @@ const libUtility = require('./utility.js')
 
 export var FormulaCompiler = {
   compile: function (formula, symbolTypes) {
-    /*// Parse case-insensitive
-    formula = formula.toLowerCase();*/
+    /* // Parse case-insensitive
+    formula = formula.toLowerCase(); */
 
     // Error handler
     var err = null;
@@ -45,7 +45,7 @@ export var FormulaCompiler = {
       'asin(float)': FormulaCompiler.types.float,
       'acos(float)': FormulaCompiler.types.float,
       'atan(float)': FormulaCompiler.types.float,
-      /*'pow': FormulaCompiler.types.float,
+      /* 'pow': FormulaCompiler.types.float,
       'exp': FormulaCompiler.types.float,
       'log': FormulaCompiler.types.float,
       'exp2': FormulaCompiler.types.float,
@@ -57,10 +57,10 @@ export var FormulaCompiler = {
       'floor': FormulaCompiler.types.float,
       'ceil': FormulaCompiler.types.float,
       'fract': FormulaCompiler.types.float,
-      'mod': FormulaCompiler.types.float,*/
+      'mod': FormulaCompiler.types.float, */
       'min(float, float)': FormulaCompiler.types.float,
       'max(float, float)': FormulaCompiler.types.float,
-      /*'clamp': FormulaCompiler.types.float,
+      /* 'clamp': FormulaCompiler.types.float,
       'mix': FormulaCompiler.types.float,
       'step': FormulaCompiler.types.float,
       'smoothstep': FormulaCompiler.types.float,
@@ -68,7 +68,7 @@ export var FormulaCompiler = {
       'distance': FormulaCompiler.types.float,
       'dot': FormulaCompiler.types.float,
       'cross': FormulaCompiler.types.float,
-      'normalize': FormulaCompiler.types.float,*/
+      'normalize': FormulaCompiler.types.float, */
     }
 
     // >>> Tokenizer
@@ -313,9 +313,9 @@ export var FormulaCompiler = {
         var variable = [curVal];
         if (!getTok()) return null; // eat identifier
 
-        /*var decl = [type].concat(variable);
+        /* var decl = [type].concat(variable);
         decl.push('#');
-        return { code: decl, type: type };*/
+        return { code: decl, type: type }; */
         variable.push(type === FormulaCompiler.types.float ? '@' : '@[]');
         return { code: variable, type: type };
       }
@@ -368,7 +368,7 @@ export var FormulaCompiler = {
         case 'identifier': return identifierAndPostAST();
         case 'float': case 'int': return numberAST();
         default: return error("unknown token '{0}' when expecting an expression".format(curTok));
-        /*case (int)Lexer.Token.tok_int: return ParseIntExpr();
+        /* case (int)Lexer.Token.tok_int: return ParseIntExpr();
         case (int)Lexer.Token.tok_float: return ParseFloatExpr();
         case (int)Lexer.Token.tok_string: return ParseStringExpr();
         case (int)Lexer.Token.tok_bool: return ParseBooleanExpr();
@@ -389,7 +389,7 @@ export var FormulaCompiler = {
           VAR = ParseIdentifierExpr();
           if (VAR == null) return null;
           if (!(VAR is VariableExprAST || VAR is IndexExprAST)) return Error("Expected variable after prefix decrement operator");
-          return new PrefixDecrementExprAST(new Segment(mmBegin, VAR.source.end), VAR);*/
+          return new PrefixDecrementExprAST(new Segment(mmBegin, VAR.source.end), VAR); */
         }
       }
       /**
@@ -458,7 +458,7 @@ export var FormulaCompiler = {
       case 'asin(float)': stack[SP - 1] = Math.asin(stack[SP - 1]); break;
       case 'acos(float)': stack[SP - 1] = Math.acos(stack[SP - 1]); break;
       case 'atan(float)': stack[SP - 1] = Math.atan(stack[SP - 1]); break;
-      /*case 'pow': FormulaCompiler.types.float,
+      /* case 'pow': FormulaCompiler.types.float,
       case 'exp': FormulaCompiler.types.float,
       case 'log': FormulaCompiler.types.float,
       case 'exp2': FormulaCompiler.types.float,
@@ -470,10 +470,10 @@ export var FormulaCompiler = {
       case 'floor': FormulaCompiler.types.float,
       case 'ceil': FormulaCompiler.types.float,
       case 'fract': FormulaCompiler.types.float,
-      case 'mod': FormulaCompiler.types.float,*/
+      case 'mod': FormulaCompiler.types.float, */
       case 'min(float, float)': stack[SP - 2] = Math.min(stack[SP - 2], stack[--SP]); break;
       case 'max(float, float)': stack[SP - 2] = Math.max(stack[SP - 2], stack[--SP]); break;
-      /*case 'clamp': FormulaCompiler.types.float,
+      /* case 'clamp': FormulaCompiler.types.float,
       case 'mix': FormulaCompiler.types.float,
       case 'step': FormulaCompiler.types.float,
       case 'smoothstep': FormulaCompiler.types.float,
@@ -481,9 +481,9 @@ export var FormulaCompiler = {
       case 'distance': FormulaCompiler.types.float,
       case 'dot': FormulaCompiler.types.float,
       case 'cross': FormulaCompiler.types.float,
-      case 'normalize': FormulaCompiler.types.float,*/
+      case 'normalize': FormulaCompiler.types.float, */
 
-      case 'vec3(float, float, float)': /*Nothing to do*/ break;
+      case 'vec3(float, float, float)': /* Nothing to do */ break;
       case 'vec3 = vec3': scope[stack[--SP]] = [stack[SP - 3], stack[SP - 2], stack[SP - 1]]; break;
       case 'vec3 + vec3': stack[SP - 6] += stack[SP - 3]; stack[SP - 5] += stack[SP - 2]; stack[SP - 4] += stack[SP - 1]; SP -= 3; break;
       case 'vec3 * float': var f = stack[--SP]; stack[SP - 3] *= f; stack[SP - 2] *= f; stack[SP - 1] *= f; break;
@@ -583,7 +583,7 @@ function benchmark(nIter, javascriptCode, formulaCode, evalCode) {
   console.log((performance.now() - tStart) + 'ms');
 }
 
-/*benchmark(1000000, function() {
+/* benchmark(1000000, function() {
   var a = 3;
   var b = 4;
   return a * b / 2;
@@ -595,9 +595,9 @@ function benchmark(nIter, javascriptCode, formulaCode, evalCode) {
   var a = 3;
   var b = 4;
   a * b / 2;
-`);*/
+`); */
 
-/*benchmark(10000, function() {
+/* benchmark(10000, function() {
   var v = [4, 5, 6];
   return v[1];
 }, `
@@ -606,11 +606,11 @@ function benchmark(nIter, javascriptCode, formulaCode, evalCode) {
 `, `
   var v = [4, 5, 6];
   v[1];
-`);*/
+`); */
 
-//verboseTest("vec3 a = vec3(1, 2, 3);");
+// verboseTest("vec3 a = vec3(1, 2, 3);");
 
-/*verify("1 + 6 * 2;", 13);
+/* verify("1 + 6 * 2;", 13);
 verify("max(1, 2);", 2);
 verify("max(1 + 6, 2 * 3);", 7);
 verify("float a = 123; a += 5; a;", 128);
@@ -635,4 +635,4 @@ verify(`
   a * b / 2;
 `, 6);
 
-verboseTest("i;", {i: 123.5}, {i: FormulaCompiler.types.float});*/
+verboseTest("i;", {i: 123.5}, {i: FormulaCompiler.types.float}); */

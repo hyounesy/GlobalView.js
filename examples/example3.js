@@ -11,11 +11,11 @@ domready(function () {
     pointColor: ['#F25', 'green', [40, 60, 230, 255]]
 
     // Other valid color-values are:
-    //pointColor: [100, 100, 255, 255]
-    //pointColor: [255, 255, 255, 80]
-    //pointColor: "#38F"
-    //pointColor: "#123456"
-    //pointColor: "violet"
+    // pointColor: [100, 100, 255, 255]
+    // pointColor: [255, 255, 255, 80]
+    // pointColor: "#38F"
+    // pointColor: "#123456"
+    // pointColor: "violet"
   });
 
   new globalView.CsvDataset('datasets/iris.data', {

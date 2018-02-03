@@ -17,9 +17,9 @@ export function PointViewer(gl, globalView) {
   var meshDataPoints = null;
 
   var _pointOpacity = 1.0;
-  /*var highlightTexture = libGraphics.LoadTextureFromByteArray(gl, new Uint8Array([255, 255, 0, 255]), 1, 1);
+  /* var highlightTexture = libGraphics.LoadTextureFromByteArray(gl, new Uint8Array([255, 255, 0, 255]), 1, 1);
   var selectionTexture = libGraphics.LoadTextureFromByteArray(gl, new Uint8Array([255, 0, 0, 255]), 1, 1);
-  var representativeTexture = libGraphics.LoadTextureFromByteArray(gl, new Uint8Array([0, 255, 0, 255]), 1, 1);*/
+  var representativeTexture = libGraphics.LoadTextureFromByteArray(gl, new Uint8Array([0, 255, 0, 255]), 1, 1); */
 
   /**
    * A renderable set of points
@@ -233,8 +233,8 @@ vec{1} getPos()
         for (var a = 0; a < attrLen; ++a)
           inputs.push('p' + i + (attrLen == 1 ? '' : '[' + a + ']'));
       }
-      //HY:
-      const ND = 4; //todo: should use the globalView.ND
+      // HY:
+      const ND = 4; // todo: should use the globalView.ND
       for (var d = 0; d < ND; ++d) {
         inputCode.push(String.prototype.format2.apply(activeInputVectors[d] ? activeInputVectors[d].getValueCode : '0.0', inputs));
         animatedInputCode.push(String.prototype.format2.apply(activeInputVectors[d] ? animatedInputVectors[d].getValueCode : '0.0', inputs));
@@ -246,7 +246,7 @@ vec{1} getPos()
         getPosCode = getPosCode.format(attrDeclCode, 3, inputCode.slice(0, 3).join(', '), animatedInputCode.slice(0, 3).join(', '))
 
 
-      //console.log(getPosCode);
+      // console.log(getPosCode);
       return getPosCode;
     }
 
@@ -265,7 +265,7 @@ vec{1} getPos()
       switch (options['pointShape']) {
       case 'Circle':
         opacityMapCoe += '{ return 1.0 - pow(p.x*p.x + p.y*p.y, pointSize / 4.0); }';
-        //opacityMapCoe += "{ return p.x*p.x + p.y*p.y < 1.0 ? 1.0 : 0.0; }";
+        // opacityMapCoe += "{ return p.x*p.x + p.y*p.y < 1.0 ? 1.0 : 0.0; }";
         break;
       case 'Cross':
         opacityMapCoe += '{ return pointSize / 4.0 * (max(4.0 / pointSize - abs(p.x - p.y), 0.0) + max(4.0 / pointSize - abs(-p.x - p.y), 0.0)); }';
@@ -274,7 +274,7 @@ vec{1} getPos()
         opacityMapCoe += '{ return 1.0 - pow(abs(p.x) + abs(p.y), 2.0 + pointSize / 4.0); }';
         break;
       case 'Gaussian':
-        //opacityMapCoe += "{ return exp({0} * (p.x*p.x + p.y*p.y)); }".format(Math.log(0.001));
+        // opacityMapCoe += "{ return exp({0} * (p.x*p.x + p.y*p.y)); }".format(Math.log(0.001));
         opacityMapCoe += '{ return exp(-7.0 * (p.x*p.x + p.y*p.y)); }';
         break;
       case 'Custom':
@@ -287,7 +287,7 @@ vec{1} getPos()
 
       // Compile shaders
       this.sdr = new libGraphics.Shader(gl, [this.getPosCode(false), libShaders.Shaders.vsDataPoint], ['precision highp float; uniform float pointSize;', opacityMapCoe, libShaders.Shaders.fsDataPoint]);
-      //this.sdr.transform = this.sdr.u1fv("transform");
+      // this.sdr.transform = this.sdr.u1fv("transform");
       this.sdr.offsets = this.sdr.u3f('offsets');
       this.sdr.scales = this.sdr.u3f('scales');
       this.sdr.animatedScales = this.sdr.u3f('animatedScales');
@@ -299,7 +299,7 @@ vec{1} getPos()
       this.sdr.posattr = [this.sdr.getAttribLocation('p0'), this.sdr.getAttribLocation('p1'), this.sdr.getAttribLocation('p2'), this.sdr.getAttribLocation('p3')];
       this.sdr.vidattr = this.sdr.getAttribLocation('i');
       this.sdrLine = new libGraphics.Shader(gl, [this.getPosCode(true), libShaders.Shaders.vsDataLine], ['precision highp float; uniform float pointSize;', opacityMapCoe, libShaders.Shaders.fsDataLine]);
-      //this.sdrLine.transform = this.sdrLine.u1fv("transform");
+      // this.sdrLine.transform = this.sdrLine.u1fv("transform");
       this.sdrLine.offsets = this.sdrLine.u4f('offsets');
       this.sdrLine.scales = this.sdrLine.u4f('scales');
       this.sdrLine.animatedScales = this.sdrLine.u4f('animatedScales');
@@ -417,7 +417,7 @@ vec{1} getPos()
 
       // Compute line vertices
       var lineTransform = libGlMatrix.mat2.create();
-      libGlMatrix.mat2.scale(lineTransform, lineTransform, libGlMatrix.vec2.fromValues(Math.sqrt(line[0]*line[0] + line[1]*line[1]), Math.max(1, options['pointSize'] /*/ 10*/)));
+      libGlMatrix.mat2.scale(lineTransform, lineTransform, libGlMatrix.vec2.fromValues(Math.sqrt(line[0]*line[0] + line[1]*line[1]), Math.max(1, options['pointSize'] /* / 10 */)));
       libGlMatrix.mat2.rotate(lineTransform, lineTransform, Math.atan2(line[1], line[0]));
       libGlMatrix.mat2.scale(lineTransform, lineTransform, libGlMatrix.vec2.fromValues(1 / gl.width, 1 / gl.height));
       this.sdrLine.lineTransform(lineTransform);
