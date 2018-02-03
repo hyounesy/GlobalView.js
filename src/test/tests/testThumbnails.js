@@ -6,7 +6,7 @@ export default function testThumbnails(div, ondone) {
 
   const data = new globalView.CsvDataset('tests/datasets/iris.data', {
     columnLabels: ['Sepal Length [cm]', 'Sepal Width [cm]', 'Petal Length [cm]', 'Petal Width [cm]', 'Class'],
-    imageFilenames: (point) => `tests/datasets/${point[4]}.png`,
+    imageFilenames: point => `tests/datasets/${point[4]}.png`,
   }, (dataset) => {
     const columnX = 0;
     const columnY = 1;

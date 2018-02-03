@@ -73,7 +73,7 @@ function BenchmarkDialog() {
     // pointShape: ['Rectangle'],
     // N: [1000000]//linspace(100000, 200000, 1000000)
     // N: [1e1, 1e2, 1e3/*, 1e4, 1e5, 1e6*/]
-    N: Array.create(1000, (i) => 10000 * i)
+    N: Array.create(1000, i => 10000 * i)
   };
   const SECONDS_PER_BENCHMARK = 1;// 10;
   const SAVE_SCREENSHOTS = false;

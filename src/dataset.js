@@ -206,7 +206,7 @@ export function Dataset() {
    * @param  {function(DensityMap!)!} callback
    */
   this.iterateDensityMaps = function (callback) {
-    _densityMaps.forEach((_densityMaps) => _densityMaps.forEach((densityMap) => densityMap && (libUtility.isUndefined(densityMap.pending) || densityMap.old) ? callback(densityMap.old || densityMap) : null));
+    _densityMaps.forEach(_densityMaps => _densityMaps.forEach(densityMap => densityMap && (libUtility.isUndefined(densityMap.pending) || densityMap.old) ? callback(densityMap.old || densityMap) : null));
   }
 
   this['requestDensityMap'] =
@@ -273,7 +273,7 @@ export function Dataset() {
         const p = new Parallel([libUtility.makeCloneable(histogram), new libAlgorithm.DensityMapOptions(options)], { evalPath: 'eval.js' });
         p.require(libAlgorithm.DensityMap);
         p.require(libAlgorithm.computeDensityMap);
-        p.spawn((params) =>
+        p.spawn(params =>
           // the following code will be evaled from a blob in Parallel. so no need for libAlgorithm.
           computeDensityMap.apply(null, params)
         ).then((densityMap) => {
@@ -396,7 +396,7 @@ export function Dataset() {
           p.require(libAlgorithm.computeClusterMap_method3);
           p.require(libUtility.ForwardList);
           p.require(libUtility.PriorityQueue);
-          p.spawn((params) =>
+          p.spawn(params =>
             // the following code will be evaled from a blob in Parallel. so no need for libAlgorithm.
             computeClusterMap_method3.apply(null, params)
           ).then((clusterMap) => {
@@ -690,8 +690,8 @@ export function CsvDataset(file, options, onload) {
         // Assume no-header by default
         options['hasHeader'] = false;
 
-        var firstRowOnlyStrings = data[0].every((value) => isNaN(parseData(value)));
-        var secondRowHasNumbers = data[1].some((value) => !isNaN(parseData(value)));
+        var firstRowOnlyStrings = data[0].every(value => isNaN(parseData(value)));
+        var secondRowHasNumbers = data[1].some(value => !isNaN(parseData(value)));
 
         // If the first row consists of only string values, but the second row has at least one numeric value, we can assume the first row is a header
         if (firstRowOnlyStrings && secondRowHasNumbers) {
@@ -706,7 +706,7 @@ export function CsvDataset(file, options, onload) {
         // If any row consists of only unique strings, we can assume it contains data point names
         for (var c = 0; c < data[0].length; ++c) {
           var valueMap = {};
-          if (data.every((row) => (row.length > c && isNaN(parseData(row[c])) && !(row[c] in valueMap)) ? valueMap[row[c]] = true : false)) {
+          if (data.every(row => (row.length > c && isNaN(parseData(row[c])) && !(row[c] in valueMap)) ? valueMap[row[c]] = true : false)) {
             options['nameColumn'] = c;
             break;
           }
@@ -901,7 +901,7 @@ export function CsvDataset(file, options, onload) {
     request.send();
   } else {
     var reader = new FileReader();
-    reader.onload = (event) => parseCsv(reader.result);
+    reader.onload = event => parseCsv(reader.result);
     reader.readAsText(/** @type {!Blob} */(file));
   }
 }

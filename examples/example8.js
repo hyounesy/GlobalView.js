@@ -431,7 +431,7 @@ function onMouseOverDatapoint(dataset, index) {
 
     if (dataset.data) {
       var nc = dataset.numColumns;
-      pDataPoint.innerText = dataset.dataVectors.map((dataVector) =>
+      pDataPoint.innerText = dataset.dataVectors.map(dataVector =>
         dataVector.label + ': ' + (dataVector.values ? dataVector.values[Math.floor(dataVector.getValue(index))] : dataVector.getValue(index))
       ).join('\n');
     } else {

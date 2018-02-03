@@ -370,7 +370,7 @@ export var FormulaCompiler = {
         var numArgs = args.type.length;
 
         // Create function signature from function name and argument FormulaCompiler.types
-        var argTypeNames = args.type.map((type) => type.name).join(', ')
+        var argTypeNames = args.type.map(type => type.name).join(', ')
         var funcSignature = funcName + '(' + argTypeNames + ')';
 
         // Lookup function and return type
@@ -595,7 +595,7 @@ function verboseTest(formula, symbols, symbolTypes) {
     console.log('err: ' + code);
   } else {
     var globalScope = symbols ? symbols : {};
-    console.log('code: ' + code.map((c) => libUtility.isString(c) ? '"' + c + '"' : c).join(' '));
+    console.log('code: ' + code.map(c => libUtility.isString(c) ? '"' + c + '"' : c).join(' '));
     console.log('result: ' + FormulaCompiler.run(code, new Array(16), globalScope));
     console.log('locals: ' + JSON.stringify(globalScope));
   }

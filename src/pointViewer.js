@@ -154,7 +154,7 @@ export function PointViewer(gl, globalView) {
     if (meshDataPoints != null) {
       meshDataPoints.free();
     }
-    pointSets.forEach((pointSet) => pointSet.clear());
+    pointSets.forEach(pointSet => pointSet.clear());
 
     _dataset = dataset;
     _pointOpacity = options['pointOpacity'];
@@ -195,8 +195,8 @@ export function PointViewer(gl, globalView) {
   var activeInputVectors = null,
     animatedInputVectors = null;
   this.onInputChanged = function (activeInputs, animatedInputs, options) {
-    activeInputVectors = activeInputs.map((i) => _dataset.dataVectors[i]);
-    animatedInputVectors = animatedInputs.map((animatedInput) => _dataset.dataVectors[animatedInput.origin]);
+    activeInputVectors = activeInputs.map(i => _dataset.dataVectors[i]);
+    animatedInputVectors = animatedInputs.map(animatedInput => _dataset.dataVectors[animatedInput.origin]);
     if (meshDataPoints != null) {
       meshDataPoints.recompileShader(options);
     }

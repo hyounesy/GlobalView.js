@@ -46,7 +46,7 @@ domready(function () {
     hasHeader: true,
     nameColumn: 1,
     columnLabels: COLUMN_NAMES,
-    imageFilenames: (data) => imagesPath + data[1] + '.png'
+    imageFilenames: data => imagesPath + data[1] + '.png'
   }, function (dataset) {
     plot.load(dataset, 2, 4, 0, 3);
     plot.getCharacteristicPoints(8, 1, function (characteristicPoints) {

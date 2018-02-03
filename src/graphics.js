@@ -86,7 +86,7 @@ export function Shader(gl, vs, fs, debug) {
         }
       };
     } else {
-      return debug ? (i) => console.log('Passing value to unused uniform ' + uniformString) : null;
+      return debug ? i => console.log('Passing value to unused uniform ' + uniformString) : null;
     }
   }
   this.u1f = function (uniformString) {
@@ -101,7 +101,7 @@ export function Shader(gl, vs, fs, debug) {
         }
       };
     } else {
-      return debug ? (f) => console.log('Passing value to unused uniform ' + uniformString) : null;
+      return debug ? f => console.log('Passing value to unused uniform ' + uniformString) : null;
     }
   }
   this.u2f = function (uniformString) {
@@ -116,7 +116,7 @@ export function Shader(gl, vs, fs, debug) {
         }
       };
     } else {
-      return debug ? (f) => console.log('Passing value to unused uniform ' + uniformString) : null;
+      return debug ? f => console.log('Passing value to unused uniform ' + uniformString) : null;
     }
   }
   this.u2x2f = function (uniformString) {
@@ -131,7 +131,7 @@ export function Shader(gl, vs, fs, debug) {
         }
       };
     } else {
-      return debug ? (f) => console.log('Passing value to unused uniform ' + uniformString) : null;
+      return debug ? f => console.log('Passing value to unused uniform ' + uniformString) : null;
     }
   }
   this.u3f = function (uniformString) {
@@ -146,7 +146,7 @@ export function Shader(gl, vs, fs, debug) {
         }
       };
     } else {
-      return debug ? (f) => console.log('Passing value to unused uniform ' + uniformString) : null;
+      return debug ? f => console.log('Passing value to unused uniform ' + uniformString) : null;
     }
   }
   this.u4f = function (uniformString) {
@@ -161,7 +161,7 @@ export function Shader(gl, vs, fs, debug) {
         }
       };
     } else {
-      return debug ? (f) => console.log('Passing value to unused uniform ' + uniformString) : null;
+      return debug ? f => console.log('Passing value to unused uniform ' + uniformString) : null;
     }
   }
   this.u1fv = function (uniformString) {
@@ -176,7 +176,7 @@ export function Shader(gl, vs, fs, debug) {
         }
       };
     } else {
-      return debug ? (f) => console.log('Passing value to unused uniform ' + uniformString) : null;
+      return debug ? f => console.log('Passing value to unused uniform ' + uniformString) : null;
     }
   }
   this.u4fv = function (uniformString) {
@@ -191,7 +191,7 @@ export function Shader(gl, vs, fs, debug) {
         }
       };
     } else {
-      return debug ? (f) => console.log('Passing value to unused uniform ' + uniformString) : null;
+      return debug ? f => console.log('Passing value to unused uniform ' + uniformString) : null;
     }
   }
   this.u4x4f = function (uniformString) {
@@ -206,7 +206,7 @@ export function Shader(gl, vs, fs, debug) {
         }
       };
     } else {
-      return debug ? (f) => console.log('Passing value to unused uniform ' + uniformString) : null;
+      return debug ? f => console.log('Passing value to unused uniform ' + uniformString) : null;
     }
   }
 

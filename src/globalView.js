@@ -473,7 +473,7 @@ export function GlobalView(div, startupOptions) {
       var isAnimating = false;
 
       // Compute offsets and scales, either static based on activeInputs, or animated between activeInputs and animatedInputs
-      var oi = animatedInputs.map((anim) => anim.origin);
+      var oi = animatedInputs.map(anim => anim.origin);
       var di = activeInputs;
       for (var d = 0; d < ND; ++d) {
         var ts = dataset.dataVectors[di[d]].scale;
@@ -530,7 +530,7 @@ export function GlobalView(div, startupOptions) {
         padding[i])
       );
     } else if(libUtility.isNumber(padding) || libUtility.isString(padding)) {
-      computedPadding = Array.create(4, (i) => Math.floor(libUtility.isString(padding) ?
+      computedPadding = Array.create(4, i => Math.floor(libUtility.isString(padding) ?
         Number.parseFloat(padding) * (padding.endsWith('%') ? (i % 2 === 0 ? canvas.width : canvas.height) / 100 : 1) :
         padding)
       );
@@ -547,7 +547,7 @@ export function GlobalView(div, startupOptions) {
       newPlotBounds.y !== plotBounds.y ||
       newPlotBounds.width !== plotBounds.width ||
       newPlotBounds.height !== plotBounds.height) {
-      viewers.forEach((viewer) => viewer.onPlotBoundsChanged(plotBounds = newPlotBounds));
+      viewers.forEach(viewer => viewer.onPlotBoundsChanged(plotBounds = newPlotBounds));
     } else {
       plotBounds = newPlotBounds
     }
@@ -603,7 +603,7 @@ export function GlobalView(div, startupOptions) {
     'padding': {
       description: 'The space around the drawing area in the form [top, right, bottom, left]. X-axis, y-axis and colormap are drawn within padding space.',
       default: [50, 60, 50, 50],
-      valid: (value) => libUtility.isNumber(value) || libUtility.isString(value) || (libUtility.isArray(value) && value.length === 4),
+      valid: value => libUtility.isNumber(value) || libUtility.isString(value) || (libUtility.isArray(value) && value.length === 4),
       requireRedraw: true,
       requireRecompile: false
     },
@@ -668,7 +668,7 @@ export function GlobalView(div, startupOptions) {
     'pointClusterThreshold': {
       description: "Controls the realtive threshold between clusters and outliers when showing clusters (see 'showPointClusters')",
       default: (new libAlgorithm.ClusterMapOptions()).threshold,
-      valid: (value) => value > 0,
+      valid: value => value > 0,
       requireRedraw: false, // Requests redraw internally
       requireRecompile: false
     },
@@ -702,7 +702,7 @@ export function GlobalView(div, startupOptions) {
     'numHistogramBins': {
       description: 'Controls the number of bins within each histogram in the scatterplot.',
       default: 50,
-      valid: (value) => value >= 1,
+      valid: value => value >= 1,
       requireRedraw: true,
       requireRecompile: false
     },
@@ -710,7 +710,7 @@ export function GlobalView(div, startupOptions) {
     'histogramHeight': {
       description: 'Controls the height of each histogram in the scatterplot (in pixels).',
       default: 64,
-      valid: (value) => value >= 0,
+      valid: value => value >= 0,
       requireRedraw: true,
       requireRecompile: false
     },
@@ -728,7 +728,7 @@ export function GlobalView(div, startupOptions) {
     'customPointShape': {
       description: "When 'pointShape' is set to 'Custom', this defines a GLSL function given vec2 p, that returns opacity in the range [0.0 ... 1.0] at location p.",
       default: '{ return 1.0; }',
-      valid: (value) => libGraphics.validateGLSL(gl, 'float opacityMap(in vec2 p) ' + value),
+      valid: value => libGraphics.validateGLSL(gl, 'float opacityMap(in vec2 p) ' + value),
       requireRedraw: true,
       requireRecompile: true
     },
@@ -736,7 +736,7 @@ export function GlobalView(div, startupOptions) {
     'pointSize': {
       description: 'Controls the diameter of data points in the scatterplot (in pixels).',
       default: 6,
-      valid: (value) => value >= 0,
+      valid: value => value >= 0,
       requireRedraw: true,
       requireRecompile: false
     },
@@ -744,7 +744,7 @@ export function GlobalView(div, startupOptions) {
     'pointOpacity': {
       description: 'Controls the visibility of data points in the scatterplot between 0 (invisible) and 1 (fully opaque).',
       default: 1,
-      valid: (value) => value >= 0 && value <= 1,
+      valid: value => value >= 0 && value <= 1,
       requireRedraw: true,
       requireRecompile: false
     },
@@ -752,7 +752,7 @@ export function GlobalView(div, startupOptions) {
     'pointColor': {
       description: 'Controls the color of data points in the scatterplot. Valid values are an array of bytes in RGBA order or a colormap name.',
       default: 'exhue',
-      valid: (value) => libColormap.validateColormap(value),
+      valid: value => libColormap.validateColormap(value),
       requireRedraw: true,
       requireRecompile: false
     },
@@ -762,7 +762,7 @@ export function GlobalView(div, startupOptions) {
     'thumbnailSize': {
       description: 'Controls the width/height of thumbnails in the scatterplot (in pixels).',
       default: 64,
-      valid: (value) => value > 0,
+      valid: value => value > 0,
       requireRedraw: true,
       requireRecompile: false
     },
@@ -770,7 +770,7 @@ export function GlobalView(div, startupOptions) {
     'thumbnailBorderWidth': {
       description: 'Controls the width of thumbnail borders in the scatterplot.',
       default: 1,
-      valid: (value) => value >= 0,
+      valid: value => value >= 0,
       requireRedraw: true,
       requireRecompile: false
     },
@@ -780,7 +780,7 @@ export function GlobalView(div, startupOptions) {
       description: "Controls the color of thumbnail borders in the scatterplot. Valid values are an array of bytes in RGBA order, a color name or 'null'. " +
         "If set to 'null', the CSS foreground color will be used.",
       default: null,
-      valid: (value) => value === null || libColormap.validateColor(value),
+      valid: value => value === null || libColormap.validateColor(value),
       requireRedraw: true,
       requireRecompile: false
     },
@@ -790,7 +790,7 @@ export function GlobalView(div, startupOptions) {
       description: "Controls the color of thumbnail line in the scatterplot. Valid values are an array of bytes in RGBA order, a color name or 'null'. " +
         "If set to 'null', the CSS foreground color will be used.",
       default: null,
-      valid: (value) => value === null || libColormap.validateColor(value),
+      valid: value => value === null || libColormap.validateColor(value),
       requireRedraw: true,
       requireRecompile: false
     },
@@ -800,7 +800,7 @@ export function GlobalView(div, startupOptions) {
       description: "Controls the color of thumbnail labels in the scatterplot. Valid values are an array of bytes in RGBA order, a color name or 'null'. " +
         "If set to 'null', the CSS foreground color will be used.",
       default: null,
-      valid: (value) => value === null || libColormap.validateColor(value),
+      valid: value => value === null || libColormap.validateColor(value),
       requireRedraw: true,
       requireRecompile: false
     },
@@ -835,7 +835,7 @@ export function GlobalView(div, startupOptions) {
       setPlotBounds(options['padding']);
     }
 
-    viewers.forEach((viewer) => viewer.onOptionsChanged(options, requireRecompile));
+    viewers.forEach(viewer => viewer.onOptionsChanged(options, requireRecompile));
 
     if (dataset !== null) {
       // Reset FPS counter
@@ -1103,8 +1103,8 @@ export function GlobalView(div, startupOptions) {
     this.zoomFit();
 
     // Update viewers
-    viewers.forEach((viewer) => viewer.setDataset(dataset, options));
-    viewers.forEach((viewer) => viewer.onInputChanged(activeInputs, animatedInputs, options));
+    viewers.forEach(viewer => viewer.setDataset(dataset, options));
+    viewers.forEach(viewer => viewer.onInputChanged(activeInputs, animatedInputs, options));
     /* pointViewer.setDataset(dataset, options);
     pointViewer.onInputChanged(activeInputs, animatedInputs, options);
     densityViewer.setDataset(dataset, options);
@@ -1136,7 +1136,7 @@ export function GlobalView(div, startupOptions) {
     activeInputs[d] = c;
 
     tf.onInputChanged();
-    viewers.forEach((viewer) => viewer.onInputChanged(activeInputs, animatedInputs, options));
+    viewers.forEach(viewer => viewer.onInputChanged(activeInputs, animatedInputs, options));
     /* pointViewer.onInputChanged(activeInputs, animatedInputs, options);
     histogramViewer.onInputChanged(activeInputs, animatedInputs, options); */
     if (d < 2) {
@@ -1227,12 +1227,12 @@ export function GlobalView(div, startupOptions) {
       if (dataset.imageFilenames) {
         pointViewer.representativePoints.forEach(function (r) {
           if (dataset.imageFilenames[r]) {
-            var dataPos = dataset.dataVectors.map((v) => v.getValue(r));
+            var dataPos = dataset.dataVectors.map(v => v.getValue(r));
             var imagePos = dataPos.slice(0);
             var p = libAlgorithm.findClosePointOfLowDensity(dataset, d0, d1, r, densityMap, densityMap.stencilMap, 0.6 * options['thumbnailSize'] / gl.width, 0.6 * (options['thumbnailSize'] + libImageViewer.LABEL_HEIGHT) / gl.height); // EDIT: Factor 0.6: WHY?
             imagePos[d0] = p[0];
             imagePos[d1] = p[1];
-            var imageSize = dataset.dataVectors.map((v) => options['thumbnailSize'] * (v.maximum - v.minimum));
+            var imageSize = dataset.dataVectors.map(v => options['thumbnailSize'] * (v.maximum - v.minimum));
             imageViewer.showImage(dataset.imageFilenames[r], r, dataPos, imagePos, imageSize);
           }
         });
@@ -1268,7 +1268,7 @@ export function GlobalView(div, startupOptions) {
           imageHeight = temp;
         }
 
-        var dataPos = dataset.dataVectors.map((v) => v.getValue(index));
+        var dataPos = dataset.dataVectors.map(v => v.getValue(index));
         var imagePos;
         if (libUtility.isUndefined(densityMap.data)) { // If densityMap is nD
           imagePos = libAlgorithm.findClosePointOfLowDensityND_descend(dataset, index, densityMap, 0.6 * options['thumbnailSize'] / Math.min(gl.width, gl.height));
@@ -1289,7 +1289,7 @@ export function GlobalView(div, startupOptions) {
             imagePos[d1] += halfImageSize[1];
           }
         }
-        var imageSize = dataset.dataVectors.map((v) => options['thumbnailSize'] * (v.maximum - v.minimum));
+        var imageSize = dataset.dataVectors.map(v => options['thumbnailSize'] * (v.maximum - v.minimum));
         imageViewer.showImage(dataset.imageFilenames[index], index, dataPos, imagePos, imageSize);
       });
     }
@@ -1323,7 +1323,7 @@ export function GlobalView(div, startupOptions) {
         libAlgorithm.markPointsInStencilMap(dataset, d0, d1, points, densityMap, densityMap.stencilMap, imageWidth, imageHeight);
       });
     }
-    points.forEach((i) => globalView.showImage_lowDensity(i));
+    points.forEach(i => globalView.showImage_lowDensity(i));
     imageViewer.resolveIntersections(tf);
   }
 
@@ -1333,7 +1333,7 @@ export function GlobalView(div, startupOptions) {
    * @param  {number} index Index of the datapoint to show
    */
   this.showImage_none = function (index) {
-    var dataPos = dataset.dataVectors.map((v) => v.getValue(index));
+    var dataPos = dataset.dataVectors.map(v => v.getValue(index));
     imageViewer.showImage(dataset.imageFilenames[index], index, dataPos);
   }
   this['showImages_none'] =
@@ -1343,7 +1343,7 @@ export function GlobalView(div, startupOptions) {
    */
   this.showImages_none = function (points) {
     points.forEach(function (p) {
-      var dataPos = dataset.dataVectors.map((v) => v.getValue(p));
+      var dataPos = dataset.dataVectors.map(v => v.getValue(p));
       imageViewer.showImage(dataset.imageFilenames[p], p, dataPos);
     });
   }
@@ -1354,8 +1354,8 @@ export function GlobalView(div, startupOptions) {
    * @param  {number} index Index of the datapoint to show
    */
   this.showImage_adjacent = function (index) {
-    var dataPos = dataset.dataVectors.map((v) => v.getValue(index));
-    var imageSize = dataset.dataVectors.map((v) => options['thumbnailSize'] * (v.maximum - v.minimum));
+    var dataPos = dataset.dataVectors.map(v => v.getValue(index));
+    var imageSize = dataset.dataVectors.map(v => options['thumbnailSize'] * (v.maximum - v.minimum));
     imageViewer.showImage(dataset.imageFilenames[index], index, dataPos, dataPos, imageSize, 'bottomleft');
   }
   this['showImages_adjacent'] =
@@ -1364,7 +1364,7 @@ export function GlobalView(div, startupOptions) {
    * @param  {Array<number>} points List of indices of datapoints to show
    */
   this.showImages_adjacent = function (points) {
-    points.forEach((i) => globalView.showImage_adjacent(i));
+    points.forEach(i => globalView.showImage_adjacent(i));
   }
 
   this['showImages_project'] =
@@ -1418,7 +1418,7 @@ export function GlobalView(div, startupOptions) {
     eigenvec[1] /= eigenvec_length;
 
     // Define corners of AABB
-    var imageSize = dataset.dataVectors.map((v) => options['thumbnailSize'] * (v.maximum - v.minimum));
+    var imageSize = dataset.dataVectors.map(v => options['thumbnailSize'] * (v.maximum - v.minimum));
     const labelHeightOffset = 1.0 + libImageViewer.LABEL_HEIGHT / options['thumbnailSize'];
     const labelWidthOffset = 1.0 + (libImageViewer.LABEL_HEIGHT + 2 * libImageViewer.LABEL_WIDTH) / options['thumbnailSize'];
     var bl = [tf.getMinimum(0) - imageSize[d0] * 0.6 / plotBounds.width, tf.getMinimum(1) - imageSize[d1] * 0.6 / plotBounds.height];
@@ -1515,19 +1515,19 @@ export function GlobalView(div, startupOptions) {
       var R = imageLocations;
       var overlapThreshold = Math.min(0.15, 4 / imageLocations.length);
 
-      var rank = Array.create(R.length, (i) => i);
+      var rank = Array.create(R.length, i => i);
       rank.sort((a, b) => imageLocations[a] < imageLocations[b] ? -1 : imageLocations[a] > imageLocations[b] ? 1 : 0);
 
       var P = detectOverlap(R, overlapThreshold);
       for (var iter = 0; iter < maxNumIterations && P.length !== 0; ++iter) {
         // TODO: Shuffle P
-        P.forEach((pair) => removeOverlap(R, pair[0], pair[1], rank, overlapThreshold + 0.0001));
+        P.forEach(pair => removeOverlap(R, pair[0], pair[1], rank, overlapThreshold + 0.0001));
         P = detectOverlap(R, overlapThreshold);
       }
       // console.log(iter, overlapThreshold);
 
       // Repair order
-      var newRank = Array.create(R.length, (i) => i);
+      var newRank = Array.create(R.length, i => i);
       newRank.sort((a, b) => R[a] < R[b] ? -1 : R[a] > R[b] ? 1 : 0);
       var R_repaired = new Array(R.length);
       for (var i = 0; i < R.length; ++i) {
@@ -1543,7 +1543,7 @@ export function GlobalView(div, startupOptions) {
         return;
       }
 
-      var dataPos = dataset.dataVectors.map((v) => v.getValue(p));
+      var dataPos = dataset.dataVectors.map(v => v.getValue(p));
       var imagePos = dataPos.slice(0);
 
       // Convert scalar to position on rectangle [bl, br, tl, tr] -> dest
@@ -1816,7 +1816,7 @@ export function GlobalView(div, startupOptions) {
     var selectedImage = imageViewer.imageFromPoint(tf, p);
     if (!shiftPressed && !ctrlPressed && imageDragImages.length !== 0 && (selectedImage === null || imageDragImages.indexOf(selectedImage) === -1)) {
       // Deselect images
-      imageDragImages.forEach((image) => image.highlighted = false);
+      imageDragImages.forEach(image => image.highlighted = false);
       imageDragImages = [];
       this.invalidate();
       if (this['onThumbnailSelectionChanged'] !== null) {

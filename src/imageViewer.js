@@ -183,8 +183,8 @@ export function ImageViewer(gl, globalView) {
 
   /** @type Array<Thumbnail> */ var images = [];
 
-  var PixelAlignX = (x) => (Math.floor(x * gl.width / 2.0) + 0.5) * 2.0 / gl.width;
-  var PixelAlignY = (y) => (Math.floor(y * gl.height / 2.0) + 0.5) * 2.0 / gl.height;
+  var PixelAlignX = x => (Math.floor(x * gl.width / 2.0) + 0.5) * 2.0 / gl.width;
+  var PixelAlignY = y => (Math.floor(y * gl.height / 2.0) + 0.5) * 2.0 / gl.height;
 
   this.render = function (flipY, tf) {
     if (images.length === 0) {
@@ -363,9 +363,9 @@ export function ImageViewer(gl, globalView) {
   this.onOptionsChanged = function (_options) {
     options = _options;
     defaultImageBorderWidth = options['thumbnailBorderWidth'];
-    defaultImageBorderColor = options['thumbnailBorderColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailBorderColor'])).map((c) => c / 255.0) : gl.foreColor;
-    defaultImageLineColor = options['thumbnailLineColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailLineColor'])).map((c) => c / 255.0) : gl.foreColor;
-    defaultImageLabelColor = options['thumbnailLabelColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailLabelColor'])).map((c) => c / 255.0) : gl.backColor;
+    defaultImageBorderColor = options['thumbnailBorderColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailBorderColor'])).map(c => c / 255.0) : gl.foreColor;
+    defaultImageLineColor = options['thumbnailLineColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailLineColor'])).map(c => c / 255.0) : gl.foreColor;
+    defaultImageLabelColor = options['thumbnailLabelColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailLabelColor'])).map(c => c / 255.0) : gl.backColor;
   }
   this.onPlotBoundsChanged = function (plotBounds) {}
 
