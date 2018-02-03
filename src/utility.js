@@ -34,7 +34,7 @@ export function isNumber(x) {
 }
 
 export function isObject(x) {
-  var t = typeof x;
+  let t = typeof x;
   return t !== 'undefined' && t !== 'function' && t !== 'string' && t !== 'number' && Object.prototype.toString.call(x) !== '[object Array]'
 }
 export function isCloneable(x) {
@@ -50,9 +50,9 @@ export function debugLog(x) {
 }
 
 Array.create = function (n, func) {
-  var array = new Array(n);
+  let array = new Array(n);
   if (isFunction(func)) {
-    for (var i = 0; i < n; ++i) {
+    for (let i = 0; i < n; ++i) {
       array[i] = func(i);
     }
   } else {
@@ -73,7 +73,7 @@ if (!String.prototype.format) {
    * @param {...*} var_args
    */
   String.prototype.format = function (var_args) {
-    var args = arguments;
+    let args = arguments;
     return this.replace(/{(\d+)}/g, function (match, number) {
       return typeof args[number] !== 'undefined' ? args[number] : match;
     });
@@ -86,7 +86,7 @@ if (!String.prototype.format) {
    * @param {...*} var_args
    */
 String.prototype.format2 = function (pattern, mismatch, var_args) {
-  var args = arguments;
+  let args = arguments;
   return this.replace(pattern, function (match, number) {
     number = Number.parseInt(number, 10) + 2;
     return typeof args[number] !== 'undefined' ? args[number] : mismatch;
@@ -100,11 +100,11 @@ export function makeCloneable(obj) {
   } // Return obj as is
 
   // Check all properties of obj
-  for (var prop in obj) {
+  for (let prop in obj) {
     if (!isCloneable(obj[prop])) {
     // If obj has at least on non-cloneable property
     // Create a new object and clone all cloneable properties into that new object
-      var obj_subset = {};
+      let obj_subset = {};
       for (prop in obj) {
         if (isCloneable(obj[prop])) {
           obj_subset[prop] = obj[prop];
@@ -120,13 +120,13 @@ export function makeCloneable(obj) {
 
 
 function getScript(id) {
-  var shaderScript = document.getElementById(id);
+  let shaderScript = document.getElementById(id);
   if (!shaderScript) {
     return null;
   }
 
-  var str = '';
-  var k = shaderScript.firstChild;
+  let str = '';
+  let k = shaderScript.firstChild;
   while (k) {
     if (k.nodeType === 3) {
       str += k.textContent;
@@ -139,7 +139,7 @@ function getScript(id) {
 
 export function colorNameToHex(color) {
 // Source: https://stackoverflow.com/a/1573141
-  var colors = {
+  let colors = {
     'aliceblue':'#f0f8ff', 'antiquewhite':'#faebd7', 'aqua':'#00ffff', 'aquamarine':'#7fffd4', 'azure':'#f0ffff',
     'beige':'#f5f5dc', 'bisque':'#ffe4c4', 'black':'#000000', 'blanchedalmond':'#ffebcd', 'blue':'#0000ff', 'blueviolet':'#8a2be2',
     'brown':'#a52a2a', 'burlywood':'#deb887', 'cadetblue':'#5f9ea0', 'chartreuse':'#7fff00', 'chocolate':'#d2691e', 'coral':'#ff7f50',
@@ -172,12 +172,12 @@ export function colorNameToHex(color) {
 export function hexToRgb(hex) {
   // Source: https://stackoverflow.com/a/5624139
   // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
-  var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+  let shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
   hex = hex.replace(shorthandRegex, function (m, r, g, b) {
     return r + r + g + g + b + b;
   });
 
-  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result ? {
     r: parseInt(result[1], 16),
     g: parseInt(result[2], 16),
@@ -186,8 +186,8 @@ export function hexToRgb(hex) {
 }
 
 export function rgbStringToFloatArray(rgbstr) {
-  var rgb = rgbstr.match(/\d+/g);
-  for (var i = 0; i < 4; ++i) {
+  let rgb = rgbstr.match(/\d+/g);
+  for (let i = 0; i < 4; ++i) {
     rgb[i] = i < rgb.length ? Math.max(0x00, Math.min(0xFF, rgb[i] / 0xFF)) : 1.0;
   }
   return rgb;
@@ -198,8 +198,8 @@ export function i24ToFloatArray(clr) {
 }
 
 export function F32toI24(floats, bounds) {
-  var bytes = new Uint8Array(4 * floats.length);
-  var i = 0,
+  let bytes = new Uint8Array(4 * floats.length);
+  let i = 0,
     voffset = -bounds[0],
     vscale = 0xFFFFFE / (bounds[1] - bounds[0]);
   floats.forEach(function (value) {
@@ -218,14 +218,14 @@ export function F32toI24(floats, bounds) {
   return bytes;
 }
 export function F32toI24flipY(floats, bounds, width, height) {
-  var bytes = new Uint8Array(4 * floats.length);
-  var i = 0,
+  let bytes = new Uint8Array(4 * floats.length);
+  let i = 0,
     voffset = -bounds[0],
     vscale = 0xFFFFFE / (bounds[1] - bounds[0]);
-  for(var y = 0; y < height; ++y) {
-    for(var x = 0; x < width; ++x) {
+  for(let y = 0; y < height; ++y) {
+    for(let x = 0; x < width; ++x) {
     // var value = Math.floor((floats[(height - y - 1) * width + x] - bounds[0]) * vscale) + 1;
-      var value = floats[((height - y - 1) * width) + x];
+      let value = floats[((height - y - 1) * width) + x];
       value += voffset;
       value *= vscale;
       value = Math.floor(value);
@@ -247,7 +247,7 @@ export function hsv2rgb(hsv) {
   if(hsv[1] <= 0.000001) {
     return [hsv[2], hsv[2], hsv[2]];
   }
-  var hh,
+  let hh,
     p,
     q,
     t,
@@ -278,7 +278,7 @@ export function hsv2rgb(hsv) {
 
 
 export function urlExists(url, onTrue, onFalse, isAsync) {
-  var request = new XMLHttpRequest();
+  let request = new XMLHttpRequest();
   request.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 404 && onFalse) {
       onFalse();
@@ -294,7 +294,7 @@ export function urlExists(url, onTrue, onFalse, isAsync) {
 }
 
 
-var _downloader;
+let _downloader;
 export function download(filename, contentUrl) {
   if (!_downloader) {
     document.body.appendChild(_downloader = document.createElement('a'));
@@ -307,15 +307,15 @@ export function download(filename, contentUrl) {
 
 export function imageUrlFromBytes(bytes, width, height) {
   // Create a temporary 2D canvas to store the result -> tempCanvas
-  var tempCanvas = document.createElement('canvas');
+  let tempCanvas = document.createElement('canvas');
   tempCanvas.width = width;
   tempCanvas.height = height;
 
   // Copy the pixels to the 2D canvas
-  var imageData = tempCanvas.getContext('2d').createImageData(width, height);
+  let imageData = tempCanvas.getContext('2d').createImageData(width, height);
   imageData.data.set(bytes);
   tempCanvas.getContext('2d').putImageData(imageData, 0, 0);
-  var dataURL = tempCanvas.toDataURL();
+  let dataURL = tempCanvas.toDataURL();
 
   // Free tempCanvas
   tempCanvas = null;
@@ -324,9 +324,9 @@ export function imageUrlFromBytes(bytes, width, height) {
 }
 
 
-var _seededRandom_seed = 1;
+let _seededRandom_seed = 1;
 Math.seededRandom = function () { // Source: https://stackoverflow.com/a/19303725
-  var x = Math.sin(_seededRandom_seed++) * 10000;
+  let x = Math.sin(_seededRandom_seed++) * 10000;
   return x - Math.floor(x);
 }
 
@@ -337,9 +337,9 @@ Math.clamp = function (f, minimum, maximum) {
 
 export function createCookie(name, value, days) {
   // Source: http://www.quirksmode.org/js/cookies.html
-  var expires = '';
+  let expires = '';
   if (days) {
-    var date = new Date();
+    let date = new Date();
     date.setTime(date.getTime() + (days*24*60*60*1000));
     expires = '; expires=' + date.toUTCString();
   }
@@ -347,10 +347,10 @@ export function createCookie(name, value, days) {
 }
 export function readCookie(name) {
   // Source: http://www.quirksmode.org/js/cookies.html
-  var nameEQ = name + '=';
-  var ca = document.cookie.split(';');
-  for(var i = 0; i < ca.length; ++i) {
-    var c = ca[i];
+  let nameEQ = name + '=';
+  let ca = document.cookie.split(';');
+  for(let i = 0; i < ca.length; ++i) {
+    let c = ca[i];
     while (c.charAt(0) === ' ') {
       c = c.substring(1, c.length);
     }
@@ -361,12 +361,12 @@ export function readCookie(name) {
   return null;
 }
 export function readFloatCookie(name) {
-  var cookie = readCookie(name);
+  let cookie = readCookie(name);
   cookie = Number.parseFloat(cookie);
   return isNaN(cookie) ? null : cookie;
 }
 export function readIntCookie(name) {
-  var cookie = readCookie(name);
+  let cookie = readCookie(name);
   cookie = Number.parseInt(cookie, 10);
   return isNaN(cookie) ? null : cookie;
 }
@@ -381,7 +381,7 @@ export function getParameterByName(name, url) {
     url = window.location.href;
   }
   name = name.replace(/[\[\]]/g, '\\$&');
-  var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+  let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
     results = regex.exec(url);
   if (!results) {
     return null;
@@ -395,7 +395,7 @@ export function getParameterByName(name, url) {
 
 export function addMouseWheelHandler(onmousewheel) {
   // Source: http://www.javascriptkit.com/javatutors/onmousewheel.shtml
-  var mousewheelevt = (/Firefox/i.test(navigator.userAgent)) ? 'DOMMouseScroll' : 'mousewheel';
+  let mousewheelevt = (/Firefox/i.test(navigator.userAgent)) ? 'DOMMouseScroll' : 'mousewheel';
   if (document.attachEvent) {
     document.attachEvent('on' + mousewheelevt, onmousewheel);
   } else if(document.addEventListener) {
@@ -443,62 +443,62 @@ export function ForwardList(value) {
 
   this.push = function (value) {
     // Pushes to front
-    var newnode = new ForwardList(this.value);
+    let newnode = new ForwardList(this.value);
     newnode.next = this.next;
     this.next = newnode;
     this.value = value;
   }
   this.pushBack = function (value) {
-    var back = this;
+    let back = this;
     while (back.next !== null) {
       back = back.next;
     }
-    var newnode = new ForwardList(value);
+    let newnode = new ForwardList(value);
     back.next = newnode;
   }
   this.sortedPush = function (value) {
     if (value <= this.value) {
       this.push(value);
     } else {
-      var node = this;
+      let node = this;
       while (node.next !== null && node.next.value < value) {
         node = node.next;
       }
-      var newnode = new ForwardList(value);
+      let newnode = new ForwardList(value);
       newnode.next = node.next;
       node.next = newnode;
     }
   }
   this.toArray = function () {
-    var array = [];
-    for (var node = this; node; node = node.next) {
+    let array = [];
+    for (let node = this; node; node = node.next) {
       array.push(node.value);
     }
     return array;
   }
   this.print = function () {
-    var array = [];
-    for (var node = this; node; node = node.next) {
+    let array = [];
+    for (let node = this; node; node = node.next) {
       array.push(node.value);
     }
     console.log(array.join(', '));
   }
   this.size = function () {
-    var size = 0;
-    for (var node = this; node; node = node.next) {
+    let size = 0;
+    for (let node = this; node; node = node.next) {
       ++size;
     }
     return size;
   }
   this.forEach = function (callback) {
-    for (var node = this; node; node = node.next) {
+    for (let node = this; node; node = node.next) {
       callback(node.value);
     }
   }
   ForwardList.sortedMerge = function (a, b) {
     // Source: http://www.geeksforgeeks.org/merge-two-sorted-linked-lists/
-    var dummy = new ForwardList(null);
-    var tail = dummy;
+    let dummy = new ForwardList(null);
+    let tail = dummy;
 
     while (a !== null && b!= null) {
       // While neither a nor b run out
@@ -508,7 +508,7 @@ export function ForwardList(value) {
         newNode.next = tail.next;
         tail.next = newNode;
       } else {
-        var newNode = b;
+        let newNode = b;
         b = newNode.next;
         newNode.next = tail.next;
         tail.next = newNode;
@@ -532,11 +532,11 @@ export function ForwardList(value) {
  * @param {string} priorityProperty
  */
 export function PriorityQueue(priorityProperty) {
-  var data = [];
+  let data = [];
   this.length = 0;
   this.push = function (element) {
     ++this.length;
-    var i,
+    let i,
       p = element[priorityProperty];
     for (i = 0; i < data.length && data[i][priorityProperty] >= p; i++) {}
     data.splice(i, 0, element);
@@ -568,7 +568,7 @@ while (queue.length)
  * @export
  */
 export function HashSet(onchanged) {
-  /** A dictionary of all values in the hash set @type {!Object<number, boolean>} */ var hash = {};
+  /** A dictionary of all values in the hash set @type {!Object<number, boolean>} */ let hash = {};
   /** The number of values in this hash set @type {number} */ this.length = 0;
   /** A callback to be raised whenever values have been added or deleted @public @type {function()} */ this.onchanged = isFunction(onchanged) ? onchanged : function () {};
 
@@ -592,7 +592,7 @@ export function HashSet(onchanged) {
    */
   this.append = function (values) {
     // var t = performance.now();
-    var invalidate = false,
+    let invalidate = false,
       self = this;
     values.forEach(function (value) {
       if (hash[value] !== true) {
@@ -633,7 +633,7 @@ export function HashSet(onchanged) {
     }
 
     // var t = performance.now();
-    var newHash = {},
+    let newHash = {},
       identical = (values.length === this.length);
     values.forEach(function (value) {
       if (identical && hash[value] !== true) {
@@ -688,7 +688,7 @@ export function HashSet(onchanged) {
    */
   this.remove = function (values) {
     // var t = performance.now();
-    var invalidate = false,
+    let invalidate = false,
       self = this;
     values.forEach(function (value) {
       if (hash[value] === true) {
@@ -730,7 +730,7 @@ export function HashSet(onchanged) {
    */
   this.forEach = function (callback) {
     // var last = Number.MIN_SAFE_INTEGER, badOrder = 0;
-    for (var value in hash) {
+    for (let value in hash) {
       value = Number.parseInt(value, 10);
       // if (value < last) ++badOrder; last = value;
       callback(value);

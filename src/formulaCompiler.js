@@ -1,12 +1,12 @@
 const libUtility = require('./utility.js')
 
-export var FormulaCompiler = {
+export const FormulaCompiler = {
   compile: function (formula, symbolTypes) {
     /* // Parse case-insensitive
     formula = formula.toLowerCase(); */
 
     // Error handler
-    var err = null;
+    let err = null;
     function error(msg) {
       err = msg;
       return null;
@@ -73,7 +73,7 @@ export var FormulaCompiler = {
 
     // >>> Tokenizer
 
-    var chrPos = 0,
+    let chrPos = 0,
       chr = formula.charAt(0),
       curTok = null,
       curVal;
@@ -81,7 +81,7 @@ export var FormulaCompiler = {
       return chr = formula.charAt(++chrPos);
     }
     function getTok() {
-      var sign = 1,
+      let sign = 1,
         repeat = false;
       do {
         repeat = false;
@@ -128,7 +128,7 @@ export var FormulaCompiler = {
       while (repeat);
 
       if (chr >= '0' && chr <= '9') {
-        var numberString = chr,
+        let numberString = chr,
           hasDot = false;
         while (getch() !== '') {
           if (chr >= '0' && chr <= '9') {
@@ -154,7 +154,7 @@ export var FormulaCompiler = {
       }
 
       if ((chr >= 'a' && chr <= 'z') || (chr >= 'A' && chr <= 'Z')) {
-        var str = chr;
+        let str = chr;
         while (getch() !== '') {
           if ((chr >= 'a' && chr <= 'z') || (chr >= 'A' && chr <= 'Z') || (chr >= '0' && chr <= '9') || chr === '_') {
             str += chr;
@@ -194,7 +194,7 @@ export var FormulaCompiler = {
     // >>> Abstract Syntax Tree builder
 
     function buildAST() {
-      var scope = symbolTypes ? symbolTypes : {};
+      let scope = symbolTypes ? symbolTypes : {};
 
       function prefixOpAST(op) {
         if (!libUtility.isString(curTok)) {
@@ -206,7 +206,7 @@ export var FormulaCompiler = {
       function bineryOpAST(exprPrec, lhs) {
         // If this is a binop, find its precedence.
         while (true) {
-          var tokPrec = getOperatorPrecedence(curTok);
+          let tokPrec = getOperatorPrecedence(curTok);
 
           // If this is an operator that binds at least as tightly as the current binop, consume it, otherwise return lhs
           if (tokPrec < exprPrec) {
@@ -214,20 +214,20 @@ export var FormulaCompiler = {
           }
           // curTok is an operator
 
-          var binOp = curTok;
+          let binOp = curTok;
           if (!getTok()) {
             return null;
           }  // eat binop
 
           if (binOp !== '?') {
             // Parse the expression after the binary operator.
-            var rhs = exprAST(tokPrec);
+            let rhs = exprAST(tokPrec);
             if (rhs === null) {
               return null;
             }
 
             // If binOp binds less tightly with rhs than the operator after rhs, let the pending operator take rhs as its lhs.
-            var nextPrec = getOperatorPrecedence(curTok);
+            let nextPrec = getOperatorPrecedence(curTok);
             if (tokPrec < nextPrec) {
               rhs = bineryOpAST(tokPrec + 1, rhs);
               if (rhs == null) {
@@ -236,10 +236,10 @@ export var FormulaCompiler = {
             }
 
             // Create operator function signature from operator name and argument FormulaCompiler.types
-            var funcSignature = lhs.type.name + ' ' + binOp + ' ' + rhs.type.name;
+            let funcSignature = lhs.type.name + ' ' + binOp + ' ' + rhs.type.name;
 
             // Lookup operator function and return type
-            var returnType = functionsReturnTypes[funcSignature];
+            let returnType = functionsReturnTypes[funcSignature];
             if (libUtility.isUndefined(returnType)) {
               return error('Undefined operator ' + binOp + ' on FormulaCompiler.types ' + lhs.type.name + ' and ' + rhs.type.name);
             }
@@ -247,7 +247,7 @@ export var FormulaCompiler = {
             // Merge lhs/rhs.
             if (tokPrec === 10) {
               // If binOp is '=', '+=' or '-='
-              var lastOp = lhs.code.pop();
+              let lastOp = lhs.code.pop();
               if (lastOp !== '@' && lastOp !== '@[]') {
                 return error('Cannot assign to non-variable');
               }
@@ -266,14 +266,14 @@ export var FormulaCompiler = {
         }
       }
       function identifierAST() {
-        var identifier = curVal;
-        var variable = [identifier];
+        let identifier = curVal;
+        let variable = [identifier];
         if (!getTok()) {
           return null;
         } // eat identifier
 
         // Query variable type from scope
-        var type = scope[identifier];
+        let type = scope[identifier];
 
         while (curTok === '.') {
           if (!getTok()) {
@@ -283,8 +283,8 @@ export var FormulaCompiler = {
           if (libUtility.isUndefined(type)) {
             return error('Undefined variable: ' + identifier);
           }
-          var parentType = type;
-          var member = type.members[curVal];
+          let parentType = type;
+          let member = type.members[curVal];
           if (libUtility.isUndefined(member)) {
             return error(parentType.name + ' does not contain a member: ' + curVal);
           }
@@ -320,7 +320,7 @@ export var FormulaCompiler = {
         return { code: variable, type: type }; // Variable reference
       }
       function identifierAndPostAST() {
-        var identifier = identifierAST();
+        let identifier = identifierAST();
         if (!identifier) {
           return null;
         }
@@ -328,7 +328,7 @@ export var FormulaCompiler = {
         return identifier;
       }
       function numberAST() {
-        var number = curVal;
+        let number = curVal;
         if (!getTok()) {
           return null;
         } // Eat number
@@ -341,13 +341,13 @@ export var FormulaCompiler = {
         }
 
         // Update scope
-        var prev = scope[curVal];
+        let prev = scope[curVal];
         if (!libUtility.isUndefined(prev)) {
           return error('Redefinition of variable: ' + curVal);
         }
         scope[curVal] = type; // Store variable type in scope
 
-        var variable = [curVal];
+        let variable = [curVal];
         if (!getTok()) {
           return null;
         } // eat identifier
@@ -363,24 +363,24 @@ export var FormulaCompiler = {
           return null;
         } // Eat '('
 
-        var args = listAST(')');
+        let args = listAST(')');
         if (!args) {
           return null;
         }
-        var numArgs = args.type.length;
+        let numArgs = args.type.length;
 
         // Create function signature from function name and argument FormulaCompiler.types
-        var argTypeNames = args.type.map(type => type.name).join(', ')
-        var funcSignature = funcName + '(' + argTypeNames + ')';
+        let argTypeNames = args.type.map(type => type.name).join(', ')
+        let funcSignature = funcName + '(' + argTypeNames + ')';
 
         // Lookup function and return type
-        var returnType = functionsReturnTypes[funcSignature];
+        let returnType = functionsReturnTypes[funcSignature];
         if (libUtility.isUndefined(returnType)) {
           return error('Undefined function ' + funcSignature);
         }
 
         // Store as args, funcSignature
-        var funcCode = args.code;
+        let funcCode = args.code;
         funcCode.push(funcSignature)
         return { code: funcCode, type: returnType };
       }
@@ -392,11 +392,11 @@ export var FormulaCompiler = {
           return [0]; // List of length 0
         }
 
-        var code = [],
+        let code = [],
           typeList = [],
           len = 1;
         while (true) {
-          var expr = exprAST();
+          let expr = exprAST();
           if (!expr) {
             return null;
           }
@@ -455,24 +455,24 @@ export var FormulaCompiler = {
           exprPrec = 0;
         }
 
-        var lhs = primaryAST();
+        let lhs = primaryAST();
         if (!lhs) {
           return null;
         }
         return bineryOpAST(exprPrec, lhs);
       }
       function topLevelAST() {
-        var code = [];
+        let code = [];
         if (!getTok()) {
           return null;
         } // Get first token
         while (curTok !== null) {
-          var lhs = primaryAST();
+          let lhs = primaryAST();
           if (!lhs) {
             return null;
           }
 
-          var binOp = bineryOpAST(0, lhs);
+          let binOp = bineryOpAST(0, lhs);
           if (!binOp) {
             return null;
           }
@@ -495,7 +495,7 @@ export var FormulaCompiler = {
         return code;
       }
 
-      var expr = topLevelAST();
+      let expr = topLevelAST();
       return expr ? expr : err;
     }
 
@@ -503,11 +503,11 @@ export var FormulaCompiler = {
     return buildAST();
   },
   run: function (code, stack, global) {
-    var IP = -1; // Instruction pointer
-    var SP = 0; // Stack pointer
-    var scope = global;
+    let IP = -1; // Instruction pointer
+    let SP = 0; // Stack pointer
+    let scope = global;
 
-    var postOpScope;
+    let postOpScope;
     while (++IP < code.length) {
       postOpScope = global; // By default, reset scope after operation
       switch (code[IP]) {
@@ -551,15 +551,28 @@ export var FormulaCompiler = {
       case 'cross': FormulaCompiler.types.float,
       case 'normalize': FormulaCompiler.types.float, */
 
-        case 'vec3(float, float, float)': /* Nothing to do */ break;
-        case 'vec3 = vec3': scope[stack[--SP]] = [stack[SP - 3], stack[SP - 2], stack[SP - 1]]; break;
-        case 'vec3 + vec3': stack[SP - 6] += stack[SP - 3]; stack[SP - 5] += stack[SP - 2]; stack[SP - 4] += stack[SP - 1]; SP -= 3; break;
-        case 'vec3 * float': var f = stack[--SP]; stack[SP - 3] *= f; stack[SP - 2] *= f; stack[SP - 1] *= f; break;
+        case 'vec3(float, float, float)': /* Nothing to do */
+          break;
+        case 'vec3 = vec3':
+          scope[stack[--SP]] = [stack[SP - 3], stack[SP - 2], stack[SP - 1]];
+          break;
+        case 'vec3 + vec3':
+          stack[SP - 6] += stack[SP - 3];
+          stack[SP - 5] += stack[SP - 2];
+          stack[SP - 4] += stack[SP - 1];
+          SP -= 3;
+          break;
+        case 'vec3 * float':
+          const f = stack[--SP];
+          stack[SP - 3] *= f;
+          stack[SP - 2] *= f;
+          stack[SP - 1] *= f;
+          break;
 
         case '@': stack[SP - 1] = scope[stack[SP - 1]]; break; // Load scalar from scope
         case '@[]': // Load array from scope
-          var variable = scope[stack[--SP]];
-          for (var i = 0; i < variable.length; ++i) {
+          const variable = scope[stack[--SP]];
+          for (let i = 0; i < variable.length; ++i) {
             stack[SP++] = variable[i];
           }
           break;
@@ -588,13 +601,13 @@ FormulaCompiler.types.vec3.members = {
 };
 
 function verboseTest(formula, symbols, symbolTypes) {
-  var code = FormulaCompiler.compile(formula, symbolTypes ? symbolTypes : {});
+  let code = FormulaCompiler.compile(formula, symbolTypes ? symbolTypes : {});
 
   console.log('formula: ' + formula);
   if (libUtility.isString(code)) {
     console.log('err: ' + code);
   } else {
-    var globalScope = symbols ? symbols : {};
+    let globalScope = symbols ? symbols : {};
     console.log('code: ' + code.map(c => libUtility.isString(c) ? '"' + c + '"' : c).join(' '));
     console.log('result: ' + FormulaCompiler.run(code, new Array(16), globalScope));
     console.log('locals: ' + JSON.stringify(globalScope));
@@ -602,16 +615,16 @@ function verboseTest(formula, symbols, symbolTypes) {
 }
 
 function verify(formula, result) {
-  var code = FormulaCompiler.compile(formula);
+  let code = FormulaCompiler.compile(formula);
   if (libUtility.isString(code)) {
     console.log("Formula '{0}' failed with error '{1}'".format(formula, code));
   } else {
-    var computedResult = FormulaCompiler.run(code, new Array(16), {});
+    let computedResult = FormulaCompiler.run(code, new Array(16), {});
 
-    var match;
+    let match;
     if (libUtility.isArray(result) && libUtility.isArray(computedResult) && result.length === computedResult.length) {
       match = true;
-      for (var i = 0; i < result.length; ++i) {
+      for (let i = 0; i < result.length; ++i) {
         if (computedResult[i] !== result[i]) {
           match = false;
           break;
@@ -629,12 +642,12 @@ function verify(formula, result) {
 }
 
 function benchmark(nIter, javascriptCode, formulaCode, evalCode) {
-  var sum,
+  let sum,
     tStart;
 
   sum = 0.0;
   tStart = performance.now();
-  for (var i = 0; i < nIter; ++i) {
+  for (let i = 0; i < nIter; ++i) {
     sum += javascriptCode();
   }
   console.log(sum);
@@ -642,8 +655,8 @@ function benchmark(nIter, javascriptCode, formulaCode, evalCode) {
 
   sum = 0.0;
   tStart = performance.now();
-  var code = FormulaCompiler.compile(formulaCode);
-  var stack = new Array(16);
+  let code = FormulaCompiler.compile(formulaCode);
+  let stack = new Array(16);
   for (let i = 0; i < nIter; ++i) {
     sum += FormulaCompiler.run(code, stack, {});
   }

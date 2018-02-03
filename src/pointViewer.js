@@ -13,10 +13,10 @@ const libGlMatrix = require('gl-matrix');
  * @param {Object} globalView // {GlobalView}
  */
 export function PointViewer(gl, globalView) {
-  var _dataset;
-  var meshDataPoints = null;
+  let _dataset;
+  let meshDataPoints = null;
 
-  var _pointOpacity = 1.0;
+  let _pointOpacity = 1.0;
   /* var highlightTexture = libGraphics.LoadTextureFromByteArray(gl, new Uint8Array([255, 255, 0, 255]), 1, 1);
   var selectionTexture = libGraphics.LoadTextureFromByteArray(gl, new Uint8Array([255, 0, 0, 255]), 1, 1);
   var representativeTexture = libGraphics.LoadTextureFromByteArray(gl, new Uint8Array([0, 255, 0, 255]), 1, 1); */
@@ -28,6 +28,7 @@ export function PointViewer(gl, globalView) {
    * @extends {HashSet}
    */
   function PointGroup() {
+    let idxbuffer = gl.createBuffer();
     function onchange() {
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxbuffer);
       gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.get(), gl.STATIC_DRAW);
@@ -37,7 +38,6 @@ export function PointViewer(gl, globalView) {
     }
 
     libUtility.HashSet.call(this, onchange);
-    var idxbuffer = gl.createBuffer();
 
     this.render = function (texture) {
       if (this.size() === _dataset.length) {
@@ -52,7 +52,7 @@ export function PointViewer(gl, globalView) {
       } else if (this.size() !== 0) {
         // drawLines doesn't support index buffers
         // Therefore, draw point group as continuous index sequences
-        var startIndex = 0,
+        let startIndex = 0,
           lastIndex = -1,
           count = 0;
         this.forEach(function (index) {
@@ -81,7 +81,7 @@ export function PointViewer(gl, globalView) {
     }
   }
 
-  var pointSets = [this.points = new PointGroup()];
+  let pointSets = [this.points = new PointGroup()];
   /**
    * Create a subset of points that can be rendered independently
    * Optional parameters color and opacity overwrite the default values
@@ -90,11 +90,11 @@ export function PointViewer(gl, globalView) {
    * @return {HashSet}
    */
   this.createPointSet = function (color, opacity) {
-    var pointSet = new PointGroup();
+    let pointSet = new PointGroup();
     if (color) {
-      var validationResult;
+      let validationResult;
       if ((validationResult = libColormap.validateColormap(color)) === true) {
-        var c = libColormap.parseColormap(color);
+        let c = libColormap.parseColormap(color);
         if (c) {
           pointSet.colormap = libGraphics.LoadTextureFromByteArray(gl, c, c.length / 4, 1);
         }
@@ -115,7 +115,7 @@ export function PointViewer(gl, globalView) {
    * @param  {HashSet} pointSet
    */
   this.removePointSet = function (pointSet) {
-    var index = pointSets.indexOf(pointSet);
+    let index = pointSets.indexOf(pointSet);
     if (index !== -1) {
       pointSets.splice(index, 1);
     }
@@ -166,7 +166,7 @@ export function PointViewer(gl, globalView) {
     }
 
     // Create position buffer
-    var posbuffer;
+    let posbuffer;
     if (dataset.numColumns) {
       posbuffer = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
@@ -192,7 +192,7 @@ export function PointViewer(gl, globalView) {
     }
   }
 
-  var activeInputVectors = null,
+  let activeInputVectors = null,
     animatedInputVectors = null;
   this.onInputChanged = function (activeInputs, animatedInputs, options) {
     activeInputVectors = activeInputs.map(i => _dataset.dataVectors[i]);
@@ -216,22 +216,22 @@ export function PointViewer(gl, globalView) {
    */
   function DataMesh(gl, posbuffer, numvertices, ndim, options) {
     // Create line buffer
-    var linebuffer = gl.createBuffer();
+    let linebuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, linebuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, -1, 0, 1, 2, 1, 2, -1]), gl.STATIC_DRAW);
 
     // Create vertex ID buffer
-    var vertexIds = new Float32Array(numvertices);
-    for (var i = 0; i < numvertices; ++i) {
+    let vertexIds = new Float32Array(numvertices);
+    for (let i = 0; i < numvertices; ++i) {
       vertexIds[i] = i;
     }
-    var vidbuffer = gl.createBuffer();
+    let vidbuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vidbuffer);
     gl.bufferData(gl.ARRAY_BUFFER, vertexIds, gl.STATIC_DRAW);
 
     this.getPosCode = function (forLineSdr) {
       // Create shader code for getPos() function -> getPosCode
-      var getPosCode = `
+      let getPosCode = `
 {0}
 uniform vec{1} offsets, scales, animatedScales;
 uniform float n;
@@ -241,20 +241,20 @@ vec{1} getPos()
   return offsets + vec{1}({2}) * scales + vec{1}({3}) * animatedScales;
 }
 `;
-      var attrDeclCode = '',
+      let attrDeclCode = '',
         inputs = [/c(\d+)/g, '0.0'],
         inputCode = [],
         animatedInputCode = [];
       for (let d = 0, i = 0; d < ndim; d += 4, ++i) {
-        var attrLen = Math.min(4, ndim - d);
+        let attrLen = Math.min(4, ndim - d);
         attrDeclCode += 'attribute ' + (attrLen === 1 ? 'float' : 'vec' + attrLen) + ' p' + i + ';\n';
-        for (var a = 0; a < attrLen; ++a) {
+        for (let a = 0; a < attrLen; ++a) {
           inputs.push('p' + i + (attrLen === 1 ? '' : '[' + a + ']'));
         }
       }
       // HY:
       const ND = 4; // todo: should use the globalView.ND
-      for (var d = 0; d < ND; ++d) {
+      for (let d = 0; d < ND; ++d) {
         inputCode.push(String.prototype.format2.apply(activeInputVectors[d] ? activeInputVectors[d].getValueCode : '0.0', inputs));
         animatedInputCode.push(String.prototype.format2.apply(activeInputVectors[d] ? animatedInputVectors[d].getValueCode : '0.0', inputs));
       }
@@ -270,7 +270,7 @@ vec{1} getPos()
       return getPosCode;
     }
 
-    var posattr,
+    let posattr,
       lineattr;
     this.sdr = null;
     this.sdrLine = null;
@@ -284,7 +284,7 @@ vec{1} getPos()
       }
 
       // Create shader code for opacityMap() function -> opacityMapCoe
-      var opacityMapCoe = 'float opacityMap(in vec2 p) ';
+      let opacityMapCoe = 'float opacityMap(in vec2 p) ';
       switch (options['pointShape']) {
         case 'Circle':
           opacityMapCoe += '{ return 1.0 - pow(p.x*p.x + p.y*p.y, pointSize / 4.0); }';
@@ -362,7 +362,7 @@ vec{1} getPos()
 
       if (posbuffer) {
         gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
-        for(var d = 0, i = 0; d < ndim; d += 4, ++i) {
+        for(let d = 0, i = 0; d < ndim; d += 4, ++i) {
           if (this.sdr.posattr[i] !== -1) {
             gl.enableVertexAttribArray(this.sdr.posattr[i]);
             gl.vertexAttribPointer(this.sdr.posattr[i], Math.min(4, ndim - d), gl.FLOAT, false, ndim * 4, ((offset * ndim) + d) * 4);
@@ -394,7 +394,7 @@ vec{1} getPos()
 
       if (posbuffer) {
         gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
-        for(var d = 0, i = 0; d < ndim; d += 4, ++i) {
+        for(let d = 0, i = 0; d < ndim; d += 4, ++i) {
           if (this.sdr.posattr[i] !== -1) {
             gl.enableVertexAttribArray(this.sdr.posattr[i]);
             gl.vertexAttribPointer(this.sdr.posattr[i], Math.min(4, ndim - d), gl.FLOAT, false, ndim * 4, d * 4);
@@ -457,7 +457,7 @@ vec{1} getPos()
       }
 
       // Compute line vertices
-      var lineTransform = libGlMatrix.mat2.create();
+      let lineTransform = libGlMatrix.mat2.create();
       libGlMatrix.mat2.scale(lineTransform, lineTransform, libGlMatrix.vec2.fromValues(Math.sqrt((line[0] * line[0]) + (line[1] * line[1])), Math.max(1, options['pointSize'] /* / 10 */)));
       libGlMatrix.mat2.rotate(lineTransform, lineTransform, Math.atan2(line[1], line[0]));
       libGlMatrix.mat2.scale(lineTransform, lineTransform, libGlMatrix.vec2.fromValues(1 / gl.width, 1 / gl.height));

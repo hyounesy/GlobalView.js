@@ -13,7 +13,7 @@ const libGlMatrix = require('gl-matrix');
  * @param {Object} globalView // {GlobalView}
  */
 export function HistogramViewer(gl, globalView) {
-  var sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
+  let sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
   sdrLine.color = sdrLine.u4f('color');
   sdrLine.color.apply(sdrLine, gl.foreColor);
   sdrLine.matWorldViewProj = sdrLine.u4x4f('matWorldViewProj');
@@ -23,25 +23,25 @@ export function HistogramViewer(gl, globalView) {
   } */
 
   // Create a 2D line mesh
-  var meshLine = new libGraphics.Mesh(gl, new Float32Array([
+  let meshLine = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
     0, 0, 0,
     1, 0, 0
   ]), null, null, null, null, null, gl.LINES);
 
-  var dataset = null,
+  let dataset = null,
     activeInputs = null,
     options = {};
-  var axes = [
+  let axes = [
     {histogram: null, d: -1, meshHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.TRIANGLES), meshLineHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP)},
     {histogram: null, d: -1, meshHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.TRIANGLES), meshLineHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP)},
     {histogram: null, d: -1, meshHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.TRIANGLES), meshLineHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP)}
   ];
 
   this.render = function (flipY, tf, plotBounds) {
-    var mattrans = libGlMatrix.mat4.create();
+    let mattrans = libGlMatrix.mat4.create();
 
-    var pos = libGlMatrix.vec3.create(),
+    let pos = libGlMatrix.vec3.create(),
       scl = libGlMatrix.vec3.create();
     tf.datasetCoordToDeviceCoord(pos, [
       axes[0].histogram ? axes[0].histogram.invTransformX(0) : 0.0,
@@ -136,7 +136,7 @@ export function HistogramViewer(gl, globalView) {
 
     // Draw color-axis histogram
     if (options['showColormapHistogram'] && axes[2].histogram) {
-      var axis = axes[2];
+      let axis = axes[2];
       gl.enable(gl.SCISSOR_TEST);
       gl.scissor(0.0, flipY ? gl.height - plotBounds.y - plotBounds.height : plotBounds.y, gl.width, plotBounds.height);
 
@@ -197,7 +197,7 @@ export function HistogramViewer(gl, globalView) {
 
   function recreateHistograms() {
     if (dataset && options['histogramHeight'] > 0) {
-      var numBins = options['numHistogramBins'];
+      let numBins = options['numHistogramBins'];
       if (options['showXAxisHistogram']) {
         createHistogram(axes[0], dataset, activeInputs[0], numBins);
       }
@@ -221,8 +221,8 @@ export function HistogramViewer(gl, globalView) {
     libAlgorithm.addTransformFunctions(axis.histogram);
     // console.log(axis.histogram);
 
-    var positions = new Float32Array((6 * numBins) * 3);
-    var v3_set = function (i, x, y) {
+    let positions = new Float32Array((6 * numBins) * 3);
+    let v3_set = function (i, x, y) {
       i *= 3; positions[i++] = x; positions[i++] = y; positions[i++] = 0.0;
     };
     for (let b = 0, i = -1, x_scale = 1 / numBins; b < numBins; ++b) {
@@ -240,8 +240,8 @@ export function HistogramViewer(gl, globalView) {
 
     positions = new Float32Array(((3 * numBins) + 1) * 3);
     v3_set(0, 0, 0);
-    for (var b = 0, i = 0, x_scale = 1 / numBins; b < numBins;) {
-      var y = axis.histogram.data[b] / axis.histogram.maximum;
+    for (let b = 0, i = 0, x_scale = 1 / numBins; b < numBins;) {
+      let y = axis.histogram.data[b] / axis.histogram.maximum;
 
       v3_set(++i, b * x_scale, y);
       v3_set(++i, ++b * x_scale, y);

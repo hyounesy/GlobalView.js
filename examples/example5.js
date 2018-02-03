@@ -22,7 +22,7 @@ const COLUMN_HINTS = [
   '<b>Radial proximity:</b> an intensity-derived image feature, defined as the optical intensity of a structure found in the more external shell of a roughly columnar cell (closer to the cell exterior) as compared to the more internal columnar core of the same cell (closer to the cell center), scaled from -1 to 1. A cell in which all of the fluorescence intensity was at the center of the cell would have a radial proximity of -1; whereas a structure that was at cell boundary would have a radial proximity of 1.',
   '<b>Apical proximity:</b> an intensity-derived image feature, defined as the optical intensity of a structure found in the top (apical) half of a roughly columnar cell as compared to the basal (bottom) half of this cell, scaled from -1 to 1. A cell in which all of the fluorescent intensity was in the top half would have an apical proximity of 1; whereas a structure that was evenly distributed between the apical and basal halves would have an apical proximity of 0.'
 ];
-var plot,
+let plot,
   pointsByProtein = {}
 
 domready(function () {
@@ -55,8 +55,8 @@ domready(function () {
     });
 
     for (let i = 0, nc = dataset.numColumns; i < dataset.length; ++i) {
-      var protein = dataset.data[(i * nc) + 0];
-      var proteinPoints = pointsByProtein[protein];
+      let protein = dataset.data[(i * nc) + 0];
+      let proteinPoints = pointsByProtein[protein];
       if (!proteinPoints) {
         pointsByProtein[protein] = proteinPoints = new globalView.HashSet();
       }
@@ -116,8 +116,8 @@ function addAllEventListeners() {
 }
 
 function cmdSelectAll_onClick(sender) {
-  var elements = document.querySelectorAll("input[type='checkbox']");
-  for (var i = 0; i < elements.length; ++i) {
+  let elements = document.querySelectorAll("input[type='checkbox']");
+  for (let i = 0; i < elements.length; ++i) {
     if (elements[i].checked === false) {
       elements[i].checked = true;
       cbProtein_onChange(elements[i]);
@@ -126,8 +126,8 @@ function cmdSelectAll_onClick(sender) {
 }
 
 function cmdDeselectAll_onClick(sender) {
-  var elements = document.querySelectorAll("input[type='checkbox']");
-  for (var i = 0; i < elements.length; ++i) {
+  let elements = document.querySelectorAll("input[type='checkbox']");
+  for (let i = 0; i < elements.length; ++i) {
     if (elements[i].checked === true) {
       elements[i].checked = false;
       cbProtein_onChange(elements[i]);
@@ -136,8 +136,8 @@ function cmdDeselectAll_onClick(sender) {
 }
 
 function cbProtein_onChange(sender) {
-  var protein = sender.id;
-  var proteinPoints = pointsByProtein[protein];
+  let protein = sender.id;
+  let proteinPoints = pointsByProtein[protein];
   if (sender.checked) {
     plot.points.append(proteinPoints);
   } else {
@@ -146,12 +146,12 @@ function cbProtein_onChange(sender) {
 }
 
 function cbXAxis_onChange(sender) {
-  var columnIndex = COLUMN_NAMES.indexOf(sender.options[sender.selectedIndex].innerText);
+  let columnIndex = COLUMN_NAMES.indexOf(sender.options[sender.selectedIndex].innerText);
   plot.setActiveColumn(0, columnIndex);
 }
 
 function cbYAxis_onChange(sender) {
-  var columnIndex = COLUMN_NAMES.indexOf(sender.options[sender.selectedIndex].innerText);
+  let columnIndex = COLUMN_NAMES.indexOf(sender.options[sender.selectedIndex].innerText);
   plot.setActiveColumn(1, columnIndex);
 }
 
@@ -175,8 +175,8 @@ function plot_onMouseOverDatapoint(dataset, index) {
     plot.highlightedPoints.set(index);
     document.getElementById('imgCell').src = dataset.imageFilenames[index];
 
-    var nc = dataset.numColumns;
-    var xAxisColumn = plot.getActiveColumn(0),
+    let nc = dataset.numColumns;
+    let xAxisColumn = plot.getActiveColumn(0),
       yAxisColumn = plot.getActiveColumn(1);
     document.getElementById('pCellDesc').innerText = `Cell Name: {0}
 Tagged Protein: {1}
@@ -193,12 +193,12 @@ Tagged Protein: {1}
 }
 
 function plot_onMouseOverAxisLabel(dataVector, labelRect) {
-  var tooltip = document.getElementsByClassName('tooltip')[0];
+  let tooltip = document.getElementsByClassName('tooltip')[0];
   if (dataVector) {
     tooltip.innerHTML = dataVector.hint;
 
-    var plotRect = document.getElementById('divPlot').getBoundingClientRect();
-    var tooltipRect = tooltip.getBoundingClientRect();
+    let plotRect = document.getElementById('divPlot').getBoundingClientRect();
+    let tooltipRect = tooltip.getBoundingClientRect();
     tooltip.style.top = ((plotRect.top + labelRect.t) - (tooltipRect.bottom - tooltipRect.top) - 20) + 'px';
     tooltip.style.left = ((plotRect.left + ((labelRect.l + labelRect.r) / 2)) - ((tooltipRect.right - tooltipRect.left) * 0.1)) + 'px';
     tooltip.style.visibility = 'visible';

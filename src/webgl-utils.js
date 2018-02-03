@@ -58,14 +58,14 @@
  * visible.
  */
 
-export var WebGLUtils = function () {
+export function WebGLUtils () {
 
   /**
      * Creates the HTLM for a failure message
      * @param {string} msg
      * @return {string} The html.
      */
-  var makeFailHTML = function (msg) {
+  let makeFailHTML = function (msg) {
     return '' +
         '<table style="background-color: #8CE; width: 100%; height: 100%;"><tr>' +
         '<td align="center">' +
@@ -79,7 +79,7 @@ export var WebGLUtils = function () {
      * Message for getting a webgl browser
      * @type {string}
      */
-  var GET_A_WEBGL_BROWSER = '' +
+  let GET_A_WEBGL_BROWSER = '' +
       'This page requires a browser that supports WebGL.<br/>' +
       '<a href="http://get.webgl.org">Click here to upgrade your browser.</a>';
 
@@ -87,7 +87,7 @@ export var WebGLUtils = function () {
      * Mesasge for need better hardware
      * @type {string}
      */
-  var OTHER_PROBLEM = '' +
+  let OTHER_PROBLEM = '' +
       "It doesn't appear your computer can support WebGL.<br/>" +
       '<a href="http://get.webgl.org/troubleshooting/">Click here for more information.</a>';
 
@@ -100,11 +100,11 @@ export var WebGLUtils = function () {
      * @param {function(string)=} opt_onError A function to call if there is an error during creation.
      * @return {WebGLRenderingContext} The created context.
      */
-  var setupWebGL = function (canvas, opt_attribs, opt_onError) {
+  let setupWebGL = function (canvas, opt_attribs, opt_onError) {
     function handleCreationError(msg) {
-      var container = canvas.parentNode;
+      let container = canvas.parentNode;
       if (container) {
-        var str = window.WebGLRenderingContext ?
+        let str = window.WebGLRenderingContext ?
           OTHER_PROBLEM :
           GET_A_WEBGL_BROWSER;
         if (msg) {
@@ -121,7 +121,7 @@ export var WebGLUtils = function () {
         opt_onError(event.statusMessage);
       }, false);
     }
-    var context = create3DContext(canvas, opt_attribs);
+    let context = create3DContext(canvas, opt_attribs);
     if (!context) {
       if (!window.WebGLRenderingContext) {
         opt_onError('');
@@ -136,10 +136,10 @@ export var WebGLUtils = function () {
      *     from. If one is not passed in one will be created.
      * @return {WebGLRenderingContext|null} The created context.
      */
-  var create3DContext = function (canvas, opt_attribs) {
-    var names = ['webgl', 'experimental-webgl', 'webkit-3d', 'moz-webgl'];
-    var context = null;
-    for (var ii = 0; ii < names.length; ++ii) {
+  function create3DContext(canvas, opt_attribs) {
+    let names = ['webgl', 'experimental-webgl', 'webkit-3d', 'moz-webgl'];
+    let context = null;
+    for (let ii = 0; ii < names.length; ++ii) {
       try {
         context = /** @type {WebGLRenderingContext} */ (canvas.getContext(names[ii], opt_attribs));
       } catch(e) {}
@@ -154,7 +154,7 @@ export var WebGLUtils = function () {
     create3DContext: create3DContext,
     setupWebGL: setupWebGL
   };
-}();
+};
 
 /**
  * Provides requestAnimationFrame in a cross browser way.

@@ -14,7 +14,7 @@ export function CoordinateSystem(gl, globalView) {
   const TICK_LENGTH = 6; // [pixel]
   const NUM_TICKS = 10;
 
-  var sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
+  let sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
   sdrLine.color = sdrLine.u4f('color');
   sdrLine.color.apply(sdrLine, gl.foreColor);
   sdrLine.matWorldViewProj = sdrLine.u4x4f('matWorldViewProj');
@@ -23,23 +23,23 @@ export function CoordinateSystem(gl, globalView) {
   }
 
   // Create a 2D line mesh
-  var meshLine = new libGraphics.Mesh(gl, new Float32Array([
+  let meshLine = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
     0, 0, 0,
     1, 0, 0
   ]), null, null, null, null, null, gl.LINES);
 
-  var axes = [
+  let axes = [
     {minimum: 0, maximum: 100, values: null, tickOffset: 0, tickDistance: 10, tickCount: 11, tickLength: TICK_LENGTH},
     {minimum: 0, maximum: 100, values: null, tickOffset: 0, tickDistance: 10, tickCount: 11, tickLength: TICK_LENGTH}
   ];
 
-  /** @type {number} */ var xTickLabel_top = 0;
-  /** @type {number} */ var yTickLabel_left = 0;
+  /** @type {number} */ let xTickLabel_top = 0;
+  /** @type {number} */ let yTickLabel_left = 0;
 
   this.visible = [true, true];
   this.render = function (flipY, plotBounds) {
-    var mattrans = libGlMatrix.mat4.create();
+    let mattrans = libGlMatrix.mat4.create();
 
     // >>> Draw axes
 
@@ -116,7 +116,7 @@ export function CoordinateSystem(gl, globalView) {
     // Draw y-axis ticks and tick labels
     yTickLabel_left = 0;
     if (this.visible[1]) {
-      var axis = axes[1];
+      let axis = axes[1];
       libGlMatrix.mat4.identity(mattrans);
       if (flipY === true) {
         libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
@@ -133,16 +133,16 @@ export function CoordinateSystem(gl, globalView) {
       sdrLine.matWorldViewProj(mattrans);
       meshLine.draw();
       libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -1.0, 0.0]);
-      for (var i = 0; i < axis.tickCount; ++i) {
-        var y = axis.tickOffset + (i * axis.tickDistance);
-        var tickPos = (y - axis.minimum) / (axis.maximum - axis.minimum);
+      for (let i = 0; i < axis.tickCount; ++i) {
+        let y = axis.tickOffset + (i * axis.tickDistance);
+        let tickPos = (y - axis.minimum) / (axis.maximum - axis.minimum);
 
         libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, tickPos, 0.0]);
         sdrLine.matWorldViewProj(mattrans);
         meshLine.draw();
         libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -tickPos, 0.0]);
 
-        var tickLabel = axis.values ? axis.values[y] : y.toPrecision(6) / 1;
+        let tickLabel = axis.values ? axis.values[y] : y.toPrecision(6) / 1;
         yTickLabel_left = Math.max(yTickLabel_left, gl.measureTextWidth(tickLabel));
         gl.drawText(tickLabel, plotBounds.x - axis.tickLength - 2,
           gl.height - plotBounds.y - (plotBounds.height * tickPos), 'middleright');
@@ -164,19 +164,21 @@ export function CoordinateSystem(gl, globalView) {
 
   function checkOverlap(d) {
     const MIN_TICK_LABEL_DISTANCE = gl.measureTextWidth('  '); // Minimum distance between tick labels in pixel
+    let axis;
+    let plotBounds;
     switch (d) {
       case 0:
-        var axis = axes[0],
-          overlap = Number.MIN_VALUE,
-          plotBounds = globalView.getPlotBounds();
-        for (var i = 0; i < axis.tickCount; ++i) {
-          var x = axis.tickOffset + (i * axis.tickDistance);
-          var tickPos = (x - axis.minimum) / (axis.maximum - axis.minimum);
+        axis = axes[0];
+        let overlap = Number.MIN_VALUE;
+        plotBounds = globalView.getPlotBounds();
+        for (let i = 0; i < axis.tickCount; ++i) {
+          let x = axis.tickOffset + (i * axis.tickDistance);
+          let tickPos = (x - axis.minimum) / (axis.maximum - axis.minimum);
 
-          var tickLabel = axis.values ? axis.values[x] : x.toPrecision(6) / 1;
+          let tickLabel = axis.values ? axis.values[x] : x.toPrecision(6) / 1;
 
-          var labelWidth = gl.measureTextWidth(tickLabel);
-          var leftLabelBound = (plotBounds.x + (plotBounds.width * tickPos)) - (labelWidth / 2);
+          let labelWidth = gl.measureTextWidth(tickLabel);
+          let leftLabelBound = (plotBounds.x + (plotBounds.width * tickPos)) - (labelWidth / 2);
           if (leftLabelBound < overlap + MIN_TICK_LABEL_DISTANCE) {
             return false;
           }
@@ -186,8 +188,8 @@ export function CoordinateSystem(gl, globalView) {
         return true;
 
       case 1:
-        var axis = axes[1],
-          plotBounds = globalView.getPlotBounds();
+        axis = axes[1];
+        plotBounds = globalView.getPlotBounds();
         return (plotBounds.height * axis.tickDistance) / (axis.maximum - axis.minimum) >=
           gl.measureTextHeight() + MIN_TICK_LABEL_DISTANCE;
 
@@ -202,24 +204,24 @@ export function CoordinateSystem(gl, globalView) {
    * @param  {boolean=} changeTickDistance=true
    */
   this.setNumericRange = function (d, minimum, maximum, changeTickDistance) {
-    var axis = axes[d];
+    let axis = axes[d];
     axis.minimum = minimum;
     axis.maximum = maximum;
     axis.values = null;
 
-    for (var numTicks = NUM_TICKS; numTicks >= 0; --numTicks) {
+    for (let numTicks = NUM_TICKS; numTicks >= 0; --numTicks) {
       if (changeTickDistance === false) {
         axis.tickOffset = Math.ceil(minimum / axis.tickDistance) * axis.tickDistance;
         axis.tickCount = Math.floor((maximum - axis.tickOffset) / axis.tickDistance) + 1;
       } else {
         axis.tickDistance = (maximum - minimum) / numTicks;
-        var exp = Math.ceil(Math.log(axis.tickDistance) / Math.log(10)); // Compute power-of-10 just above tickDistance -> pow(10, exp)
+        let exp = Math.ceil(Math.log(axis.tickDistance) / Math.log(10)); // Compute power-of-10 just above tickDistance -> pow(10, exp)
 
         // Try less aggressive rounding in each iteration until break condition is met
-        for (var i = 0; i < 10; ++i) {
+        for (let i = 0; i < 10; ++i) {
           // Maximum 10 iterations
           axis.tickDistance = (maximum - minimum) / numTicks;
-          var base = Math.pow(10, exp--);
+          let base = Math.pow(10, exp--);
           axis.tickDistance = Math.round(axis.tickDistance / base) * base; // Round tickDistance to base
           axis.tickOffset = Math.ceil(minimum / axis.tickDistance) * axis.tickDistance;
           axis.tickCount = Math.floor((maximum - axis.tickOffset) / axis.tickDistance) + 1;
@@ -236,7 +238,7 @@ export function CoordinateSystem(gl, globalView) {
     }
   }
   this.setEnumRange = function (d, minimum, maximum, values) {
-    var axis = axes[d];
+    let axis = axes[d];
     axis.minimum = minimum -= 0.5; // 0.5 ... Move to center of value-bin
     axis.maximum = maximum -= 0.5; // 0.5 ... Move to center of value-bin
     axis.values = values;
@@ -283,21 +285,23 @@ export function CoordinateSystem(gl, globalView) {
   }
   this.getLabelBounds = function (plotBounds, d) {
     switch (d) {
-      case 0:
+      case 0: {
         if (!this.visible[0]) {
           return null;
         }
-        var halfTextWidth = gl.measureTextWidth(axes[0].label) / 2;
-        var plotCenter = plotBounds.x + (plotBounds.width / 2);
+        const halfTextWidth = gl.measureTextWidth(axes[0].label) / 2;
+        const plotCenter = plotBounds.x + (plotBounds.width / 2);
         return {'l': plotCenter - halfTextWidth, 'r': plotCenter + halfTextWidth, 't': xTickLabel_top, 'b': xTickLabel_top + gl.measureTextHeight() + 2};
+      }
 
-      case 1:
+      case 1: {
         if (!this.visible[1]) {
           return null;
         }
-        var halfTextWidth = gl.measureTextWidth(axes[1].label) / 2;
-        var plotCenter = gl.height - plotBounds.y - (plotBounds.height / 2);
+        const halfTextWidth = gl.measureTextWidth(axes[1].label) / 2;
+        const plotCenter = gl.height - plotBounds.y - (plotBounds.height / 2);
         return {'l': yTickLabel_left - gl.measureTextHeight(), 'r': yTickLabel_left + 2, 't': plotCenter - halfTextWidth, 'b': plotCenter + halfTextWidth};
+      }
     }
     return null;
   }

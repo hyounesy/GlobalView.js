@@ -1,6 +1,6 @@
 const libUtility = require('./utility.js')
 
-var currentShader = null;
+let currentShader = null;
 /**
  * A WebGL shader
  * @constructor
@@ -23,7 +23,7 @@ export function Shader(gl, vs, fs, debug) {
   }
 
   // Compile vertex shader -> vertexShader
-  var vertexShader = gl.createShader(gl.VERTEX_SHADER);
+  let vertexShader = gl.createShader(gl.VERTEX_SHADER);
   gl.shaderSource(vertexShader, vs);
   gl.compileShader(vertexShader);
   if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
@@ -33,7 +33,7 @@ export function Shader(gl, vs, fs, debug) {
   }
 
   // Compile frament shader -> fragmentShader
-  var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+  let fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
   gl.shaderSource(fragmentShader, fs);
   gl.compileShader(fragmentShader);
   if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
@@ -43,7 +43,7 @@ export function Shader(gl, vs, fs, debug) {
   }
 
   // Link shader program -> sdr
-  var sdr = gl.createProgram();
+  let sdr = gl.createProgram();
   gl.attachShader(sdr, vertexShader);
   gl.attachShader(sdr, fragmentShader);
   gl.linkProgram(sdr);
@@ -76,7 +76,7 @@ export function Shader(gl, vs, fs, debug) {
 
   this.u1i = function (uniformString) {
     this.bind();
-    var uniform = gl.getUniformLocation(sdr, uniformString);
+    let uniform = gl.getUniformLocation(sdr, uniformString);
     if (uniform) {
       return function (i) {
         this.bind();
@@ -91,7 +91,7 @@ export function Shader(gl, vs, fs, debug) {
   }
   this.u1f = function (uniformString) {
     this.bind();
-    var uniform = gl.getUniformLocation(sdr, uniformString);
+    let uniform = gl.getUniformLocation(sdr, uniformString);
     if (uniform) {
       return function (f) {
         this.bind();
@@ -106,7 +106,7 @@ export function Shader(gl, vs, fs, debug) {
   }
   this.u2f = function (uniformString) {
     this.bind();
-    var uniform = gl.getUniformLocation(sdr, uniformString);
+    let uniform = gl.getUniformLocation(sdr, uniformString);
     if (uniform) {
       return function (x, y) {
         this.bind();
@@ -121,7 +121,7 @@ export function Shader(gl, vs, fs, debug) {
   }
   this.u2x2f = function (uniformString) {
     this.bind();
-    var uniform = gl.getUniformLocation(sdr, uniformString);
+    let uniform = gl.getUniformLocation(sdr, uniformString);
     if (uniform) {
       return function (m) {
         this.bind();
@@ -136,7 +136,7 @@ export function Shader(gl, vs, fs, debug) {
   }
   this.u3f = function (uniformString) {
     this.bind();
-    var uniform = gl.getUniformLocation(sdr, uniformString);
+    let uniform = gl.getUniformLocation(sdr, uniformString);
     if (uniform) {
       return function (x, y, z) {
         this.bind();
@@ -151,7 +151,7 @@ export function Shader(gl, vs, fs, debug) {
   }
   this.u4f = function (uniformString) {
     this.bind();
-    var uniform = gl.getUniformLocation(sdr, uniformString);
+    let uniform = gl.getUniformLocation(sdr, uniformString);
     if (uniform) {
       return function (x, y, z, w) {
         this.bind();
@@ -166,7 +166,7 @@ export function Shader(gl, vs, fs, debug) {
   }
   this.u1fv = function (uniformString) {
     this.bind();
-    var uniform = gl.getUniformLocation(sdr, uniformString);
+    let uniform = gl.getUniformLocation(sdr, uniformString);
     if (uniform) {
       return function (v) {
         this.bind();
@@ -181,7 +181,7 @@ export function Shader(gl, vs, fs, debug) {
   }
   this.u4fv = function (uniformString) {
     this.bind();
-    var uniform = gl.getUniformLocation(sdr, uniformString);
+    let uniform = gl.getUniformLocation(sdr, uniformString);
     if (uniform) {
       return function (v) {
         this.bind();
@@ -196,7 +196,7 @@ export function Shader(gl, vs, fs, debug) {
   }
   this.u4x4f = function (uniformString) {
     this.bind();
-    var uniform = gl.getUniformLocation(sdr, uniformString);
+    let uniform = gl.getUniformLocation(sdr, uniformString);
     if (uniform) {
       return function (m) {
         this.bind();
@@ -235,11 +235,11 @@ export function Shader(gl, vs, fs, debug) {
 }
 
 export function validateGLSL(gl, code) {
-  var vertexShader = gl.createShader(gl.VERTEX_SHADER);
+  let vertexShader = gl.createShader(gl.VERTEX_SHADER);
   gl.shaderSource(vertexShader, 'void main() {} ' + code);
   gl.compileShader(vertexShader);
   if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
-    var err = gl.getShaderInfoLog(vertexShader);
+    let err = gl.getShaderInfoLog(vertexShader);
     gl.deleteShader(vertexShader);
     return err;
   }
@@ -264,17 +264,17 @@ export function validateGLSL(gl, code) {
  * @param {number=} _ndim = 3
  */
 export function Mesh(_gl, positions, normals, tangents, binormals, texcoords, indices, _primitivetype, _ndim) {
-  var gl = _gl;
-  var posbuffer,
+  let gl = _gl;
+  let posbuffer,
     nmlbuffer,
     tgtbuffer,
     bnmbuffer,
     texcoordbuffer,
     idxbuffer;
-  var primitivetype,
+  let primitivetype,
     numvertices,
     numindices;
-  var ndim;
+  let ndim;
 
   this.reset = function (positions, normals, tangents, binormals, texcoords, indices, _primitivetype, _ndim) {
     ndim = _ndim ? _ndim : 3;
@@ -469,7 +469,7 @@ function handleLoadedTexture(gl, texture, onload) {
   }
 }
 export function LoadTexture(gl, filename, onload) {
-  var texture = gl.createTexture();
+  let texture = gl.createTexture();
   texture.image = new Image();
   texture.image.onload = function () {
     handleLoadedTexture(gl, texture, onload)
@@ -478,13 +478,13 @@ export function LoadTexture(gl, filename, onload) {
   return texture;
 }
 export function LoadTextureFromImage(gl, image) {
-  var texture = gl.createTexture();
+  let texture = gl.createTexture();
   texture.image = image;
   handleLoadedTexture(gl, texture, null);
   return texture;
 }
 export function LoadTextureFromByteArray(gl, array, width, height) {
-  var texture = gl.createTexture();
+  let texture = gl.createTexture();
   texture.byteArray = array;
   gl.bindTexture(gl.TEXTURE_2D, texture);
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
@@ -501,7 +501,7 @@ export function LoadTextureFromFloatArray(gl, array, width, height) {
     console.warn("GlobalView warning: The browser doesn't support floatingpoint textures");
     return null;
   }
-  var texture = gl.createTexture();
+  let texture = gl.createTexture();
   texture.floatArray = array;
   gl.bindTexture(gl.TEXTURE_2D, texture);
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);

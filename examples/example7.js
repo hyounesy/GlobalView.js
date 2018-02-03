@@ -11,13 +11,13 @@ const COLUMN_NAMES = [
   'Apical proximity (unitless)'
 ];
 
-var plots = null;
+let plots = null;
 
 domready(function () {
   const PLOT_SIZE = 400;
   const FONT_SIZE = 8;
   const PLOT_PADDING = [8, 8, 40, 40];
-  var OPTIONS = {
+  let OPTIONS = {
     padding: PLOT_PADDING,
     showColormap: false,
     pointSize: 3,
@@ -28,7 +28,7 @@ domready(function () {
   const NUM_THUMBNAILS = 16;
   const DENSITY_RATIO = 0.5;
 
-  var divPlots = document.createElement('div');
+  let divPlots = document.createElement('div');
   divPlots.style.position = 'fixed';
   divPlots.style.left = divPlots.style.top = '0px';
   divPlots.style.width = divPlots.style.height = PLOT_SIZE + 'px';
@@ -45,10 +45,10 @@ domready(function () {
     imageFilenames: data => imagesPath + data[1] + '.png'
   }, function (dataset) {
     const ndim = Math.min(2, dataset.dataVectors.length - 1); // -1 ... Adjust number of dataVectors, since we don't plot dataVectors[0] (tagged protein)
-    var subPlotWidth = PLOT_SIZE / ndim,
+    let subPlotWidth = PLOT_SIZE / ndim,
       subPlotHeight = subPlotWidth;
     plots = Array.create(ndim * ndim, function (d) {
-      var x = d % ndim,
+      let x = d % ndim,
         y = Math.floor(d / ndim);
 
       OPTIONS.padding = [y * subPlotHeight, (ndim - x - 1) * subPlotWidth, (ndim - y - 1) * subPlotHeight, x * subPlotWidth];
@@ -57,11 +57,11 @@ domready(function () {
       ++x;
       ++y;
 
-      var thumbnailWidth = (OPTIONS.thumbnailSize * (dataset.dataVectors[x].maximum - dataset.dataVectors[x].minimum)) / (PLOT_SIZE - OPTIONS.padding[1] - OPTIONS.padding[3]);
-      var thumbnailHeight = (OPTIONS.thumbnailSize * (dataset.dataVectors[y].maximum - dataset.dataVectors[y].minimum)) / (PLOT_SIZE - OPTIONS.padding[0] - OPTIONS.padding[2]);
+      let thumbnailWidth = (OPTIONS.thumbnailSize * (dataset.dataVectors[x].maximum - dataset.dataVectors[x].minimum)) / (PLOT_SIZE - OPTIONS.padding[1] - OPTIONS.padding[3]);
+      let thumbnailHeight = (OPTIONS.thumbnailSize * (dataset.dataVectors[y].maximum - dataset.dataVectors[y].minimum)) / (PLOT_SIZE - OPTIONS.padding[0] - OPTIONS.padding[2]);
       console.log(thumbnailWidth, thumbnailHeight);
 
-      var plot = new globalView.GlobalView(divPlots, OPTIONS);
+      let plot = new globalView.GlobalView(divPlots, OPTIONS);
       plot.load(dataset, x, y, 0, 0);
       plot.zoomRect({
         l: dataset.dataVectors[x].minimum - thumbnailWidth,

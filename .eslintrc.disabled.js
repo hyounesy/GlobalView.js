@@ -146,7 +146,7 @@ module.exports = {
 
         "accessor-pairs": 0,                    // enforce getter and setter pairs in objects
         "array-callback-return": 0,             // enforce return statements in callbacks of array methods
-        "block-scoped-var": 0,                  // enforce the use of variables within the scope they are defined
+        "block-scoped-var": 2,                  // enforce the use of variables within the scope they are defined
         "class-methods-use-this": 0,            // enforce that class methods utilize this
         "complexity": 0,                        // enforce a maximum cyclomatic complexity allowed in a program
         "consistent-return": 0,                 // require return statements to either always or never specify values
@@ -154,7 +154,7 @@ module.exports = {
         "default-case": 0,                      // require default cases in switch statements
         "dot-location": 0,                      // enforce consistent newlines before and after dots
         "dot-notation": 0,                      // enforce dot notation whenever possible
-        "eqeqeq": 0,                            // require the use of === and !==
+        "eqeqeq": ["error", "always", {"null": "ignore"}],                            // require the use of === and !==
         "guard-for-in": 0,                      // require for-in loops to include an if statement
         "no-alert": 0,                          // disallow the use of alert, confirm, and prompt
         "no-caller": 0,                         // disallow the use of arguments.caller or arguments.callee
@@ -301,7 +301,16 @@ module.exports = {
         "no-continue": 0,                       // disallow continue statements
         "no-inline-comments": 0,                // disallow inline comments after code
         "no-lonely-if": 0,                      // disallow if statements as the only statement in else blocks
-        "no-mixed-operators": 0,                // disallow mixed binary operators
+        'no-mixed-operators': ['error', {
+          groups: [
+            ['+', '-', '*', '/', '%', '**'],
+            ['&', '|', '^', '~', '<<', '>>', '>>>'],
+            ['==', '!=', '===', '!==', '>', '>=', '<', '<='],
+            ['&&', '||'],
+            ['in', 'instanceof']
+          ],
+          allowSamePrecedence: false
+        }],            // disallow mixed binary operators
         "no-mixed-spaces-and-tabs": 0,          // disallow mixed spaces and tabs for indentation
         "no-multi-assign": 0,                   // disallow use of chained assignment expressions
         "no-multiple-empty-lines": 0,           // disallow multiple empty lines
@@ -349,7 +358,7 @@ module.exports = {
         //////// ECMAScript 6 ////////
 
         "arrow-body-style": 2,                  // require braces around arrow function bodies
-        "arrow-parens": 2,                      // require parentheses around arrow function arguments
+        "arrow-parens": [2, "as-needed", { "requireForBlockBody": true }],    // require parentheses around arrow function arguments
         "arrow-spacing": 0,                     // enforce consistent spacing before and after the arrow in arrow functions
         "constructor-super": 0,                 // require super() calls in constructors
         "generator-star-spacing": 0,            // enforce consistent spacing around * operators in generator functions
@@ -364,7 +373,7 @@ module.exports = {
         "no-useless-computed-key": 0,           // disallow unnecessary computed property keys in object literals
         "no-useless-constructor": 0,            // disallow unnecessary constructors
         "no-useless-rename": 0,                 // disallow renaming import, export, and destructured assignments to the same name
-        "no-var": 0,                            // require let or const instead of var
+        'no-var': 'error',                      // require let or const instead of var
         "object-shorthand": 0,                  // require or disallow method and property shorthand syntax for object literals
         "prefer-arrow-callback": 0,             // require using arrow functions for callbacks
         "prefer-const": 0,                      // require const declarations for variables that are never reassigned after declared

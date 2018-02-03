@@ -7,7 +7,7 @@
  * @param {HTMLCanvasElement} canvas
  */
 export function TextRenderContext(gl, canvas) {
-  var textCanvas = document.createElement('canvas');
+  let textCanvas = document.createElement('canvas');
   textCanvas.setAttribute('id', 'textCanvas');
   textCanvas.style.backgroundColor = 'transparent';
   textCanvas.style.pointerEvents = 'none';
@@ -16,9 +16,9 @@ export function TextRenderContext(gl, canvas) {
   // textCanvas.style.left = textCanvas.style.top = "0px";
   textCanvas.style.width = textCanvas.style.height = '100%';
   canvas.parentElement.appendChild(textCanvas);
-  var ctx = textCanvas.getContext('2d');
-  var _font = ctx.font;
-  var fontHeight = ctx.measureText('M').width;
+  let ctx = textCanvas.getContext('2d');
+  let _font = ctx.font;
+  let fontHeight = ctx.measureText('M').width;
 
 
   this.clear = function () {
@@ -34,7 +34,7 @@ export function TextRenderContext(gl, canvas) {
       ctx.fillStyle = color;
     }
 
-    var offsetV;
+    let offsetV;
     switch (anchor) {
       default: // 'topleft'
         ctx.textAlign = 'left';
@@ -124,7 +124,7 @@ export function TextRenderContext(gl, canvas) {
     }
     ctx.beginPath();
     ctx.moveTo(points[0][0], points[0][1]);
-    for (var i = 1; i < points.length; ++i) {
+    for (let i = 1; i < points.length; ++i) {
       ctx.lineTo(points[i][0], points[i][1]);
     }
     ctx.closePath();
@@ -143,7 +143,7 @@ export function TextRenderContext(gl, canvas) {
     }
     ctx.beginPath();
     ctx.moveTo(points[0][0], points[0][1]);
-    for (var i = 1; i < points.length; ++i) {
+    for (let i = 1; i < points.length; ++i) {
       ctx.lineTo(points[i][0], points[i][1]);
     }
     ctx.closePath();
@@ -157,15 +157,17 @@ export function TextRenderContext(gl, canvas) {
     ctx.font = _font = font;
 
     // Compute fontHeight (Source: http://stackoverflow.com/a/7462767)
-    var body = document.getElementsByTagName('body')[0];
-    var dummy = document.createElement('div');
-    var dummyText = document.createTextNode('M');
+    let body = document.getElementsByTagName('body')[0];
+    let dummy = document.createElement('div');
+    let dummyText = document.createTextNode('M');
     dummy.appendChild(dummyText);
     dummy.style.font = font;
     body.appendChild(dummy);
     fontHeight = dummy.offsetHeight * 0.62;
     body.removeChild(dummy);
   }
+
+  let offscreenRendering = null;
 
   this.onResize = function () {
     /* var canvasBounds = canvas.getBoundingClientRect();
@@ -178,7 +180,7 @@ export function TextRenderContext(gl, canvas) {
       textCanvas.width = offscreenRendering.width;
       textCanvas.height = offscreenRendering.height;
     } else {
-      var rect = textCanvas.getBoundingClientRect();
+      let rect = textCanvas.getBoundingClientRect();
       textCanvas.style.marginTop = -(rect.bottom - rect.top) + 'px';
       textCanvas.width = rect.right - rect.left;
       textCanvas.height = rect.bottom - rect.top;
@@ -186,7 +188,6 @@ export function TextRenderContext(gl, canvas) {
     this.setFont(_font); // Reset canvas font
   }
 
-  var offscreenRendering = null;
   this.enableOffscreenRendering = function (width, height) {
     if (offscreenRendering !== null) {
       return;

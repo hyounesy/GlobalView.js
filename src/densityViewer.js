@@ -13,19 +13,19 @@ const libUtility = require('./utility.js');
  * @param {Object} globalView // {GlobalView}
  */
 export function DensityViewer(gl, globalView) {
-  var sdrDensityMap = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured2, libShaders.Shaders.fsViewDensityMap);
+  let sdrDensityMap = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured2, libShaders.Shaders.fsViewDensityMap);
   sdrDensityMap.matWorldViewProj = sdrDensityMap.u4x4f('matWorldViewProj');
   sdrDensityMap.matTexCoordTransform = sdrDensityMap.u2x2f('matTexCoordTransform');
   sdrDensityMap.scale = sdrDensityMap.u1f('scale');
   sdrDensityMap.color = sdrDensityMap.u3f('color');
   // var colormap = libGraphics.LoadTexture(gl, "cmDensityMap.png", function() { globalView.invalidate(); });
 
-  var sdrClusterMap = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured2, libShaders.Shaders.fsTextured);
+  let sdrClusterMap = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured2, libShaders.Shaders.fsTextured);
   sdrClusterMap.matWorldViewProj = sdrClusterMap.u4x4f('matWorldViewProj');
   sdrClusterMap.matTexCoordTransform = sdrClusterMap.u2x2f('matTexCoordTransform');
 
   // Create a 2D quad mesh
-  var meshQuad = new libGraphics.Mesh(gl, new Float32Array([
+  let meshQuad = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
     0, 1, 0,
     0, 0, 0,
@@ -39,9 +39,9 @@ export function DensityViewer(gl, globalView) {
     1, 0
   ]));
 
-  var dataset = null;
+  let dataset = null;
 
-  var clusterMapOptions = new libAlgorithm.ClusterMapOptions();
+  let clusterMapOptions = new libAlgorithm.ClusterMapOptions();
   this.setClusterMapThreshold = function (threshold) {
     if (this.showDensityMap && clusterMapOptions.threshold !== threshold) {
       clusterMapOptions.threshold = threshold;
@@ -57,23 +57,23 @@ export function DensityViewer(gl, globalView) {
   this.showDensityMap = false;
   this.showClusterMap = false;
   this.render = function (flipY, tf, d0, d1) {
-    var pos = libGlMatrix.vec2.create();
+    let pos = libGlMatrix.vec2.create();
 
     if (this.showClusterMap) {
       if (dataset && dataset.isClusterMapReady(d0, d1)) {
         // If clusterMap is ready
-        var clusterMap = dataset.requestClusterMap(d0, d1, clusterMapOptions); // Retrieve clusterMap synchronously (since we already know it's ready)
+        let clusterMap = dataset.requestClusterMap(d0, d1, clusterMapOptions); // Retrieve clusterMap synchronously (since we already know it's ready)
         if (clusterMap.width === 0 || clusterMap.height === 0) {
           return;
         }
 
         // Create texture if it wasn't already created
-        var texture = this.showDensityMap ? clusterMap.dtex : clusterMap.tex;
+        let texture = this.showDensityMap ? clusterMap.dtex : clusterMap.tex;
         if (!texture) {
           const densityMap = this.showDensityMap ? dataset.requestDensityMap(d0, d1, undefined, undefined) : null; // Retrieve densityMap synchronously (since we already know it's ready)
           const rgba = new Uint8Array(4 * clusterMap.data.length);
-          for (var i = 0; i < clusterMap.data.length; ++i) {
-            var c = clusterMap.data[i];
+          for (let i = 0; i < clusterMap.data.length; ++i) {
+            let c = clusterMap.data[i];
 
             if (c === 0) {
               rgba[(4 * i) + 0] = 0;
@@ -89,7 +89,7 @@ export function DensityViewer(gl, globalView) {
 
               // Use evenly spaced hues
               --c; // --c ... ID to index
-              var d = densityMap ? (densityMap.data[i] - clusterMap.minDensities[c]) / (clusterMap.densities[c] - clusterMap.minDensities[c]) : 0.75;
+              let d = densityMap ? (densityMap.data[i] - clusterMap.minDensities[c]) / (clusterMap.densities[c] - clusterMap.minDensities[c]) : 0.75;
               if (d < 0.0) {
                 d = 0.0;
               }
@@ -98,7 +98,7 @@ export function DensityViewer(gl, globalView) {
                 c -= 1;
               }
 
-              var clr = [c, 0.5, 1]; // 0.5 ... Use 50% saturated colors
+              let clr = [c, 0.5, 1]; // 0.5 ... Use 50% saturated colors
               clr = libUtility.hsv2rgb(clr);
 
               rgba[(4 * i) + 0] = Math.floor(clr[0] * 255);
@@ -145,7 +145,7 @@ export function DensityViewer(gl, globalView) {
     } else if (this.showDensityMap) {
       if (dataset && dataset.isDensityMapReady(d0, d1)) {
         // If densityMap is ready
-        var densityMap = /** @type {DensityMap} */(dataset.requestDensityMap(d0, d1, undefined, undefined)); // Retrieve densityMap synchronously (since we already know it's ready)
+        let densityMap = /** @type {DensityMap} */(dataset.requestDensityMap(d0, d1, undefined, undefined)); // Retrieve densityMap synchronously (since we already know it's ready)
         if (densityMap.width === 0 || densityMap.height === 0) {
           return;
         }
@@ -159,7 +159,7 @@ export function DensityViewer(gl, globalView) {
         sdrDensityMap.bind();
         meshQuad.bind(sdrDensityMap, [densityMap.texture]);
 
-        var mattrans = libGlMatrix.mat4.create();
+        let mattrans = libGlMatrix.mat4.create();
         if (flipY === true) {
           libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
         }
@@ -196,33 +196,33 @@ export function DensityViewer(gl, globalView) {
   this.onPlotBoundsChanged = function (plotBounds) {}
 
   this.updateImages = function (images, d0, d1) {
-    var densityMap = dataset.requestDensityMap(d0, d1, undefined, undefined);
+    let densityMap = dataset.requestDensityMap(d0, d1, undefined, undefined);
     if (densityMap.texture === null || d0 === d1) {
       return;
     }
 
-    var width = densityMap.width,
+    let width = densityMap.width,
       height = densityMap.height,
       densityScale = densityMap.scale,
       densityOffset = -densityMap.offset;
 
-    var xMin = 0,
+    let xMin = 0,
       xMax = width;
-    var yMin = 0,
+    let yMin = 0,
       yMax = height;
 
-    var bodies = images.map(function (image) {
-      var x = densityMap.transformX(image.imagePos[d0]);
-      var y = densityMap.transformY(image.imagePos[d1]);
-      var rx = densityMap.transformX(image.refPos[d0]);
-      var ry = densityMap.transformY(image.refPos[d1]);
+    let bodies = images.map(function (image) {
+      let x = densityMap.transformX(image.imagePos[d0]);
+      let y = densityMap.transformY(image.imagePos[d1]);
+      let rx = densityMap.transformX(image.refPos[d0]);
+      let ry = densityMap.transformY(image.refPos[d1]);
       return {x: x, y: y, rx: rx, ry: ry, vx: 0, vy: 0, fx: 0, fy: 0};
     });
 
-    var repellPoint = function (body, point_x, point_y, minDist, minDistMagnitude, maxDist, maxDistMagnitude) {
-      var dx = body.x - point_x,
+    let repellPoint = function (body, point_x, point_y, minDist, minDistMagnitude, maxDist, maxDistMagnitude) {
+      let dx = body.x - point_x,
         dy = body.y - point_y;
-      var dist = Math.sqrt((dx * dx) + (dy * dy));
+      let dist = Math.sqrt((dx * dx) + (dy * dy));
 
       if (dist < minDist) {
         dist -= minDist;
@@ -239,16 +239,16 @@ export function DensityViewer(gl, globalView) {
     }
 
     for (let i = 0; i < bodies.length; ++i) {
-      var sample_x = Math.floor(bodies[i].x),
-        sample_y = Math.floor(bodies[i].y);
-      var density = densityMap[(sample_x * width) + sample_y];
-      var bestDir = null,
-        lowestDensity = density;
+      let sample_x = Math.floor(bodies[i].x);
+      let sample_y = Math.floor(bodies[i].y);
+      let density = densityMap[(sample_x * width) + sample_y];
+      let bestDir = null;
+      let lowestDensity = density;
       [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]].forEach(function (dir) {
-        var x = sample_x + dir[0];
-        var y = sample_y + dir[1];
+        let x = sample_x + dir[0];
+        let y = sample_y + dir[1];
         if (x >= xMin && x < xMax && y >= yMin && y < yMax) {
-          var density = densityMap[(y * width) + x];
+          let density = densityMap[(y * width) + x];
           if (density < lowestDensity) {
             lowestDensity = density;
             bestDir = dir;
@@ -261,7 +261,7 @@ export function DensityViewer(gl, globalView) {
       }
     }
 
-    for (var i = 0; i < bodies.length; ++i) {
+    for (let i = 0; i < bodies.length; ++i) {
       bodies[i].x += bodies[i].fx;
       bodies[i].y += bodies[i].fy;
 

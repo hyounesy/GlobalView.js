@@ -3,10 +3,10 @@ const domready = require('domready');
 
 // Global variables
 // var gl;
-var plot,
+let plot,
   dataset;
 
-var cbDataset,
+let cbDataset,
   cbColumnX,
   cbColumnY,
   cbColumnC,
@@ -36,7 +36,7 @@ domready(function () {
     // {name: "allencell x100", url: "datasets/AICS_Cell-feature-analysis_v1.5_x100.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x100.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
   ];
 
-  var divGlobalView = document.getElementById('divGlobalView');
+  let divGlobalView = document.getElementById('divGlobalView');
   plot = new globalView.GlobalView(divGlobalView, {
     // showXAxisHistogram: true,
     // showYAxisHistogram: true,
@@ -71,7 +71,7 @@ domready(function () {
   plot.onMouseOverAxisLabel = onMouseOverAxisLabel;
   plot.onMouseOverDatapoint = onMouseOverDatapoint;
   plot.onLassoSelection = plot.onSelectionChanged = onSelectionChanged;
-  var canvas = divGlobalView.childNodes[0];
+  let canvas = divGlobalView.childNodes[0];
   canvas.ondragover = divGlobalView.ondragover = ondragover;
   canvas.ondragenter = divGlobalView.ondragenter = ondragenter;
   canvas.ondragleave = divGlobalView.ondragleave = ondragleave;
@@ -90,13 +90,13 @@ domready(function () {
   // Fill cbDataset
   DATASETS.forEach(function (dataset) {
     if (typeof dataset.url === 'undefined') {
-      var option = document.createElement('option');
+      let option = document.createElement('option');
       option.text = dataset.name;
       option.createDataset = dataset.create;
       cbDataset.add(option);
       if (cbDataset.options.length === DATASETS.length) {
         // Load dataset
-        var datasetIndex = globalView.readIntCookie('datasetIndex');
+        let datasetIndex = globalView.readIntCookie('datasetIndex');
         if (datasetIndex !== null) {
           cbDataset.selectedIndex = datasetIndex;
         }
@@ -104,13 +104,13 @@ domready(function () {
       }
     } else {
       globalView.urlExists(dataset.url, function () {
-        var option = document.createElement('option');
+        let option = document.createElement('option');
         option.text = dataset.name;
         option.createDataset = dataset.create;
         cbDataset.add(option);
         if (cbDataset.options.length === DATASETS.length) {
           // Load dataset
-          var datasetIndex = globalView.readIntCookie('datasetIndex');
+          let datasetIndex = globalView.readIntCookie('datasetIndex');
           if (datasetIndex !== null) {
             cbDataset.selectedIndex = datasetIndex;
           }
@@ -190,12 +190,12 @@ function addAllEventListeners() {
 }
 
 function onResize() {
-  var w = window;
-  var d = document;
-  var e = d.documentElement;
-  var b = document.body;
-  var x = w.innerWidth || e.clientWidth || b.clientWidth;
-  var y = w.innerHeight|| e.clientHeight|| b.clientHeight;
+  let w = window;
+  let d = document;
+  let e = d.documentElement;
+  let b = document.body;
+  let x = w.innerWidth || e.clientWidth || b.clientWidth;
+  let y = w.innerHeight|| e.clientHeight|| b.clientHeight;
   // plot.resize(x - 32 - 200, y - 32);
   document.getElementById('divGlobalView').style.width = (x - 32 - 200) + 'px';
   document.getElementById('divGlobalView').style.height = (y - 32) + 'px';
@@ -208,7 +208,7 @@ function cbDataset_onChange() {
   }
 }
 
-var inflated = false;
+let inflated = false;
 function dataset_onLoad(_dataset) {
   dataset = _dataset;
   if (dataset.columns.length < 2) {
@@ -245,7 +245,7 @@ function dataset_onLoad(_dataset) {
   }
   if (dataset.numColumns > 3) {
     dataset.dataVectors.push(new globalView.DataVector(dataset, '0.0'/* "0.5 * c1 + 0.5 * c3" */));// "i"));
-    var option = document.createElement('option');
+    let option = document.createElement('option');
     option.text = 'formula';
     cbColumnX.add(option);
     option = document.createElement('option');
@@ -258,7 +258,7 @@ function dataset_onLoad(_dataset) {
     option.text = 'formula';
     cbColumnS.add(option);
   }
-  var activeColumnX = globalView.readIntCookie('activeColumnX'),
+  let activeColumnX = globalView.readIntCookie('activeColumnX'),
     activeColumnY = globalView.readIntCookie('activeColumnY'),
     activeColumnC = globalView.readIntCookie('activeColumnC'),
     activeColumnS = globalView.readIntCookie('activeColumnS');
@@ -305,7 +305,7 @@ function rPointSize_onChange(sender) {
   plot.setOption('pointSize', Number.parseFloat(sender.value));
 }
 
-var densityMapOptions = new globalView.DensityMapOptions();
+let densityMapOptions = new globalView.DensityMapOptions();
 // densityMapOptions.logScale = false;
 function cbShowDensity_onChange(sender) {
   if (sender.checked) {
@@ -318,7 +318,7 @@ function cbShowClusters_onChange(sender) {
   plot.setOption('showPointClusters', sender.checked);
 }
 function cbShowHistograms_onChange(sender) {
-  var padding = plot.getOption('padding');
+  let padding = plot.getOption('padding');
   padding[2] += (sender.checked ? 64 : 0) - (plot.getOption('showXAxisHistogram') ? 64 : 0);
   padding[3] += (sender.checked ? 64 : 0) - (plot.getOption('showYAxisHistogram') ? 64 : 0);
   padding[1] += (sender.checked ? 64 : 0) - (plot.getOption('showColormapHistogram') ? 64 : 0);
@@ -331,12 +331,12 @@ function cbShowHistograms_onChange(sender) {
   });
 }
 function rVariance_onChange(sender) {
-  var variance = Math.round(Math.pow(10, Number.parseFloat(sender.value)));
+  let variance = Math.round(Math.pow(10, Number.parseFloat(sender.value)));
   pVariance.innerText = 'Variance: ' + variance;
   requestVariance(variance, true);
 }
 function rNumBins_onChange(sender) {
-  var numBins = Number.parseInt(sender.value, 10);
+  let numBins = Number.parseInt(sender.value, 10);
   pNumBins.innerText = '# of histogram bins: ' + numBins;
   plot.setOption('numHistogramBins', numBins);
 }
@@ -380,7 +380,7 @@ function cmdRunBenchmark_onClick(sender) {
   new BenchmarkDialog();
 }
 
-var numThumbnails,
+let numThumbnails,
   densityRatio;
 function rNumThumbnails_onChange(sender) {
   numThumbnails = 1 << Number.parseInt(sender.value);
@@ -402,11 +402,11 @@ function cbLabelThumbnails_onChange(sender) {
 }
 
 function onMouseOverAxisLabel(dataVector, labelRect) {
-  var tooltip = document.getElementsByClassName('tooltip')[0];
+  let tooltip = document.getElementsByClassName('tooltip')[0];
   if (dataVector) {
     tooltip.innerText = 'tooltip of ' + dataVector.label;
 
-    var tooltipRect = tooltip.getBoundingClientRect();
+    let tooltipRect = tooltip.getBoundingClientRect();
     tooltip.style.top = (labelRect.t - (tooltipRect.bottom - tooltipRect.top) - 10) + 'px';
     tooltip.style.left = (((labelRect.l + labelRect.r) / 2) - ((tooltipRect.right - tooltipRect.left) * 0.1)) + 'px';
     tooltip.style.visibility = 'visible';
@@ -430,7 +430,7 @@ function onMouseOverDatapoint(dataset, index) {
     imgDataPoint.src = dataset.imageFilenames && dataset.imageFilenames[index] ? dataset.imageFilenames[index] : '';
 
     if (dataset.data) {
-      var nc = dataset.numColumns;
+      let nc = dataset.numColumns;
       pDataPoint.innerText = dataset.dataVectors.map(dataVector =>
         dataVector.label + ': ' + (dataVector.values ? dataVector.values[Math.floor(dataVector.getValue(index))] : dataVector.getValue(index))
       ).join('\n');
@@ -456,7 +456,7 @@ function onSelectionChanged(dataset, selection) {
 function ondragover(event) {
   event.preventDefault();
 }
-var dragOverCanvas = null;
+let dragOverCanvas = null;
 function ondragenter(event) {
   console.log('ondragenter');
   if (!dragOverCanvas) {
@@ -473,7 +473,7 @@ function ondragenter(event) {
     document.getElementById('divGlobalView').appendChild(dragOverCanvas);
 
 
-    var rect = dragOverCanvas.getBoundingClientRect();
+    let rect = dragOverCanvas.getBoundingClientRect();
     dragOverCanvas.style.marginTop = -(rect.bottom - rect.top - padding[0]) + 'px';
     dragOverCanvas.style.marginLeft = padding[3] + 'px';
     dragOverCanvas.style.width = (rect.right - rect.left - padding[1] - padding[3]) + 'px';
@@ -492,7 +492,7 @@ function ondrop(event) {
   ondragleave(event);
   event.preventDefault();
   event = event || window.event;
-  var files = (event.files || event.dataTransfer.files);
+  let files = (event.files || event.dataTransfer.files);
   if(files) {
     /* fileDropIsCopy = fileDropIsCopy || event.ctrlKey || event.metaKey;
     var targetRect = event.target.getBoundingClientRect()
@@ -504,9 +504,9 @@ function ondrop(event) {
   }
 }
 
-var ctrlPressed = false,
-  shiftPressed = false;
-var CTRL = navigator.appVersion.indexOf('Mac') === -1 ? 17 : 224;
+let ctrlPressed = false;
+let shiftPressed = false;
+let CTRL = navigator.appVersion.indexOf('Mac') === -1 ? 17 : 224;
 function handleKeyDown(event) {
   if(event.keyCode === CTRL) {
     ctrlPressed = true;

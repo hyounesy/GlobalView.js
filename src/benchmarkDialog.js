@@ -1,7 +1,8 @@
 // const libUtility = require('utility')
 
 function BenchmarkDialog() {
-  var benchmarkDialog = $('#benchmarkDialog').dialog({
+  let cancel = false;
+  const benchmarkDialog = $('#benchmarkDialog').dialog({
     autoOpen: false,
     modal: true,
     closeOnEscape: false,
@@ -19,7 +20,7 @@ function BenchmarkDialog() {
     }
   });
 
-  var pbOverall = $('#pbOverall'),
+  let pbOverall = $('#pbOverall'),
     pbPass = $('#pbPass'),
     progressLabel = $('.progress-label'),
     tblResults = $('#tblResults'),
@@ -43,7 +44,6 @@ function BenchmarkDialog() {
   });
   pbPass.progressbar({ value: false });
 
-  var cancel = false;
   function reportProgress(percentageOverall, percentagePass) {
     pbOverall.progressbar('value', 100 * percentageOverall);
     pbPass.progressbar('value', 100 * percentagePass);
@@ -81,7 +81,7 @@ function BenchmarkDialog() {
   benchmarkDialog.dialog('open');
 
 
-  var zip,
+  let zip,
     csv,
     numBenchmarks,
     benchmarkCounter,
@@ -98,8 +98,8 @@ function BenchmarkDialog() {
     globalView.enableOffscreenRendering(1024, 1024);
 
     // Set default options
-    var allElements = document.getElementsByTagName('*');
-    for (var i in allElements) {
+    let allElements = document.getElementsByTagName('*');
+    for (let i in allElements) {
       if (allElements[i].className === 'option') {
         if (allElements[i].onchange) {
           allElements[i].onchange(allElements[i]);
@@ -119,7 +119,7 @@ function BenchmarkDialog() {
       zip = new JSZip();
     }
 
-    var csvHeader = ['fps', 'options'];
+    let csvHeader = ['fps', 'options'];
     for (option in benchmarkOptions) {
       csvHeader.push('' + option);
     }
@@ -167,13 +167,13 @@ function BenchmarkDialog() {
   }
 
   function renderBenchmark() {
-    var tStart = performance.now();
+    let tStart = performance.now();
     globalView.renderOffscreenBuffer();
-    var tEnd = performance.now();
+    let tEnd = performance.now();
 
     time += (tEnd - tStart) / 1000.0;
     ++frames;
-    var passTime = (tEnd - passStartTime) / 1000.0;
+    let passTime = (tEnd - passStartTime) / 1000.0;
 
     if (reportProgress(benchmarkCounter / numBenchmarks, passTime / SECONDS_PER_BENCHMARK)) {
       setTimeout(passTime < SECONDS_PER_BENCHMARK ? renderBenchmark : finishBenchmarkPass, 0);
@@ -184,16 +184,16 @@ function BenchmarkDialog() {
 
   function finishBenchmarkPass() {
     time = (performance.now() - passStartTime) / 1000.0;
-    var fps = frames / time;
-    var name = JSON.stringify(currentOptions).replaceAll('"', "'");
-    var csvRow = [fps, name];
+    let fps = frames / time;
+    let name = JSON.stringify(currentOptions).replaceAll('"', "'");
+    let csvRow = [fps, name];
     for (option in currentOptions) {
       csvRow.push(currentOptions[option]);
     }
     csv.push(csvRow);
 
     if (SAVE_SCREENSHOTS) {
-      var image = globalView.saveOffscreenBuffer();
+      let image = globalView.saveOffscreenBuffer();
       image = image.substr(image.indexOf('base64,') + 'base64,'.length); // Convert base64-dataURL to base64
       name = name.replace('{', '').replace('}', '').replaceAll("'", '').replaceAll(',', ', ');
       zip.file(name + '.png', image, { base64: true });
@@ -202,7 +202,7 @@ function BenchmarkDialog() {
     // console.log(++benchmarkCounter / numBenchmarks);
     // <<<<<<<<<< END RUN BENCHMARK >>>>>>>>>>
 
-    var getKeyByIndex = function (map, idx) {
+    let getKeyByIndex = function (map, idx) {
       for (key in map) {
         if (idx-- === 0) {
           return key;
@@ -211,8 +211,8 @@ function BenchmarkDialog() {
       return null;
     };
 
-    var o = 0,
-      option = getKeyByIndex(benchmarkOptionIndices, o);
+    let o = 0;
+    let option = getKeyByIndex(benchmarkOptionIndices, o);
     while (option !== null && ++benchmarkOptionIndices[option] === benchmarkOptions[option].length) {
       benchmarkOptionIndices[option] = 0;
       option = getKeyByIndex(benchmarkOptionIndices, ++o);

@@ -1,7 +1,7 @@
 const globalView = require('../dist/global-view.js');
 const domready = require('domready');
 
-var plot,
+let plot,
   taOptions = document.getElementById('taOptions'),
   preStatus = document.getElementById('preStatus');
 
@@ -25,7 +25,7 @@ domready(function () {
 });
 
 function tOptions_onChange(sender) {
-  var options;
+  let options;
 
   try {
     options = JSON.parse(taOptions.value)
@@ -34,7 +34,7 @@ function tOptions_onChange(sender) {
     return;
   }
 
-  var err;
+  let err;
   if ((err = plot.validateOptions(options)) === true) {
     plot.setOptions(options);
     preStatus.innerText = '';

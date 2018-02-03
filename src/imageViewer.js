@@ -5,8 +5,8 @@ const libColormap = require('./colormap.js');
 const libGlMatrix = require('gl-matrix');
 
 // const LABEL_HEIGHT = 12, LABEL_WIDTH = 16.5;
-export var LABEL_HEIGHT = 12;
-export var LABEL_WIDTH = 16.5;
+export let LABEL_HEIGHT = 12;
+export let LABEL_WIDTH = 16.5;
 const LABEL_TEXT_PADDING = 2;
 
 /**
@@ -120,23 +120,23 @@ function Thumbnail(globalView) {
  * @param {Object} globalView // {GlobalView}
  */
 export function ImageViewer(gl, globalView) {
-  var sdrImage = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured, libShaders.Shaders.fsTextured);
+  let sdrImage = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured, libShaders.Shaders.fsTextured);
   sdrImage.matWorldViewProj = sdrImage.u4x4f('matWorldViewProj');
 
-  var sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
+  let sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
   sdrLine.color = sdrLine.u4f('color');
   sdrLine.color.apply(sdrLine, gl.foreColor);
   sdrLine.matWorldViewProj = sdrLine.u4x4f('matWorldViewProj');
 
   // Create a 2D line mesh
-  var meshLine = new libGraphics.Mesh(gl, new Float32Array([
+  let meshLine = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
     0, 0, 0,
     1, 0, 0
   ]), null, null, null, null, null, gl.LINES);
 
   // Create a 2D quad mesh
-  var meshQuad = new libGraphics.Mesh(gl, new Float32Array([
+  let meshQuad = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
     0, 1, 0,
     0, 0, 0,
@@ -151,7 +151,7 @@ export function ImageViewer(gl, globalView) {
   ]));
 
   // Create a 2D line quad mesh
-  var meshLineQuad = new libGraphics.Mesh(gl, new Float32Array([
+  let meshLineQuad = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
     0, 0, 0,
     0, 1, 0,
@@ -162,7 +162,7 @@ export function ImageViewer(gl, globalView) {
   // Create a 2D arrow mesh
   LABEL_HEIGHT = gl.measureTextHeight() + (2 * LABEL_TEXT_PADDING);
   LABEL_WIDTH = gl.measureTextWidth('888') + (2 * LABEL_TEXT_PADDING);
-  var meshLabel = new libGraphics.Mesh(gl, new Float32Array([
+  let meshLabel = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
     0.0,  0.0, 0,
     (0.5 * LABEL_HEIGHT),  0.5 * LABEL_HEIGHT, 0,
@@ -172,7 +172,7 @@ export function ImageViewer(gl, globalView) {
   ]), null, null, null, null, null, gl.TRIANGLE_FAN);
 
   // Create a 2D line arrow mesh
-  var meshLineLabel = new libGraphics.Mesh(gl, new Float32Array([
+  let meshLineLabel = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
     0.0,  0.0, 0,
     (0.5 * LABEL_HEIGHT),  0.5 * LABEL_HEIGHT, 0,
@@ -181,17 +181,17 @@ export function ImageViewer(gl, globalView) {
     (0.5 * LABEL_HEIGHT), -0.5 * LABEL_HEIGHT, 0
   ]), null, null, null, null, null, gl.LINE_LOOP);
 
-  /** @type Array<Thumbnail> */ var images = [];
+  /** @type Array<Thumbnail> */ let images = [];
 
-  var PixelAlignX = x => ((Math.floor((x * gl.width) / 2.0) + 0.5) * 2.0) / gl.width;
-  var PixelAlignY = y => ((Math.floor((y * gl.height) / 2.0) + 0.5) * 2.0) / gl.height;
+  let PixelAlignX = x => ((Math.floor((x * gl.width) / 2.0) + 0.5) * 2.0) / gl.width;
+  let PixelAlignY = y => ((Math.floor((y * gl.height) / 2.0) + 0.5) * 2.0) / gl.height;
 
   this.render = function (flipY, tf) {
     if (images.length === 0) {
       return;
     }
-    var mattrans = libGlMatrix.mat4.create();
-    var imagePos = libGlMatrix.vec2.create(),
+    let mattrans = libGlMatrix.mat4.create();
+    let imagePos = libGlMatrix.vec2.create(),
       refPos = libGlMatrix.vec2.create(),
       imageSize = libGlMatrix.vec2.create();
 
@@ -246,7 +246,7 @@ export function ImageViewer(gl, globalView) {
         tf.transformPos(imagePos, image.imagePos);
         tf.transformPos(refPos, image.refPos);
         libGlMatrix.mat4.translate(mattrans, mattrans, [imagePos[0], imagePos[1], 0.0]);
-        var dx = refPos[0] - imagePos[0],
+        let dx = refPos[0] - imagePos[0],
           dy = refPos[1] - imagePos[1];
         libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.atan2(dy, dx));
         libGlMatrix.mat4.scale(mattrans, mattrans, [Math.sqrt((dx * dx) + (dy * dy)), 1.0, 1.0]);
@@ -274,17 +274,17 @@ export function ImageViewer(gl, globalView) {
 
       // Set image size
       tf.transformNml2(imageSize, image.imageSize);
-      var w = image.tex.image.width,
+      let w = image.tex.image.width,
         h = image.tex.image.height;
       // imageSize[0] *= 2 / gl.width; imageSize[1] *= 2 / gl.height; // Transform imageSize from normalized space to device space
-      var scale;
+      let scale;
       if (Math.max(imageSize[0], (imageSize[0] * h) / w, 1.0) < Math.max((imageSize[1] * w) / h, imageSize[1])) {
         scale = [(2 * Math.floor(imageSize[0])) / gl.width, (2 * Math.floor((imageSize[0] * h) / w)) / gl.height, 1];
       } else {
         scale = [(2 * Math.floor((imageSize[1] * w) / h)) / gl.width, (2 * Math.floor(imageSize[1])) / gl.height, 1];
       }
 
-      var borderWidth = image.borderWidth ? image.borderWidth : defaultImageBorderWidth;
+      let borderWidth = image.borderWidth ? image.borderWidth : defaultImageBorderWidth;
       if (borderWidth > 0) {
         scale[0] += (2 * borderWidth) / gl.width;
         scale[1] += (2 * borderWidth) / gl.height;
@@ -353,11 +353,11 @@ export function ImageViewer(gl, globalView) {
     // gl.enable(gl.SCISSOR_TEST);
   }
 
-  var options = {},
-    defaultImageBorderWidth = 1,
-    defaultImageBorderColor = gl.foreColor,
-    defaultImageLineColor = gl.foreColor,
-    defaultImageLabelColor = gl.backColor;
+  let options = {};
+  let defaultImageBorderWidth = 1;
+  let defaultImageBorderColor = gl.foreColor;
+  let defaultImageLineColor = gl.foreColor;
+  let defaultImageLabelColor = gl.backColor;
   this.setDataset = function (dataset, options) {}
   this.onInputChanged = function (activeInputs, animatedInputs, options) {}
   this.onOptionsChanged = function (_options) {
@@ -379,7 +379,7 @@ export function ImageViewer(gl, globalView) {
    */
   this.showImage = function (imageFilename, refIndex, refPos, imagePos, imageSize, imageAnchor) {
     // Convert imageAnchor from string to vec3
-    var imageAnchorVector;
+    let imageAnchorVector;
     switch(imageAnchor) {
       case 'topleft':      imageAnchorVector = [-0.0, -1.0, 0.0]; break;
       case 'topcenter':    imageAnchorVector = [-0.5, -1.0, 0.0]; break;
@@ -392,7 +392,7 @@ export function ImageViewer(gl, globalView) {
       case 'bottomright':  imageAnchorVector = [-1.0, -0.0, 0.0]; break;
     }
 
-    var newImage = new Thumbnail(globalView);
+    let newImage = new Thumbnail(globalView);
     newImage.tex = libGraphics.LoadTexture(gl, imageFilename, function () {
       globalView.invalidate();
     });
@@ -439,18 +439,18 @@ export function ImageViewer(gl, globalView) {
         }
       }
     }
-    for (var i = 1; i < images.length; ++i) {
+    for (let i = 1; i < images.length; ++i) {
       if (images[i].imagePos) {
         tf.transformPos(a, images[i].imagePos);
         tf.transformPos(b, images[i].refPos);
-        for (var j = 0; j < i; ++j) {
+        for (let j = 0; j < i; ++j) {
           if (images[j].imagePos) {
             tf.transformPos(c, images[j].imagePos);
             tf.transformPos(d, images[j].refPos);
 
             if (libAlgorithm.linesIntersect(a, b, c, d)) {
             // console.log("intersection {0} - {1}".format(i, j));
-              var tmp = images[j].imagePos;
+              let tmp = images[j].imagePos;
               images[j].imagePos = images[i].imagePos;
               images[i].imagePos = tmp;
               i = j = 0; break; // EDIT: How neccessary is this?
@@ -462,11 +462,11 @@ export function ImageViewer(gl, globalView) {
   }
 
   this.imageFromPoint = function (tf, p) {
-    var imagePos = libGlMatrix.vec2.create(),
+    let imagePos = libGlMatrix.vec2.create(),
       refPos = libGlMatrix.vec2.create(),
       imageSize = libGlMatrix.vec2.create();
 
-    var selectedImage = null;
+    let selectedImage = null;
     images.forEach(function (image) {
       if (!image.imagePos) {
         return;
@@ -475,15 +475,15 @@ export function ImageViewer(gl, globalView) {
       tf.transformPos(imagePos, image.imagePos);
 
       tf.transformNml2(imageSize, image.imageSize);
-      var w = image.tex.image.width,
+      let w = image.tex.image.width,
         h = image.tex.image.height;
-      var size;
+      let size;
       if (Math.max(imageSize[0], (imageSize[0] * h) / w, 1.0) < Math.max((imageSize[1] * w) / h, imageSize[1])) {
         size = [(Math.floor(imageSize[0]) * 2) / gl.width, (Math.floor((imageSize[0] * h) / w) * 2) / gl.height, 1];
       } else {
         size = [(Math.floor((imageSize[1] * w) / h) * 2) / gl.width, (Math.floor(imageSize[1]) * 2) / gl.height, 1];
       }
-      var imageBounds = [
+      let imageBounds = [
         imagePos[0] + ((image.imageAnchor[0]) * size[0]),
         imagePos[0] + ((image.imageAnchor[0] + 1.0) * size[0]),
         imagePos[1] + ((image.imageAnchor[1]) * size[1]),
