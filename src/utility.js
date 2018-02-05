@@ -567,7 +567,7 @@ export function HashSet(onchanged) {
   /** The number of values in this hash set @type {number} */ this.length = 0;
   /** A callback to be raised whenever values have been added or deleted @public @type {function()} */ this.onchanged = isFunction(onchanged) ? onchanged : function () {};
 
-  this['push'] =
+
   /**
    * Add a single value into the hash set
    * @param  {number} value
@@ -580,7 +580,7 @@ export function HashSet(onchanged) {
     }
   }
 
-  this['append'] =
+
   /**
    * Add an iterable list of values into the hash set
    * @param  {Object} values
@@ -602,7 +602,7 @@ export function HashSet(onchanged) {
     }
   }
 
-  this['set'] =
+
   /**
    * Reset the hash set to only contain the given value
    * @param  {number} value
@@ -616,7 +616,7 @@ export function HashSet(onchanged) {
     }
   }
 
-  this['assign'] =
+
   /**
    * Reset the hash set to only contain the given iterable list of values
    * @param  {Object} values
@@ -646,7 +646,7 @@ export function HashSet(onchanged) {
     }
   }
 
-  this['assignRange'] =
+
   /**
    * Reset the hash set to only contain numbers 0 through n - 1
    * @param  {number} n The number of values to set
@@ -663,7 +663,7 @@ export function HashSet(onchanged) {
     this.onchanged();
   }
 
-  this['erase'] =
+
   /**
    * Remove the given value from the hash set
    * @param  {number} value The value to remove
@@ -676,7 +676,7 @@ export function HashSet(onchanged) {
     }
   }
 
-  this['remove'] =
+
   /**
    * Remove the given iterable list of values from the hash set
    * @param  {Object} values The values to remove
@@ -698,7 +698,7 @@ export function HashSet(onchanged) {
     }
   }
 
-  this['isempty'] =
+
   /**
    * @return {boolean} True, if the hash set doesn't contain any values
    */
@@ -706,7 +706,7 @@ export function HashSet(onchanged) {
     return this.length === 0;
   }
 
-  this['clear'] =
+
   /**
    * Resets the hash set to an empty set
    */
@@ -718,7 +718,7 @@ export function HashSet(onchanged) {
     }
   }
 
-  this['forEach'] =
+
   /**
    * Calls the given function once for each value in the hash set
    * @param  {function(number)} callback
@@ -733,7 +733,7 @@ export function HashSet(onchanged) {
     // if (badOrder !== 0) console.log('bad order: ' + badOrder + ' times');
   }
 
-  this['get'] =
+
   /**
    * @return  {Uint32Array} A sorted array of all values in the hash set
    */
@@ -741,7 +741,7 @@ export function HashSet(onchanged) {
     return new Uint32Array(Object.keys(hash).map(Number));
   }
 
-  this['size'] =
+
   /**
    * @return  {number} The number of values in the hash set
    */
@@ -749,7 +749,7 @@ export function HashSet(onchanged) {
     return this.length;
   }
 
-  this['contains'] =
+
   /**
    * @param  {number} value
    * @return  {boolean} True, if the given value is part of the hash set

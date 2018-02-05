@@ -58,6 +58,9 @@ let OptionDescription;
  */
 export function GlobalView(div, startupOptions) {
   const globalView = this;
+  if (!(this instanceof GlobalView)) {
+    throw 'GlobalView cannot be invoked without "new"';
+  }
 
   let canvas = null;
   for (let i = 0; i < div.children.length; ++i) {
@@ -79,7 +82,7 @@ export function GlobalView(div, startupOptions) {
     div.appendChild(canvas);
   }
 
-  this['invalidate'] = this.invalidate = function () {}; // Silently ignore calls to invalidate during initialization
+  this.invalidate = function () {}; // Silently ignore calls to invalidate during initialization
 
   const gl = canvas.getContext('webgl');
   if(!gl) {
@@ -103,7 +106,7 @@ export function GlobalView(div, startupOptions) {
 
   gl.backColor = divStyle.backgroundColor === 'transparent' ? [0, 0, 0, 0] : libUtility.rgbStringToFloatArray(divStyle.backgroundColor);
   gl.foreColor = libUtility.rgbStringToFloatArray(gl.foreColorString = divStyle.color);
-  this['updateColorSchema'] =
+
   /**
    * Call this method after updating the parent div's color or background-color styles in order for the changes to be applied to the rendering pipeline.
    * @summary Apply div foreground- and background colors to the plot
@@ -122,7 +125,7 @@ export function GlobalView(div, startupOptions) {
   const trc = new libTextRenderContext.TextRenderContext(gl, canvas);
   // trc.setFont("10px monospace");
   trc.setFont(divStyle.fontSize + ' ' + divStyle.fontFamily);
-  this['updateFont'] =
+
   /**
    * Call this method after updating the parent div's font style in order for the changes to be applied to the rendering pipeline.
    * @summary Apply div font to the plot
@@ -153,10 +156,10 @@ export function GlobalView(div, startupOptions) {
     return {target: null, f: 0};
   });
 
-  this['points'] = this.points = pointViewer.points;
+  this.points = pointViewer.points;
   pointViewer.representativePoints = pointViewer.createPointSet([0, 255, 0, 255], 1);
-  this['createPointSet'] = this.createPointSet = pointViewer.createPointSet;
-  this['removePointSet'] = this.removePointSet = pointViewer.removePointSet;
+  this.createPointSet = pointViewer.createPointSet;
+  this.removePointSet = pointViewer.removePointSet;
 
   let mouseRect = null,
     mousePolygon = null;
@@ -242,7 +245,6 @@ export function GlobalView(div, startupOptions) {
   const options = {};
   let offscreenRendering = null;
 
-  this['invalidate'] =
   /**
    * @summary Request to rerender the plot
    */
@@ -260,8 +262,8 @@ export function GlobalView(div, startupOptions) {
     if (!offscreenRendering && (width !== gl.width || height !== gl.height)) {
       gl.viewport(0, 0, gl.width = canvas.width = width, gl.height = canvas.height = height);
       trc.onResize();
-      if (options['padding']) {
-        setPlotBounds(options['padding']);
+      if (options.padding) {
+        setPlotBounds(options.padding);
       }
       if (invalidating === false && offscreenRendering === null) {
         invalidating = true;
@@ -562,7 +564,6 @@ export function GlobalView(div, startupOptions) {
     }
   }
 
-  this['zoomFit'] =
   /**
    * @summary Zoom all dimensions to exactly fit all data points
    */
@@ -574,7 +575,7 @@ export function GlobalView(div, startupOptions) {
       tf.setFromMinMax(v, dataset.dataVectors[v].minimum, dataset.dataVectors[v].maximum);
     }
   }
-  this['zoomFit2D'] =
+
   /**
    * @summary Zoom currently visible x- and y- dimensions to exactly fit all data points
    */
@@ -586,7 +587,7 @@ export function GlobalView(div, startupOptions) {
     tf.setFromMinMax(d0, dataset.dataVectors[d0].minimum, dataset.dataVectors[d0].maximum);
     tf.setFromMinMax(d1, dataset.dataVectors[d1].minimum, dataset.dataVectors[d1].maximum);
   }
-  this['zoomRect'] =
+
   /**
    * @summary Zoom currently visible x- and y- dimensions to the given bounds in data space
    * @param  {{l: number, t: number, r: number, b: number}} rect Bounds of the visible region
@@ -595,8 +596,8 @@ export function GlobalView(div, startupOptions) {
     const d0 = activeInputs[0];
     const d1 = activeInputs[1];
 
-    tf.setFromMinMax(d0, rect['l'], rect['r']);
-    tf.setFromMinMax(d1, rect['t'], rect['b']);
+    tf.setFromMinMax(d0, rect.l, rect.r);
+    tf.setFromMinMax(d1, rect.t, rect.b);
   }
 
   // >>> Options
@@ -826,20 +827,20 @@ export function GlobalView(div, startupOptions) {
   const pushedOptions = [];
   function onOptionsChanged(requireRedraw, requireRecompile) {
     // Update trivial options
-    ENABLE_CONTINUOUS_RENDERING = options['enableContinuousRendering'];
-    SHOW_FPS = options['enableContinuousRendering'];
-    if (options['enableTransparency']) {
+    ENABLE_CONTINUOUS_RENDERING = options.enableContinuousRendering;
+    SHOW_FPS = options.enableContinuousRendering;
+    if (options.enableTransparency) {
       gl.enable(gl.BLEND);
     } else {
       gl.disable(gl.BLEND);
     }
-    colormap.visible = options['showColormap'];
-    densityViewer.showDensityMap = options['showPointDensity'];
-    densityViewer.showClusterMap = options['showPointClusters'];
-    densityViewer.setClusterMapThreshold(options['pointClusterThreshold']);
+    colormap.visible = options.showColormap;
+    densityViewer.showDensityMap = options.showPointDensity;
+    densityViewer.showClusterMap = options.showPointClusters;
+    densityViewer.setClusterMapThreshold(options.pointClusterThreshold);
 
-    if (options['padding']) {
-      setPlotBounds(options['padding']);
+    if (options.padding) {
+      setPlotBounds(options.padding);
     }
 
     viewers.forEach(viewer => viewer.onOptionsChanged(options, requireRecompile));
@@ -856,7 +857,7 @@ export function GlobalView(div, startupOptions) {
       }
     }
   }
-  this['setOption'] =
+
   /**
    * Note: When setting multiple options, {@link GlobalView#setOptions} should be prefered.
    * @summary Sets the given option
@@ -888,7 +889,7 @@ export function GlobalView(div, startupOptions) {
 
     onOptionsChanged.call(this, optionDefinition.requireRedraw, optionDefinition.requireRecompile);
   }
-  this['setOptions'] =
+
   /**
    * @summary Sets multiple options
    * @param  {Object} newOptions A JavaScript object of options
@@ -931,7 +932,7 @@ export function GlobalView(div, startupOptions) {
 
     onOptionsChanged.call(this, requireRedraw, requireRecompile);
   }
-  this['setDefaultOption'] =
+
   /**
    * @summary Sets the given option to its default value
    * @param  {string} option
@@ -946,7 +947,7 @@ export function GlobalView(div, startupOptions) {
 
     this.setOption(option, optionDefinition.default);
   }
-  this['setDefaultOptions'] =
+
   /**
    * @summary Sets all options to their respective defaults
    */
@@ -959,7 +960,7 @@ export function GlobalView(div, startupOptions) {
     }
     this.setOptions(defaultOptions);
   }
-  this['validateOption'] =
+
   /**
    * @summary Checks the given option for errors without setting it
    * @param  {string} option
@@ -982,7 +983,7 @@ export function GlobalView(div, startupOptions) {
 
     return true;
   }
-  this['validateOptions'] =
+
   /**
    * @summary Checks multiple options for errors without setting them
    * @param  {Object} newOptions A JavaScript object of options
@@ -1014,7 +1015,7 @@ export function GlobalView(div, startupOptions) {
 
     return errors.length === 0 ? true : errors.join('\n');
   }
-  this['getOption'] =
+
   /**
    * @summary Returns the value assigned to the given option
    * @param  {string} option
@@ -1023,7 +1024,7 @@ export function GlobalView(div, startupOptions) {
   this.getOption = function (option) {
     return options[option];
   }
-  this['getOptions'] =
+
   /**
    * @summary Returns a JavaScript object of all options and their values
    * @return {Object}
@@ -1031,7 +1032,7 @@ export function GlobalView(div, startupOptions) {
   this.getOptions = function () {
     return /** @type {Object} */(JSON.parse(JSON.stringify(options)));
   }
-  this['pushOptions'] =
+
   /**
    * @summary Save all options
    */
@@ -1039,7 +1040,7 @@ export function GlobalView(div, startupOptions) {
     pushedOptions.push(options);
     // options = {};
   }
-  this['popOptions'] =
+
   /**
    * @summary Recall the options last saved with {@link GlobalView#pushOptions}
    */
@@ -1080,7 +1081,6 @@ export function GlobalView(div, startupOptions) {
   }
 
   // var pushedDatasets = [];
-  this['load'] =
   /**
    * @summary Load a dataset into the plot
    * @param  {Dataset} _dataset
@@ -1126,7 +1126,7 @@ export function GlobalView(div, startupOptions) {
     // Redraw
     this.invalidate();
   }
-  this['setActiveColumn'] =
+
   /**
    * Assign dataset column c to axis d
    * @param  {number} d
@@ -1155,7 +1155,7 @@ export function GlobalView(div, startupOptions) {
       this.invalidate();
     }
   }
-  this['getActiveColumn'] =
+
   /**
    * Get column assigned to axis c
    * @param  {number} d
@@ -1165,7 +1165,7 @@ export function GlobalView(div, startupOptions) {
     return d >= 0 && d < activeInputs.length ? activeInputs[d] : -1;
   }
 
-  this['getCharacteristicPoints'] =
+
   /**
    * @param  {number} n
    * @param  {number} densityRatio
@@ -1195,7 +1195,7 @@ export function GlobalView(div, startupOptions) {
   /**
    * @summary Remove all thumbnails from the plot
    */
-  this['clearThumbnails'] = this.clearThumbnails = function () {
+  this.clearThumbnails = function () {
     // Clear stencil maps
     if (dataset) {
       dataset.iterateDensityMaps(function (densityMap) {
@@ -1212,7 +1212,7 @@ export function GlobalView(div, startupOptions) {
   }
   /**
    */
-  this['showData2D'] = this.showData2D = function () {
+  this.showData2D = function () {
     imageViewer.clearImages();
 
     let d0 = activeInputs[0],
@@ -1238,11 +1238,11 @@ export function GlobalView(div, startupOptions) {
             const imagePos = dataPos.slice(0);
             const p = libAlgorithm.findClosePointOfLowDensity(dataset, d0, d1, r,
               densityMap, densityMap.stencilMap,
-              (0.6 * options['thumbnailSize']) / gl.width,
-              (0.6 * (options['thumbnailSize'] + libImageViewer.LABEL_HEIGHT)) / gl.height); // EDIT: Factor 0.6: WHY?
+              (0.6 * options.thumbnailSize) / gl.width,
+              (0.6 * (options.thumbnailSize + libImageViewer.LABEL_HEIGHT)) / gl.height); // EDIT: Factor 0.6: WHY?
             imagePos[d0] = p[0];
             imagePos[d1] = p[1];
-            const imageSize = dataset.dataVectors.map(v => options['thumbnailSize'] * (v.maximum - v.minimum));
+            const imageSize = dataset.dataVectors.map(v => options.thumbnailSize * (v.maximum - v.minimum));
             imageViewer.showImage(dataset.imageFilenames[r], r, dataPos, imagePos, imageSize);
           }
         });
@@ -1251,7 +1251,7 @@ export function GlobalView(div, startupOptions) {
     });
   }
 
-  this['showImage_lowDensity'] =
+
   /**
    * @summary A shorthand function to `showImage(index, "lowDensity")`
    * @param  {number} index Index of the datapoint to show
@@ -1264,8 +1264,8 @@ export function GlobalView(div, startupOptions) {
       // dataset.requestDensityMap(d0, d1, undefined, undefined, function(densityMap) { console.log(densityMap); });
 
       dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
-        let imageWidth = (0.6 * options['thumbnailSize']) / gl.width,
-          imageHeight = ((0.6 * options['thumbnailSize']) + libImageViewer.LABEL_HEIGHT) / gl.height; // EDIT: Factor 0.6: WHY?
+        let imageWidth = (0.6 * options.thumbnailSize) / gl.width,
+          imageHeight = ((0.6 * options.thumbnailSize) + libImageViewer.LABEL_HEIGHT) / gl.height; // EDIT: Factor 0.6: WHY?
         if (d1 < d0) {
           // Swap d0 <-> d1
           let temp = d0;
@@ -1282,7 +1282,7 @@ export function GlobalView(div, startupOptions) {
         let imagePos;
         if (libUtility.isUndefined(densityMap.data)) { // If densityMap is nD
           imagePos = libAlgorithm.findClosePointOfLowDensityND_descend(dataset, index, densityMap,
-            (0.6 * options['thumbnailSize']) / Math.min(gl.width, gl.height));
+            (0.6 * options.thumbnailSize) / Math.min(gl.width, gl.height));
         } else { // EDIT: Factor 0.6: WHY?
           imagePos = dataPos.slice(0);
 
@@ -1295,19 +1295,19 @@ export function GlobalView(div, startupOptions) {
             imagePos[d1] = p[1];
           } else {
             const halfImageSize = [
-              (1.1 * options['thumbnailSize']) / gl.width,
-              (1.1 * options['thumbnailSize']) / gl.height];
+              (1.1 * options.thumbnailSize) / gl.width,
+              (1.1 * options.thumbnailSize) / gl.height];
             tf.deviceDistToDatasetDist(halfImageSize, halfImageSize);
             imagePos[d0] += halfImageSize[0];
             imagePos[d1] += halfImageSize[1];
           }
         }
-        const imageSize = dataset.dataVectors.map(v => options['thumbnailSize'] * (v.maximum - v.minimum));
+        const imageSize = dataset.dataVectors.map(v => options.thumbnailSize * (v.maximum - v.minimum));
         imageViewer.showImage(dataset.imageFilenames[index], index, dataPos, imagePos, imageSize);
       });
     }
   }
-  this['showImages_lowDensity'] =
+
   /**
    * @summary A shorthand function to `showImages(index, "lowDensity")`
    * @param  {Array<number>} points List of indices of datapoints to show
@@ -1317,8 +1317,8 @@ export function GlobalView(div, startupOptions) {
       let d0 = activeInputs[0],
         d1 = activeInputs[1];
       dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
-        let imageWidth = (0.6 * options['thumbnailSize']) / gl.width,
-          imageHeight = ((0.6 * options['thumbnailSize']) + libImageViewer.LABEL_HEIGHT) / gl.height; // EDIT: Factor 0.6: WHY?
+        let imageWidth = (0.6 * options.thumbnailSize) / gl.width,
+          imageHeight = ((0.6 * options.thumbnailSize) + libImageViewer.LABEL_HEIGHT) / gl.height; // EDIT: Factor 0.6: WHY?
         if (d1 < d0) {
           // Swap d0 <-> d1
           let temp = d0;
@@ -1340,7 +1340,7 @@ export function GlobalView(div, startupOptions) {
     imageViewer.resolveIntersections(tf);
   }
 
-  this['showImage_none'] =
+
   /**
    * @summary A shorthand function to `showImage(index, "none")`
    * @param  {number} index Index of the datapoint to show
@@ -1349,7 +1349,7 @@ export function GlobalView(div, startupOptions) {
     const dataPos = dataset.dataVectors.map(v => v.getValue(index));
     imageViewer.showImage(dataset.imageFilenames[index], index, dataPos);
   }
-  this['showImages_none'] =
+
   /**
    * @summary A shorthand function to `showImages(index, "none")`
    * @param  {Array<number>} points List of indices of datapoints to show
@@ -1361,17 +1361,17 @@ export function GlobalView(div, startupOptions) {
     });
   }
 
-  this['showImage_adjacent'] =
+
   /**
    * @summary A shorthand function to `showImage(index, "adjacent")`
    * @param  {number} index Index of the datapoint to show
    */
   this.showImage_adjacent = function (index) {
     const dataPos = dataset.dataVectors.map(v => v.getValue(index));
-    const imageSize = dataset.dataVectors.map(v => options['thumbnailSize'] * (v.maximum - v.minimum));
+    const imageSize = dataset.dataVectors.map(v => options.thumbnailSize * (v.maximum - v.minimum));
     imageViewer.showImage(dataset.imageFilenames[index], index, dataPos, dataPos, imageSize, 'bottomleft');
   }
-  this['showImages_adjacent'] =
+
   /**
    * @summary A shorthand function to `showImages(index, "adjacent")`
    * @param  {Array<number>} points List of indices of datapoints to show
@@ -1380,7 +1380,7 @@ export function GlobalView(div, startupOptions) {
     points.forEach(i => globalView.showImage_adjacent(i));
   }
 
-  this['showImages_project'] =
+
   /**
    * @summary A shorthand function to `showImages(index, "project")`
    * @param  {Array<number>} points List of indices of datapoints to show
@@ -1431,9 +1431,9 @@ export function GlobalView(div, startupOptions) {
     eigenvec[1] /= eigenvec_length;
 
     // Define corners of AABB
-    const imageSize = dataset.dataVectors.map(v => options['thumbnailSize'] * (v.maximum - v.minimum));
-    const labelHeightOffset = 1.0 + (libImageViewer.LABEL_HEIGHT / options['thumbnailSize']);
-    const labelWidthOffset = 1.0 + ((libImageViewer.LABEL_HEIGHT + (2 * libImageViewer.LABEL_WIDTH)) / options['thumbnailSize']);
+    const imageSize = dataset.dataVectors.map(v => options.thumbnailSize * (v.maximum - v.minimum));
+    const labelHeightOffset = 1.0 + (libImageViewer.LABEL_HEIGHT / options.thumbnailSize);
+    const labelWidthOffset = 1.0 + ((libImageViewer.LABEL_HEIGHT + (2 * libImageViewer.LABEL_WIDTH)) / options.thumbnailSize);
     const bl = [
       tf.getMinimum(0) - ((imageSize[d0] * 0.6) / plotBounds.width),
       tf.getMinimum(1) - ((imageSize[d1] * 0.6) / plotBounds.height)
@@ -1583,7 +1583,7 @@ export function GlobalView(div, startupOptions) {
     imageViewer.resolveIntersections(tf);
   }
 
-  this['showImage'] =
+
   /**
    * Valid placement strategies are:
    * + none
@@ -1602,7 +1602,7 @@ export function GlobalView(div, startupOptions) {
       default: console.warn('GlobalView warning: Unknown image placement strategy: ' + placement); return false;
     }
   }
-  this['showImages'] =
+
   /**
    * Valid placement strategies are:
    * + none
@@ -1623,7 +1623,7 @@ export function GlobalView(div, startupOptions) {
     }
   }
 
-  this['highlightImage'] =
+
   /**
    * Images other than the given image will be de-highlighted.
    * @summary Highlight the given image with a highlight color
@@ -1644,7 +1644,6 @@ export function GlobalView(div, startupOptions) {
     this.invalidate();
   }
 
-  this['getImages'] =
   /**
    * @summary Get an array of all images of the plot
    * @return {Array<Thumbnail>}
@@ -1682,23 +1681,23 @@ export function GlobalView(div, startupOptions) {
    * @memberof GlobalView
    * @type {onMouseDownCallback}
    */
-  this['onMouseDown'] = function (event) { // Default mouse-down handler
+  this.onMouseDown = function (event) { // Default mouse-down handler
     switch (event.button) {
       // On left mouse button: Enable point selection and dragging events.
       //                       If control button is pressed, initiate view dragging, else, enable lasso selection
       case 0:
-        event['pointSelection'] = true;
-        event['pointDragging'] = true;
+        event.pointSelection = true;
+        event.pointDragging = true;
         if (ctrlPressed) {
-          event['viewDragging'] = true;
+          event.viewDragging = true;
         } else {
-          event['lassoSelection'] = true;
+          event.lassoSelection = true;
         }
         break;
 
       // On middle mouse button: Initiate view dragging
       case 1:
-        event['viewDragging'] = true;
+        event.viewDragging = true;
         break;
 
       // On right mouse button: Do nothing
@@ -1720,7 +1719,7 @@ export function GlobalView(div, startupOptions) {
    * @memberof GlobalView
    * @type {onMouseOverDatapointCallback}
    */
-  this['onMouseOverDatapoint'] = null;
+  this.onMouseOverDatapoint = null;
   /**
    * @callback onMouseOverAxisLabelCallback
    * @param  {DataVector} dataVector Data vector whose axis label the mouse cursor is hovering over
@@ -1735,7 +1734,7 @@ export function GlobalView(div, startupOptions) {
    * @memberof GlobalView
    * @type {onMouseOverAxisLabelCallback}
    */
-  this['onMouseOverAxisLabel'] = null;
+  this.onMouseOverAxisLabel = null;
   /**
    * @callback onSelectionChangedCallback
    * @param  {Dataset} dataset
@@ -1749,7 +1748,7 @@ export function GlobalView(div, startupOptions) {
    * @memberof GlobalView
    * @type {onSelectionChangedCallback}
    */
-  this['onSelectionChanged'] = null;
+  this.onSelectionChanged = null;
   /**
    * @callback onLassoSelectionCallback
    * @param  {Dataset} dataset
@@ -1765,7 +1764,7 @@ export function GlobalView(div, startupOptions) {
    * @memberof GlobalView
    * @type {onLassoSelectionCallback}
    */
-  this['onLassoSelection'] = null;
+  this.onLassoSelection = null;
   /**
    * @callback onThumbnailSelectionChangedCallback
    * @param  {Dataset} dataset
@@ -1779,7 +1778,7 @@ export function GlobalView(div, startupOptions) {
    * @memberof GlobalView
    * @type {onThumbnailSelectionChangedCallback}
    */
-  this['onThumbnailSelectionChanged'] = null;
+  this.onThumbnailSelectionChanged = null;
   let ctrlPressed = false;
   let shiftPressed = false;
   const CTRL = navigator.appVersion.indexOf('Mac') === -1 ? 17 : 224;
@@ -1810,10 +1809,10 @@ export function GlobalView(div, startupOptions) {
     const p = new Float32Array([event.clientX - canvasBounds.left, event.clientY - canvasBounds.top, event.clientY - canvasBounds.top]);
 
     // Fire mouse-down handler
-    this['onMouseDown'](event);
+    this.onMouseDown(event);
 
-    if (event['viewDragging']) {
-      // If mouse-down handler set ['viewDragging'] property to a truthy value
+    if (event.viewDragging) {
+      // If mouse-down handler set viewDragging property to a truthy value
       if (p[0] > plotBounds.x + plotBounds.width) {
         viewDragX = viewDragY = false;
         viewDragZ = colormap.visible;
@@ -1844,8 +1843,8 @@ export function GlobalView(div, startupOptions) {
       imageDragImages.forEach(image => image.highlighted = false);
       imageDragImages = [];
       this.invalidate();
-      if (this['onThumbnailSelectionChanged'] !== null) {
-        this['onThumbnailSelectionChanged'](dataset, []);
+      if (this.onThumbnailSelectionChanged !== null) {
+        this.onThumbnailSelectionChanged(dataset, []);
       }
     }
     if (selectedImage !== null) {
@@ -1853,15 +1852,15 @@ export function GlobalView(div, startupOptions) {
       if (imageDragImages.indexOf(selectedImage) === -1) {
         imageDragImages.push(selectedImage);
       }
-      if (options['enableThumbnailDragging']) {
+      if (options.enableThumbnailDragging) {
         imageDragStartPos = p;
       } // Initiate image dragging
       this.invalidate();
-      if (event['pointSelection'] && this['onSelectionChanged'] !== null) {
-        this['onSelectionChanged'](dataset, []);
+      if (event.pointSelection && this.onSelectionChanged !== null) {
+        this.onSelectionChanged(dataset, []);
       }
-      if (this['onThumbnailSelectionChanged'] !== null) {
-        this['onThumbnailSelectionChanged'](dataset, imageDragImages);
+      if (this.onThumbnailSelectionChanged !== null) {
+        this.onThumbnailSelectionChanged(dataset, imageDragImages);
       }
       return; // Prevent other mouse-down events
     }
@@ -1894,23 +1893,23 @@ export function GlobalView(div, startupOptions) {
     dp[1] = (0.5 - (0.5 * dp[1])) * canvasBounds.height;
 
     sqDist = Math.pow((event.clientX - canvasBounds.left) - dp[0], 2) + Math.pow((event.clientY - canvasBounds.top) - dp[1], 2);
-    if (sqDist > Math.pow(options['pointSize'] / 2.0, 2)) {
-      if ((event['lassoSelection'] || event['polygonLassoSelection']) && this['onLassoSelection'] !== null) {
-        if (event['polygonLassoSelection']) {
+    if (sqDist > Math.pow(options.pointSize / 2.0, 2)) {
+      if ((event.lassoSelection || event.polygonLassoSelection) && this.onLassoSelection !== null) {
+        if (event.polygonLassoSelection) {
           mousePolygon = [];
         } else {
           mouseRect = {x: event.clientX - canvasBounds.left, y: event.clientY - canvasBounds.top, width: 0, height: 0};
         }
       }
-      if (event['pointSelection'] && this['onSelectionChanged'] !== null) {
-        this['onSelectionChanged'](dataset, []);
+      if (event.pointSelection && this.onSelectionChanged !== null) {
+        this.onSelectionChanged(dataset, []);
       }
     } else {
-      if (event['pointDragging']) {
+      if (event.pointDragging) {
         pointDragDownPos = [dp[0], dp[1], closestIndex];
       } // (This makes sure pointDragDownPos is centered on the selected datapoint)
-      if (event['pointSelection'] && this['onSelectionChanged'] !== null) {
-        this['onSelectionChanged'](dataset, [closestIndex]);
+      if (event.pointSelection && this.onSelectionChanged !== null) {
+        this.onSelectionChanged(dataset, [closestIndex]);
       }
     }
   }.bind(this);
@@ -1949,13 +1948,13 @@ export function GlobalView(div, startupOptions) {
       return;
     }
 
-    if (this['onMouseOverAxisLabel']) {
+    if (this.onMouseOverAxisLabel) {
       const newMouseOverAxisLabel = coordSys.labelFromPoint(plotBounds, p);
       if (newMouseOverAxisLabel !== mouseOverAxisLabel) {
         if ((mouseOverAxisLabel = newMouseOverAxisLabel) !== null) {
-          this['onMouseOverAxisLabel'](dataset.dataVectors[activeInputs[mouseOverAxisLabel]], coordSys.getLabelBounds(plotBounds, mouseOverAxisLabel));
+          this.onMouseOverAxisLabel(dataset.dataVectors[activeInputs[mouseOverAxisLabel]], coordSys.getLabelBounds(plotBounds, mouseOverAxisLabel));
         } else {
-          this['onMouseOverAxisLabel'](null, null);
+          this.onMouseOverAxisLabel(null, null);
         }
       }
     }
@@ -2011,8 +2010,8 @@ export function GlobalView(div, startupOptions) {
       }
       if (mouseOverDatapoint !== -1) {
         mouseOverDatapoint = -1;
-        if (this['onMouseOverDatapoint'] !== null) {
-          this['onMouseOverDatapoint'](dataset, mouseOverDatapoint);
+        if (this.onMouseOverDatapoint !== null) {
+          this.onMouseOverDatapoint(dataset, mouseOverDatapoint);
         }
       }
       return;
@@ -2046,18 +2045,18 @@ export function GlobalView(div, startupOptions) {
     dp[1] = (0.5 - (0.5 * dp[1])) * canvasBounds.height;
 
     sqDist = Math.pow((event.clientX - canvasBounds.left) - dp[0], 2) + Math.pow((event.clientY - canvasBounds.top) - dp[1], 2);
-    if (sqDist > Math.pow(options['pointSize'] / 2.0, 2)) {
+    if (sqDist > Math.pow(options.pointSize / 2.0, 2)) {
       if (mouseOverDatapoint !== -1) {
         mouseOverDatapoint = -1;
-        if (this['onMouseOverDatapoint'] !== null) {
-          this['onMouseOverDatapoint'](dataset, mouseOverDatapoint);
+        if (this.onMouseOverDatapoint !== null) {
+          this.onMouseOverDatapoint(dataset, mouseOverDatapoint);
         }
       }
     } else {
       if (mouseOverDatapoint !== closestIndex) {
         mouseOverDatapoint = closestIndex;
-        if (this['onMouseOverDatapoint'] !== null) {
-          this['onMouseOverDatapoint'](dataset, mouseOverDatapoint);
+        if (this.onMouseOverDatapoint !== null) {
+          this.onMouseOverDatapoint(dataset, mouseOverDatapoint);
         }
       }
     }
@@ -2074,7 +2073,7 @@ export function GlobalView(div, startupOptions) {
     }
     viewDragStartPos = imageDragStartPos = null;
     if (mousePolygon !== null) {
-      if (this['onSelectionChanged'] !== null && mousePolygon.length >= 3) {
+      if (this.onSelectionChanged !== null && mousePolygon.length >= 3) {
         // TODO: Find points within mousePolygon -> selection
 
         // Transform mousePolygon from canvas space to dataset coordinates
@@ -2104,14 +2103,14 @@ export function GlobalView(div, startupOptions) {
             selection.push(i);
           }
         });
-        this['onLassoSelection'](dataset, selection, mousePolygon);
+        this.onLassoSelection(dataset, selection, mousePolygon);
       }
 
       mousePolygon = null;
       invalidate = true;
     }
     if (mouseRect !== null) {
-      if (this['onSelectionChanged'] !== null && mouseRect.width !== 0 && mouseRect.height !== 0) {
+      if (this.onSelectionChanged !== null && mouseRect.width !== 0 && mouseRect.height !== 0) {
         // Normalize mouseRect (make sure width/height are positive)
         if (mouseRect.width < 0) {
           mouseRect.x += mouseRect.width;
@@ -2148,7 +2147,7 @@ export function GlobalView(div, startupOptions) {
             selection.push(i);
           }
         });
-        this['onLassoSelection'](dataset, selection, mouseRect);
+        this.onLassoSelection(dataset, selection, mouseRect);
       }
 
       mouseRect = null;
@@ -2165,17 +2164,17 @@ export function GlobalView(div, startupOptions) {
       this.invalidate();
       mouseOverImage = null;
     }
-    if (this['onMouseOverAxisLabel'] && mouseOverAxisLabel !== null) {
-      this['onMouseOverAxisLabel'](null, null);
+    if (this.onMouseOverAxisLabel && mouseOverAxisLabel !== null) {
+      this.onMouseOverAxisLabel(null, null);
       mouseOverAxisLabel = null;
     }
 
-    if (this['onMouseOverDatapoint'] !== null && mouseOverDatapoint !== -1) {
-      this['onMouseOverDatapoint'](dataset, mouseOverDatapoint = -1);
+    if (this.onMouseOverDatapoint !== null && mouseOverDatapoint !== -1) {
+      this.onMouseOverDatapoint(dataset, mouseOverDatapoint = -1);
     }
   }.bind(this);
   libUtility.addMouseWheelHandler(function (event) {
-    if (event.target !== canvas || !options['enableScrolling']) {
+    if (event.target !== canvas || !options.enableScrolling) {
       return;
     }
     const deltaZ = event.wheelDelta == null ? event.detail : -event.wheelDelta / 20.0;
@@ -2226,22 +2225,22 @@ export function GlobalView(div, startupOptions) {
     }
   }.bind(this));
 
-  this['ondragover'] = null;
+  this.ondragover = null;
   canvas.ondragover = function (event) {
-    if (this['ondragover'] !== null) {
-      this['ondragover'](event);
+    if (this.ondragover !== null) {
+      this.ondragover(event);
     }
   }.bind(this);
-  this['ondrop'] = null;
+  this.ondrop = null;
   canvas.ondrop = function (event) {
-    if (this['ondrop'] !== null) {
-      this['ondrop'](event);
+    if (this.ondrop !== null) {
+      this.ondrop(event);
     }
   }.bind(this);
 
   // >>> Offscreen Rendering
 
-  this['enableOffscreenRendering'] = this.enableOffscreenRendering = function (width, height) {
+  this.enableOffscreenRendering = this.enableOffscreenRendering = function (width, height) {
     if (offscreenRendering !== null) {
       return;
     }
@@ -2253,8 +2252,8 @@ export function GlobalView(div, startupOptions) {
     trc.enableOffscreenRendering(width, height);
 
     // Disable continuous rendering
-    offscreenRendering.enableContinuousRendering = options['enableContinuousRendering'];
-    if (offscreenRendering['enableContinuousRendering']) {
+    offscreenRendering.enableContinuousRendering = options.enableContinuousRendering;
+    if (offscreenRendering.enableContinuousRendering) {
       this.setOption('enableContinuousRendering', false);
     }
 
@@ -2285,11 +2284,11 @@ export function GlobalView(div, startupOptions) {
     gl.viewportHeight = height;
     gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
 
-    if (options['padding']) {
-      setPlotBounds(options['padding']);
+    if (options.padding) {
+      setPlotBounds(options.padding);
     }
   }
-  this['disableOffscreenRendering'] = this.disableOffscreenRendering = function () {
+  this.disableOffscreenRendering = this.disableOffscreenRendering = function () {
     if (offscreenRendering === null) {
       return;
     }
@@ -2305,11 +2304,11 @@ export function GlobalView(div, startupOptions) {
     gl.viewportHeight = canvas.height;
     gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
 
-    // if (options['padding'])
-    //  setPlotBounds(options['padding']);
+    // if (options.padding)
+    //  setPlotBounds(options.padding);
 
     // Reenable continuous rendering
-    if (offscreenRendering['enableContinuousRendering']) {
+    if (offscreenRendering.enableContinuousRendering) {
       this.setOption('enableContinuousRendering', true);
     }
 
@@ -2317,12 +2316,14 @@ export function GlobalView(div, startupOptions) {
 
     onresize();
   }
-  this['renderOffscreenBuffer'] = this.renderOffscreenBuffer = function () {
+
+  this.renderOffscreenBuffer = function () {
     // Render scene
     render(true);
     gl.finish();
   }
-  this['saveOffscreenBuffer'] = this.saveOffscreenBuffer = function () {
+
+  this.saveOffscreenBuffer = function () {
     // Read pixels
     const data = new Uint8Array(gl.viewportWidth * gl.viewportHeight * 4);
     gl.readPixels(0, 0, gl.viewportWidth, gl.viewportHeight, gl.RGBA, gl.UNSIGNED_BYTE, data);

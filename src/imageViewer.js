@@ -25,7 +25,7 @@ function Thumbnail(globalView) {
   /** @type {boolean} */ this.highlighted = false;
 
   /** @type {number} */ this.refIndex = -1;
-  this['getPoint'] =
+
   /**
    * @summary Retrieve index of associated datapoint
    * @return {number}
@@ -35,7 +35,7 @@ function Thumbnail(globalView) {
   }
 
   /** @type {number} */ this.borderWidth = null;
-  this['getBorderWidth'] =
+
   /**
    * @summary Retrieve width of the image border
    * @return {number}
@@ -43,7 +43,7 @@ function Thumbnail(globalView) {
   this.getBorderWidth = function () {
     return this.borderWidth ? this.borderWidth.slice() : null;
   }
-  this['setBorderWidth'] =
+
   /**
    * @summary Set width of the image border
    * @param {number} width
@@ -54,7 +54,7 @@ function Thumbnail(globalView) {
   }
 
   /** @type {Array<number>} */ this.borderColor = null;
-  this['getBorderColor'] =
+
   /**
    * @summary Retrieve color of the image border
    * @return {Array<number>} Float array [red, green, blue, alpha] or null
@@ -62,7 +62,7 @@ function Thumbnail(globalView) {
   this.getBorderColor = function () {
     return this.borderColor ? this.borderColor.slice() : null;
   }
-  this['setBorderColor'] =
+
   /**
    * @summary Set color of the image border
    * @param {Array<number>} color Float array [red, green, blue, alpha] or null
@@ -73,7 +73,7 @@ function Thumbnail(globalView) {
   }
 
   /** @type {Array<number>} */ this.lineColor = null;
-  this['getLineColor'] =
+
   /**
    * @summary Retrieve color of the image line
    * @return {Array<number>} Float array [red, green, blue, alpha] or null
@@ -81,7 +81,7 @@ function Thumbnail(globalView) {
   this.getLineColor = function () {
     return this.lineColor ? this.lineColor.slice() : null;
   }
-  this['setLineColor'] =
+
   /**
    * @summary Set color of the image line
    * @param {Array<number>} color Float array [red, green, blue, alpha] or null
@@ -92,7 +92,7 @@ function Thumbnail(globalView) {
   }
 
   /** @type {Array<number>} */ this.labelColor = null;
-  this['getLabelColor'] =
+
   /**
    * @summary Retrieve color of the image label
    * @return {Array<number>} Float array [red, green, blue, alpha] or null
@@ -100,7 +100,7 @@ function Thumbnail(globalView) {
   this.getLabelColor = function () {
     return this.labelColor ? this.labelColor.slice() : null;
   }
-  this['setLabelColor'] =
+
   /**
    * @summary Set color of the image label
    * @param {Array<number>} color Float array [red, green, blue, alpha] or null
@@ -197,7 +197,7 @@ export function ImageViewer(gl, globalView) {
 
     // gl.disable(gl.SCISSOR_TEST);
 
-    if (options['labelThumbnails']) {
+    if (options.labelThumbnails) {
       // Draw labels at image.refPos
       let label = 1;
       images.forEach(function (image) {
@@ -318,7 +318,7 @@ export function ImageViewer(gl, globalView) {
       sdrImage.matWorldViewProj(mattrans);
       meshQuad.draw();
 
-      if (options['labelThumbnails']) {
+      if (options.labelThumbnails) {
         // Draw thumbnail label below thumbnail
         libGlMatrix.mat4.identity(mattrans);
         if (flipY === true) {
@@ -362,10 +362,10 @@ export function ImageViewer(gl, globalView) {
   this.onInputChanged = function (activeInputs, animatedInputs, options) {}
   this.onOptionsChanged = function (_options) {
     options = _options;
-    defaultImageBorderWidth = options['thumbnailBorderWidth'];
-    defaultImageBorderColor = options['thumbnailBorderColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailBorderColor'])).map(c => c / 255.0) : gl.foreColor;
-    defaultImageLineColor = options['thumbnailLineColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailLineColor'])).map(c => c / 255.0) : gl.foreColor;
-    defaultImageLabelColor = options['thumbnailLabelColor'] ? new Float32Array(libColormap.parseColor(options['thumbnailLabelColor'])).map(c => c / 255.0) : gl.backColor;
+    defaultImageBorderWidth = options.thumbnailBorderWidth;
+    defaultImageBorderColor = options.thumbnailBorderColor ? new Float32Array(libColormap.parseColor(options.thumbnailBorderColor)).map(c => c / 255.0) : gl.foreColor;
+    defaultImageLineColor = options.thumbnailLineColor ? new Float32Array(libColormap.parseColor(options.thumbnailLineColor)).map(c => c / 255.0) : gl.foreColor;
+    defaultImageLabelColor = options.thumbnailLabelColor ? new Float32Array(libColormap.parseColor(options.thumbnailLabelColor)).map(c => c / 255.0) : gl.backColor;
   }
   this.onPlotBoundsChanged = function (plotBounds) {}
 
@@ -489,7 +489,7 @@ export function ImageViewer(gl, globalView) {
         imagePos[1] + ((image.imageAnchor[1]) * size[1]),
         imagePos[1] + ((image.imageAnchor[1] + 1.0) * size[1])]
 
-      if (options['labelThumbnails']) {
+      if (options.labelThumbnails) {
         imageBounds[2] -= (LABEL_HEIGHT * 2) / gl.height;
       }
 

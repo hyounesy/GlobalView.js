@@ -157,7 +157,7 @@ export function PointViewer(gl, globalView) {
     pointSets.forEach(pointSet => pointSet.clear());
 
     _dataset = dataset;
-    _pointOpacity = options['pointOpacity'];
+    _pointOpacity = options.pointOpacity;
 
     // Validate numvertices
     if (dataset.fdata.length !== dataset.length * dataset.numColumns) {
@@ -182,12 +182,12 @@ export function PointViewer(gl, globalView) {
   }
 
   this.onOptionsChanged = function (options, recompileShader) {
-    _pointOpacity = options['pointOpacity'];
+    _pointOpacity = options.pointOpacity;
     if (meshDataPoints) {
       if (recompileShader === true) {
         meshDataPoints.recompileShader(options);
       } else {
-        meshDataPoints.sdr.pointSize(options['pointSize']);
+        meshDataPoints.sdr.pointSize(options.pointSize);
       }
     }
   }
@@ -285,7 +285,7 @@ vec{1} getPos()
 
       // Create shader code for opacityMap() function -> opacityMapCoe
       let opacityMapCoe = 'float opacityMap(in vec2 p) ';
-      switch (options['pointShape']) {
+      switch (options.pointShape) {
         case 'Circle':
           opacityMapCoe += '{ return 1.0 - pow(p.x*p.x + p.y*p.y, pointSize / 4.0); }';
           // opacityMapCoe += "{ return p.x*p.x + p.y*p.y < 1.0 ? 1.0 : 0.0; }";
@@ -301,7 +301,7 @@ vec{1} getPos()
           opacityMapCoe += '{ return exp(-7.0 * (p.x*p.x + p.y*p.y)); }';
           break;
         case 'Custom':
-          opacityMapCoe += options['customPointShape'];
+          opacityMapCoe += options.customPointShape;
           break;
         default:
           opacityMapCoe += '{ return 1.0; }';
@@ -316,8 +316,8 @@ vec{1} getPos()
       this.sdr.animatedScales = this.sdr.u3f('animatedScales');
       this.sdr.flipY = this.sdr.u1i('flipY');
       this.sdr.quadsize = this.sdr.u2f('quadsize');
-      this.sdr.pointOpacity = this.sdr.u1f('pointOpacity'); this.sdr.pointOpacity(options['pointOpacity']);
-      this.sdr.pointSize = this.sdr.u1f('pointSize'); this.sdr.pointSize(options['pointSize']);
+      this.sdr.pointOpacity = this.sdr.u1f('pointOpacity'); this.sdr.pointOpacity(options.pointOpacity);
+      this.sdr.pointSize = this.sdr.u1f('pointSize'); this.sdr.pointSize(options.pointSize);
       this.sdr.n = this.sdr.u1f('n'); if (this.sdr.n) {
         this.sdr.n(numvertices);
       }
@@ -330,8 +330,8 @@ vec{1} getPos()
       this.sdrLine.animatedScales = this.sdrLine.u4f('animatedScales');
       this.sdrLine.flipY = this.sdrLine.u1i('flipY');
       this.sdrLine.quadsize = this.sdrLine.u2f('quadsize');
-      this.sdrLine.pointOpacity = this.sdrLine.u1f('pointOpacity'); this.sdrLine.pointOpacity(options['pointOpacity']);
-      this.sdrLine.pointSize = this.sdrLine.u1f('pointSize'); this.sdrLine.pointSize(options['pointSize']);
+      this.sdrLine.pointOpacity = this.sdrLine.u1f('pointOpacity'); this.sdrLine.pointOpacity(options.pointOpacity);
+      this.sdrLine.pointSize = this.sdrLine.u1f('pointSize'); this.sdrLine.pointSize(options.pointSize);
       this.sdrLine.n = this.sdrLine.u1f('n'); if (this.sdrLine.n) {
         this.sdrLine.n(numvertices);
       }
@@ -458,7 +458,7 @@ vec{1} getPos()
 
       // Compute line vertices
       const lineTransform = libGlMatrix.mat2.create();
-      libGlMatrix.mat2.scale(lineTransform, lineTransform, libGlMatrix.vec2.fromValues(Math.sqrt((line[0] * line[0]) + (line[1] * line[1])), Math.max(1, options['pointSize'] /* / 10 */)));
+      libGlMatrix.mat2.scale(lineTransform, lineTransform, libGlMatrix.vec2.fromValues(Math.sqrt((line[0] * line[0]) + (line[1] * line[1])), Math.max(1, options.pointSize /* / 10 */)));
       libGlMatrix.mat2.rotate(lineTransform, lineTransform, Math.atan2(line[1], line[0]));
       libGlMatrix.mat2.scale(lineTransform, lineTransform, libGlMatrix.vec2.fromValues(1 / gl.width, 1 / gl.height));
       this.sdrLine.lineTransform(lineTransform);

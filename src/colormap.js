@@ -238,11 +238,11 @@ export function Colormap(gl, globalView) {
   this.setDataset = function (dataset, options) {}
   this.onInputChanged = function (activeInputs, animatedInputs, options) {}
   this.onOptionsChanged = function (options) {
-    axis.tickLength = TICK_LENGTH + (options['showColormapHistogram'] ? options['histogramHeight'] : 0);
-    if (options['pointColor'] !== pointColor) {
-      pointColor = options['pointColor'];
+    axis.tickLength = TICK_LENGTH + (options.showColormapHistogram ? options.histogramHeight : 0);
+    if (options.pointColor !== pointColor) {
+      pointColor = options.pointColor;
       if (pointColor === null) {
-        texColormap = colormaps['exhue'];
+        texColormap = colormaps.exhue;
       } else if (colormaps[pointColor]) {
         texColormap = colormaps[pointColor];
       } else {

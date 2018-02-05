@@ -49,18 +49,18 @@ domready(function () {
       // On left mouse button: Enable point selection and dragging events.
       //                       If control button is pressed, initiate view dragging, else, enable lasso selection
       case 0:
-        event['pointSelection'] = true;
-        event['pointDragging'] = true;
+        event.pointSelection = true;
+        event.pointDragging = true;
         if (ctrlPressed) {
-          event['viewDragging'] = true;
+          event.viewDragging = true;
         } else {
-          event['polygonLassoSelection'] = true;
+          event.polygonLassoSelection = true;
         }
         break;
 
       // On middle mouse button: Initiate view dragging
       case 1:
-        event['viewDragging'] = true;
+        event.viewDragging = true;
         break;
 
       // On right mouse button: Do nothing

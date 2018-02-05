@@ -255,8 +255,8 @@ export function CoordinateSystem(gl, globalView) {
   this.setDataset = function (dataset, options) {}
   this.onInputChanged = function (activeInputs, animatedInputs, options) {}
   this.onOptionsChanged = function (options) {
-    axes[0].tickLength = TICK_LENGTH + (options['showXAxisHistogram'] ? options['histogramHeight'] : 0);
-    axes[1].tickLength = TICK_LENGTH + (options['showYAxisHistogram'] ? options['histogramHeight'] : 0);
+    axes[0].tickLength = TICK_LENGTH + (options.showXAxisHistogram ? options.histogramHeight : 0);
+    axes[1].tickLength = TICK_LENGTH + (options.showYAxisHistogram ? options.histogramHeight : 0);
   }
   this.onPlotBoundsChanged = function (plotBounds) {
     for (let i = 0; i < 2; ++i) {

@@ -54,12 +54,12 @@ export function DensityMapOptions(source) {
     // Copy constructor
     // this.targetWidth = source.targetWidth;
     // this.targetHeight = source.targetHeight;
-    this['maxExpectedRuntime'] = source['maxExpectedRuntime'];
-    this['cutoffIntensity'] = source['cutoffIntensity']
-    this['gaussScale'] = source['gaussScale'];
-    this['logScale'] = source['logScale'];
-    this['inflateToFit'] = source['inflateToFit'];
-    this['shrinkToFit'] = source['shrinkToFit'];
+    this.maxExpectedRuntime = source.maxExpectedRuntime;
+    this.cutoffIntensity = source.cutoffIntensity;
+    this.gaussScale = source.gaussScale;
+    this.logScale = source.logScale;
+    this.inflateToFit = source.inflateToFit;
+    this.shrinkToFit = source.shrinkToFit;
   } else {
     // Default constructor
     // this.targetWidth = this.targetHeight = 1024; // Initial density map size (affected by maxExpectedRuntime, inflateToFit and shrinkToFit)
@@ -70,7 +70,7 @@ export function DensityMapOptions(source) {
      * @type {number}
      * @default
      */
-    this['maxExpectedRuntime'] = 1.0;
+    this.maxExpectedRuntime = 1.0;
     /**
      * @alias cutoffIntensity
      * @memberof DensityMapOptions
@@ -78,7 +78,7 @@ export function DensityMapOptions(source) {
      * @type {number}
      * @default
      */
-    this['cutoffIntensity'] = 0.001;
+    this.cutoffIntensity = 0.001;
     /**
      * @alias gaussScale
      * @memberof DensityMapOptions
@@ -86,7 +86,7 @@ export function DensityMapOptions(source) {
      * @type {number}
      * @default
      */
-    this['gaussScale'] = 1000;
+    this.gaussScale = 1000;
     /**
      * @alias logScale
      * @memberof DensityMapOptions
@@ -94,7 +94,7 @@ export function DensityMapOptions(source) {
      * @type {boolean}
      * @default
      */
-    this['logScale'] = true;
+    this.logScale = true;
     /**
      * @alias inflateToFit
      * @memberof DensityMapOptions
@@ -102,7 +102,7 @@ export function DensityMapOptions(source) {
      * @type {boolean}
      * @default
      */
-    this['inflateToFit'] = true;
+    this.inflateToFit = true;
     /**
      * @alias shrinkToFit
      * @memberof DensityMapOptions
@@ -110,16 +110,16 @@ export function DensityMapOptions(source) {
      * @type {boolean}
      * @default
      */
-    this['shrinkToFit'] = true;
+    this.shrinkToFit = true;
   }
 }
 DensityMapOptions.equals = (a, b) =>
-  a['maxExpectedRuntime'] === b['maxExpectedRuntime'] &&
-  a['cutoffIntensity'] === b['cutoffIntensity'] &&
-  a['gaussScale'] === b['gaussScale'] &&
-  a['logScale'] === b['logScale'] &&
-  a['inflateToFit'] === b['inflateToFit'] &&
-  a['shrinkToFit'] === b['shrinkToFit']
+  a.maxExpectedRuntime === b.maxExpectedRuntime &&
+  a.cutoffIntensity === b.cutoffIntensity &&
+  a.gaussScale === b.gaussScale &&
+  a.logScale === b.logScale &&
+  a.inflateToFit === b.inflateToFit &&
+  a.shrinkToFit === b.shrinkToFit
 ;
 
 /**
@@ -158,7 +158,7 @@ export function ClusterMap(obj) {
 export function ClusterMapOptions(source) {
   if (source) {
     this.densityMap = source.densityMap;
-    this['threshold'] = this.threshold = source.threshold;
+    this.threshold = source.threshold;
   } else {
     this.densityMap = null;
     /**
@@ -168,7 +168,7 @@ export function ClusterMapOptions(source) {
      * @type {number}
      * @default
      */
-    this['threshold'] = this.threshold = 0.1;
+    this.threshold = 0.1;
   }
 }
 ClusterMapOptions.equals = (a, b) =>
@@ -283,11 +283,11 @@ export function computeDensityMap(histogram, options) {
     maxDensity = histogram.maximum;
 
   // Set parameters
-  const cutoffIntensity = options['cutoffIntensity'];
-  const gaussScale = options['gaussScale'];
+  const cutoffIntensity = options.cutoffIntensity;
+  const gaussScale = options.gaussScale;
   let normalizedGaussScale = -gaussScale / (width*height);
-  const logScale = options['logScale'];
-  const inflateToFit = options['inflateToFit'];
+  const logScale = options.logScale;
+  const inflateToFit = options.inflateToFit;
   let maxExtend = Math.max(width, height);
 
   // Compute a measure of expected runtime
@@ -334,7 +334,7 @@ export function computeDensityMap(histogram, options) {
   expectedRuntime *= t1;
   // console.log("Expected runtime: " + expectedRuntime + "s");
 
-  while (expectedRuntime > options['maxExpectedRuntime'] && width >= 2 && height >= 2) {
+  while (expectedRuntime > options.maxExpectedRuntime && width >= 2 && height >= 2) {
     // Downscale density map size by a factor of 2
     const downScaledWidth = width >> 1;
     const downScaledHeight = height >> 1;
@@ -409,7 +409,7 @@ export function computeDensityMap(histogram, options) {
   let densitMapWidth,
     densitMapHeight;
   if (inflateToFit) {
-    if (options['shrinkToFit']) {
+    if (options.shrinkToFit) {
       // Inflate output size to keep a 1-pixel-wide frame of zeros around the density map
       // This allows algorithms that march through densities to stay within density map bounds without explictly checking
       --newBounds_l;
@@ -533,7 +533,7 @@ export function computeDensityMap(histogram, options) {
     }
   }
 
-  if (options['shrinkToFit']) {
+  if (options.shrinkToFit) {
     if (inflateToFit) {
       // Inflate output size to keep a 1-pixel-wide frame of zeros around the density map
       // This allows algorithms that march through densities to stay within density map bounds without explictly checking

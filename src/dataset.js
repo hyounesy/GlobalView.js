@@ -33,7 +33,7 @@ export function DataVector(dataset, source) {
 
   if (libUtility.isNumber(source)) {
     const c = Math.round(source);
-    this['getValue'] = this.getValue = function (i) {
+    this.getValue = function (i) {
       // return Math.log(dataset.fdata[i * nc + c]);
       return dataset.fdata[(i * nc) + c];
     }
@@ -42,11 +42,11 @@ export function DataVector(dataset, source) {
     this.getValueCode = 'c' + c;// "{" + c + "}";
 
     const column = dataset.columns[c];
-    this['minimum'] = this.minimum = column.minimum;
-    this['maximum'] = this.maximum = column.maximum;
+    this.minimum = column.minimum;
+    this.maximum = column.maximum;
     this.offset = -column.minimum * (this.scale = 1 / (column.maximum - column.minimum));
-    this['values'] = this.values = column.values;
-    this['label'] = this.label = column.label;
+    this.values = column.values;
+    this.label = column.label;
   } else {
     const stack = new Array(16);
     const globalTypes = {
@@ -71,8 +71,8 @@ export function DataVector(dataset, source) {
     const formula = source;
     this.getValueCode = formula;
 
-    this['getValue'] = this.getValue = function (i) {
-      globals['i'] = i;
+    this.getValue = function (i) {
+      globals.i = i; // ?! debug?
       for (let c = 0; c < nc; ++c) {
         globals['c' + c] = dataset.fdata[(i * nc) + c];
       }
@@ -87,8 +87,6 @@ export function DataVector(dataset, source) {
       this.minimum = Math.min(this.minimum, value);
       this.maximum = Math.max(this.maximum, value);
     }
-    this['minimum'] = this.minimum;
-    this['maximum'] = this.maximum;
     // console.log([this.minimum, this.maximum]);
     this.scale = this.maximum - this.minimum;
     if (this.scale > -1e-5 && this.scale < 1e-5) {
@@ -96,8 +94,8 @@ export function DataVector(dataset, source) {
     } else {
       this.offset = -this.minimum * (this.scale = 1 / this.scale);
     }
-    this['values'] = this.values = null;
-    this['label'] = this.label = formula;
+    this.values = null;
+    this.label = formula;
   }
 }
 
@@ -112,19 +110,19 @@ export function Dataset() {
    * @summary Number of columns in the {@link Dataset#data} table
    * @type {number}
    */
-  this.numColumns = this['numColumns'] = 0;
+  this.numColumns = 0;
   /**
    * Note: Each dataVector has exactly 'length' elements
    * @summary Number of rows in the {@link Dataset#data} table
    * @type {number}
    */
-  this.length = this['length'] = 0;
+  this.length = 0;
   /**
    * @summary Metadata about one column of data in the {@link Dataset#data} table
    * @type {Object}
    * @deprecated Use {@link Dataset#dataVectors} for access to metadata instead
    */
-  this.columns = this['columns'] = [];
+  this.columns = [];
   /**
    * An input dimension to the plot.
    * A data vector doesn't physically contain data.
@@ -132,7 +130,7 @@ export function Dataset() {
    * @summary A logical vector of data
    * @type {Array<DataVector>}
    */
-  this.dataVectors = this['dataVectors'] = [];
+  this.dataVectors = [];
   /**
    * The data matrix isn't limited to numeric data.
    * Categorical columns are stored as strings.
@@ -141,26 +139,26 @@ export function Dataset() {
    * @summary A matrix of data
    * @type {Float32Array|Array}
    */
-  this.data = this['data'] = [];
+  this.data = [];
   /**
    * This matrix is the numeric version of {@link Dataset#data}.
    * Categorical columns are stored as 0-based indices.
    * @summary A matrix of numeric data for the {@link Dataset#dataVectors}
    * @type {Float32Array}
    */
-  this.fdata = this['fdata'] = new Float32Array(0);
+  this.fdata = new Float32Array(0);
   /**
    * This vector is of length {@link Dataset#length}.
    * @summary A vector of data point names
    * @type {Array<string>}
    */
-  this.names = this['names'] = null;
+  this.names = null;
   /**
    * This vector is of length {@link Dataset#length}.
    * @summary A vector of data point image URLs.
    * @type {Array<string>}
    */
-  this.imageFilenames = this['imageFilenames'] = null;
+  this.imageFilenames = null;
 
   /**
    * @type {Array<Array<Object>>}
@@ -171,7 +169,6 @@ export function Dataset() {
   */
   const _clusterMaps = [];
 
-  this['isDensityMapReady'] =
   /**
    * Checks if a density map on dimensions d0 and d1 is available.
    * Hint: d0 and d1 can't be identical. The order of d0 and d1 is ignored.
@@ -200,7 +197,6 @@ export function Dataset() {
       (libUtility.isUndefined(_densityMaps[d0][d1].pending) || _densityMaps[d0][d1].old);
   }
 
-  this['iterateDensityMaps'] =
   /**
    * Calls the given function for each computed density map
    * @param  {function(DensityMap!)!} callback
@@ -209,7 +205,6 @@ export function Dataset() {
     _densityMaps.forEach(_densityMaps => _densityMaps.forEach(densityMap => densityMap && (libUtility.isUndefined(densityMap.pending) || densityMap.old) ? callback(densityMap.old || densityMap) : null));
   }
 
-  this['requestDensityMap'] =
   /**
    * This function returns a density map for the given dimensions. If the density map doesn't exist it is computed.
    * When a function is passed to ondone, the density map is computed by a background worker, otherwise it is computed on the current thread.
@@ -330,7 +325,6 @@ export function Dataset() {
     }
   }
 
-  this['isClusterMapReady'] =
   this.isClusterMapReady = function (d0, d1) {
     // Validate inputs
     if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) {
@@ -351,7 +345,7 @@ export function Dataset() {
     return _clusterMaps.length > d0 && _clusterMaps[d0].length > d1 && _clusterMaps[d0][d1] &&
       (libUtility.isUndefined(_clusterMaps[d0][d1].pending) || _clusterMaps[d0][d1].old);
   }
-  this['requestClusterMap'] = this.requestClusterMap = function (d0, d1, options, ondone) {
+  this.requestClusterMap = function (d0, d1, options, ondone) {
     // Validate inputs
     if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) {
       console.warn('GlobalView warning: Requesting cluster map for dimensions {0}, {1} on a dataset with only {2} data vectors'.format(d0, d1, this.dataVectors.length));
@@ -448,7 +442,7 @@ export function Dataset() {
     }
   }
 
-  this['inflate'] = this.inflate = function (factor, densityMapChain) {
+  this.inflate = function (factor, densityMapChain) {
     const n = this.length;
     const n_inflated = Math.floor(factor * n);
     const nc = this.numColumns;
@@ -490,8 +484,8 @@ export function Dataset() {
         }
       }
     }
-    this['fdata'] = this.fdata = fdata_inflated;
-    this['data'] = this.data = data_inflated;
+    this.fdata = fdata_inflated;
+    this.data = data_inflated;
 
     if (this.names !== null) {
       const names = /** @type {Array<string>} */ (this.names);
@@ -502,7 +496,7 @@ export function Dataset() {
       for (let index = 0, i_inflated = n, len = n * nc; i_inflated < n_inflated; ++i_inflated) {
         names_inflated[i_inflated] = 'generated datapoint ' + ++index;
       }
-      this['names'] = this.names = names_inflated;
+      this.names = names_inflated;
     }
 
     if (this.imageFilenames !== null) {
@@ -514,13 +508,13 @@ export function Dataset() {
       for (let i_inflated = n, len = n * nc; i_inflated < n_inflated; ++i_inflated) {
         imageFilenames_inflated[i_inflated] = imageFilenames[i_inflated % n];
       }
-      this['imageFilenames'] = this.imageFilenames = imageFilenames_inflated;
+      this.imageFilenames = imageFilenames_inflated;
     }
 
-    this['length'] = this.length = n_inflated;
+    this.length = n_inflated;
   }
 
-  this['save'] = this.save = function (filename, nameColumn, nameColumnLabel) {
+  this.save = function (filename, nameColumn, nameColumnLabel) {
     const nc = this.numColumns;
     let csv_nc;
     if (this.names && !libUtility.isUndefined(nameColumn) && !libUtility.isUndefined(nameColumnLabel)) {
@@ -577,19 +571,19 @@ export function Dataset() {
 export function RandomDataset(n, nc, onload) {
   Dataset.call(this);
 
-  this['numColumns'] = this.numColumns = nc;
-  this['length'] = this.length = n;
+  this.numColumns = nc;
+  this.length = n;
   for (let i = 0; i < nc; ++i) {
     this.columns.push({minimum: 0, maximum: 1, label: generateColumnName(i, nc)});
     this.dataVectors.push(new DataVector(this, i));
   }
 
   const nnc = n * nc;
-  this['fdata'] = this.fdata = new Float32Array(nnc);
+  this.fdata = new Float32Array(nnc);
   for (let i = 0; i < nnc; ++i) {
     this.fdata[i] = Math.random();
   }
-  this['data'] = this.data = this.fdata;
+  this.data = this.fdata;
 
   if (onload) {
     onload(this);
@@ -685,71 +679,71 @@ export function CsvDataset(file, options, onload) {
     const data = $.csv.toArrays(csv);
 
 
-    if (options['autoDetect']) {
-      if (libUtility.isUndefined(options['hasHeader'])) {
+    if (options.autoDetect) {
+      if (libUtility.isUndefined(options.hasHeader)) {
         // Assume no-header by default
-        options['hasHeader'] = false;
+        options.hasHeader = false;
 
         const firstRowOnlyStrings = data[0].every(value => isNaN(parseData(value)));
         const secondRowHasNumbers = data[1].some(value => !isNaN(parseData(value)));
 
         // If the first row consists of only string values, but the second row has at least one numeric value, we can assume the first row is a header
         if (firstRowOnlyStrings && secondRowHasNumbers) {
-          options['hasHeader'] = true;
+          options.hasHeader = true;
         }
-        console.log('Assuming hasHeader = ' + options['hasHeader']);
+        console.log('Assuming hasHeader = ' + options.hasHeader);
       }
-      if (libUtility.isUndefined(options['nameColumn'])) {
+      if (libUtility.isUndefined(options.nameColumn)) {
         // Assume no name column by default
-        options['nameColumn'] = null;
+        options.nameColumn = null;
 
         // If any row consists of only unique strings, we can assume it contains data point names
         for (let c = 0; c < data[0].length; ++c) {
           const valueMap = {};
           if (data.every(row => (row.length > c && isNaN(parseData(row[c])) && !(row[c] in valueMap)) ? valueMap[row[c]] = true : false)) {
-            options['nameColumn'] = c;
+            options.nameColumn = c;
             break;
           }
         }
-        console.log('Assuming nameColumn = ' + options['nameColumn']);
+        console.log('Assuming nameColumn = ' + options.nameColumn);
       }
     }
 
 
     let n = data.length;
-    const nc = data[0].length - (options['nameColumn'] ? 1 : 0);
-    const firstRow = (options['hasHeader'] ? 1 : 0);
-    dataset['numColumns'] = dataset.numColumns = nc;
+    const nc = data[0].length - (options.nameColumn ? 1 : 0);
+    const firstRow = (options.hasHeader ? 1 : 0);
+    dataset.numColumns = nc;
 
     // Generate column labels
     let columnLabels;
-    if (libUtility.isFunction(options['columnLabels'])) {
+    if (libUtility.isFunction(options.columnLabels)) {
       columnLabels = new Array(n);
       for (let c = 0, ci = 0; c < data[0].length; ++c, ++ci) {
-        if (c === options['nameColumn']) {
+        if (c === options.nameColumn) {
           --ci;
           continue;
         }
 
-        columnLabels[ci] = options['columnLabels'](c);
+        columnLabels[ci] = options.columnLabels(c);
       }
-    } else if (libUtility.isArray(options['columnLabels'])) {
-      if (options['columnLabels'].length !== nc) {
-        console.warn('CsvDataset warning: Number of provided column labels (' + options['columnLabels'].length + ') differs from number of data columns in the dataset (' + nc + ')');
+    } else if (libUtility.isArray(options.columnLabels)) {
+      if (options.columnLabels.length !== nc) {
+        console.warn('CsvDataset warning: Number of provided column labels (' + options.columnLabels.length + ') differs from number of data columns in the dataset (' + nc + ')');
         columnLabels = null;
       } else {
-        columnLabels = options['columnLabels'];
+        columnLabels = options.columnLabels;
       }
     } else {
       columnLabels = null;
     }
 
-    dataset['data'] = dataset.data = new Array(nc * n);
-    dataset['fdata'] = dataset.fdata = new Float32Array(nc * n);
+    dataset.data = new Array(nc * n);
+    dataset.fdata = new Float32Array(nc * n);
     let i,
       di;
     for (let c = 0, ci = 0; c < data[0].length; ++c, ++ci) {
-      if (c === options['nameColumn']) {
+      if (c === options.nameColumn) {
         --ci;
         continue;
       }
@@ -811,7 +805,7 @@ export function CsvDataset(file, options, onload) {
       }
 
       // Save column meta data
-      dataset.columns.push({minimum: min, maximum: max, label: columnLabels ? columnLabels[ci] : (options['hasHeader'] ? data[0][c] : generateColumnName(ci, nc)), values: valueList});
+      dataset.columns.push({minimum: min, maximum: max, label: columnLabels ? columnLabels[ci] : (options.hasHeader ? data[0][c] : generateColumnName(ci, nc)), values: valueList});
       dataset.dataVectors.push(new DataVector(dataset, ci));
     }
 
@@ -827,24 +821,24 @@ export function CsvDataset(file, options, onload) {
         /** @type {{splice: Function}} */
         (dataset.fdata).splice(-di);
       } else if (Float32Array.prototype.slice) {
-        dataset['fdata'] = dataset.fdata = dataset.fdata.slice(0, -di);
+        dataset.fdata = dataset.fdata.slice(0, -di);
       } else {
         const trimedFdata = new Float32Array(nc * n);
         let len;
         for (i = 0, len = trimedFdata.length; i < len; ++i) {
           trimedFdata[i] = dataset.fdata[i];
         }
-        dataset['fdata'] = dataset.fdata = trimedFdata;
+        dataset.fdata = trimedFdata;
       }
     }
 
     // Set number of data points
-    dataset['length'] = dataset.length = n;
+    dataset.length = n;
 
     // Extract data point names
-    if (options['nameColumn']) {
-      const names = dataset['names'] = dataset.names = new Array(n);
-      const nameColumn = options['nameColumn'];
+    if (options.nameColumn) {
+      const names = dataset.names = new Array(n);
+      const nameColumn = options.nameColumn;
       for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
         // Skip blank lines
         if (data[i].length === 1 && data[i][0] === '') {
@@ -855,12 +849,12 @@ export function CsvDataset(file, options, onload) {
         names[di] = data[i][nameColumn];
       }
     } else {
-      dataset['names'] = dataset.names = null;
+      dataset.names = null;
     }
 
     // Generate image filenames
-    if (libUtility.isFunction(options['imageFilenames'])) {
-      dataset['imageFilenames'] = dataset.imageFilenames = new Array(n);
+    if (libUtility.isFunction(options.imageFilenames)) {
+      dataset.imageFilenames = new Array(n);
       for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
         // Skip blank lines
         if (data[i].length === 1 && data[i][0] === '') {
@@ -868,17 +862,17 @@ export function CsvDataset(file, options, onload) {
           continue;
         }
 
-        dataset.imageFilenames[di] = options['imageFilenames'](data[i], i);
+        dataset.imageFilenames[di] = options.imageFilenames(data[i], i);
       }
-    } else if (libUtility.isArray(options['imageFilenames'])) {
-      if (options['imageFilenames'].length !== n) {
-        console.warn('CsvDataset warning: Number of provided image filenames (' + options['imageFilenames'].length + ') differs from number of data points (' + n + ')');
-        dataset['imageFilenames'] = dataset.imageFilenames = null;
+    } else if (libUtility.isArray(options.imageFilenames)) {
+      if (options.imageFilenames.length !== n) {
+        console.warn('CsvDataset warning: Number of provided image filenames (' + options.imageFilenames.length + ') differs from number of data points (' + n + ')');
+        dataset.imageFilenames = null;
       } else {
-        dataset['imageFilenames'] = dataset.imageFilenames = options['imageFilenames'];
+        dataset.imageFilenames = options.imageFilenames;
       }
     } else {
-      dataset['imageFilenames'] = dataset.imageFilenames = null;
+      dataset.imageFilenames = null;
     }
 
     // Notify success

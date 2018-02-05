@@ -59,7 +59,7 @@ export function HistogramViewer(gl, globalView) {
     scl[2] = ((plotBounds.height * scl[2]) * 2) / gl.height;
 
     // Draw x-axis histogram
-    if (options['showXAxisHistogram'] && axes[0].histogram) {
+    if (options.showXAxisHistogram && axes[0].histogram) {
       const axis = axes[0];
       gl.enable(gl.SCISSOR_TEST);
       gl.scissor(plotBounds.x, 0.0, plotBounds.width, gl.height);
@@ -96,7 +96,7 @@ export function HistogramViewer(gl, globalView) {
     }
 
     // Draw y-axis histogram
-    if (options['showYAxisHistogram'] && axes[1].histogram) {
+    if (options.showYAxisHistogram && axes[1].histogram) {
       const axis = axes[1];
       gl.enable(gl.SCISSOR_TEST);
       gl.scissor(0.0, flipY ? gl.height - plotBounds.y - plotBounds.height : plotBounds.y, gl.width, plotBounds.height);
@@ -135,7 +135,7 @@ export function HistogramViewer(gl, globalView) {
     }
 
     // Draw color-axis histogram
-    if (options['showColormapHistogram'] && axes[2].histogram) {
+    if (options.showColormapHistogram && axes[2].histogram) {
       const axis = axes[2];
       gl.enable(gl.SCISSOR_TEST);
       gl.scissor(0.0, flipY ? gl.height - plotBounds.y - plotBounds.height : plotBounds.y, gl.width, plotBounds.height);
@@ -196,15 +196,15 @@ export function HistogramViewer(gl, globalView) {
   this.onPlotBoundsChanged = function (plotBounds) {}
 
   function recreateHistograms() {
-    if (dataset && options['histogramHeight'] > 0) {
-      const numBins = options['numHistogramBins'];
-      if (options['showXAxisHistogram']) {
+    if (dataset && options.histogramHeight > 0) {
+      const numBins = options.numHistogramBins;
+      if (options.showXAxisHistogram) {
         createHistogram(axes[0], dataset, activeInputs[0], numBins);
       }
-      if (options['showYAxisHistogram']) {
+      if (options.showYAxisHistogram) {
         createHistogram(axes[1], dataset, activeInputs[1], numBins);
       }
-      if (options['showColormapHistogram']) {
+      if (options.showColormapHistogram) {
         createHistogram(axes[2], dataset, activeInputs[2], numBins);
       }
     }
