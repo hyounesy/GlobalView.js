@@ -1,14 +1,12 @@
 const libUtility = require('./utility.js');
 const libAlgorithm = require('./algorithm.js');
 const libFormulaCompiler = require('./formulaCompiler.js');
-// import * as Parallel from '../src_lib/parallel.js';
-// import * as Parallel from '../node_modules/paralleljs/lib/parallel';
 const Parallel = require('paralleljs');
-// const Parallel = require('../node_modules/paralleljs/lib/parallel'); // doesn't work: Module not found: Error: Can't resolve 'child_process' in Worker.js
+const $ = require('jquery');
 
-const $ = require('jquery'); // alternative: a
 window.jQuery = $;
 require('jquery-csv');
+
 /* alternative: add the following to webpack.config.js (https://github.com/fronteed/icheck/issues/322):
 plugins: [
   new webpack.ProvidePlugin({
@@ -345,6 +343,7 @@ export function Dataset() {
     return _clusterMaps.length > d0 && _clusterMaps[d0].length > d1 && _clusterMaps[d0][d1] &&
       (libUtility.isUndefined(_clusterMaps[d0][d1].pending) || _clusterMaps[d0][d1].old);
   };
+
   this.requestClusterMap = function (d0, d1, options, ondone) {
     // Validate inputs
     if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) {
@@ -355,7 +354,7 @@ export function Dataset() {
 
     // Assure d0 < d1
     if (d0 === d1) {
-      return;
+      return null;
     }
     if (d1 < d0) {
       // Swap d0 <-> d1
@@ -440,6 +439,7 @@ export function Dataset() {
       }
       return clusterMap;
     }
+    return null;
   };
 
   this.inflate = function (factor, densityMapChain) {

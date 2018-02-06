@@ -288,10 +288,10 @@ function cbColumnS_onChange() {
 }
 
 function cbRenderStyle_onChange(sender) {
-  plot.setOption('enableContinuousRendering', sender.selectedIndex === 1 ? true : false);
+  plot.setOption('enableContinuousRendering', sender.selectedIndex === 1);
 }
 function cbTransparency_onChange(sender) {
-  plot.setOption('enableTransparency', sender.selectedIndex === 0 ? true : false);
+  plot.setOption('enableTransparency', sender.selectedIndex === 0);
 }
 function cbPointShape_onChange(sender) {
   plot.setOption('pointShape', sender.value);

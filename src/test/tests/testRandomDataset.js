@@ -1,4 +1,5 @@
 const globalView = require('../../../dist/global-view.js');
+// eslint-disable-next-line import/no-extraneous-dependencies
 const seedrandom = require('seedrandom');
 
 export default function testRandomDataSet(div, ondone) {

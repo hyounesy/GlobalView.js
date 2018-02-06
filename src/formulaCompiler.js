@@ -194,7 +194,7 @@ export const FormulaCompiler = {
     // >>> Abstract Syntax Tree builder
 
     function buildAST() {
-      const scope = symbolTypes ? symbolTypes : {};
+      const scope = symbolTypes || {};
 
       function prefixOpAST(op) {
         if (!libUtility.isString(curTok)) {
@@ -496,7 +496,7 @@ export const FormulaCompiler = {
       }
 
       const expr = topLevelAST();
-      return expr ? expr : err;
+      return expr || err;
     }
 
 
@@ -603,13 +603,13 @@ FormulaCompiler.types.vec3.members = {
 };
 
 function verboseTest(formula, symbols, symbolTypes) {
-  const code = FormulaCompiler.compile(formula, symbolTypes ? symbolTypes : {});
+  const code = FormulaCompiler.compile(formula, symbolTypes || {});
 
   console.log(`formula: ${formula}`);
   if (libUtility.isString(code)) {
     console.log(`err: ${code}`);
   } else {
-    const globalScope = symbols ? symbols : {};
+    const globalScope = symbols || {};
     console.log(`code: ${code.map(c => libUtility.isString(c) ? `"${c}"` : c).join(' ')}`);
     console.log(`result: ${FormulaCompiler.run(code, new Array(16), globalScope)}`);
     console.log(`locals: ${JSON.stringify(globalScope)}`);

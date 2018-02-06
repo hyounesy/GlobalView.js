@@ -276,7 +276,7 @@ export function Mesh(_gl, positions, normals, tangents, binormals, texcoords, in
   let ndim;
 
   this.reset = function (positions, normals, tangents, binormals, texcoords, indices, _primitivetype, _ndim) {
-    ndim = _ndim ? _ndim : 3;
+    ndim = _ndim || 3;
     primitivetype = _primitivetype;
     numvertices = Math.floor(positions.length / ndim);
     numindices = 0;

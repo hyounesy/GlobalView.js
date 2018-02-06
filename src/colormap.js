@@ -297,7 +297,7 @@ export function validateColor(color) {
 export function parseColor(color) {
   if (libUtility.isString(color)) {
     const hex = libUtility.colorNameToHex(color);
-    const rgb = libUtility.hexToRgb(hex ? hex : color);
+    const rgb = libUtility.hexToRgb(hex || color);
     return rgb ? new Uint8Array([rgb.r, rgb.g, rgb.b, 255]) : null;
   }
 

@@ -3,9 +3,8 @@ const domready = require('domready');
 const JSZip = require('jszip');
 const FileSaver = require('file-saver');
 const allTests = require('./allTests').default;
-// const PNGImage = require('pngjs-image');
+// eslint-disable-next-line import/no-extraneous-dependencies
 const pixelmatch = require('pixelmatch');
-const base64js = require('base64-js');
 
 function urlToBase64(dataUrl) {
   // remove the png or jpg header

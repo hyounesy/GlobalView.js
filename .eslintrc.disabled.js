@@ -149,7 +149,7 @@ module.exports = {
         "block-scoped-var": 2,                  // enforce the use of variables within the scope they are defined
         "class-methods-use-this": 0,            // enforce that class methods utilize this
         "complexity": 0,                        // enforce a maximum cyclomatic complexity allowed in a program
-        "consistent-return": 0,                 // require return statements to either always or never specify values
+        "consistent-return": 'error',                 // require return statements to either always or never specify values
         "curly": 2,                             // enforce consistent brace style for all control statements
         "default-case": 0,                      // require default cases in switch statements
         "dot-location": 0,                      // enforce consistent newlines before and after dots
@@ -273,7 +273,8 @@ module.exports = {
         "comma-style": 0,                       // enforce consistent comma style
         "computed-property-spacing": 0,         // enforce consistent spacing inside computed property brackets
         "consistent-this": 0,                   // enforce consistent naming when capturing the current execution context
-        "eol-last": 0,                          // require or disallow newline at the end of files
+        // enforce newline at the end of file, with no multiple empty lines
+        'eol-last': ['error', 'always'],
         "func-call-spacing": 0,                 // require or disallow spacing between function identifiers and their invocations
         "func-name-matching": 0,                // require function names to match the name of the variable or property to which they are assigned
         "func-names": 0,                        // require or disallow named function expressions
@@ -331,7 +332,10 @@ module.exports = {
         "no-ternary": 0,                        // disallow ternary operators
         "no-trailing-spaces": 2,                // disallow trailing whitespace at the end of lines
         "no-underscore-dangle": 0,              // disallow dangling underscores in identifiers
-        "no-unneeded-ternary": 0,               // disallow ternary operators when simpler alternatives exist
+        // disallow the use of Boolean literals in conditional expressions
+        // also, prefer `a || b` over `a ? a : b`
+        // http://eslint.org/docs/rules/no-unneeded-ternary
+        'no-unneeded-ternary': ['error', { defaultAssignment: false }],
         "no-whitespace-before-property": 0,     // disallow whitespace before properties
         "nonblock-statement-body-position": 0,  // enforce the location of single-line statements
         "object-curly-newline": 0,              // enforce consistent line breaks inside braces
