@@ -336,14 +336,14 @@ export function createCookie(name, value, days) {
   let expires = '';
   if (days) {
     const date = new Date();
-    date.setTime(date.getTime() + (days*24*60*60*1000));
-    expires = '; expires=' + date.toUTCString();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    expires = `; expires=${date.toUTCString()}`;
   }
-  document.cookie = name + '=' + value + expires + '; path=/';
+  document.cookie = `${name}=${value}${expires}; path=/`;
 }
 export function readCookie(name) {
   // Source: http://www.quirksmode.org/js/cookies.html
-  const nameEQ = name + '=';
+  const nameEQ = `${name}=`;
   const ca = document.cookie.split(';');
   for(let i = 0; i < ca.length; i += 1) {
     let c = ca[i];
@@ -377,7 +377,7 @@ export function getParameterByName(name, url) {
     url = window.location.href;
   }
   name = name.replace(/[\[\]]/g, '\\$&'); // eslint-disable-line no-useless-escape
-  const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+  const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`);
   const results = regex.exec(url);
   if (!results) {
     return null;
@@ -393,7 +393,7 @@ export function addMouseWheelHandler(onmousewheel) {
   // Source: http://www.javascriptkit.com/javatutors/onmousewheel.shtml
   const mousewheelevt = (/Firefox/i.test(navigator.userAgent)) ? 'DOMMouseScroll' : 'mousewheel';
   if (document.attachEvent) {
-    document.attachEvent('on' + mousewheelevt, onmousewheel);
+    document.attachEvent(`on${mousewheelevt}`, onmousewheel);
   } else if(document.addEventListener) {
     document.addEventListener(mousewheelevt, onmousewheel, false);
   }
@@ -496,7 +496,7 @@ export function ForwardList(value) {
     const dummy = new ForwardList(null);
     let tail = dummy;
 
-    while (a !== null && b!= null) {
+    while (a !== null && b != null) {
       // While neither a nor b run out
       if (a.value <= b.value) {
         const newNode = a;

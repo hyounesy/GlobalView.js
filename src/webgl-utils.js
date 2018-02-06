@@ -65,13 +65,13 @@ export function WebGLUtils() {
      * @return {string} The html.
      */
   const makeFailHTML = function (msg) {
-    return '' +
+    return `${'' +
         '<table style="background-color: #8CE; width: 100%; height: 100%;"><tr>' +
         '<td align="center">' +
         '<div style="display: table-cell; vertical-align: middle;">' +
-        '<div style="">' + msg + '</div>' +
-        '</div>' +
-        '</td></tr></table>';
+        '<div style="">'}${msg}</div>` +
+        `</div>` +
+        `</td></tr></table>`;
   };
 
     /**
@@ -107,7 +107,7 @@ export function WebGLUtils() {
           OTHER_PROBLEM :
           GET_A_WEBGL_BROWSER;
         if (msg) {
-          str += '<br/><br/>Status: ' + msg;
+          str += `<br/><br/>Status: ${msg}`;
         }
         container.innerHTML = makeFailHTML(str);
       }
@@ -165,7 +165,7 @@ const window_requestAnimFrame = (function () {
           window.oRequestAnimationFrame ||
           window.msRequestAnimationFrame ||
           function (/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
-            window.setTimeout(callback, 1000/60);
+            window.setTimeout(callback, 1000 / 60);
           };
 }());
 

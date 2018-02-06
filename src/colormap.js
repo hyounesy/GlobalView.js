@@ -281,7 +281,7 @@ export function validateColor(color) {
       rgb.b >= 0x00 && rgb.b <= 0xFF) {
       return true;
     } // color is hex color
-    return 'Unknown color ' + color;
+    return `Unknown color ${color}`;
   }
 
   if (libUtility.isArray(color)) {
@@ -291,7 +291,7 @@ export function validateColor(color) {
     return true;
   }
 
-  return 'Unknown color ' + color;
+  return `Unknown color ${color}`;
 }
 
 export function parseColor(color) {
@@ -344,7 +344,7 @@ export function validateColormap(colormap) {
     }
   }
 
-  return 'Unknown colormap ' + colormap;
+  return `Unknown colormap ${colormap}`;
 }
 
 export function parseColormap(colormap) {

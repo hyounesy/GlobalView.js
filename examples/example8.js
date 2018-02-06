@@ -29,7 +29,7 @@ domready(function () {
     {name: '10.000.000 random points', create: () => new globalView.RandomDataset(10000000, 3, dataset_onLoad)},
     {name: 'iris', url: 'datasets/iris.data', create: () => new globalView.CsvDataset('datasets/iris.data', {columnLabels: ['Sepal Length [cm]', 'Sepal Width [cm]', 'Petal Length [cm]', 'Petal Width [cm]', 'Class']}, dataset_onLoad)},
     {name: 'allencell', url: 'datasets/AICS_Cell-feature-analysis_v1.5.csv', create: () => new globalView.CsvDataset('datasets/AICS_Cell-feature-analysis_v1.5.csv', {hasHeader: true, nameColumn: 1, imageFilenames: function (data) {
-      return 'datasets/AICS_Cell-feature-analysis_v1.5_images/' + data[1] + '.png';
+      return `datasets/AICS_Cell-feature-analysis_v1.5_images/${data[1]}.png`;
     }}, dataset_onLoad)},
     // {name: "allencell x2", url: "datasets/AICS_Cell-feature-analysis_v1.5_x2.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x2.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
     // {name: "allencell x10", url: "datasets/AICS_Cell-feature-analysis_v1.5_x10.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x10.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
@@ -195,10 +195,10 @@ function onResize() {
   const e = d.documentElement;
   const b = document.body;
   const x = w.innerWidth || e.clientWidth || b.clientWidth;
-  const y = w.innerHeight|| e.clientHeight|| b.clientHeight;
+  const y = w.innerHeight || e.clientHeight || b.clientHeight;
   // plot.resize(x - 32 - 200, y - 32);
-  document.getElementById('divGlobalView').style.width = (x - 32 - 200) + 'px';
-  document.getElementById('divGlobalView').style.height = (y - 32) + 'px';
+  document.getElementById('divGlobalView').style.width = `${x - 32 - 200}px`;
+  document.getElementById('divGlobalView').style.height = `${y - 32}px`;
 }
 
 function cbDataset_onChange() {
@@ -212,7 +212,7 @@ const inflated = false;
 function dataset_onLoad(_dataset) {
   dataset = _dataset;
   if (dataset.columns.length < 2) {
-    alert('Invalid dataset\nDataset has ' + dataset.columns.length + ' column(s) (at least 2 required).');
+    alert(`Invalid dataset\nDataset has ${dataset.columns.length} column(s) (at least 2 required).`);
     return;
   }
 
@@ -297,11 +297,11 @@ function cbPointShape_onChange(sender) {
   plot.setOption('pointShape', sender.value);
 }
 function rPointOpacity_onChange(sender) {
-  pPointOpacity.innerText = 'Point opacity: ' + sender.value;
+  pPointOpacity.innerText = `Point opacity: ${sender.value}`;
   plot.setOption('pointOpacity', Number.parseFloat(sender.value));
 }
 function rPointSize_onChange(sender) {
-  pPointSize.innerText = 'Point size: ' + sender.value;
+  pPointSize.innerText = `Point size: ${sender.value}`;
   plot.setOption('pointSize', Number.parseFloat(sender.value));
 }
 
@@ -332,12 +332,12 @@ function cbShowHistograms_onChange(sender) {
 }
 function rVariance_onChange(sender) {
   const variance = Math.round(Math.pow(10, Number.parseFloat(sender.value)));
-  pVariance.innerText = 'Variance: ' + variance;
+  pVariance.innerText = `Variance: ${variance}`;
   requestVariance(variance, true);
 }
 function rNumBins_onChange(sender) {
   const numBins = Number.parseInt(sender.value, 10);
-  pNumBins.innerText = '# of histogram bins: ' + numBins;
+  pNumBins.innerText = `# of histogram bins: ${numBins}`;
   plot.setOption('numHistogramBins', numBins);
 }
 
@@ -384,7 +384,7 @@ let numThumbnails,
   densityRatio;
 function rNumThumbnails_onChange(sender) {
   numThumbnails = 2 ** Number.parseInt(sender.value, 10);
-  pNumThumbnails.innerText = '# of thumbnails: ' + numThumbnails;
+  pNumThumbnails.innerText = `# of thumbnails: ${numThumbnails}`;
 }
 function rDensityRatio_onChange(sender) {
   densityRatio = Number.parseFloat(sender.value);
@@ -404,11 +404,11 @@ function cbLabelThumbnails_onChange(sender) {
 function onMouseOverAxisLabel(dataVector, labelRect) {
   const tooltip = document.getElementsByClassName('tooltip')[0];
   if (dataVector) {
-    tooltip.innerText = 'tooltip of ' + dataVector.label;
+    tooltip.innerText = `tooltip of ${dataVector.label}`;
 
     const tooltipRect = tooltip.getBoundingClientRect();
-    tooltip.style.top = (labelRect.t - (tooltipRect.bottom - tooltipRect.top) - 10) + 'px';
-    tooltip.style.left = (((labelRect.l + labelRect.r) / 2) - ((tooltipRect.right - tooltipRect.left) * 0.1)) + 'px';
+    tooltip.style.top = `${labelRect.t - (tooltipRect.bottom - tooltipRect.top) - 10}px`;
+    tooltip.style.left = `${((labelRect.l + labelRect.r) / 2) - ((tooltipRect.right - tooltipRect.left) * 0.1)}px`;
     tooltip.style.visibility = 'visible';
     tooltip.style.transition = '';
     tooltip.style.opacity = 1;
@@ -432,10 +432,10 @@ function onMouseOverDatapoint(dataset, index) {
     if (dataset.data) {
       const nc = dataset.numColumns;
       pDataPoint.innerText = dataset.dataVectors.map(dataVector =>
-        dataVector.label + ': ' + (dataVector.values ? dataVector.values[Math.floor(dataVector.getValue(index))] : dataVector.getValue(index))
+        `${dataVector.label}: ${dataVector.values ? dataVector.values[Math.floor(dataVector.getValue(index))] : dataVector.getValue(index)}`
       ).join('\n');
     } else {
-      pDataPoint.innerText = dataset.names ? dataset.names[index] : 'datapoint ' + index;
+      pDataPoint.innerText = dataset.names ? dataset.names[index] : `datapoint ${index}`;
     }
   }
 }
@@ -474,10 +474,10 @@ function ondragenter(event) {
 
 
     const rect = dragOverCanvas.getBoundingClientRect();
-    dragOverCanvas.style.marginTop = -(rect.bottom - rect.top - padding[0]) + 'px';
-    dragOverCanvas.style.marginLeft = padding[3] + 'px';
-    dragOverCanvas.style.width = (rect.right - rect.left - padding[1] - padding[3]) + 'px';
-    dragOverCanvas.style.height = (rect.bottom - rect.top - padding[0] - padding[2]) + 'px';
+    dragOverCanvas.style.marginTop = `${-(rect.bottom - rect.top - padding[0])}px`;
+    dragOverCanvas.style.marginLeft = `${padding[3]}px`;
+    dragOverCanvas.style.width = `${rect.right - rect.left - padding[1] - padding[3]}px`;
+    dragOverCanvas.style.height = `${rect.bottom - rect.top - padding[0] - padding[2]}px`;
   }
 }
 function ondragleave(event) {

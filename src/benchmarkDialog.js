@@ -28,7 +28,7 @@ function BenchmarkDialog() {
   pbOverall.progressbar({
     value: false,
     change: function () {
-      progressLabel.text('Progress: ' + (Math.floor(pbOverall.progressbar('value') * 100) / 100) + '%');
+      progressLabel.text(`Progress: ${Math.floor(pbOverall.progressbar('value') * 100) / 100}%`);
     },
     complete: function () {
       progressLabel.text('Complete!');
@@ -50,11 +50,11 @@ function BenchmarkDialog() {
     return !cancel;
   }
   function reportHeader(header) {
-    tblResults.append('<thead><tr><th>' + header.join('</th><th>') + '</th></tr></thead>');
+    tblResults.append(`<thead><tr><th>${header.join('</th><th>')}</th></tr></thead>`);
     tblResults_body = tblResults.append('<tbody></tbody>');
   }
   function reportResult(row) {
-    tblResults_body.append('<tr><td>' + row.join('</td><td>') + '</td></tr>');
+    tblResults_body.append(`<tr><td>${row.join('</td><td>')}</td></tr>`);
   }
 
 
@@ -116,7 +116,7 @@ function BenchmarkDialog() {
 
     const csvHeader = ['fps', 'options'];
     for (option in benchmarkOptions) {
-      csvHeader.push('' + option);
+      csvHeader.push(`${option}`);
     }
     csv = [csvHeader];
 
@@ -191,7 +191,7 @@ function BenchmarkDialog() {
       let image = globalView.saveOffscreenBuffer();
       image = image.substr(image.indexOf('base64,') + 'base64,'.length); // Convert base64-dataURL to base64
       name = name.replace('{', '').replace('}', '').replaceAll("'", '').replaceAll(',', ', ');
-      zip.file(name + '.png', image, { base64: true });
+      zip.file(`${name}.png`, image, { base64: true });
     }
 
     // <<<<<<<<<< END RUN BENCHMARK >>>>>>>>>>
@@ -239,10 +239,10 @@ function BenchmarkDialog() {
       zip.file('benchmark.csv', $.csv.fromArrays(csv));
 
       zip.generateAsync({ type: 'base64' }).then(function (base64) {
-        libUtility.download('benchmark.zip', 'data:application/zip;base64,' + base64);
+        libUtility.download('benchmark.zip', `data:application/zip;base64,${base64}`);
       });
     } else {
-      libUtility.download('benchmark.csv', 'data:text/csv;charset=utf-8,' + encodeURIComponent($.csv.fromArrays(csv)));
+      libUtility.download('benchmark.csv', `data:text/csv;charset=utf-8,${encodeURIComponent($.csv.fromArrays(csv))}`);
     }
   }
 }

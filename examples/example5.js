@@ -46,7 +46,7 @@ domready(function () {
     hasHeader: true,
     nameColumn: 1,
     columnLabels: COLUMN_NAMES,
-    imageFilenames: data => imagesPath + data[1] + '.png'
+    imageFilenames: data => `${imagesPath + data[1]}.png`
   }, function (dataset) {
     plot.load(dataset, 2, 4, 0, 3);
     plot.getCharacteristicPoints(8, 1, function (characteristicPoints) {
@@ -199,8 +199,8 @@ function plot_onMouseOverAxisLabel(dataVector, labelRect) {
 
     const plotRect = document.getElementById('divPlot').getBoundingClientRect();
     const tooltipRect = tooltip.getBoundingClientRect();
-    tooltip.style.top = ((plotRect.top + labelRect.t) - (tooltipRect.bottom - tooltipRect.top) - 20) + 'px';
-    tooltip.style.left = ((plotRect.left + ((labelRect.l + labelRect.r) / 2)) - ((tooltipRect.right - tooltipRect.left) * 0.1)) + 'px';
+    tooltip.style.top = `${(plotRect.top + labelRect.t) - (tooltipRect.bottom - tooltipRect.top) - 20}px`;
+    tooltip.style.left = `${(plotRect.left + ((labelRect.l + labelRect.r) / 2)) - ((tooltipRect.right - tooltipRect.left) * 0.1)}px`;
     tooltip.style.visibility = 'visible';
     tooltip.style.transition = '';
     tooltip.style.opacity = 1;

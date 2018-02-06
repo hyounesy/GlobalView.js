@@ -181,7 +181,7 @@ export function TextRenderContext(gl, canvas) {
       textCanvas.height = offscreenRendering.height;
     } else {
       const rect = textCanvas.getBoundingClientRect();
-      textCanvas.style.marginTop = -(rect.bottom - rect.top) + 'px';
+      textCanvas.style.marginTop = `${-(rect.bottom - rect.top)}px`;
       textCanvas.width = rect.right - rect.left;
       textCanvas.height = rect.bottom - rect.top;
     }

@@ -33,6 +33,6 @@ domready(function () {
 
 function rangeNumLeafs_oninput(sender) {
   const numLeafs = Number.parseInt(sender.value, 10);
-  document.getElementById('spanNumLeafs').innerText = 'Number of leafs: ' + numLeafs;
-  plot.setOption('customPointShape', '{ float r = length(p), f = sin(0.5 * ' + numLeafs + '.0 * atan(p.x, p.y)); return pow(clamp(abs(f) - r, 0.0, 1.0), 0.5); }');
+  document.getElementById('spanNumLeafs').innerText = `Number of leafs: ${numLeafs}`;
+  plot.setOption('customPointShape', `{ float r = length(p), f = sin(0.5 * ${numLeafs}.0 * atan(p.x, p.y)); return pow(clamp(abs(f) - r, 0.0, 1.0), 0.5); }`);
 }

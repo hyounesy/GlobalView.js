@@ -124,7 +124,7 @@ export function GlobalView(div, startupOptions) {
 
   const trc = new libTextRenderContext.TextRenderContext(gl, canvas);
   // trc.setFont("10px monospace");
-  trc.setFont(divStyle.fontSize + ' ' + divStyle.fontFamily);
+  trc.setFont(`${divStyle.fontSize} ${divStyle.fontFamily}`);
 
   /**
    * Call this method after updating the parent div's font style in order for the changes to be applied to the rendering pipeline.
@@ -132,7 +132,7 @@ export function GlobalView(div, startupOptions) {
    */
   this.updateFont = function () {
     const divStyle = window.getComputedStyle(div);
-    trc.setFont(divStyle.fontSize + ' ' + divStyle.fontFamily);
+    trc.setFont(`${divStyle.fontSize} ${divStyle.fontFamily}`);
     this.invalidate();
   };
 
@@ -227,9 +227,9 @@ export function GlobalView(div, startupOptions) {
         frameCounter = 0;
       }
       if (fps !== null) {
-        gl.drawText(fps.toFixed(5) + ' FPS', canvas.width - 8, 8, 'topright');
+        gl.drawText(`${fps.toFixed(5)} FPS`, canvas.width - 8, 8, 'topright');
       } else {
-        gl.drawText('approx. ' + Math.floor((frameCounter === 1 ? 10000.0 : 1000 * frameCounter) / (t - fpsStart)) + ' FPS', canvas.width - 8, 8, 'topright');
+        gl.drawText(`approx. ${Math.floor((frameCounter === 1 ? 10000.0 : 1000 * frameCounter) / (t - fpsStart))} FPS`, canvas.width - 8, 8, 'topright');
       }
     }
     if (SIMULATE_LOW_FPS) {
@@ -738,7 +738,7 @@ export function GlobalView(div, startupOptions) {
     customPointShape: {
       description: "When 'pointShape' is set to 'Custom', this defines a GLSL function given vec2 p, that returns opacity in the range [0.0 ... 1.0] at location p.",
       default: '{ return 1.0; }',
-      valid: value => libGraphics.validateGLSL(gl, 'float opacityMap(in vec2 p) ' + value),
+      valid: value => libGraphics.validateGLSL(gl, `float opacityMap(in vec2 p) ${value}`),
       requireRedraw: true,
       requireRecompile: true
     },
@@ -868,7 +868,7 @@ export function GlobalView(div, startupOptions) {
   this.setOption = function (option, value) {
     // Validate option
     if (!OPTIONS.hasOwnProperty(option)) {
-      console.warn('GlobalView warning: Unsupported option: ' + option);
+      console.warn(`GlobalView warning: Unsupported option: ${option}`);
       return;
     }
     const optionDefinition = OPTIONS[option];
@@ -877,9 +877,9 @@ export function GlobalView(div, startupOptions) {
     let validationResult;
     if ((libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1) ||
       (libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true)) {
-      console.warn('GlobalView warning: Invalid value for option ' + option + ': ' + value);
+      console.warn(`GlobalView warning: Invalid value for option ${option}: ${value}`);
       if (libUtility.isString(validationResult)) {
-        console.warn('                    ' + validationResult);
+        console.warn(`                    ${validationResult}`);
       }
       return;
     }
@@ -904,7 +904,7 @@ export function GlobalView(div, startupOptions) {
 
       // Validate option
       if (!OPTIONS.hasOwnProperty(option)) {
-        console.warn('GlobalView warning: Unsupported option: ' + option);
+        console.warn(`GlobalView warning: Unsupported option: ${option}`);
         continue;
       }
       const optionDefinition = OPTIONS[option];
@@ -914,11 +914,11 @@ export function GlobalView(div, startupOptions) {
       let validationResult;
       if ((libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1) ||
         (libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true)) {
-        console.warn('GlobalView warning: Invalid value for option ' + option + ': ' + value);
+        console.warn(`GlobalView warning: Invalid value for option ${option}: ${value}`);
         if (libUtility.isString(validationResult)) {
           // HY:
           validationResult = optionDefinition.valid(value);
-          console.warn('                    ' + validationResult);
+          console.warn(`                    ${validationResult}`);
         }
         continue;
       }
@@ -940,7 +940,7 @@ export function GlobalView(div, startupOptions) {
   this.setDefaultOption = function (option) {
     // Validate option
     if (!OPTIONS.hasOwnProperty(option)) {
-      console.warn('GlobalView warning: Unsupported option: ' + option);
+      console.warn(`GlobalView warning: Unsupported option: ${option}`);
       return;
     }
     const optionDefinition = OPTIONS[option];
@@ -970,7 +970,7 @@ export function GlobalView(div, startupOptions) {
   this.validateOption = function (option, value) {
     // Validate option
     if (!OPTIONS.hasOwnProperty(option)) {
-      return 'Unsupported option: ' + option;
+      return `Unsupported option: ${option}`;
     }
     const optionDefinition = OPTIONS[option];
 
@@ -978,7 +978,7 @@ export function GlobalView(div, startupOptions) {
     let validationResult;
     if ((libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1) ||
       (libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true)) {
-      return 'Invalid value for option ' + option + ': ' + value + (libUtility.isString(validationResult) ? '\n    ' + validationResult : '');
+      return `Invalid value for option ${option}: ${value}${libUtility.isString(validationResult) ? `\n    ${validationResult}` : ''}`;
     }
 
     return true;
@@ -998,7 +998,7 @@ export function GlobalView(div, startupOptions) {
 
       // Validate option
       if (!OPTIONS.hasOwnProperty(option)) {
-        errors.push('Unsupported option: ' + option);
+        errors.push(`Unsupported option: ${option}`);
         continue;
       }
       const optionDefinition = OPTIONS[option];
@@ -1008,7 +1008,7 @@ export function GlobalView(div, startupOptions) {
       let validationResult;
       if ((libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1) ||
         (libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true)) {
-        errors.push('Invalid value for option ' + option + ': ' + value + (libUtility.isString(validationResult) ? '\n    ' + validationResult : ''));
+        errors.push(`Invalid value for option ${option}: ${value}${libUtility.isString(validationResult) ? `\n    ${validationResult}` : ''}`);
         continue;
       }
     }
@@ -1600,7 +1600,7 @@ export function GlobalView(div, startupOptions) {
       case 'adjacent': return this.showImage_adjacent(index);
       case 'lowDensity': return this.showImage_lowDensity(index);
       case 'project': console.warn("GlobalView warning: Can't place a single image using the 'project'-strategy"); return false;
-      default: console.warn('GlobalView warning: Unknown image placement strategy: ' + placement); return false;
+      default: console.warn(`GlobalView warning: Unknown image placement strategy: ${placement}`); return false;
     }
   };
 
@@ -1620,7 +1620,7 @@ export function GlobalView(div, startupOptions) {
       case 'adjacent': return this.showImages_adjacent(points);
       case 'lowDensity': return this.showImages_lowDensity(points);
       case 'project': return this.showImages_project(points);
-      default: console.warn('GlobalView warning: Unknown image placement strategy: ' + placement); return false;
+      default: console.warn(`GlobalView warning: Unknown image placement strategy: ${placement}`); return false;
     }
   };
 
@@ -1872,8 +1872,8 @@ export function GlobalView(div, startupOptions) {
     let closest = Number.MAX_VALUE,
       closestIndex = -1,
       sqDist;
-    const sqscl0 = tf.getScale(0)*tf.getScale(0);
-    const sqscl1 = tf.getScale(1)*tf.getScale(1);
+    const sqscl0 = tf.getScale(0) * tf.getScale(0);
+    const sqscl1 = tf.getScale(1) * tf.getScale(1);
     const v0 = dataset.dataVectors[activeInputs[0]];
     const v1 = dataset.dataVectors[activeInputs[1]];
     pointViewer.points.forEach(function (i) {
@@ -2024,8 +2024,8 @@ export function GlobalView(div, startupOptions) {
     let closest = Number.MAX_VALUE,
       closestIndex = -1,
       sqDist;
-    const sqscl0 = tf.getScale(0)*tf.getScale(0);
-    const sqscl1 = tf.getScale(1)*tf.getScale(1);
+    const sqscl0 = tf.getScale(0) * tf.getScale(0);
+    const sqscl1 = tf.getScale(1) * tf.getScale(1);
     const v0 = dataset.dataVectors[d0];
     const v1 = dataset.dataVectors[d1];
     pointViewer.points.forEach(function (i) {

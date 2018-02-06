@@ -39,7 +39,7 @@ export function DataVector(dataset, source) {
     };
 
     // this.getValueCode = "log(c{0})".format(c);
-    this.getValueCode = 'c' + c;// "{" + c + "}";
+    this.getValueCode = `c${c}`;// "{" + c + "}";
 
     const column = dataset.columns[c];
     this.minimum = column.minimum;
@@ -55,17 +55,17 @@ export function DataVector(dataset, source) {
       i: libFormulaCompiler.FormulaCompiler.types.float
     };
     for (let c = 0; c < nc; c += 1) {
-      globalTypes['c' + c] = libFormulaCompiler.FormulaCompiler.types.float;
+      globalTypes[`c${c}`] = libFormulaCompiler.FormulaCompiler.types.float;
     }
     const globals = {
       n: dataset.length,
       PI: Math.PI
     };
 
-    const code = libFormulaCompiler.FormulaCompiler.compile(source + ';', globalTypes);
+    const code = libFormulaCompiler.FormulaCompiler.compile(`${source};`, globalTypes);
     if (libUtility.isString(code)) {
       console.error("GlobalView error: Error while parsing data vector formula '{0}'".format(source));
-      console.error('                  ' + code);
+      console.error(`                  ${code}`);
       return;
     }
     const formula = source;
@@ -74,7 +74,7 @@ export function DataVector(dataset, source) {
     this.getValue = function (i) {
       globals.i = i; // ?! debug?
       for (let c = 0; c < nc; c += 1) {
-        globals['c' + c] = dataset.fdata[(i * nc) + c];
+        globals[`c${c}`] = dataset.fdata[(i * nc) + c];
       }
 
       return libFormulaCompiler.FormulaCompiler.run(code, stack, globals);
@@ -494,7 +494,7 @@ export function Dataset() {
         names_inflated[i] = names[i];
       }
       for (let index = 0, i_inflated = n, len = n * nc; i_inflated < n_inflated; i_inflated += 1) {
-        names_inflated[i_inflated] = 'generated datapoint ' + (index += 1);
+        names_inflated[i_inflated] = `generated datapoint ${index += 1}`;
       }
       this.names = names_inflated;
     }
@@ -552,7 +552,7 @@ export function Dataset() {
       csv[i + 1] = row; // +1 ... Header row
     }
 
-    libUtility.download(filename, 'data:text/csv;charset=utf-8,' + encodeURIComponent($.csv.fromArrays(csv)));
+    libUtility.download(filename, `data:text/csv;charset=utf-8,${encodeURIComponent($.csv.fromArrays(csv))}`);
   };
 }
 
@@ -658,7 +658,7 @@ export function CsvDataset(file, options, onload) {
 
     // Validate option
     if (!CSV_DATASET_OPTIONS.hasOwnProperty(option)) {
-      console.warn('CsvDataset warning: Unsupported option: ' + option);
+      console.warn(`CsvDataset warning: Unsupported option: ${option}`);
       continue;
     }
     const optionDefinition = CSV_DATASET_OPTIONS[option];
@@ -667,7 +667,7 @@ export function CsvDataset(file, options, onload) {
     const value = options[option];
     if ((optionDefinition.valid && optionDefinition.valid.indexOf(value) === -1) ||
       (optionDefinition.validRange && (value < optionDefinition.validRange[0] || value > optionDefinition.validRange[1]))) {
-      console.warn('CsvDataset warning: Invalid value for option ' + option + ': ' + value);
+      console.warn(`CsvDataset warning: Invalid value for option ${option}: ${value}`);
       delete options[option];
       continue;
     }
@@ -691,7 +691,7 @@ export function CsvDataset(file, options, onload) {
         if (firstRowOnlyStrings && secondRowHasNumbers) {
           options.hasHeader = true;
         }
-        console.log('Assuming hasHeader = ' + options.hasHeader);
+        console.log(`Assuming hasHeader = ${options.hasHeader}`);
       }
       if (libUtility.isUndefined(options.nameColumn)) {
         // Assume no name column by default
@@ -705,7 +705,7 @@ export function CsvDataset(file, options, onload) {
             break;
           }
         }
-        console.log('Assuming nameColumn = ' + options.nameColumn);
+        console.log(`Assuming nameColumn = ${options.nameColumn}`);
       }
     }
 
@@ -729,7 +729,7 @@ export function CsvDataset(file, options, onload) {
       }
     } else if (libUtility.isArray(options.columnLabels)) {
       if (options.columnLabels.length !== nc) {
-        console.warn('CsvDataset warning: Number of provided column labels (' + options.columnLabels.length + ') differs from number of data columns in the dataset (' + nc + ')');
+        console.warn(`CsvDataset warning: Number of provided column labels (${options.columnLabels.length}) differs from number of data columns in the dataset (${nc})`);
         columnLabels = null;
       } else {
         columnLabels = options.columnLabels;
@@ -867,7 +867,7 @@ export function CsvDataset(file, options, onload) {
       }
     } else if (libUtility.isArray(options.imageFilenames)) {
       if (options.imageFilenames.length !== n) {
-        console.warn('CsvDataset warning: Number of provided image filenames (' + options.imageFilenames.length + ') differs from number of data points (' + n + ')');
+        console.warn(`CsvDataset warning: Number of provided image filenames (${options.imageFilenames.length}) differs from number of data points (${n})`);
         dataset.imageFilenames = null;
       } else {
         dataset.imageFilenames = options.imageFilenames;
@@ -910,7 +910,7 @@ function generateColumnName(i, nc) {
   } else if (nc <= 26) {
     return String.fromCharCode(65 + i); // A, B, C, ...
   } else {
-    return 'c' + (i + 1); // c1, c2, c3, ...
+    return `c${i + 1}`; // c1, c2, c3, ...
   }
 };
 

@@ -99,9 +99,9 @@ export function PointViewer(gl, globalView) {
           pointSet.colormap = libGraphics.LoadTextureFromByteArray(gl, c, c.length / 4, 1);
         }
       } else {
-        console.warn('GlobalView warning: Invalid value for point set color: ' + color);
+        console.warn(`GlobalView warning: Invalid value for point set color: ${color}`);
         if (libUtility.isString(validationResult)) {
-          console.warn('                    ' + validationResult);
+          console.warn(`                    ${validationResult}`);
         }
       }
     }
@@ -247,9 +247,9 @@ vec{1} getPos()
       const animatedInputCode = [];
       for (let d = 0, i = 0; d < ndim; d += 4, i += 1) {
         const attrLen = Math.min(4, ndim - d);
-        attrDeclCode += 'attribute ' + (attrLen === 1 ? 'float' : 'vec' + attrLen) + ' p' + i + ';\n';
+        attrDeclCode += `attribute ${attrLen === 1 ? 'float' : `vec${attrLen}`} p${i};\n`;
         for (let a = 0; a < attrLen; a += 1) {
-          inputs.push('p' + i + (attrLen === 1 ? '' : '[' + a + ']'));
+          inputs.push(`p${i}${attrLen === 1 ? '' : `[${a}]`}`);
         }
       }
       // HY:

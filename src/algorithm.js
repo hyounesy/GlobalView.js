@@ -233,7 +233,7 @@ export function computeHistogram2D(dataset, d0, d1, width, height) {
   // Computed number of datapoints per histogram bin -> histogram, maximum
   let histogram = new Float32Array(width * height);
   let maximum = 1; // Start with 1, because as long as n > 0, there will be at least one bin with magnitude >= 1
-  for (let i = 0; i < n; i+=1) {
+  for (let i = 0; i < n; i += 1) {
     const p0 = Math.floor((v0.getValue(i) * s0) + o0);
     const p1 = Math.floor((v1.getValue(i) * s1) + o1);
     if ((histogram[(Math.min(height - 1, p1) * width) + Math.min(width - 1, p0)] += 1) > maximum) {
@@ -285,7 +285,7 @@ export function computeDensityMap(histogram, options) {
   // Set parameters
   const cutoffIntensity = options.cutoffIntensity;
   const gaussScale = options.gaussScale;
-  let normalizedGaussScale = -gaussScale / (width*height);
+  let normalizedGaussScale = -gaussScale / (width * height);
   const logScale = options.logScale;
   const inflateToFit = options.inflateToFit;
   let maxExtend = Math.max(width, height);
@@ -298,13 +298,13 @@ export function computeDensityMap(histogram, options) {
     newBounds_b = Number.MIN_VALUE;
   tik();
   if (inflateToFit) {
-    for (let y = 0; y < height; y+=1) {
-      for (let x = 0; x < width; x+=1) {
+    for (let y = 0; y < height; y += 1) {
+      for (let x = 0; x < width; x += 1) {
         if (initialDensities[(y * width) + x] !== 0.0) {
           let r = Math.floor(Math.sqrt(Math.log(cutoffIntensity / initialDensities[(y * width) + x]) / normalizedGaussScale)) - 1;
           r = Math.max(1, Math.min(maxExtend, r));
 
-          expectedRuntime += r*r * Math.PI;
+          expectedRuntime += r * r * Math.PI;
           newBounds_l = Math.min(newBounds_l, x - r);
           newBounds_r = Math.max(newBounds_r, x + r);
           newBounds_t = Math.min(newBounds_t, y - r);
@@ -313,8 +313,8 @@ export function computeDensityMap(histogram, options) {
       }
     }
   } else {
-    for (let y = 0; y < height; y+=1) {
-      for (let x = 0; x < width; x+=1) {
+    for (let y = 0; y < height; y += 1) {
+      for (let x = 0; x < width; x += 1) {
         if (initialDensities[(y * width) + x] !== 0.0) {
           let r = Math.floor(Math.sqrt(Math.log(cutoffIntensity / initialDensities[(y * width) + x]) / normalizedGaussScale)) - 1;
           r = Math.max(1, Math.min(maxExtend, r));
@@ -323,7 +323,7 @@ export function computeDensityMap(histogram, options) {
           let trimY = Math.min(r, Math.min(y, height - y)) / r;
           trimX = 0.5 + (0.5 * trimX * trimX);
           trimY = 0.5 + (0.5 * trimY * trimY);
-          expectedRuntime += r*r * Math.PI * trimX * trimY;
+          expectedRuntime += r * r * Math.PI * trimX * trimY;
         }
       }
     }
@@ -348,8 +348,8 @@ export function computeDensityMap(histogram, options) {
     // Recompute number of datapoints per density map pixel
     const downScaledInitialDensities = new Float32Array(downScaledWidth * downScaledHeight);
     maxDensity = 1;
-    for (let y = 0; y < downScaledHeight; y+=1) {
-      for (let x = 0; x < downScaledWidth; x+=1) {
+    for (let y = 0; y < downScaledHeight; y += 1) {
+      for (let x = 0; x < downScaledWidth; x += 1) {
         maxDensity = Math.max(maxDensity, downScaledInitialDensities[(y * downScaledWidth) + x] =
           initialDensities[(((2 * y) + 0) * width) + ((2 * x) + 0)] +
           initialDensities[(((2 * y) + 0) * width) + ((2 * x) + 1)] +
@@ -361,20 +361,20 @@ export function computeDensityMap(histogram, options) {
     width = downScaledWidth;
     height = downScaledHeight;
     maxExtend = Math.max(width, height);
-    normalizedGaussScale = -gaussScale / (width*height);
+    normalizedGaussScale = -gaussScale / (width * height);
 
     // Recompute expected runtime
     expectedRuntime = 0;
     newBounds_l = Number.MAX_VALUE; newBounds_r = Number.MIN_VALUE; newBounds_t = Number.MAX_VALUE; newBounds_b = Number.MIN_VALUE;
     tik();
     if (inflateToFit) {
-      for (let y = 0; y < height; y+=1) {
-        for (let x = 0; x < width; x+=1) {
+      for (let y = 0; y < height; y += 1) {
+        for (let x = 0; x < width; x += 1) {
           if (initialDensities[(y * width) + x] !== 0.0) {
             let r = Math.floor(Math.sqrt(Math.log(cutoffIntensity / initialDensities[(y * width) + x]) / normalizedGaussScale)) - 1;
             r = Math.max(1, Math.min(maxExtend, r));
 
-            expectedRuntime += r*r * Math.PI;
+            expectedRuntime += r * r * Math.PI;
             newBounds_l = Math.min(newBounds_l, x - r);
             newBounds_r = Math.max(newBounds_r, x + r);
             newBounds_t = Math.min(newBounds_t, y - r);
@@ -383,8 +383,8 @@ export function computeDensityMap(histogram, options) {
         }
       }
     } else {
-      for (let y = 0; y < height; y+=1) {
-        for (let x = 0; x < width; x+=1) {
+      for (let y = 0; y < height; y += 1) {
+        for (let x = 0; x < width; x += 1) {
           if (initialDensities[(y * width) + x] !== 0.0) {
             let r = Math.floor(Math.sqrt(Math.log(cutoffIntensity / initialDensities[(y * width) + x]) / normalizedGaussScale)) - 1;
             r = Math.max(1, Math.min(maxExtend, r));
@@ -393,7 +393,7 @@ export function computeDensityMap(histogram, options) {
             let trimY = Math.min(r, Math.min(y, height - y)) / r;
             trimX = 0.5 + (0.5 * trimX * trimX);
             trimY = 0.5 + (0.5 * trimY * trimY);
-            expectedRuntime += r*r * Math.PI * trimX * trimY;
+            expectedRuntime += r * r * Math.PI * trimX * trimY;
           }
         }
       }
@@ -444,8 +444,8 @@ export function computeDensityMap(histogram, options) {
 
   // Precompute 2D map array of gaussian scales within maxExtend*maxExtend -> gauss[]
   let gauss = new Float32Array(maxExtend * maxExtend);
-  for (let y = 0; y < maxExtend; y+=1) {
-    for (let x = 0; x < maxExtend; x+=1) {
+  for (let y = 0; y < maxExtend; y += 1) {
+    for (let x = 0; x < maxExtend; x += 1) {
       gauss[(y * maxExtend) + x] = Math.exp(normalizedGaussScale * ((x * x) + (y * y)));
     }
   }
@@ -453,8 +453,8 @@ export function computeDensityMap(histogram, options) {
   // Draw gaussians -> densities[]
   tik();
   if (inflateToFit) {
-    for (let y = 0; y < height; y+=1) {
-      for (let x = 0; x < width; x+=1) {
+    for (let y = 0; y < height; y += 1) {
+      for (let x = 0; x < width; x += 1) {
         if (initialDensities[(y * width) + x] !== 0.0) {
           const initialDensities_xy = initialDensities[(y * width) + x];
 
@@ -466,13 +466,13 @@ export function computeDensityMap(histogram, options) {
             continue;
           }
           // var yExtend = ext[initialDensities_xy - 1] - 1; // Get precomputed yExtend
-          const sqYExtend = yExtend*yExtend;
+          const sqYExtend = yExtend * yExtend;
 
-          for (let yy = y - yExtend, yend = y + yExtend; yy <= yend; yy+=1) {
+          for (let yy = y - yExtend, yend = y + yExtend; yy <= yend; yy += 1) {
           // Compute horizontal extend of gaussian at height yy - y => xExtend
             const xExtend = Math.floor(Math.sqrt(sqYExtend - ((yy - y) * (yy - y))));
 
-            for (let xx = x - xExtend, xend = x + xExtend; xx <= xend; xx+=1) {
+            for (let xx = x - xExtend, xend = x + xExtend; xx <= xend; xx += 1) {
               densities[(((yy - newBounds_t) * densitMapWidth) + xx) - newBounds_l] += initialDensities_xy * gauss[(Math.abs(y - yy) * maxExtend) + Math.abs(x - xx)];
             }
           }
@@ -493,13 +493,13 @@ export function computeDensityMap(histogram, options) {
             continue;
           }
           // var yExtend = ext[initialDensities_xy - 1] - 1; // Get precomputed yExtend
-          const sqYExtend = yExtend*yExtend;
+          const sqYExtend = yExtend * yExtend;
 
-          for (let yy = Math.max(0, y - yExtend), yend = Math.min(densitMapHeight - 1, y + yExtend); yy <= yend; yy+=1) {
+          for (let yy = Math.max(0, y - yExtend), yend = Math.min(densitMapHeight - 1, y + yExtend); yy <= yend; yy += 1) {
           // Compute horizontal extend of gaussian at height yy - y => xExtend
             const xExtend = Math.floor(Math.sqrt(sqYExtend - ((yy - y) * (yy - y))));
 
-            for (let xx = Math.max(0, x - xExtend), xend = Math.min(densitMapWidth - 1, x + xExtend); xx <= xend; xx+=1) {
+            for (let xx = Math.max(0, x - xExtend), xend = Math.min(densitMapWidth - 1, x + xExtend); xx <= xend; xx += 1) {
               densities[(yy * densitMapWidth) + xx] += initialDensities_xy * gauss[(Math.abs(y - yy) * maxExtend) + Math.abs(x - xx)];
             }
           }
@@ -553,7 +553,7 @@ export function computeDensityMap(histogram, options) {
     const resizedDensities = new Float32Array(resizedDensityMapLength);
     if (resizedDensities.length !== 0) {
       for (let y = 0, i = 0, j = newBounds_l + (newBounds_t * densitMapWidth); y < resizedDensitMapHeight; y += 1, j += densitMapWidth - resizedDensitMapWidth) {
-        for (let x = 0; x < resizedDensitMapWidth; x+=1, i += 1, j += 1) {
+        for (let x = 0; x < resizedDensitMapWidth; x += 1, i += 1, j += 1) {
           resizedDensities[i] = densities[j];
         }
       }
@@ -878,15 +878,15 @@ export function findClosePointOfLowDensity(dataset, d0, d1, p, densityMap, stenc
   let imgymin = Math.max(ymin, Math.floor(p1) - minDistY),
     imgymax = Math.min(ymax, Math.floor(p1) + minDistY);
   for (let y = imgymin; y < imgymax; y += 1) {
-    for (let x = imgxmin; x < imgxmax; x+=1) {
+    for (let x = imgxmin; x < imgxmax; x += 1) {
       stencil[((y - ymin) * stencilStride) + (x - xmin)] = 1;
     }
   }
 
   // Square minimum distances
-  const sqMinDistX = minDistX*minDistX;
-  const sqMinDistY = minDistY*minDistY;
-  const sqDensityOffset = densityOffset*densityOffset;
+  const sqMinDistX = minDistX * minDistX;
+  const sqMinDistY = minDistY * minDistY;
+  const sqDensityOffset = densityOffset * densityOffset;
 
   let closestPoint = null,
     closestPointPenalty = Number.MAX_VALUE;
@@ -1376,7 +1376,7 @@ export function computeClusterMap(densityMap, d0, d1, options) {
   const densities = densityMap.data;
   const width = densityMap.width;
   const height = densityMap.height;
-  const len = width*height;
+  const len = width * height;
   const densityThreshold = options.threshold * densityMap.maximum;
 
   // Allocate cluster map
@@ -1388,7 +1388,7 @@ export function computeClusterMap(densityMap, d0, d1, options) {
   const clusters = [];
   for (let y = 0; y < height; y += 1) {
     leftClusterId = 0;
-    for (let x = 0; x < width; x+=1) {
+    for (let x = 0; x < width; x += 1) {
       const d = densities[(y * width) + x];
 
       if (d >= densityThreshold) {

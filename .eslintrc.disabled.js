@@ -353,7 +353,7 @@ module.exports = {
           asyncArrow: 'always'
         }],
         "space-in-parens": 2,                   // enforce consistent spacing inside parentheses
-        "space-infix-ops": 0,                   // require spacing around infix operators
+        "space-infix-ops": 'error',                   // require spacing around infix operators
         // Require or disallow spaces before/after unary operators
         'space-unary-ops': ['error', {
           words: true,
@@ -397,12 +397,12 @@ module.exports = {
         "prefer-numeric-literals": 0,           // disallow parseInt() and Number.parseInt() in favor of binary, octal, and hexadecimal literals
         "prefer-rest-params": 'error',                // require rest parameters instead of arguments
         "prefer-spread": 0,                     // require spread operators instead of .apply()
-        "prefer-template": 0,                   // require template literals instead of string concatenation
+        "prefer-template": 'error',                   // require template literals instead of string concatenation
         "require-yield": 0,                     // require generator functions to contain yield
         "rest-spread-spacing": 0,               // enforce spacing between rest and spread operators and their expressions
         "sort-imports": 0,                      // enforce sorted import declarations within modules
         "symbol-description": 0,                // require symbol descriptions
-        "template-curly-spacing": 0,            // require or disallow spacing around embedded expressions of template strings
+        "template-curly-spacing": 'error',            // require or disallow spacing around embedded expressions of template strings
         "yield-star-spacing": 0                 // require or disallow spacing around the * in yield* expressions
 
 

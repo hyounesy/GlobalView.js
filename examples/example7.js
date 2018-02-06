@@ -31,7 +31,7 @@ domready(function () {
   const divPlots = document.createElement('div');
   divPlots.style.position = 'fixed';
   divPlots.style.left = divPlots.style.top = '0px';
-  divPlots.style.width = divPlots.style.height = PLOT_SIZE + 'px';
+  divPlots.style.width = divPlots.style.height = `${PLOT_SIZE}px`;
   divPlots.style.fontSize = FONT_SIZE;
   document.body.appendChild(divPlots);
 
@@ -42,7 +42,7 @@ domready(function () {
     hasHeader: true,
     nameColumn: 1,
     columnLabels: COLUMN_NAMES,
-    imageFilenames: data => imagesPath + data[1] + '.png'
+    imageFilenames: data => `${imagesPath + data[1]}.png`
   }, function (dataset) {
     const ndim = Math.min(2, dataset.dataVectors.length - 1); // -1 ... Adjust number of dataVectors, since we don't plot dataVectors[0] (tagged protein)
     const subPlotWidth = PLOT_SIZE / ndim;
