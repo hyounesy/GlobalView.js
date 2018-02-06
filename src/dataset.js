@@ -50,16 +50,16 @@ export function DataVector(dataset, source) {
   } else {
     const stack = new Array(16);
     const globalTypes = {
-      'n': libFormulaCompiler.FormulaCompiler.types.float,
-      'PI': libFormulaCompiler.FormulaCompiler.types.float,
-      'i': libFormulaCompiler.FormulaCompiler.types.float
+      n: libFormulaCompiler.FormulaCompiler.types.float,
+      PI: libFormulaCompiler.FormulaCompiler.types.float,
+      i: libFormulaCompiler.FormulaCompiler.types.float
     };
     for (let c = 0; c < nc; c += 1) {
       globalTypes['c' + c] = libFormulaCompiler.FormulaCompiler.types.float;
     }
     const globals = {
-      'n': dataset.length,
-      'PI': Math.PI
+      n: dataset.length,
+      PI: Math.PI
     };
 
     const code = libFormulaCompiler.FormulaCompiler.compile(source + ';', globalTypes);
@@ -603,35 +603,35 @@ export function RandomDataset(n, nc, onload) {
 */
 const CSV_DATASET_OPTIONS = {
   /** When true, tries to infer other options based on the structure of the dataset (slow). */
-  'autoDetect': {
+  autoDetect: {
     description: 'When true, tries to infer other options based on the structure of the dataset (slow).',
     default: false,
     valid: [true, false]
   },
 
   /** When true, interprets the first row of the dataset as column labels. */
-  'hasHeader': {
+  hasHeader: {
     description: 'When true, interprets the first row of the dataset as column labels.',
     default: false,
     valid: [true, false]
   },
 
   /** Index of a column of the dataset that contains data point names. */
-  'nameColumn': {
+  nameColumn: {
     description: 'Index of a column of the dataset that contains data point names.',
     default: null,
     valid: null
   },
 
   /** An array of column labels, or a function that takes the column index as input and returns the column label. */
-  'columnLabels': {
+  columnLabels: {
     description: 'An array of column labels, or a function that takes the column index as input and returns the column label.',
     default: null,
     valid: null
   },
 
   /** An array of image URLs, or a function that takes a row of data and the row index as input and returns a URL to an image of the data point. */
-  'imageFilenames': {
+  imageFilenames: {
     description: 'An array of image URLs, or a function that takes a row of data and the row index as input and returns a URL to an image of the data point.',
     default: null,
     valid: null
