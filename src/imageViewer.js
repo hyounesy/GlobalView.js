@@ -125,14 +125,14 @@ export function ImageViewer(gl, globalView) {
 
   const sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
   sdrLine.color = sdrLine.u4f('color');
-  sdrLine.color.apply(sdrLine, gl.foreColor);
+  sdrLine.color(...gl.foreColor);
   sdrLine.matWorldViewProj = sdrLine.u4x4f('matWorldViewProj');
 
   // Create a 2D line mesh
   const meshLine = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
     0, 0, 0,
-    1, 0, 0
+    1, 0, 0,
   ]), null, null, null, null, null, gl.LINES);
 
   // Create a 2D quad mesh
@@ -141,13 +141,13 @@ export function ImageViewer(gl, globalView) {
     0, 1, 0,
     0, 0, 0,
     1, 1, 0,
-    1, 0, 0
+    1, 0, 0,
   ]), null, null, null, new Float32Array([
     // Texture coordinates
     0, 1,
     0, 0,
     1, 1,
-    1, 0
+    1, 0,
   ]));
 
   // Create a 2D line quad mesh
@@ -156,7 +156,7 @@ export function ImageViewer(gl, globalView) {
     0, 0, 0,
     0, 1, 0,
     1, 1, 0,
-    1, 0, 0
+    1, 0, 0,
   ]), null, null, null, null, null, gl.LINE_LOOP);
 
   // Create a 2D arrow mesh
@@ -168,7 +168,7 @@ export function ImageViewer(gl, globalView) {
     (0.5 * LABEL_HEIGHT),  0.5 * LABEL_HEIGHT, 0,
     (0.5 * LABEL_HEIGHT) + LABEL_WIDTH,  0.5 * LABEL_HEIGHT, 0,
     (0.5 * LABEL_HEIGHT) + LABEL_WIDTH, -0.5 * LABEL_HEIGHT, 0,
-    (0.5 * LABEL_HEIGHT), -0.5 * LABEL_HEIGHT, 0
+    (0.5 * LABEL_HEIGHT), -0.5 * LABEL_HEIGHT, 0,
   ]), null, null, null, null, null, gl.TRIANGLE_FAN);
 
   // Create a 2D line arrow mesh
@@ -178,7 +178,7 @@ export function ImageViewer(gl, globalView) {
     (0.5 * LABEL_HEIGHT),  0.5 * LABEL_HEIGHT, 0,
     (0.5 * LABEL_HEIGHT) + LABEL_WIDTH,  0.5 * LABEL_HEIGHT, 0,
     (0.5 * LABEL_HEIGHT) + LABEL_WIDTH, -0.5 * LABEL_HEIGHT, 0,
-    (0.5 * LABEL_HEIGHT), -0.5 * LABEL_HEIGHT, 0
+    (0.5 * LABEL_HEIGHT), -0.5 * LABEL_HEIGHT, 0,
   ]), null, null, null, null, null, gl.LINE_LOOP);
 
   /** @type Array<Thumbnail> */ let images = [];
@@ -217,11 +217,11 @@ export function ImageViewer(gl, globalView) {
         libGlMatrix.mat4.scale(mattrans, mattrans, [2 / gl.width, 2 / gl.height, 1]);
         sdrLine.matWorldViewProj(mattrans);
 
-        sdrLine.color.apply(sdrLine, image.highlighted ? [1, 1, 0, 1] : (image.labelColor ? image.labelColor : defaultImageLabelColor));
+        sdrLine.color(...image.highlighted ? [1, 1, 0, 1] : (image.labelColor ? image.labelColor : defaultImageLabelColor));
         meshLabel.bind(sdrLine, null);
         meshLabel.draw();
 
-        sdrLine.color.apply(sdrLine, image.borderColor ? image.borderColor : defaultImageBorderColor);
+        sdrLine.color(...image.borderColor ? image.borderColor : defaultImageBorderColor);
         meshLineLabel.bind(sdrLine, null);
         meshLineLabel.draw();
 
@@ -252,7 +252,7 @@ export function ImageViewer(gl, globalView) {
         libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.atan2(dy, dx));
         libGlMatrix.mat4.scale(mattrans, mattrans, [Math.sqrt((dx * dx) + (dy * dy)), 1.0, 1.0]);
         sdrLine.matWorldViewProj(mattrans);
-        sdrLine.color.apply(sdrLine, image.lineColor ? image.lineColor : defaultImageLineColor);
+        sdrLine.color(...image.lineColor ? image.lineColor : defaultImageLineColor);
         meshLine.draw();
       });
     }
@@ -300,7 +300,7 @@ export function ImageViewer(gl, globalView) {
         libGlMatrix.mat4.scale(mattrans, mattrans, scale);
         libGlMatrix.mat4.translate(mattrans, mattrans, image.imageAnchor); // Move anchor to imageAnchor
         sdrLine.matWorldViewProj(mattrans);
-        sdrLine.color.apply(sdrLine, image.borderColor ? image.borderColor : defaultImageBorderColor);
+        sdrLine.color(...image.borderColor ? image.borderColor : defaultImageBorderColor);
         meshQuad.draw();
 
         scale[0] -= (2 * borderWidth) / gl.width;
@@ -336,11 +336,11 @@ export function ImageViewer(gl, globalView) {
         libGlMatrix.mat4.translate(mattrans, mattrans, [-0.0, -1.0, 0.0]); // Move anchor to top of stripe
         sdrLine.matWorldViewProj(mattrans);
 
-        sdrLine.color.apply(sdrLine, image.highlighted ? [1, 1, 0, 1] : (image.labelColor ? image.labelColor : defaultImageLabelColor));
+        sdrLine.color(...image.highlighted ? [1, 1, 0, 1] : (image.labelColor ? image.labelColor : defaultImageLabelColor));
         meshQuad.bind(sdrLine, null);
         meshQuad.draw();
 
-        sdrLine.color.apply(sdrLine, image.borderColor ? image.borderColor : defaultImageBorderColor);
+        sdrLine.color(...image.borderColor ? image.borderColor : defaultImageBorderColor);
         meshLineQuad.bind(sdrLine, null);
         meshLineQuad.draw();
 

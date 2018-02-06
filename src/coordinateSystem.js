@@ -16,22 +16,22 @@ export function CoordinateSystem(gl, globalView) {
 
   const sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
   sdrLine.color = sdrLine.u4f('color');
-  sdrLine.color.apply(sdrLine, gl.foreColor);
+  sdrLine.color(...gl.foreColor);
   sdrLine.matWorldViewProj = sdrLine.u4x4f('matWorldViewProj');
   this.updateColorSchema = function () {
-    sdrLine.color.apply(sdrLine, gl.foreColor);
+    sdrLine.color(...gl.foreColor);
   };
 
   // Create a 2D line mesh
   const meshLine = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
     0, 0, 0,
-    1, 0, 0
+    1, 0, 0,
   ]), null, null, null, null, null, gl.LINES);
 
   const axes = [
     {minimum: 0, maximum: 100, values: null, tickOffset: 0, tickDistance: 10, tickCount: 11, tickLength: TICK_LENGTH},
-    {minimum: 0, maximum: 100, values: null, tickOffset: 0, tickDistance: 10, tickCount: 11, tickLength: TICK_LENGTH}
+    {minimum: 0, maximum: 100, values: null, tickOffset: 0, tickDistance: 10, tickCount: 11, tickLength: TICK_LENGTH},
   ];
 
   /** @type {number} */ let xTickLabel_top = 0;
@@ -53,7 +53,7 @@ export function CoordinateSystem(gl, globalView) {
       }
       libGlMatrix.mat4.translate(mattrans, mattrans, [
         ((2 * (plotBounds.x + 0.5)) / gl.width) - 1,
-        ((2 * (plotBounds.y + 0.5)) / gl.height) - 1, 0
+        ((2 * (plotBounds.y + 0.5)) / gl.height) - 1, 0,
       ]); // 0.5 ... center inside pixel
       libGlMatrix.mat4.scale(mattrans, mattrans, [
         ((2 * plotBounds.width) / gl.width), 1, 1]);

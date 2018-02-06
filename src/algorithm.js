@@ -1058,7 +1058,7 @@ export function findClosePointOfLowDensity_descend(dataset, d0, d1, p, densityMa
     getStartState: function () {
       return {
         x: Math.max(xMin, Math.min(xMax - 1, Math.floor(p0))),
-        y: Math.max(yMin, Math.min(yMax - 1, Math.floor(p1)))
+        y: Math.max(yMin, Math.min(yMax - 1, Math.floor(p1))),
       };
     },
     isGoalState: function (state) {
@@ -1082,7 +1082,7 @@ export function findClosePointOfLowDensity_descend(dataset, d0, d1, p, densityMa
     },
     heuristic: function (state) {
       return Math.pow(densityOffset + (densities[(state.y * width) + state.x] * densityScale), 2);
-    }
+    },
   };
   SimpleUniformCostSearch(searchProblem);
   const closestPoint = [bestState.x, bestState.y];
@@ -1207,7 +1207,7 @@ export function findClosePointOfLowDensityND_descend(dataset, p, densityMap, min
         }
       }
       return sqDensity;
-    }
+    },
   };
   // var tStart = performance.now();
   // BreadthFirstSearch(searchProblem);
@@ -1434,14 +1434,18 @@ export function computeClusterMap(densityMap, d0, d1, options) {
   }
 
   // Compute cluster densities (= maximum densities per cluster) -> clusterDensities
-  const clusterDensities = Array.apply(null, Array(numClusters)).map(Number.prototype.valueOf, Number.MIN_VALUE);
+  // eslint-disable-next-line prefer-spread
+  const clusterDensities = Array.apply(null, Array(numClusters))
+    .map(Number.prototype.valueOf, Number.MIN_VALUE);
   for (let i = 0; i < len; i += 1) {
     if ((clusterId = clustermap[i])) {
       clusterDensities[clusterId - 1] = Math.max(clusterDensities[clusterId - 1], densityMap.data[i]);
     }
   }
 
-  const clusterMinDensities = Array.apply(null, Array(numClusters)).map(Number.prototype.valueOf, densityThreshold);
+  // eslint-disable-next-line prefer-spread
+  const clusterMinDensities = Array.apply(null, Array(numClusters))
+    .map(Number.prototype.valueOf, densityThreshold);
 
   if (false) {
     // Extend clusters to fill entire density != 0 area

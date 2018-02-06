@@ -23,7 +23,7 @@ domready(function () {
     pointSize: 1,
     pointOpacity: 1,
     enableTransparency: false,
-    pointShape: 'Rectangle'
+    pointShape: 'Rectangle',
   });
   measureTime('Initialization', 1);
 

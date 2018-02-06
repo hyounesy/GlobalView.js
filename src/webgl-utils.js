@@ -70,8 +70,8 @@ export function WebGLUtils() {
         '<td align="center">' +
         '<div style="display: table-cell; vertical-align: middle;">' +
         '<div style="">'}${msg}</div>` +
-        `</div>` +
-        `</td></tr></table>`;
+        '</div>' +
+        '</td></tr></table>';
   };
 
     /**
@@ -151,7 +151,7 @@ export function WebGLUtils() {
 
   return {
     create3DContext: create3DContext,
-    setupWebGL: setupWebGL
+    setupWebGL: setupWebGL,
   };
 };
 

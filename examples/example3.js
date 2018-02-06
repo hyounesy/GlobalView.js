@@ -8,7 +8,7 @@ domready(function () {
     pointShape: 'Custom',
     pointSize: 15,
 
-    pointColor: ['#F25', 'green', [40, 60, 230, 255]]
+    pointColor: ['#F25', 'green', [40, 60, 230, 255]],
 
     // Other valid color-values are:
     // pointColor: [100, 100, 255, 255]
@@ -19,7 +19,7 @@ domready(function () {
   });
 
   new globalView.CsvDataset('datasets/iris.data', {
-    columnLabels: ['Sepal Length [cm]', 'Sepal Width [cm]', 'Petal Length [cm]', 'Petal Width [cm]', 'Class']
+    columnLabels: ['Sepal Length [cm]', 'Sepal Width [cm]', 'Petal Length [cm]', 'Petal Width [cm]', 'Class'],
   }, function (dataset) {
     plot.load(dataset, 0, 1, 4, 1);
   });

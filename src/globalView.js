@@ -115,7 +115,7 @@ export function GlobalView(div, startupOptions) {
     const divStyle = window.getComputedStyle(div);
     gl.backColor = divStyle.backgroundColor === 'transparent' ? [0, 0, 0, 0] : libUtility.rgbStringToFloatArray(divStyle.backgroundColor);
     gl.foreColor = libUtility.rgbStringToFloatArray(gl.foreColorString = divStyle.color);
-    gl.clearColor.apply(gl, gl.backColor);
+    gl.clearColor(...gl.backColor);
     // histogramViewer.updateColorSchema();
     coordSys.updateColorSchema();
     colormap.updateColorSchema();
@@ -538,12 +538,12 @@ export function GlobalView(div, startupOptions) {
     if (libUtility.isArray(padding) && padding.length === 4) {
       computedPadding = padding.map((v, i) => Math.floor(libUtility.isString(v) ?
         Number.parseFloat(v) * (v.endsWith('%') ? (i % 2 === 0 ? canvas.width : canvas.height) / 100 : 1) :
-        padding[i])
+        padding[i]),
       );
     } else if(libUtility.isNumber(padding) || libUtility.isString(padding)) {
       computedPadding = Array.create(4, i => Math.floor(libUtility.isString(padding) ?
         Number.parseFloat(padding) * (padding.endsWith('%') ? (i % 2 === 0 ? canvas.width : canvas.height) / 100 : 1) :
-        padding)
+        padding),
       );
     }
 
@@ -551,7 +551,7 @@ export function GlobalView(div, startupOptions) {
       x: computedPadding[3],
       y: computedPadding[2],
       width: canvas.width - computedPadding[3] - computedPadding[1],
-      height: canvas.height - computedPadding[0] - computedPadding[2]
+      height: canvas.height - computedPadding[0] - computedPadding[2],
     };
 
     if (newPlotBounds.x !== plotBounds.x ||
@@ -615,7 +615,7 @@ export function GlobalView(div, startupOptions) {
       default: [50, 60, 50, 50],
       valid: value => libUtility.isNumber(value) || libUtility.isString(value) || (libUtility.isArray(value) && value.length === 4),
       requireRedraw: true,
-      requireRecompile: false
+      requireRecompile: false,
     },
     /** When enabled, shows a colormap to the right of the plot. */
     showColormap: {
@@ -623,7 +623,7 @@ export function GlobalView(div, startupOptions) {
       default: true,
       valid: [true, false],
       requireRedraw: true,
-      requireRecompile: false
+      requireRecompile: false,
     },
     /** When enabled, scrolling above the plot zooms in or out of the data. */
     enableScrolling: {
@@ -631,7 +631,7 @@ export function GlobalView(div, startupOptions) {
       default: true,
       valid: [true, false],
       requireRedraw: false,
-      requireRecompile: false
+      requireRecompile: false,
     },
     /** When enabled, thumbnails can be dragged with the mouse. */
     enableThumbnailDragging: {
@@ -639,7 +639,7 @@ export function GlobalView(div, startupOptions) {
       default: true,
       valid: [true, false],
       requireRedraw: false,
-      requireRecompile: false
+      requireRecompile: false,
     },
 
     // Advanced plot options
@@ -649,7 +649,7 @@ export function GlobalView(div, startupOptions) {
       default: false,
       valid: [true, false],
       requireRedraw: true,
-      requireRecompile: false
+      requireRecompile: false,
     },
     /** Enables/disables blending in WebGL. Whenever using any kind of transparency, this setting should be kept enabled. */
     enableTransparency: {
@@ -657,7 +657,7 @@ export function GlobalView(div, startupOptions) {
       default: true,
       valid: [true, false],
       requireRedraw: true,
-      requireRecompile: false
+      requireRecompile: false,
     },
     /** When enabled, draws an image into the background, that shows density of points. (can be combined with 'showPointClusters') */
     showPointDensity: {
@@ -665,7 +665,7 @@ export function GlobalView(div, startupOptions) {
       default: false,
       valid: [true, false],
       requireRedraw: true,
-      requireRecompile: false
+      requireRecompile: false,
     },
     /** When enabled, draws an image into the background, that shows colored clusters of points. (can be combined with 'showPointDensity') */
     showPointClusters: {
@@ -673,14 +673,14 @@ export function GlobalView(div, startupOptions) {
       default: false,
       valid: [true, false],
       requireRedraw: true,
-      requireRecompile: false
+      requireRecompile: false,
     },
     pointClusterThreshold: {
       description: "Controls the realtive threshold between clusters and outliers when showing clusters (see 'showPointClusters')",
       default: (new libAlgorithm.ClusterMapOptions()).threshold,
       valid: value => value > 0,
       requireRedraw: false, // Requests redraw internally
-      requireRecompile: false
+      requireRecompile: false,
     },
 
     // Histogram options
@@ -690,7 +690,7 @@ export function GlobalView(div, startupOptions) {
       default: false,
       valid: [true, false],
       requireRedraw: true,
-      requireRecompile: false
+      requireRecompile: false,
     },
     /** When enabled, shows a histogram between the y-axis and the plot. */
     showYAxisHistogram: {
@@ -698,7 +698,7 @@ export function GlobalView(div, startupOptions) {
       default: false,
       valid: [true, false],
       requireRedraw: true,
-      requireRecompile: false
+      requireRecompile: false,
     },
     /** When enabled, shows a histogram between the colormap and the plot. */
     showColormapHistogram: {
@@ -706,7 +706,7 @@ export function GlobalView(div, startupOptions) {
       default: false,
       valid: [true, false],
       requireRedraw: true,
-      requireRecompile: false
+      requireRecompile: false,
     },
     /** Controls the number of bins within each histogram in the scatterplot. */
     numHistogramBins: {
@@ -714,7 +714,7 @@ export function GlobalView(div, startupOptions) {
       default: 50,
       valid: value => value >= 1,
       requireRedraw: true,
-      requireRecompile: false
+      requireRecompile: false,
     },
     /** Controls the height of each histogram in the scatterplot (in pixels). */
     histogramHeight: {
@@ -722,7 +722,7 @@ export function GlobalView(div, startupOptions) {
       default: 64,
       valid: value => value >= 0,
       requireRedraw: true,
-      requireRecompile: false
+      requireRecompile: false,
     },
 
     // Point options
@@ -732,7 +732,7 @@ export function GlobalView(div, startupOptions) {
       default: 'Circle',
       valid: ['Rectangle', 'Circle', 'Cross', 'Diamond', 'Gaussian', 'Custom'],
       requireRedraw: true,
-      requireRecompile: true
+      requireRecompile: true,
     },
     /** When 'pointShape' is set to 'Custom', this defines a GLSL function given vec2 p, that returns opacity in the range [0.0 ... 1.0] at location p. */
     customPointShape: {
@@ -740,7 +740,7 @@ export function GlobalView(div, startupOptions) {
       default: '{ return 1.0; }',
       valid: value => libGraphics.validateGLSL(gl, `float opacityMap(in vec2 p) ${value}`),
       requireRedraw: true,
-      requireRecompile: true
+      requireRecompile: true,
     },
     /** Controls the diameter of data points in the scatterplot (in pixels). */
     pointSize: {
@@ -748,7 +748,7 @@ export function GlobalView(div, startupOptions) {
       default: 6,
       valid: value => value >= 0,
       requireRedraw: true,
-      requireRecompile: false
+      requireRecompile: false,
     },
     /** Controls the visibility of data points in the scatterplot between 0 (invisible) and 1 (fully opaque). */
     pointOpacity: {
@@ -756,7 +756,7 @@ export function GlobalView(div, startupOptions) {
       default: 1,
       valid: value => value >= 0 && value <= 1,
       requireRedraw: true,
-      requireRecompile: false
+      requireRecompile: false,
     },
     /** Controls the color of data points in the scatterplot. Valid values are an array of bytes in RGBA order or a colormap name. */
     pointColor: {
@@ -764,7 +764,7 @@ export function GlobalView(div, startupOptions) {
       default: 'exhue',
       valid: value => libColormap.validateColormap(value),
       requireRedraw: true,
-      requireRecompile: false
+      requireRecompile: false,
     },
 
     // Thumbnail options
@@ -774,7 +774,7 @@ export function GlobalView(div, startupOptions) {
       default: 64,
       valid: value => value > 0,
       requireRedraw: true,
-      requireRecompile: false
+      requireRecompile: false,
     },
     /** Controls the width of thumbnail borders in the scatterplot. */
     thumbnailBorderWidth: {
@@ -782,7 +782,7 @@ export function GlobalView(div, startupOptions) {
       default: 1,
       valid: value => value >= 0,
       requireRedraw: true,
-      requireRecompile: false
+      requireRecompile: false,
     },
     /** Controls the color of thumbnail borders in the scatterplot. Valid values are an array of bytes in RGBA order, a color name or 'null'.
       If set to 'null', the CSS foreground color will be used. */
@@ -792,7 +792,7 @@ export function GlobalView(div, startupOptions) {
       default: null,
       valid: value => value === null || libColormap.validateColor(value),
       requireRedraw: true,
-      requireRecompile: false
+      requireRecompile: false,
     },
     /** Controls the color of thumbnail line in the scatterplot. Valid values are an array of bytes in RGBA order, a color name or 'null'.
     If set to 'null', the CSS foreground color will be used. */
@@ -802,7 +802,7 @@ export function GlobalView(div, startupOptions) {
       default: null,
       valid: value => value === null || libColormap.validateColor(value),
       requireRedraw: true,
-      requireRecompile: false
+      requireRecompile: false,
     },
     /** Controls the color of thumbnail labels in the scatterplot. Valid values are an array of bytes in RGBA order, a color name or 'null'.
     If set to 'null', the CSS background color will be used. */
@@ -812,7 +812,7 @@ export function GlobalView(div, startupOptions) {
       default: null,
       valid: value => value === null || libColormap.validateColor(value),
       requireRedraw: true,
-      requireRecompile: false
+      requireRecompile: false,
     },
     /** When enabled, links thumbnails to points using unique labels instead of lines. */
     labelThumbnails: {
@@ -820,8 +820,8 @@ export function GlobalView(div, startupOptions) {
       default: false,
       valid: [true, false],
       requireRedraw: true,
-      requireRecompile: false
-    }
+      requireRecompile: false,
+    },
   };
 
   const pushedOptions = [];
@@ -1436,19 +1436,19 @@ export function GlobalView(div, startupOptions) {
     const labelWidthOffset = 1.0 + ((libImageViewer.LABEL_HEIGHT + (2 * libImageViewer.LABEL_WIDTH)) / options.thumbnailSize);
     const bl = [
       tf.getMinimum(0) - ((imageSize[d0] * 0.6) / plotBounds.width),
-      tf.getMinimum(1) - ((imageSize[d1] * 0.6) / plotBounds.height)
+      tf.getMinimum(1) - ((imageSize[d1] * 0.6) / plotBounds.height),
     ];
     const tl = [
       tf.getMinimum(0) - ((imageSize[d0] * 0.6) / plotBounds.width),
-      tf.getMaximum(1) + ((imageSize[d1] * labelHeightOffset * 0.8) / plotBounds.height)
+      tf.getMaximum(1) + ((imageSize[d1] * labelHeightOffset * 0.8) / plotBounds.height),
     ];
     const tr = [
       tf.getMaximum(0) + ((imageSize[d0] * labelWidthOffset * 0.6) / plotBounds.width),
-      tf.getMaximum(1) + ((imageSize[d1] * labelHeightOffset * 0.8) / plotBounds.height)
+      tf.getMaximum(1) + ((imageSize[d1] * labelHeightOffset * 0.8) / plotBounds.height),
     ];
     const br = [
       tf.getMaximum(0) + ((imageSize[d0] * labelWidthOffset * 0.6) / plotBounds.width),
-      tf.getMinimum(1) - ((imageSize[d1] * 0.6) / plotBounds.height)
+      tf.getMinimum(1) - ((imageSize[d1] * 0.6) / plotBounds.height),
     ];
     tf.datasetCoordToDeviceCoord(bl, bl);
     tf.datasetCoordToDeviceCoord(tl, tl);
@@ -2355,7 +2355,7 @@ export function GlobalView(div, startupOptions) {
   gl.enable(gl.BLEND);
   gl.blendEquationSeparate(gl.FUNC_ADD, gl.FUNC_ADD);
   gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE);
-  gl.clearColor.apply(gl, gl.backColor);
+  gl.clearColor(...gl.backColor);
 
   // Hook to window-resize event and fire once for initial setup
   window.addEventListener('resize', onresize, false);

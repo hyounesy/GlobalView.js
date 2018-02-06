@@ -9,7 +9,7 @@ function EmptyDataset(n) {
 domready(function () {
   const plot = new globalView.GlobalView(document.getElementById('divGlobalView'), {
     pointSize: 1.5,
-    pointColor: 'white'
+    pointColor: 'white',
   });
   const dataset = new EmptyDataset(10000);
   dataset.dataVectors.push(new globalView.DataVector(dataset, 'i'));

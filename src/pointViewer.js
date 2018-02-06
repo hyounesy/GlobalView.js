@@ -126,6 +126,7 @@ export function PointViewer(gl, globalView) {
       return;
     }
 
+    /* eslint-disable prefer-spread */
     meshDataPoints.sdr.bind();
     meshDataPoints.sdr.offsets.apply(meshDataPoints.sdr, tf.getOffsets());
     meshDataPoints.sdr.scales.apply(meshDataPoints.sdr, tf.getScales());
@@ -147,6 +148,7 @@ export function PointViewer(gl, globalView) {
         pointSet.renderLines(pointSet.colormap ? pointSet.colormap : colormapTexture, pointDrag);
       });
     }
+    /* eslint-enable prefer-spread */
   };
 
   this.setDataset = function (dataset, options) {

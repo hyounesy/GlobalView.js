@@ -11,7 +11,7 @@ const COLUMN_NAMES = [
   'Nuclear surface area (µm²)',
   'Cellular surface area (µm²)',
   'Radial proximity (unitless)',
-  'Apical proximity (unitless)'
+  'Apical proximity (unitless)',
 ];
 const COLUMN_HINTS = [
   '',
@@ -20,7 +20,7 @@ const COLUMN_HINTS = [
   '<b>Nuclear surface area:</b> the surface area of a nucleus of a given cell as measured by segmented pixels and associated edge length, in units of µm².',
   '<b>Cell surface area:</b> the surface area of a cell, as measured by segmented pixels and associated edge length, in units of µm².',
   '<b>Radial proximity:</b> an intensity-derived image feature, defined as the optical intensity of a structure found in the more external shell of a roughly columnar cell (closer to the cell exterior) as compared to the more internal columnar core of the same cell (closer to the cell center), scaled from -1 to 1. A cell in which all of the fluorescence intensity was at the center of the cell would have a radial proximity of -1; whereas a structure that was at cell boundary would have a radial proximity of 1.',
-  '<b>Apical proximity:</b> an intensity-derived image feature, defined as the optical intensity of a structure found in the top (apical) half of a roughly columnar cell as compared to the basal (bottom) half of this cell, scaled from -1 to 1. A cell in which all of the fluorescent intensity was in the top half would have an apical proximity of 1; whereas a structure that was evenly distributed between the apical and basal halves would have an apical proximity of 0.'
+  '<b>Apical proximity:</b> an intensity-derived image feature, defined as the optical intensity of a structure found in the top (apical) half of a roughly columnar cell as compared to the basal (bottom) half of this cell, scaled from -1 to 1. A cell in which all of the fluorescent intensity was in the top half would have an apical proximity of 1; whereas a structure that was evenly distributed between the apical and basal halves would have an apical proximity of 0.',
 ];
 let plot;
 const pointsByProtein = {};
@@ -31,7 +31,7 @@ domready(function () {
     pointSize: 8,
     pointOpacity: 0.3,
     pointColor: ['#A6CEE3', '#B2DF8A', '#33A02C', '#FB9A99', '#FDBF6F', '#FF7F00', '#CAB2D6', '#6A3D9A', '#FFFF99', '#4D61BF'],
-    padding: [8, 152, 50, 50]
+    padding: [8, 152, 50, 50],
   });
   plot.onMouseDown = plot_onMouseDown;
   plot.onMouseOverDatapoint = plot_onMouseOverDatapoint;
@@ -46,7 +46,7 @@ domready(function () {
     hasHeader: true,
     nameColumn: 1,
     columnLabels: COLUMN_NAMES,
-    imageFilenames: data => `${imagesPath + data[1]}.png`
+    imageFilenames: data => `${imagesPath + data[1]}.png`,
   }, function (dataset) {
     plot.load(dataset, 2, 4, 0, 3);
     plot.getCharacteristicPoints(8, 1, function (characteristicPoints) {
@@ -187,7 +187,7 @@ Tagged Protein: {1}
         COLUMN_NAMES[xAxisColumn],
         dataset.data[(index * nc) + xAxisColumn],
         COLUMN_NAMES[yAxisColumn],
-        dataset.data[(index * nc) + yAxisColumn]
+        dataset.data[(index * nc) + yAxisColumn],
       );
   }
 }

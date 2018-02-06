@@ -15,7 +15,7 @@ const libGlMatrix = require('gl-matrix');
 export function HistogramViewer(gl, globalView) {
   const sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
   sdrLine.color = sdrLine.u4f('color');
-  sdrLine.color.apply(sdrLine, gl.foreColor);
+  sdrLine.color(...gl.foreColor);
   sdrLine.matWorldViewProj = sdrLine.u4x4f('matWorldViewProj');
 
   /* this.updateColorSchema = function() {
@@ -26,7 +26,7 @@ export function HistogramViewer(gl, globalView) {
   const meshLine = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
     0, 0, 0,
-    1, 0, 0
+    1, 0, 0,
   ]), null, null, null, null, null, gl.LINES);
 
   let dataset = null,
@@ -35,7 +35,7 @@ export function HistogramViewer(gl, globalView) {
   const axes = [
     {histogram: null, d: -1, meshHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.TRIANGLES), meshLineHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP)},
     {histogram: null, d: -1, meshHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.TRIANGLES), meshLineHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP)},
-    {histogram: null, d: -1, meshHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.TRIANGLES), meshLineHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP)}
+    {histogram: null, d: -1, meshHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.TRIANGLES), meshLineHistogram: new libGraphics.Mesh(gl, new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP)},
   ];
 
   this.render = function (flipY, tf, plotBounds) {
@@ -46,12 +46,12 @@ export function HistogramViewer(gl, globalView) {
     tf.datasetCoordToDeviceCoord(pos, [
       axes[0].histogram ? axes[0].histogram.invTransformX(0) : 0.0,
       axes[1].histogram ? axes[1].histogram.invTransformX(0) : 0.0,
-      axes[2].histogram ? axes[2].histogram.invTransformX(0) : 0.0]
+      axes[2].histogram ? axes[2].histogram.invTransformX(0) : 0.0],
     );
     tf.datasetDistToDeviceDist(scl, [
       axes[0].histogram ? axes[0].histogram.width / axes[0].histogram.transform[0] : 1.0,
       axes[1].histogram ? axes[1].histogram.width / axes[1].histogram.transform[0] : 1.0,
-      axes[2].histogram ? axes[2].histogram.width / axes[2].histogram.transform[0] : 1.0]
+      axes[2].histogram ? axes[2].histogram.width / axes[2].histogram.transform[0] : 1.0],
     );
 
     // Transform color-dimension from [0 ... 1] to [plotBounds.y .. plotBounds.y + plotBounds.height] in device y-space -> pos[2], scl[2]
@@ -88,7 +88,7 @@ export function HistogramViewer(gl, globalView) {
       axis.meshHistogram.bind(sdrLine, null);
       axis.meshHistogram.draw();
 
-      sdrLine.color.apply(sdrLine, gl.foreColor);
+      sdrLine.color(...gl.foreColor);
       axis.meshLineHistogram.bind(sdrLine, null);
       axis.meshLineHistogram.draw();
 
@@ -127,7 +127,7 @@ export function HistogramViewer(gl, globalView) {
       axis.meshHistogram.bind(sdrLine, null);
       axis.meshHistogram.draw();
 
-      sdrLine.color.apply(sdrLine, gl.foreColor);
+      sdrLine.color(...gl.foreColor);
       axis.meshLineHistogram.bind(sdrLine, null);
       axis.meshLineHistogram.draw();
 
@@ -170,7 +170,7 @@ export function HistogramViewer(gl, globalView) {
       axis.meshHistogram.bind(sdrLine, null);
       axis.meshHistogram.draw();
 
-      sdrLine.color.apply(sdrLine, gl.foreColor);
+      sdrLine.color(...gl.foreColor);
       axis.meshLineHistogram.bind(sdrLine, null);
       axis.meshLineHistogram.draw();
 

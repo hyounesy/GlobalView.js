@@ -163,7 +163,7 @@ domready(() => {
               expectedImageData.data, testImageData.data, diffData,
               imageWidth, imageHeight, {
                 threshold: 0.001,
-              }
+              },
             );
             if (errorPixels === 0) {
               testResult.success = true;

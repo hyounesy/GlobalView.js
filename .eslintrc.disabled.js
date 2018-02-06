@@ -261,7 +261,14 @@ module.exports = {
         "brace-style": 2,                       // enforce consistent brace style for blocks
         "camelcase": 0,                         // enforce camelcase naming convention
         "capitalized-comments": 0,              // enforce or disallow capitalization of the first letter of a comment
-        "comma-dangle": 0,                      // require or disallow trailing commas
+        // require trailing commas in multiline object literals
+        'comma-dangle': ['error', {
+          arrays: 'always-multiline',
+          objects: 'always-multiline',
+          imports: 'always-multiline',
+          exports: 'always-multiline',
+          functions: 'always-multiline',
+        }],
         "comma-spacing": 2,                     // enforce consistent spacing before and after commas
         "comma-style": 0,                       // enforce consistent comma style
         "computed-property-spacing": 0,         // enforce consistent spacing inside computed property brackets
@@ -361,7 +368,7 @@ module.exports = {
           overrides: {
           },
         }],
-        "spaced-comment": 0,                    // enforce consistent spacing after the // or /* in a comment
+        "spaced-comment": 'error',                    // enforce consistent spacing after the // or /* in a comment
         "switch-colon-spacing": 0,              // enforce spacing around colons of switch statements
         "template-tag-spacing": 0,              // require or disallow spacing between template tags and their literals
         "unicode-bom": 0,                       // require or disallow Unicode byte order mark (BOM)
@@ -396,7 +403,7 @@ module.exports = {
         "prefer-destructuring": 0,              // require destructuring from arrays and/or objects
         "prefer-numeric-literals": 0,           // disallow parseInt() and Number.parseInt() in favor of binary, octal, and hexadecimal literals
         "prefer-rest-params": 'error',                // require rest parameters instead of arguments
-        "prefer-spread": 0,                     // require spread operators instead of .apply()
+        "prefer-spread": 'error',                     // require spread operators instead of .apply()
         "prefer-template": 'error',                   // require template literals instead of string concatenation
         "require-yield": 0,                     // require generator functions to contain yield
         "rest-spread-spacing": 0,               // enforce spacing between rest and spread operators and their expressions

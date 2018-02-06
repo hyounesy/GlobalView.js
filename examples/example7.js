@@ -8,7 +8,7 @@ const COLUMN_NAMES = [
   'Nuclear surface area (µm²)',
   'Cellular surface area (µm²)',
   'Radial proximity (unitless)',
-  'Apical proximity (unitless)'
+  'Apical proximity (unitless)',
 ];
 
 let plots = null;
@@ -23,7 +23,7 @@ domready(function () {
     pointSize: 3,
     pointOpacity: 0.6,
     pointColor: ['#A6CEE3', '#B2DF8A', '#33A02C', '#FB9A99', '#FDBF6F', '#FF7F00', '#CAB2D6', '#6A3D9A', '#FFFF99', '#4D61BF'],
-    thumbnailSize: 16
+    thumbnailSize: 16,
   };
   const NUM_THUMBNAILS = 16;
   const DENSITY_RATIO = 0.5;
@@ -42,7 +42,7 @@ domready(function () {
     hasHeader: true,
     nameColumn: 1,
     columnLabels: COLUMN_NAMES,
-    imageFilenames: data => `${imagesPath + data[1]}.png`
+    imageFilenames: data => `${imagesPath + data[1]}.png`,
   }, function (dataset) {
     const ndim = Math.min(2, dataset.dataVectors.length - 1); // -1 ... Adjust number of dataVectors, since we don't plot dataVectors[0] (tagged protein)
     const subPlotWidth = PLOT_SIZE / ndim;
@@ -67,7 +67,7 @@ domready(function () {
         l: dataset.dataVectors[x].minimum - thumbnailWidth,
         r: dataset.dataVectors[x].maximum + thumbnailWidth,
         t: dataset.dataVectors[y].minimum - thumbnailHeight,
-        b: dataset.dataVectors[y].maximum + thumbnailHeight
+        b: dataset.dataVectors[y].maximum + thumbnailHeight,
       });
       plot.selectedPoints = plot.createPointSet('red', 1);
 

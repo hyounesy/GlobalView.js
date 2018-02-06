@@ -8,7 +8,7 @@ const preStatus = document.getElementById('preStatus');
 
 domready(function () {
   plot = new globalView.GlobalView(document.getElementById('divGlobalView'), {
-    pointShape: 'Cross'
+    pointShape: 'Cross',
   });
 
   new globalView.RandomDataset(1000, 2, function (dataset) {

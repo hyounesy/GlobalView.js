@@ -17,7 +17,7 @@ export const FormulaCompiler = {
     FormulaCompiler.types.vec3.memberTypes = {
       x: FormulaCompiler.types.float,
       y: FormulaCompiler.types.float,
-      z: FormulaCompiler.types.float
+      z: FormulaCompiler.types.float,
     };
     /**
      * An enum, mapping function signatures to return types
@@ -590,16 +590,16 @@ export const FormulaCompiler = {
       scope = postOpScope;
     }
     return SP === 0 ? null : (SP === 1 ? stack[0] : stack.slice(0, SP));
-  }
+  },
 };
 FormulaCompiler.types = {
   float: { name: 'float' },
-  vec3: { name: 'vec3' }
+  vec3: { name: 'vec3' },
 };
 FormulaCompiler.types.vec3.members = {
   x: {index: 0, type: FormulaCompiler.types.float},
   y: {index: 1, type: FormulaCompiler.types.float},
-  z: {index: 2, type: FormulaCompiler.types.float}
+  z: {index: 2, type: FormulaCompiler.types.float},
 };
 
 function verboseTest(formula, symbols, symbolTypes) {

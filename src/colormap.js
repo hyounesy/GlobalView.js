@@ -45,15 +45,15 @@ export function Colormap(gl, globalView) {
 
   const sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
   sdrLine.color = sdrLine.u4f('color');
-  sdrLine.color.apply(sdrLine, gl.foreColor);
+  sdrLine.color(...gl.foreColor);
   sdrLine.matWorldViewProj = sdrLine.u4x4f('matWorldViewProj');
   this.updateColorSchema = function () {
-    sdrLine.color.apply(sdrLine, gl.foreColor);
+    sdrLine.color(...gl.foreColor);
   };
 
   const sdrColormap = new libGraphics.Shader(
     gl, libShaders.Shaders.vsTextured,
-    libShaders.Shaders.fsTextured1D
+    libShaders.Shaders.fsTextured1D,
   );
   sdrColormap.matWorldViewProj = sdrColormap.u4x4f('matWorldViewProj');
   colormaps = {
@@ -66,8 +66,8 @@ export function Colormap(gl, globalView) {
     2: libGraphics.LoadTextureFromByteArray(
       gl,
       new Uint8Array([255, 0, 0, 255, 0, 255, 0, 255]),
-      2, 1
-    )
+      2, 1,
+    ),
   };
   // not used:
   // this.builtinColormaps = ['exhue', 'rainbow'];
@@ -77,7 +77,7 @@ export function Colormap(gl, globalView) {
   const meshLine = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
     0, 0, 0,
-    1, 0, 0
+    1, 0, 0,
   ]), null, null, null, null, null, gl.LINES);
 
   // Create a 2D line quad mesh
@@ -86,7 +86,7 @@ export function Colormap(gl, globalView) {
     0, 0, 0,
     1, 0, 0,
     1, 1, 0,
-    0, 1, 0
+    0, 1, 0,
   ]), null, null, null, null, null, gl.LINE_LOOP);
 
   // Create a 2D quad mesh
@@ -95,13 +95,13 @@ export function Colormap(gl, globalView) {
     0, 1, 0,
     0, 0, 0,
     1, 1, 0,
-    1, 0, 0
+    1, 0, 0,
   ]), null, null, null, new Float32Array([
     // Texture coordinates
     0, 1,
     0, 0,
     1, 1,
-    1, 0
+    1, 0,
   ]));
 
   const axis = {minimum: 0, maximum: 100, values: null, tickOffset: 0, tickDistance: 10, tickCount: 11, tickLength: TICK_LENGTH};

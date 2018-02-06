@@ -42,7 +42,7 @@ domready(function () {
     // showYAxisHistogram: true,
     // showColormapHistogram: true,
     // pointColor: "white"//"#AAF"
-    padding: [50, 80, 50, 50]
+    padding: [50, 80, 50, 50],
   });
   plot.onMouseDown = function (event) {
     switch (event.button) {
@@ -327,7 +327,7 @@ function cbShowHistograms_onChange(sender) {
     showXAxisHistogram: sender.checked,
     showYAxisHistogram: sender.checked,
     showColormapHistogram: sender.checked,
-    padding: padding
+    padding: padding,
   });
 }
 function rVariance_onChange(sender) {
@@ -432,7 +432,7 @@ function onMouseOverDatapoint(dataset, index) {
     if (dataset.data) {
       const nc = dataset.numColumns;
       pDataPoint.innerText = dataset.dataVectors.map(dataVector =>
-        `${dataVector.label}: ${dataVector.values ? dataVector.values[Math.floor(dataVector.getValue(index))] : dataVector.getValue(index)}`
+        `${dataVector.label}: ${dataVector.values ? dataVector.values[Math.floor(dataVector.getValue(index))] : dataVector.getValue(index)}`,
       ).join('\n');
     } else {
       pDataPoint.innerText = dataset.names ? dataset.names[index] : `datapoint ${index}`;

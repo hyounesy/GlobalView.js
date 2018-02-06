@@ -52,14 +52,14 @@ export function DataVector(dataset, source) {
     const globalTypes = {
       n: libFormulaCompiler.FormulaCompiler.types.float,
       PI: libFormulaCompiler.FormulaCompiler.types.float,
-      i: libFormulaCompiler.FormulaCompiler.types.float
+      i: libFormulaCompiler.FormulaCompiler.types.float,
     };
     for (let c = 0; c < nc; c += 1) {
       globalTypes[`c${c}`] = libFormulaCompiler.FormulaCompiler.types.float;
     }
     const globals = {
       n: dataset.length,
-      PI: Math.PI
+      PI: Math.PI,
     };
 
     const code = libFormulaCompiler.FormulaCompiler.compile(`${source};`, globalTypes);
@@ -270,7 +270,7 @@ export function Dataset() {
         p.require(libAlgorithm.computeDensityMap);
         p.spawn(params =>
           // the following code will be evaled from a blob in Parallel. so no need for libAlgorithm.
-          computeDensityMap.apply(null, params)
+          computeDensityMap.apply(null, params), // eslint-disable-line prefer-spread
         ).then((densityMap) => {
           densityMap = new libAlgorithm.DensityMap(densityMap);
           // Free histogram
@@ -392,7 +392,7 @@ export function Dataset() {
           p.require(libUtility.PriorityQueue);
           p.spawn(params =>
             // the following code will be evaled from a blob in Parallel. so no need for libAlgorithm.
-            computeClusterMap.apply(null, params)
+            computeClusterMap.apply(null, params), // eslint-disable-line prefer-spread
           ).then((clusterMap) => {
             clusterMap = new libAlgorithm.ClusterMap(clusterMap);
             // Set _clusterMaps[d0][d1]
@@ -606,36 +606,36 @@ const CSV_DATASET_OPTIONS = {
   autoDetect: {
     description: 'When true, tries to infer other options based on the structure of the dataset (slow).',
     default: false,
-    valid: [true, false]
+    valid: [true, false],
   },
 
   /** When true, interprets the first row of the dataset as column labels. */
   hasHeader: {
     description: 'When true, interprets the first row of the dataset as column labels.',
     default: false,
-    valid: [true, false]
+    valid: [true, false],
   },
 
   /** Index of a column of the dataset that contains data point names. */
   nameColumn: {
     description: 'Index of a column of the dataset that contains data point names.',
     default: null,
-    valid: null
+    valid: null,
   },
 
   /** An array of column labels, or a function that takes the column index as input and returns the column label. */
   columnLabels: {
     description: 'An array of column labels, or a function that takes the column index as input and returns the column label.',
     default: null,
-    valid: null
+    valid: null,
   },
 
   /** An array of image URLs, or a function that takes a row of data and the row index as input and returns a URL to an image of the data point. */
   imageFilenames: {
     description: 'An array of image URLs, or a function that takes a row of data and the row index as input and returns a URL to an image of the data point.',
     default: null,
-    valid: null
-  }
+    valid: null,
+  },
 };
 
 /**
