@@ -126,7 +126,7 @@ function BenchmarkDialog() {
     csv = [csvHeader];
 
     n = -1;
-    benchmarkOptionIndices = {}
+    benchmarkOptionIndices = {};
     for (option in benchmarkOptions) {
       benchmarkOptionIndices[option] = 0;
     }

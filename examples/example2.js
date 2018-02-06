@@ -20,7 +20,7 @@ domready(function () {
   taOptions.value = JSON.stringify(plot.getOptions(), null, 4);
 
   document.getElementById('taOptions').addEventListener('input', function () {
-    tOptions_onChange(document.getElementById('taOptions'))
+    tOptions_onChange(document.getElementById('taOptions'));
   });
 });
 
@@ -28,7 +28,7 @@ function tOptions_onChange(sender) {
   let options;
 
   try {
-    options = JSON.parse(taOptions.value)
+    options = JSON.parse(taOptions.value);
   } catch (exception) {
     preStatus.innerText = exception.message;
     return;

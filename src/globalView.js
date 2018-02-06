@@ -120,7 +120,7 @@ export function GlobalView(div, startupOptions) {
     coordSys.updateColorSchema();
     colormap.updateColorSchema();
     this.invalidate();
-  }
+  };
 
   const trc = new libTextRenderContext.TextRenderContext(gl, canvas);
   // trc.setFont("10px monospace");
@@ -134,7 +134,7 @@ export function GlobalView(div, startupOptions) {
     const divStyle = window.getComputedStyle(div);
     trc.setFont(divStyle.fontSize + ' ' + divStyle.fontFamily);
     this.invalidate();
-  }
+  };
 
   let t = performance.now(),
     dt = 0.1,
@@ -253,7 +253,7 @@ export function GlobalView(div, startupOptions) {
       invalidating = true;
       webglUtils.requestAnimFrame(render);
     }
-  }
+  };
   let reresizeTimer = null;
   function onresize () {
     const rect = canvas.getBoundingClientRect();
@@ -311,7 +311,7 @@ export function GlobalView(div, startupOptions) {
       if (d === activeInputs[0] || d === activeInputs[1] || d === activeInputs[2]) {
         globalView.invalidate();
       }
-    }
+    };
     this.translate = function (d, distance) {
       dataset.dataVectors[d].offset += distance * dataset.dataVectors[d].scale;
       invalid = true;
@@ -328,7 +328,7 @@ export function GlobalView(div, startupOptions) {
       if (d === activeInputs[0] || d === activeInputs[1] || d === activeInputs[2]) {
         globalView.invalidate();
       }
-    }
+    };
     this.scale = function (d, factor) {
       dataset.dataVectors[d].scale *= factor;
       invalid = true;
@@ -345,40 +345,40 @@ export function GlobalView(div, startupOptions) {
       if (d === activeInputs[0] || d === activeInputs[1] || d === activeInputs[2]) {
         globalView.invalidate();
       }
-    }
+    };
     this.onInputChanged = () => invalid = true;
 
     // Getter methods
     this.getOffset = function (d) {
       return dataset.dataVectors[activeInputs[d]].offset;
-    }
+    };
     this.getScale = function (d) {
       return dataset.dataVectors[activeInputs[d]].scale;
-    }
+    };
     this.getMinimum = function (d) {
       return dataset.dataVectors[activeInputs[d]].minimum;
-    }
+    };
     this.getMaximum = function (d) {
       return dataset.dataVectors[activeInputs[d]].maximum;
-    }
+    };
     this.getVisibleMinimum = function (d) {
       return (0 - dataset.dataVectors[activeInputs[d]].offset) / dataset.dataVectors[activeInputs[d]].scale;
-    }
+    };
     this.getVisibleMaximum = function (d) {
       return (1 - dataset.dataVectors[activeInputs[d]].offset) / dataset.dataVectors[activeInputs[d]].scale;
-    }
+    };
     this.getOffsets = function () {
       if (invalid === true) {
         recompute();
       }
       return offsets;
-    }
+    };
     this.getScales = function () {
       if (invalid === true) {
         recompute();
       }
       return scales;
-    }
+    };
     this.getAnimatedScales = function () {
       if (invalid === true) {
         recompute();
@@ -396,7 +396,7 @@ export function GlobalView(div, startupOptions) {
         vOut[d] = (vIn[d] - offsets[d]) / scales[d];
       }
       return vOut;
-    }
+    };
     this.deviceDistToDatasetDist = function (vOut, vIn) {
       if (invalid === true) {
         invalid = false;
@@ -406,7 +406,7 @@ export function GlobalView(div, startupOptions) {
         vOut[d] = vIn[d] / scales[d];
       }
       return vOut;
-    }
+    };
     this.datasetCoordToDeviceCoord = function (vOut, vIn) {
       if (invalid === true) {
         invalid = false;
@@ -416,7 +416,7 @@ export function GlobalView(div, startupOptions) {
         vOut[d] = offsets[d] + (vIn[d] * scales[d]);
       }
       return vOut;
-    }
+    };
     this.datasetDistToDeviceDist = function (vOut, vIn) {
       if (invalid === true) {
         invalid = false;
@@ -426,7 +426,7 @@ export function GlobalView(div, startupOptions) {
         vOut[d] = vIn[d] * scales[d];
       }
       return vOut;
-    }
+    };
     this.transformPos = function (vOut, vIn) {
       if (invalid === true) {
         invalid = false;
@@ -436,7 +436,7 @@ export function GlobalView(div, startupOptions) {
         vOut[d] = offsets[d] + (vIn[activeInputs[d]] * scales[d]);
       }
       return vOut;
-    }
+    };
     this.transformNml = function (vOut, vIn) {
       if (invalid === true) {
         invalid = false;
@@ -446,7 +446,7 @@ export function GlobalView(div, startupOptions) {
         vOut[d] = vIn[activeInputs[d]] * scales[d];
       }
       return vOut;
-    }
+    };
     this.transformNml2 = function (vOut, vIn) {
       if (invalid === true) {
         invalid = false;
@@ -456,7 +456,7 @@ export function GlobalView(div, startupOptions) {
         vOut[d] = vIn[activeInputs[d]] * dataset.dataVectors[activeInputs[d]].scale;
       }
       return vOut;
-    }
+    };
 
     // Methods modifying offsets, scales and animatedScales
     function recompute() {
@@ -527,12 +527,12 @@ export function GlobalView(div, startupOptions) {
       animatedScales[1] *= (2 * plotBounds.height) / gl.height;
 
       return isAnimating;
-    }
+    };
   }
 
   this.getPlotBounds = function () {
     return plotBounds;
-  }
+  };
   function setPlotBounds(padding) {
     let computedPadding;
     if (libUtility.isArray(padding) && padding.length === 4) {
@@ -560,7 +560,7 @@ export function GlobalView(div, startupOptions) {
       newPlotBounds.height !== plotBounds.height) {
       viewers.forEach(viewer => viewer.onPlotBoundsChanged(plotBounds = newPlotBounds));
     } else {
-      plotBounds = newPlotBounds
+      plotBounds = newPlotBounds;
     }
   }
 
@@ -574,7 +574,7 @@ export function GlobalView(div, startupOptions) {
     for (let v = 0; v < nv; v += 1) {
       tf.setFromMinMax(v, dataset.dataVectors[v].minimum, dataset.dataVectors[v].maximum);
     }
-  }
+  };
 
   /**
    * @summary Zoom currently visible x- and y- dimensions to exactly fit all data points
@@ -586,7 +586,7 @@ export function GlobalView(div, startupOptions) {
     // Compute offsets and scales to fit dataset inside view
     tf.setFromMinMax(d0, dataset.dataVectors[d0].minimum, dataset.dataVectors[d0].maximum);
     tf.setFromMinMax(d1, dataset.dataVectors[d1].minimum, dataset.dataVectors[d1].maximum);
-  }
+  };
 
   /**
    * @summary Zoom currently visible x- and y- dimensions to the given bounds in data space
@@ -598,7 +598,7 @@ export function GlobalView(div, startupOptions) {
 
     tf.setFromMinMax(d0, rect.l, rect.r);
     tf.setFromMinMax(d1, rect.t, rect.b);
-  }
+  };
 
   // >>> Options
 
@@ -888,7 +888,7 @@ export function GlobalView(div, startupOptions) {
     options[option] = value;
 
     onOptionsChanged.call(this, optionDefinition.requireRedraw, optionDefinition.requireRecompile);
-  }
+  };
 
   /**
    * @summary Sets multiple options
@@ -917,7 +917,7 @@ export function GlobalView(div, startupOptions) {
         console.warn('GlobalView warning: Invalid value for option ' + option + ': ' + value);
         if (libUtility.isString(validationResult)) {
           // HY:
-          validationResult = optionDefinition.valid(value)
+          validationResult = optionDefinition.valid(value);
           console.warn('                    ' + validationResult);
         }
         continue;
@@ -931,7 +931,7 @@ export function GlobalView(div, startupOptions) {
     }
 
     onOptionsChanged.call(this, requireRedraw, requireRecompile);
-  }
+  };
 
   /**
    * @summary Sets the given option to its default value
@@ -946,7 +946,7 @@ export function GlobalView(div, startupOptions) {
     const optionDefinition = OPTIONS[option];
 
     this.setOption(option, optionDefinition.default);
-  }
+  };
 
   /**
    * @summary Sets all options to their respective defaults
@@ -959,7 +959,7 @@ export function GlobalView(div, startupOptions) {
       }
     }
     this.setOptions(defaultOptions);
-  }
+  };
 
   /**
    * @summary Checks the given option for errors without setting it
@@ -982,7 +982,7 @@ export function GlobalView(div, startupOptions) {
     }
 
     return true;
-  }
+  };
 
   /**
    * @summary Checks multiple options for errors without setting them
@@ -1014,7 +1014,7 @@ export function GlobalView(div, startupOptions) {
     }
 
     return errors.length === 0 ? true : errors.join('\n');
-  }
+  };
 
   /**
    * @summary Returns the value assigned to the given option
@@ -1023,7 +1023,7 @@ export function GlobalView(div, startupOptions) {
    */
   this.getOption = function (option) {
     return options[option];
-  }
+  };
 
   /**
    * @summary Returns a JavaScript object of all options and their values
@@ -1031,7 +1031,7 @@ export function GlobalView(div, startupOptions) {
    */
   this.getOptions = function () {
     return /** @type {Object} */(JSON.parse(JSON.stringify(options)));
-  }
+  };
 
   /**
    * @summary Save all options
@@ -1039,7 +1039,7 @@ export function GlobalView(div, startupOptions) {
   this.pushOptions = function () {
     pushedOptions.push(options);
     // options = {};
-  }
+  };
 
   /**
    * @summary Recall the options last saved with {@link GlobalView#pushOptions}
@@ -1048,7 +1048,7 @@ export function GlobalView(div, startupOptions) {
     if (pushedOptions.length !== 0) {
       this.setOptions(pushedOptions.pop());
     }
-  }
+  };
 
   // >>> Dataset interaction
 
@@ -1125,7 +1125,7 @@ export function GlobalView(div, startupOptions) {
 
     // Redraw
     this.invalidate();
-  }
+  };
 
   /**
    * Assign dataset column c to axis d
@@ -1154,7 +1154,7 @@ export function GlobalView(div, startupOptions) {
     if (d < 3) {
       this.invalidate();
     }
-  }
+  };
 
   /**
    * Get column assigned to axis c
@@ -1163,7 +1163,7 @@ export function GlobalView(div, startupOptions) {
    */
   this.getActiveColumn = function (d) {
     return d >= 0 && d < activeInputs.length ? activeInputs[d] : -1;
-  }
+  };
 
 
   /**
@@ -1188,7 +1188,7 @@ export function GlobalView(div, startupOptions) {
       const characteristicPoints = libAlgorithm.findRepresentativePoints2(dataset, d0, d1, densityMap, n, densityRatio);
       ondone(characteristicPoints);
     });
-  }
+  };
 
   // >>> Annotation
 
@@ -1209,7 +1209,7 @@ export function GlobalView(div, startupOptions) {
 
     imageViewer.clearImages();
     this.invalidate();
-  }
+  };
   /**
    */
   this.showData2D = function () {
@@ -1249,7 +1249,7 @@ export function GlobalView(div, startupOptions) {
       }
       // downloadDensityMap(densityMap);
     });
-  }
+  };
 
 
   /**
@@ -1306,7 +1306,7 @@ export function GlobalView(div, startupOptions) {
         imageViewer.showImage(dataset.imageFilenames[index], index, dataPos, imagePos, imageSize);
       });
     }
-  }
+  };
 
   /**
    * @summary A shorthand function to `showImages(index, "lowDensity")`
@@ -1338,7 +1338,7 @@ export function GlobalView(div, startupOptions) {
     }
     points.forEach(i => globalView.showImage_lowDensity(i));
     imageViewer.resolveIntersections(tf);
-  }
+  };
 
 
   /**
@@ -1348,7 +1348,7 @@ export function GlobalView(div, startupOptions) {
   this.showImage_none = function (index) {
     const dataPos = dataset.dataVectors.map(v => v.getValue(index));
     imageViewer.showImage(dataset.imageFilenames[index], index, dataPos);
-  }
+  };
 
   /**
    * @summary A shorthand function to `showImages(index, "none")`
@@ -1359,7 +1359,7 @@ export function GlobalView(div, startupOptions) {
       const dataPos = dataset.dataVectors.map(v => v.getValue(p));
       imageViewer.showImage(dataset.imageFilenames[p], p, dataPos);
     });
-  }
+  };
 
 
   /**
@@ -1370,7 +1370,7 @@ export function GlobalView(div, startupOptions) {
     const dataPos = dataset.dataVectors.map(v => v.getValue(index));
     const imageSize = dataset.dataVectors.map(v => options.thumbnailSize * (v.maximum - v.minimum));
     imageViewer.showImage(dataset.imageFilenames[index], index, dataPos, dataPos, imageSize, 'bottomleft');
-  }
+  };
 
   /**
    * @summary A shorthand function to `showImages(index, "adjacent")`
@@ -1378,7 +1378,7 @@ export function GlobalView(div, startupOptions) {
    */
   this.showImages_adjacent = function (points) {
     points.forEach(i => globalView.showImage_adjacent(i));
-  }
+  };
 
 
   /**
@@ -1582,7 +1582,7 @@ export function GlobalView(div, startupOptions) {
     });
 
     imageViewer.resolveIntersections(tf);
-  }
+  };
 
 
   /**
@@ -1602,7 +1602,7 @@ export function GlobalView(div, startupOptions) {
       case 'project': console.warn("GlobalView warning: Can't place a single image using the 'project'-strategy"); return false;
       default: console.warn('GlobalView warning: Unknown image placement strategy: ' + placement); return false;
     }
-  }
+  };
 
   /**
    * Valid placement strategies are:
@@ -1622,7 +1622,7 @@ export function GlobalView(div, startupOptions) {
       case 'project': return this.showImages_project(points);
       default: console.warn('GlobalView warning: Unknown image placement strategy: ' + placement); return false;
     }
-  }
+  };
 
 
   /**
@@ -1643,7 +1643,7 @@ export function GlobalView(div, startupOptions) {
       }
     }
     this.invalidate();
-  }
+  };
 
   /**
    * @summary Get an array of all images of the plot
@@ -2288,7 +2288,7 @@ export function GlobalView(div, startupOptions) {
     if (options.padding) {
       setPlotBounds(options.padding);
     }
-  }
+  };
   this.disableOffscreenRendering = this.disableOffscreenRendering = function () {
     if (offscreenRendering === null) {
       return;
@@ -2316,13 +2316,13 @@ export function GlobalView(div, startupOptions) {
     offscreenRendering = null;
 
     onresize();
-  }
+  };
 
   this.renderOffscreenBuffer = function () {
     // Render scene
     render(true);
     gl.finish();
-  }
+  };
 
   this.saveOffscreenBuffer = function () {
     // Read pixels
@@ -2347,7 +2347,7 @@ export function GlobalView(div, startupOptions) {
     tempCanvas = null;
 
     return dataURL;
-  }
+  };
 
   // >>> Initialize global view
 

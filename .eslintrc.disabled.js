@@ -153,7 +153,7 @@ module.exports = {
         "curly": 2,                             // enforce consistent brace style for all control statements
         "default-case": 0,                      // require default cases in switch statements
         "dot-location": 0,                      // enforce consistent newlines before and after dots
-        "dot-notation": 0,                      // enforce dot notation whenever possible
+        'dot-notation': ['error', { allowKeywords: true }],        // enforce dot notation whenever possible
         "eqeqeq": ["error", "always", {"null": "ignore"}],                            // require the use of === and !==
         "guard-for-in": 0,                      // require for-in loops to include an if statement
         "no-alert": 0,                          // disallow the use of alert, confirm, and prompt
@@ -317,7 +317,7 @@ module.exports = {
         "no-negated-condition": 0,              // disallow negated conditions
         "no-nested-ternary": 0,                 // disallow nested ternary expressions
         "no-new-object": 0,                     // disallow Object constructors
-        "no-plusplus": 0,                       // disallow the unary operators ++ and --
+        'no-plusplus': 'error',                 // disallow the unary operators ++ and --
         "no-restricted-syntax": 0,              // disallow specified syntax
         "no-tabs": 2,                           // disallow all tabs
         "no-ternary": 0,                        // disallow ternary operators
@@ -338,9 +338,9 @@ module.exports = {
         "quote-props": 0,                       // require quotes around object literal property names
         "quotes": ["error", "single", { "avoidEscape": true }], // enforce the consistent use of either backticks, double, or single quotes
         "require-jsdoc": 0,                     // require JSDoc comments
-        "semi": 0,                              // require or disallow semicolons instead of ASI
-        "semi-spacing": 0,                      // enforce consistent spacing before and after semicolons
-        "semi-style": 0,                        // enforce location of semicolons
+        'semi': ['error', 'always'],    // require or disallow use of semicolons instead of ASI
+        'semi-spacing': ['error', { before: false, after: true }], // enforce spacing before and after semicolons
+        'semi-style': ['error', 'last'],        // enforce location of semicolons
         "sort-keys": 0,                         // require object keys to be sorted
         "sort-vars": 0,                         // require variables within the same declaration block to be sorted
         "space-before-blocks": 0,               // enforce consistent spacing before blocks

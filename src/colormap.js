@@ -49,7 +49,7 @@ export function Colormap(gl, globalView) {
   sdrLine.matWorldViewProj = sdrLine.u4x4f('matWorldViewProj');
   this.updateColorSchema = function () {
     sdrLine.color.apply(sdrLine, gl.foreColor);
-  }
+  };
 
   const sdrColormap = new libGraphics.Shader(
     gl, libShaders.Shaders.vsTextured,
@@ -175,7 +175,7 @@ export function Colormap(gl, globalView) {
     if (axis.label) {
       gl.drawText(axis.label, tickLabel_left, gl.height - plotBounds.y - (plotBounds.height / 2), 'topcenter', -Math.PI / 2);
     }
-  }
+  };
 
   function checkOverlap() {
     const MIN_TICK_LABEL_DISTANCE = gl.measureTextWidth('  '); // Minimum distance between tick labels in pixel
@@ -221,7 +221,7 @@ export function Colormap(gl, globalView) {
         break;
       }
     }
-  }
+  };
   this.setEnumRange = function (minimum, maximum, values) {
     axis.minimum = minimum -= 0.5; // 0.5 ... Move to center of value-bin
     axis.maximum = maximum -= 0.5; // 0.5 ... Move to center of value-bin
@@ -230,14 +230,14 @@ export function Colormap(gl, globalView) {
     axis.tickDistance = 1;
     axis.tickOffset = Math.max(0, Math.ceil(minimum / axis.tickDistance) * axis.tickDistance);
     axis.tickCount = Math.min(values.length - axis.tickOffset, Math.floor(((maximum - axis.tickOffset) + 1) / axis.tickDistance));
-  }
+  };
   this.setLabel = function (label) {
     axis.label = label;
-  }
+  };
 
   let pointColor = null;
-  this.setDataset = function (dataset, options) {}
-  this.onInputChanged = function (activeInputs, animatedInputs, options) {}
+  this.setDataset = function (dataset, options) {};
+  this.onInputChanged = function (activeInputs, animatedInputs, options) {};
   this.onOptionsChanged = function (options) {
     axis.tickLength = TICK_LENGTH + (options.showColormapHistogram ? options.histogramHeight : 0);
     if (options.pointColor !== pointColor) {
@@ -253,20 +253,20 @@ export function Colormap(gl, globalView) {
         }
       }
     }
-  }
+  };
   this.onPlotBoundsChanged = function (plotBounds) {
     axis.values === null ?
       this.setNumericRange(axis.minimum, axis.maximum, true) :
       this.setEnumRange(axis.minimum + 0.5, axis.maximum + 0.5, axis.values);
-  }
+  };
 
   this.getTexture = function () {
     return texColormap;
-  }
+  };
 
   this.free = function () {
     meshLine.free();
-  }
+  };
 }
 
 export function validateColor(color) {

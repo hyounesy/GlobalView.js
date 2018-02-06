@@ -20,7 +20,7 @@ export function CoordinateSystem(gl, globalView) {
   sdrLine.matWorldViewProj = sdrLine.u4x4f('matWorldViewProj');
   this.updateColorSchema = function () {
     sdrLine.color.apply(sdrLine, gl.foreColor);
-  }
+  };
 
   // Create a 2D line mesh
   const meshLine = new libGraphics.Mesh(gl, new Float32Array([
@@ -160,7 +160,7 @@ export function CoordinateSystem(gl, globalView) {
       gl.drawText(axes[1].label, yTickLabel_left,
         gl.height - plotBounds.y - (plotBounds.height / 2), 'bottomcenter', -Math.PI / 2);
     }
-  }
+  };
 
   function checkOverlap(d) {
     const MIN_TICK_LABEL_DISTANCE = gl.measureTextWidth('  '); // Minimum distance between tick labels in pixel
@@ -237,7 +237,7 @@ export function CoordinateSystem(gl, globalView) {
         break;
       }
     }
-  }
+  };
   this.setEnumRange = function (d, minimum, maximum, values) {
     const axis = axes[d];
     axis.minimum = minimum -= 0.5; // 0.5 ... Move to center of value-bin
@@ -248,24 +248,24 @@ export function CoordinateSystem(gl, globalView) {
     axis.tickOffset = Math.max(0, Math.ceil(minimum / axis.tickDistance) * axis.tickDistance);
     axis.tickCount = Math.min(values.length - axis.tickOffset,
       Math.floor(((maximum - axis.tickOffset) + 1) / axis.tickDistance));
-  }
+  };
   this.setLabel = function (d, label) {
     axes[d].label = label;
-  }
+  };
 
-  this.setDataset = function (dataset, options) {}
-  this.onInputChanged = function (activeInputs, animatedInputs, options) {}
+  this.setDataset = function (dataset, options) {};
+  this.onInputChanged = function (activeInputs, animatedInputs, options) {};
   this.onOptionsChanged = function (options) {
     axes[0].tickLength = TICK_LENGTH + (options.showXAxisHistogram ? options.histogramHeight : 0);
     axes[1].tickLength = TICK_LENGTH + (options.showYAxisHistogram ? options.histogramHeight : 0);
-  }
+  };
   this.onPlotBoundsChanged = function (plotBounds) {
     for (let i = 0; i < 2; i += 1) {
       axes[i].values === null ?
         this.setNumericRange(i, axes[i].minimum, axes[i].maximum, true) :
         this.setEnumRange(i, axes[i].minimum + 0.5, axes[i].maximum + 0.5, axes[i].values);
     }
-  }
+  };
 
   this.labelFromPoint = function (plotBounds, p) {
     if (this.visible[0]) {
@@ -283,7 +283,7 @@ export function CoordinateSystem(gl, globalView) {
       }
     }
     return null;
-  }
+  };
   this.getLabelBounds = function (plotBounds, d) {
     switch (d) {
       case 0: {
@@ -305,9 +305,9 @@ export function CoordinateSystem(gl, globalView) {
       }
     }
     return null;
-  }
+  };
 
   this.free = function () {
     meshLine.free();
-  }
+  };
 }

@@ -23,7 +23,7 @@ function getImageDataFromUrl(url, callback) {
         canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
         const ctx = canvas.getContext('2d');
         ctx.drawImage(this, 0, 0);
-        result = ctx.getImageData(0, 0, canvas.width, canvas.height)
+        result = ctx.getImageData(0, 0, canvas.width, canvas.height);
       } catch (error) {
         console.error(error);
         result = null;

@@ -176,24 +176,24 @@ export function HistogramViewer(gl, globalView) {
 
       gl.disable(gl.SCISSOR_TEST);
     }
-  }
+  };
 
   this.setDataset = function (_dataset, options) {
     dataset = _dataset;
     recreateHistograms();
-  }
+  };
 
   this.onOptionsChanged = function (_options, recompileShader) {
     options = _options;
     recreateHistograms();
-  }
+  };
 
   this.onInputChanged = function (_activeInputs, animatedInputs, options) {
     activeInputs = _activeInputs;
     recreateHistograms();
-  }
+  };
 
-  this.onPlotBoundsChanged = function (plotBounds) {}
+  this.onPlotBoundsChanged = function (plotBounds) {};
 
   function recreateHistograms() {
     if (dataset && options.histogramHeight > 0) {

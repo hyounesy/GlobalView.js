@@ -67,7 +67,7 @@ domready(function () {
       case 2:
         break;
     }
-  }
+  };
   plot.onMouseOverAxisLabel = onMouseOverAxisLabel;
   plot.onMouseOverDatapoint = onMouseOverDatapoint;
   plot.onLassoSelection = plot.onSelectionChanged = onSelectionChanged;
@@ -127,65 +127,65 @@ function addAllEventListeners() {
   window.addEventListener('resize', onResize);
 
   document.getElementById('cbDataset').addEventListener('change', function () {
-    cbDataset_onChange()
+    cbDataset_onChange();
   });
   document.getElementById('cbColumnX').addEventListener('change', function () {
-    cbColumnX_onChange()
+    cbColumnX_onChange();
   });
   document.getElementById('cbColumnY').addEventListener('change', function () {
-    cbColumnY_onChange()
+    cbColumnY_onChange();
   });
   document.getElementById('cbColumnC').addEventListener('change', function () {
-    cbColumnC_onChange()
+    cbColumnC_onChange();
   });
   document.getElementById('cbColumnS').addEventListener('change', function () {
-    cbColumnS_onChange()
+    cbColumnS_onChange();
   });
   document.getElementById('cbRenderStyle').addEventListener('change', function () {
-    cbRenderStyle_onChange(document.getElementById('cbRenderStyle'))
+    cbRenderStyle_onChange(document.getElementById('cbRenderStyle'));
   });
   document.getElementById('cbTransparency').addEventListener('change', function () {
-    cbTransparency_onChange(document.getElementById('cbTransparency'))
+    cbTransparency_onChange(document.getElementById('cbTransparency'));
   });
   document.getElementById('cbPointShape').addEventListener('change', function () {
-    cbPointShape_onChange(document.getElementById('cbPointShape'))
+    cbPointShape_onChange(document.getElementById('cbPointShape'));
   });
   document.getElementById('rPointSize').addEventListener('input', function () {
-    rPointSize_onChange(document.getElementById('rPointSize'))
+    rPointSize_onChange(document.getElementById('rPointSize'));
   });
   document.getElementById('rPointOpacity').addEventListener('input', function () {
-    rPointOpacity_onChange(document.getElementById('rPointOpacity'))
+    rPointOpacity_onChange(document.getElementById('rPointOpacity'));
   });
   document.getElementById('cbShowDensity').addEventListener('change', function () {
-    cbShowDensity_onChange(document.getElementById('cbShowDensity'))
+    cbShowDensity_onChange(document.getElementById('cbShowDensity'));
   });
   document.getElementById('cbShowClusters').addEventListener('change', function () {
-    cbShowClusters_onChange(document.getElementById('cbShowClusters'))
+    cbShowClusters_onChange(document.getElementById('cbShowClusters'));
   });
   document.getElementById('cbShowHistograms').addEventListener('change', function () {
-    cbShowHistograms_onChange(document.getElementById('cbShowHistograms'))
+    cbShowHistograms_onChange(document.getElementById('cbShowHistograms'));
   });
   document.getElementById('rVariance').addEventListener('input', function () {
-    rVariance_onChange(document.getElementById('rVariance'))
+    rVariance_onChange(document.getElementById('rVariance'));
   });
   document.getElementById('rNumBins').addEventListener('input', function () {
-    rNumBins_onChange(document.getElementById('rNumBins'))
+    rNumBins_onChange(document.getElementById('rNumBins'));
   });
   document.getElementById('cmdRunBenchmark').addEventListener('click', function () {
-    cmdRunBenchmark_onClick(document.getElementById('cmdRunBenchmark'))
+    cmdRunBenchmark_onClick(document.getElementById('cmdRunBenchmark'));
   });
   // document.getElementById("cbThumbnailPositioning") // ???
   document.getElementById('rNumThumbnails').addEventListener('input', function () {
-    rNumThumbnails_onChange(document.getElementById('rNumThumbnails'))
+    rNumThumbnails_onChange(document.getElementById('rNumThumbnails'));
   });
   document.getElementById('rDensityRatio').addEventListener('input', function () {
-    rDensityRatio_onChange(document.getElementById('rDensityRatio'))
+    rDensityRatio_onChange(document.getElementById('rDensityRatio'));
   });
   document.getElementById('cmdShowData2D').addEventListener('click', function () {
-    cmdShowData2D_onClick(document.getElementById('cmdShowData2D'))
+    cmdShowData2D_onClick(document.getElementById('cmdShowData2D'));
   });
   document.getElementById('cbLabelThumbnails').addEventListener('change', function () {
-    cbLabelThumbnails_onChange(document.getElementById('cbLabelThumbnails'))
+    cbLabelThumbnails_onChange(document.getElementById('cbLabelThumbnails'));
   });
 }
 
@@ -217,16 +217,16 @@ function dataset_onLoad(_dataset) {
   }
 
   // Update active-column comboboxes
-  for(let i = cbColumnX.options.length - 1; i >= 0 ; i -= 1) {
+  for(let i = cbColumnX.options.length - 1; i >= 0; i -= 1) {
     cbColumnX.remove(i);
   }
-  for(let i = cbColumnY.options.length - 1; i >= 0 ; i -= 1) {
+  for(let i = cbColumnY.options.length - 1; i >= 0; i -= 1) {
     cbColumnY.remove(i);
   }
-  for(let i = cbColumnC.options.length - 1; i >= 0 ; i -= 1) {
+  for(let i = cbColumnC.options.length - 1; i >= 0; i -= 1) {
     cbColumnC.remove(i);
   }
-  for(let i = cbColumnS.options.length - 1; i >= 0 ; i -= 1) {
+  for(let i = cbColumnS.options.length - 1; i >= 0; i -= 1) {
     cbColumnS.remove(i);
   }
   for(let i = 0; i < dataset.numColumns; i += 1) {
@@ -362,7 +362,7 @@ function requestVariance(variance, fast) {
 String.prototype.replaceAll = function (oldstr, newstr) {
   // Source: http://stackoverflow.com/a/1144788
   return this.split(oldstr).join(newstr);
-}
+};
 
 /* function cmdRunBenchmark_onClick() {
   new CsvDataset("AICS_Cell-feature-analysis_v1.5.csv", {}, function(dataset) {

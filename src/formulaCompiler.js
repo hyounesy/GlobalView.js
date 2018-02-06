@@ -1,4 +1,4 @@
-const libUtility = require('./utility.js')
+const libUtility = require('./utility.js');
 
 export const FormulaCompiler = {
   compile: function (formula, symbolTypes) {
@@ -18,7 +18,7 @@ export const FormulaCompiler = {
       x: FormulaCompiler.types.float,
       y: FormulaCompiler.types.float,
       z: FormulaCompiler.types.float
-    }
+    };
     /**
      * An enum, mapping function signatures to return types
      * @enum {Object}
@@ -69,7 +69,7 @@ export const FormulaCompiler = {
       'dot': FormulaCompiler.types.float,
       'cross': FormulaCompiler.types.float,
       'normalize': FormulaCompiler.types.float, */
-    }
+    };
 
     // >>> Tokenizer
 
@@ -370,7 +370,7 @@ export const FormulaCompiler = {
         const numArgs = args.type.length;
 
         // Create function signature from function name and argument FormulaCompiler.types
-        const argTypeNames = args.type.map(type => type.name).join(', ')
+        const argTypeNames = args.type.map(type => type.name).join(', ');
         const funcSignature = funcName + '(' + argTypeNames + ')';
 
         // Lookup function and return type
@@ -381,7 +381,7 @@ export const FormulaCompiler = {
 
         // Store as args, funcSignature
         const funcCode = args.code;
-        funcCode.push(funcSignature)
+        funcCode.push(funcSignature);
         return { code: funcCode, type: returnType };
       }
       function listAST(termTok) {
@@ -591,7 +591,7 @@ export const FormulaCompiler = {
     }
     return SP === 0 ? null : (SP === 1 ? stack[0] : stack.slice(0, SP));
   }
-}
+};
 FormulaCompiler.types = {
   float: { name: 'float' },
   vec3: { name: 'vec3' }

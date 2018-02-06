@@ -45,7 +45,7 @@ export function PointViewer(gl, globalView) {
       } else if (this.size() !== 0) {
         meshDataPoints.drawIndexed(texture, idxbuffer, this.size());
       }
-    }
+    };
     this.renderLines = function (texture, pointDrag) {
       if (this.size() === _dataset.length) {
         meshDataPoints.drawLines(texture, pointDrag, 0, _dataset.length);
@@ -71,14 +71,14 @@ export function PointViewer(gl, globalView) {
           meshDataPoints.drawLines(texture, pointDrag, startIndex, count);
         }
       }
-    }
+    };
 
     this.free = function () {
       if (idxbuffer !== -1) {
         gl.deleteBuffer(idxbuffer);
         idxbuffer = -1;
       }
-    }
+    };
   }
 
   const pointSets = [this.points = new PointGroup()];
@@ -108,7 +108,7 @@ export function PointViewer(gl, globalView) {
     pointSet.opacity = opacity;
     pointSets.push(pointSet);
     return pointSet;
-  }
+  };
   /**
    * Remove point subset
    * (This does not remove any of the points)
@@ -119,7 +119,7 @@ export function PointViewer(gl, globalView) {
     if (index !== -1) {
       pointSets.splice(index, 1);
     }
-  }
+  };
 
   this.render = function (flipY, tf, colormapTexture, pointDrag) {
     if (meshDataPoints === null) {
@@ -147,7 +147,7 @@ export function PointViewer(gl, globalView) {
         pointSet.renderLines(pointSet.colormap ? pointSet.colormap : colormapTexture, pointDrag);
       });
     }
-  }
+  };
 
   this.setDataset = function (dataset, options) {
     // Remove old mesh
@@ -179,7 +179,7 @@ export function PointViewer(gl, globalView) {
     meshDataPoints = new DataMesh(gl, posbuffer, dataset.length, dataset.numColumns, options);
 
     this.points.assignRange(dataset.length);
-  }
+  };
 
   this.onOptionsChanged = function (options, recompileShader) {
     _pointOpacity = options.pointOpacity;
@@ -190,7 +190,7 @@ export function PointViewer(gl, globalView) {
         meshDataPoints.sdr.pointSize(options.pointSize);
       }
     }
-  }
+  };
 
   let activeInputVectors = null,
     animatedInputVectors = null;
@@ -200,9 +200,9 @@ export function PointViewer(gl, globalView) {
     if (meshDataPoints != null) {
       meshDataPoints.recompileShader(options);
     }
-  }
+  };
 
-  this.onPlotBoundsChanged = function (plotBounds) {}
+  this.onPlotBoundsChanged = function (plotBounds) {};
 
   /**
    * A renderable WebGL mesh of ndim-dimensional points
@@ -262,13 +262,13 @@ vec{1} getPos()
       if (forLineSdr) {
         getPosCode = getPosCode.format(attrDeclCode, 4, inputCode.slice(0, 4).join(', '), animatedInputCode.slice(0, 4).join(', '));
       } else {
-        getPosCode = getPosCode.format(attrDeclCode, 3, inputCode.slice(0, 3).join(', '), animatedInputCode.slice(0, 3).join(', '))
+        getPosCode = getPosCode.format(attrDeclCode, 3, inputCode.slice(0, 3).join(', '), animatedInputCode.slice(0, 3).join(', '));
       }
 
 
       // console.log(getPosCode);
       return getPosCode;
-    }
+    };
 
     let posattr,
       lineattr;
@@ -339,7 +339,7 @@ vec{1} getPos()
       this.sdrLine.vidattr = this.sdrLine.getAttribLocation('i');
       this.sdrLine.lineattr = this.sdrLine.getAttribLocation('lineOffset');
       this.sdrLine.lineTransform = this.sdrLine.u2x2f('lineTransform');
-    }
+    };
     if (activeInputVectors && animatedInputVectors) {
       this.recompileShader(options);
     }
@@ -383,7 +383,7 @@ vec{1} getPos()
       }
 
       gl.drawArrays(gl.POINTS, 0, Math.min(count, numvertices - offset));
-    }
+    };
     this.drawIndexed = function (texture, idxbuffer, count) {
       for(let i = 0; i < 16; i += 1) {
         gl.disableVertexAttribArray(i);
@@ -416,7 +416,7 @@ vec{1} getPos()
 
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxbuffer);
       gl.drawElements(gl.POINTS, count, gl.UNSIGNED_INT, 0);
-    }
+    };
 
     this.drawLines = function (texture, line, offset, count) {
       // Default values
@@ -469,7 +469,7 @@ vec{1} getPos()
       gl.ext.vertexAttribDivisorANGLE(this.sdrLine.lineattr, 0);
 
       gl.ext.drawArraysInstancedANGLE(gl.TRIANGLE_FAN, 0, 4, Math.min(count, numvertices - offset));
-    }
+    };
 
     this.free = function () {
       gl.bindBuffer(gl.ARRAY_BUFFER, null);
@@ -485,6 +485,6 @@ vec{1} getPos()
       if(this.sdr != null) {
         this.sdr.free();
       }
-    }
+    };
   }
 }

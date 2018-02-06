@@ -1,6 +1,6 @@
-const libUtility = require('./utility.js')
+const libUtility = require('./utility.js');
 const libAlgorithm = require('./algorithm.js');
-const libFormulaCompiler = require('./formulaCompiler.js')
+const libFormulaCompiler = require('./formulaCompiler.js');
 // import * as Parallel from '../src_lib/parallel.js';
 // import * as Parallel from '../node_modules/paralleljs/lib/parallel';
 const Parallel = require('paralleljs');
@@ -36,7 +36,7 @@ export function DataVector(dataset, source) {
     this.getValue = function (i) {
       // return Math.log(dataset.fdata[i * nc + c]);
       return dataset.fdata[(i * nc) + c];
-    }
+    };
 
     // this.getValueCode = "log(c{0})".format(c);
     this.getValueCode = 'c' + c;// "{" + c + "}";
@@ -78,7 +78,7 @@ export function DataVector(dataset, source) {
       }
 
       return libFormulaCompiler.FormulaCompiler.run(code, stack, globals);
-    }
+    };
 
     this.minimum = Number.MAX_VALUE;
     this.maximum = Number.MIN_VALUE;
@@ -195,7 +195,7 @@ export function Dataset() {
 
     return _densityMaps.length > d0 && _densityMaps[d0].length > d1 && _densityMaps[d0][d1] &&
       (libUtility.isUndefined(_densityMaps[d0][d1].pending) || _densityMaps[d0][d1].old);
-  }
+  };
 
   /**
    * Calls the given function for each computed density map
@@ -203,7 +203,7 @@ export function Dataset() {
    */
   this.iterateDensityMaps = function (callback) {
     _densityMaps.forEach(_densityMaps => _densityMaps.forEach(densityMap => densityMap && (libUtility.isUndefined(densityMap.pending) || densityMap.old) ? callback(densityMap.old || densityMap) : null));
-  }
+  };
 
   /**
    * This function returns a density map for the given dimensions. If the density map doesn't exist it is computed.
@@ -224,7 +224,7 @@ export function Dataset() {
       console.warn('GlobalView warning: Requesting density map for dimensions {0}, {1} on a dataset with only {2} data vectors'.format(d0, d1, this.dataVectors.length));
       return null;
     }
-    const isAsync = libUtility.isFunction(ondone) ;// && !/Firefox/i.test(navigator.userAgent);// Firefox tends to crash with Parallel.js
+    const isAsync = libUtility.isFunction(ondone);// && !/Firefox/i.test(navigator.userAgent);// Firefox tends to crash with Parallel.js
 
     // Assure d0 < d1
     if (d0 === d1) {
@@ -323,7 +323,7 @@ export function Dataset() {
       }
       return /** @type {DensityMap} */(densityMap);
     }
-  }
+  };
 
   this.isClusterMapReady = function (d0, d1) {
     // Validate inputs
@@ -344,14 +344,14 @@ export function Dataset() {
 
     return _clusterMaps.length > d0 && _clusterMaps[d0].length > d1 && _clusterMaps[d0][d1] &&
       (libUtility.isUndefined(_clusterMaps[d0][d1].pending) || _clusterMaps[d0][d1].old);
-  }
+  };
   this.requestClusterMap = function (d0, d1, options, ondone) {
     // Validate inputs
     if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) {
       console.warn('GlobalView warning: Requesting cluster map for dimensions {0}, {1} on a dataset with only {2} data vectors'.format(d0, d1, this.dataVectors.length));
       return null;
     }
-    const isAsync = libUtility.isFunction(ondone) ;// && !/Firefox/i.test(navigator.userAgent);// Firefox tends to crash with Parallel.js
+    const isAsync = libUtility.isFunction(ondone);// && !/Firefox/i.test(navigator.userAgent);// Firefox tends to crash with Parallel.js
 
     // Assure d0 < d1
     if (d0 === d1) {
@@ -440,7 +440,7 @@ export function Dataset() {
       }
       return clusterMap;
     }
-  }
+  };
 
   this.inflate = function (factor, densityMapChain) {
     const n = this.length;
@@ -512,7 +512,7 @@ export function Dataset() {
     }
 
     this.length = n_inflated;
-  }
+  };
 
   this.save = function (filename, nameColumn, nameColumnLabel) {
     const nc = this.numColumns;
@@ -553,7 +553,7 @@ export function Dataset() {
     }
 
     libUtility.download(filename, 'data:text/csv;charset=utf-8,' + encodeURIComponent($.csv.fromArrays(csv)));
-  }
+  };
 }
 
 
@@ -888,7 +888,7 @@ export function CsvDataset(file, options, onload) {
     const request = new XMLHttpRequest();
     request.onreadystatechange = function () {
       if (this.readyState === 4 && this.status === 200) {
-        parseCsv(this.responseText)
+        parseCsv(this.responseText);
       }
     };
     request.open('GET', /** @type {string} */(file), true);

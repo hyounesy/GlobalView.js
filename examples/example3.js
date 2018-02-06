@@ -24,7 +24,7 @@ domready(function () {
     plot.load(dataset, 0, 1, 4, 1);
   });
 
-  const rangeNumLeafs = document.getElementById('rangeNumLeafs')
+  const rangeNumLeafs = document.getElementById('rangeNumLeafs');
   rangeNumLeafs.addEventListener('input', function () {
     rangeNumLeafs_oninput(rangeNumLeafs);
   }, false);

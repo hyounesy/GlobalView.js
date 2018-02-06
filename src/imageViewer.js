@@ -32,7 +32,7 @@ function Thumbnail(globalView) {
    */
   this.getPoint = function () {
     return this.refIndex;
-  }
+  };
 
   /** @type {number} */ this.borderWidth = null;
 
@@ -42,7 +42,7 @@ function Thumbnail(globalView) {
    */
   this.getBorderWidth = function () {
     return this.borderWidth ? this.borderWidth.slice() : null;
-  }
+  };
 
   /**
    * @summary Set width of the image border
@@ -51,7 +51,7 @@ function Thumbnail(globalView) {
   this.setBorderWidth = function (width) {
     this.borderWidth = width;
     globalView.invalidate();
-  }
+  };
 
   /** @type {Array<number>} */ this.borderColor = null;
 
@@ -61,7 +61,7 @@ function Thumbnail(globalView) {
    */
   this.getBorderColor = function () {
     return this.borderColor ? this.borderColor.slice() : null;
-  }
+  };
 
   /**
    * @summary Set color of the image border
@@ -70,7 +70,7 @@ function Thumbnail(globalView) {
   this.setBorderColor = function (color) {
     this.borderColor = color;
     globalView.invalidate();
-  }
+  };
 
   /** @type {Array<number>} */ this.lineColor = null;
 
@@ -80,7 +80,7 @@ function Thumbnail(globalView) {
    */
   this.getLineColor = function () {
     return this.lineColor ? this.lineColor.slice() : null;
-  }
+  };
 
   /**
    * @summary Set color of the image line
@@ -89,7 +89,7 @@ function Thumbnail(globalView) {
   this.setLineColor = function (color) {
     this.lineColor = color;
     globalView.invalidate();
-  }
+  };
 
   /** @type {Array<number>} */ this.labelColor = null;
 
@@ -99,7 +99,7 @@ function Thumbnail(globalView) {
    */
   this.getLabelColor = function () {
     return this.labelColor ? this.labelColor.slice() : null;
-  }
+  };
 
   /**
    * @summary Set color of the image label
@@ -108,7 +108,7 @@ function Thumbnail(globalView) {
   this.setLabelColor = function (color) {
     this.labelColor = color;
     globalView.invalidate();
-  }
+  };
 }
 
 /**
@@ -353,23 +353,23 @@ export function ImageViewer(gl, globalView) {
     });
 
     // gl.enable(gl.SCISSOR_TEST);
-  }
+  };
 
   let options = {};
   let defaultImageBorderWidth = 1;
   let defaultImageBorderColor = gl.foreColor;
   let defaultImageLineColor = gl.foreColor;
   let defaultImageLabelColor = gl.backColor;
-  this.setDataset = function (dataset, options) {}
-  this.onInputChanged = function (activeInputs, animatedInputs, options) {}
+  this.setDataset = function (dataset, options) {};
+  this.onInputChanged = function (activeInputs, animatedInputs, options) {};
   this.onOptionsChanged = function (_options) {
     options = _options;
     defaultImageBorderWidth = options.thumbnailBorderWidth;
     defaultImageBorderColor = options.thumbnailBorderColor ? new Float32Array(libColormap.parseColor(options.thumbnailBorderColor)).map(c => c / 255.0) : gl.foreColor;
     defaultImageLineColor = options.thumbnailLineColor ? new Float32Array(libColormap.parseColor(options.thumbnailLineColor)).map(c => c / 255.0) : gl.foreColor;
     defaultImageLabelColor = options.thumbnailLabelColor ? new Float32Array(libColormap.parseColor(options.thumbnailLabelColor)).map(c => c / 255.0) : gl.backColor;
-  }
-  this.onPlotBoundsChanged = function (plotBounds) {}
+  };
+  this.onPlotBoundsChanged = function (plotBounds) {};
 
   /**
    * @param  {string} imageFilename
@@ -405,16 +405,16 @@ export function ImageViewer(gl, globalView) {
     newImage.imageAnchor = imageAnchorVector;
     newImage.borderColor = null;
     images.push(newImage);
-  }
+  };
   this.clearImages = function () {
     images = [];
-  }
+  };
   /**
    * @return {Array<Thumbnail>}
    */
   this.getImages = function () {
     return images;
-  }
+  };
 
   this.resolveIntersections = function (tf) {
     const a = libGlMatrix.vec2.create();
@@ -461,7 +461,7 @@ export function ImageViewer(gl, globalView) {
         }
       }
     }
-  }
+  };
 
   this.imageFromPoint = function (tf, p) {
     const imagePos = libGlMatrix.vec2.create();
@@ -489,7 +489,7 @@ export function ImageViewer(gl, globalView) {
         imagePos[0] + ((image.imageAnchor[0]) * size[0]),
         imagePos[0] + ((image.imageAnchor[0] + 1.0) * size[0]),
         imagePos[1] + ((image.imageAnchor[1]) * size[1]),
-        imagePos[1] + ((image.imageAnchor[1] + 1.0) * size[1])]
+        imagePos[1] + ((image.imageAnchor[1] + 1.0) * size[1])];
 
       if (options.labelThumbnails) {
         imageBounds[2] -= (LABEL_HEIGHT * 2) / gl.height;
@@ -503,5 +503,5 @@ export function ImageViewer(gl, globalView) {
     });
 
     return selectedImage;
-  }
+  };
 }

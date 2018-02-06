@@ -14,11 +14,11 @@ export function linspace(first, second, last) {
 // linspace(1, 1.1, 10);
 
 export function isUndefined(x) {
-  return typeof x === 'undefined'
+  return typeof x === 'undefined';
 }
 
 export function isFunction(x) {
-  return typeof x === 'function'
+  return typeof x === 'function';
 }
 
 export function isArray(x) {
@@ -26,16 +26,16 @@ export function isArray(x) {
 }
 
 export function isString(x) {
-  return typeof x === 'string'
+  return typeof x === 'string';
 }
 
 export function isNumber(x) {
-  return typeof x === 'number'
+  return typeof x === 'number';
 }
 
 export function isObject(x) {
   const t = typeof x;
-  return t !== 'undefined' && t !== 'function' && t !== 'string' && t !== 'number' && Object.prototype.toString.call(x) !== '[object Array]'
+  return t !== 'undefined' && t !== 'function' && t !== 'string' && t !== 'number' && Object.prototype.toString.call(x) !== '[object Array]';
 }
 export function isCloneable(x) {
   return !(isFunction(x) || x instanceof WebGLTexture); // TODO: Add more
@@ -281,7 +281,7 @@ export function urlExists(url, onTrue, onFalse, isAsync) {
     if (this.readyState === 4 && this.status !== 404 && onTrue) {
       onTrue();
     }
-  }
+  };
   request.open('HEAD', url, !(isAsync === false));
   request.overrideMimeType('text/csv; charset=utf8');
   request.send();
@@ -324,7 +324,7 @@ Math.seededRandom = function () { // Source: https://stackoverflow.com/a/1930372
   const x = Math.sin(_seededRandom_seed) * 10000;
   _seededRandom_seed += 1;
   return x - Math.floor(x);
-}
+};
 
 Math.clamp = function (f, minimum, maximum) {
   return Math.min(Math.max(f, minimum), maximum);
@@ -443,7 +443,7 @@ export function ForwardList(value) {
     newnode.next = this.next;
     this.next = newnode;
     this.value = value;
-  }
+  };
   this.pushBack = function (value) {
     let back = this;
     while (back.next !== null) {
@@ -451,7 +451,7 @@ export function ForwardList(value) {
     }
     const newnode = new ForwardList(value);
     back.next = newnode;
-  }
+  };
   this.sortedPush = function (value) {
     if (value <= this.value) {
       this.push(value);
@@ -464,33 +464,33 @@ export function ForwardList(value) {
       newnode.next = node.next;
       node.next = newnode;
     }
-  }
+  };
   this.toArray = function () {
     const array = [];
     for (let node = this; node; node = node.next) {
       array.push(node.value);
     }
     return array;
-  }
+  };
   this.print = function () {
     const array = [];
     for (let node = this; node; node = node.next) {
       array.push(node.value);
     }
     console.log(array.join(', '));
-  }
+  };
   this.size = function () {
     let size = 0;
     for (let node = this; node; node = node.next) {
       size += 1;
     }
     return size;
-  }
+  };
   this.forEach = function (callback) {
     for (let node = this; node; node = node.next) {
       callback(node.value);
     }
-  }
+  };
   ForwardList.sortedMerge = function (a, b) {
     // Source: http://www.geeksforgeeks.org/merge-two-sorted-linked-lists/
     const dummy = new ForwardList(null);
@@ -517,7 +517,7 @@ export function ForwardList(value) {
     tail.next = a === null ? b : a;
 
     return dummy.next;
-  }
+  };
 }
 
 
@@ -536,15 +536,15 @@ export function PriorityQueue(priorityProperty) {
     const p = element[priorityProperty];
     for (i = 0; i < data.length && data[i][priorityProperty] >= p; i += 1) {}
     data.splice(i, 0, element);
-  }
+  };
   this.pop = function () {
     this.length -= 1;
     return data.pop();
-  }
+  };
   this.shift = function () {
     this.length -= 1;
     return data.shift();
-  }
+  };
 }
 /* var queue = new PriorityQueue('p');
 queue.push({str: 'high', p: 9});
@@ -579,7 +579,7 @@ export function HashSet(onchanged) {
       this.length += 1;
       this.onchanged();
     }
-  }
+  };
 
 
   /**
@@ -601,7 +601,7 @@ export function HashSet(onchanged) {
     if (invalidate) {
       this.onchanged();
     }
-  }
+  };
 
 
   /**
@@ -615,7 +615,7 @@ export function HashSet(onchanged) {
       this.length = 1;
       this.onchanged();
     }
-  }
+  };
 
 
   /**
@@ -645,7 +645,7 @@ export function HashSet(onchanged) {
     if (identical === false) {
       this.onchanged();
     }
-  }
+  };
 
 
   /**
@@ -662,7 +662,7 @@ export function HashSet(onchanged) {
     this.length = n;
     // console.log('assignRange ' + n + ': ' + (performance.now() - t));
     this.onchanged();
-  }
+  };
 
 
   /**
@@ -675,7 +675,7 @@ export function HashSet(onchanged) {
       this.length -= 1;
       this.onchanged();
     }
-  }
+  };
 
 
   /**
@@ -697,7 +697,7 @@ export function HashSet(onchanged) {
     if (invalidate) {
       this.onchanged();
     }
-  }
+  };
 
 
   /**
@@ -705,7 +705,7 @@ export function HashSet(onchanged) {
    */
   this.isempty = function () {
     return this.length === 0;
-  }
+  };
 
 
   /**
@@ -717,7 +717,7 @@ export function HashSet(onchanged) {
       this.length = 0;
       this.onchanged();
     }
-  }
+  };
 
 
   /**
@@ -732,7 +732,7 @@ export function HashSet(onchanged) {
       callback(value);
     }
     // if (badOrder !== 0) console.log('bad order: ' + badOrder + ' times');
-  }
+  };
 
 
   /**
@@ -740,7 +740,7 @@ export function HashSet(onchanged) {
    */
   this.get = function () {
     return new Uint32Array(Object.keys(hash).map(Number));
-  }
+  };
 
 
   /**
@@ -748,7 +748,7 @@ export function HashSet(onchanged) {
    */
   this.size = function () {
     return this.length;
-  }
+  };
 
 
   /**
@@ -757,5 +757,5 @@ export function HashSet(onchanged) {
    */
   this.contains = function (value) {
     return hash[value] === true;
-  }
+  };
 }

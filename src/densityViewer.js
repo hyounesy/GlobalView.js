@@ -186,14 +186,14 @@ export function DensityViewer(gl, globalView) {
         });
       } // Request densityMap and redraw once it's computed
     }
-  }
+  };
 
   this.setDataset = function (_dataset, options) {
     dataset = _dataset;
-  }
-  this.onInputChanged = function (activeInputs, animatedInputs, options) {}
-  this.onOptionsChanged = function (options) {}
-  this.onPlotBoundsChanged = function (plotBounds) {}
+  };
+  this.onInputChanged = function (activeInputs, animatedInputs, options) {};
+  this.onOptionsChanged = function (options) {};
+  this.onPlotBoundsChanged = function (plotBounds) {};
 
   this.updateImages = function (images, d0, d1) {
     const densityMap = dataset.requestDensityMap(d0, d1, undefined, undefined);
@@ -236,7 +236,7 @@ export function DensityViewer(gl, globalView) {
         body.fx += F * dx;
         body.fy += F * dy;
       }
-    }
+    };
 
     for (let i = 0; i < bodies.length; i += 1) {
       const sample_x = Math.floor(bodies[i].x);
@@ -268,5 +268,5 @@ export function DensityViewer(gl, globalView) {
       images[i].imagePos[d0] = densityMap.invTransformX(bodies[i].x);
       images[i].imagePos[d1] = densityMap.invTransformY(bodies[i].y);
     }
-  }
+  };
 }

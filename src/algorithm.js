@@ -66,7 +66,8 @@ export function DensityMapOptions(source) {
     /**
      * @alias maxExpectedRuntime
      * @memberof DensityMapOptions
-     * @summary If the estimated runtime for computing the density map (in seconds) is higher than maxExpectedRuntime, the density map size is reduced
+     * @summary If the estimated runtime for computing the density map (in seconds)
+     *          is higher than maxExpectedRuntime, the density map size is reduced
      * @type {number}
      * @default
      */
@@ -106,7 +107,8 @@ export function DensityMapOptions(source) {
     /**
      * @alias shrinkToFit
      * @memberof DensityMapOptions
-     * @summary When true, decreases density map size to the area of non-zero densities plus a zero-density border of 1 pixel thickness
+     * @summary When true, decreases density map size to the area of non-zero densities
+     *          plus a zero-density border of 1 pixel thickness
      * @type {boolean}
      * @default
      */
@@ -119,8 +121,7 @@ DensityMapOptions.equals = (a, b) =>
   a.gaussScale === b.gaussScale &&
   a.logScale === b.logScale &&
   a.inflateToFit === b.inflateToFit &&
-  a.shrinkToFit === b.shrinkToFit
-;
+  a.shrinkToFit === b.shrinkToFit;
 
 /**
  * @constructor
@@ -173,8 +174,7 @@ export function ClusterMapOptions(source) {
 }
 ClusterMapOptions.equals = (a, b) =>
   DensityMapOptions.equals(a.densityMap.options, b.densityMap.options) &&
-  a.threshold === b.threshold
-;
+  a.threshold === b.threshold;
 
 /**
  * Compute a histogram of all points in the dataset over dimension d
@@ -269,10 +269,10 @@ export function computeDensityMap(histogram, options) {
   let _tiktok_start;
   const tik = function () {
     _tiktok_start = performance.now();
-  }
+  };
   const tok = function () {
     return (performance.now() - _tiktok_start) / 1000;
-  }
+  };
 
   // Get required information from histogram
   let width = histogram.width;
@@ -576,7 +576,7 @@ export function computeDensityMap(histogram, options) {
     transformY: y => transform[2] * y + transform[3],
     invTransformX: x => (x - transform[1]) / transform[0],
     invTransformY: y => (y - transform[3]) / transform[2] */
-  }
+  };
   return densityMap;
 }
 /**
@@ -668,7 +668,7 @@ export function findRepresentativePoints(dataset, d0, d1, densityMap, k, dist, t
       d_low += 1;
       return d_low - 1; // Retrieve next low density data point
     }
-  }
+  };
   const representativePoints = [indices[next()]]; // Set first represenatative point
   numHighRepresentativePoints += pointIsHigh;
   ratio = numHighRepresentativePoints / representativePoints.length;
@@ -891,7 +891,7 @@ export function findClosePointOfLowDensity(dataset, d0, d1, p, densityMap, stenc
   let closestPoint = null,
     closestPointPenalty = Number.MAX_VALUE;
   let sqdx,
-    sqdy
+    sqdy;
   for (let y = ymin; y < ymax; y += 1) {
     for (let x = xmin; x < xmax; x += 1) {
       if (stencil[((y - ymin) * stencilStride) + (x - xmin)] === 0) {
@@ -1157,7 +1157,7 @@ export function findClosePointOfLowDensityND_descend(dataset, p, densityMap, min
     const sqDist = p.reduce(function (a, p, pi) {
       const dp = Math.abs(p - start[pi]);
       return a + (dp > minDist ? Math.pow(dp - minDist, 2) : Math.pow(minDist - dp, 2));
-    })
+    });
     return sqDensity + sqDist;
   };
 
@@ -1519,7 +1519,7 @@ export function computeClusterMap(densityMap, d0, d1, options) {
     transformY: densityMap.transformY,
     invTransformX: densityMap.invTransformX,
     invTransformY: densityMap.invTransformY */
-  }
+  };
   return clusterMap;
 }
 
