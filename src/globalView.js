@@ -63,7 +63,7 @@ export function GlobalView(div, startupOptions) {
   }
 
   let canvas = null;
-  for (let i = 0; i < div.children.length; ++i) {
+  for (let i = 0; i < div.children.length; i += 1) {
     if (div.children[i] instanceof HTMLCanvasElement && div.children[i].globalViewWebGLCanvas) {
     // If div already contains a GlobalView-WebGL-canvas, ...
     // Share canvas
@@ -218,7 +218,7 @@ export function GlobalView(div, startupOptions) {
     dt = tn - t;
     t = tn;
     if (SHOW_FPS) {
-      ++frameCounter;
+      frameCounter += 1;
       if (t - fpsStart > 10000.0 || frameCounter > 1000) {
         // Refresh FPS after 10s or 1000 frames
         // fps = (frameCounter == 1 ? 10000.0 : 1000 * frameCounter) / (t - fpsStart);
@@ -392,7 +392,7 @@ export function GlobalView(div, startupOptions) {
         invalid = false;
         recompute();
       }
-      for (let d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; ++d) {
+      for (let d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; d += 1) {
         vOut[d] = (vIn[d] - offsets[d]) / scales[d];
       }
       return vOut;
@@ -402,7 +402,7 @@ export function GlobalView(div, startupOptions) {
         invalid = false;
         recompute();
       }
-      for (let d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; ++d) {
+      for (let d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; d += 1) {
         vOut[d] = vIn[d] / scales[d];
       }
       return vOut;
@@ -412,7 +412,7 @@ export function GlobalView(div, startupOptions) {
         invalid = false;
         recompute();
       }
-      for (let d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; ++d) {
+      for (let d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; d += 1) {
         vOut[d] = offsets[d] + (vIn[d] * scales[d]);
       }
       return vOut;
@@ -422,7 +422,7 @@ export function GlobalView(div, startupOptions) {
         invalid = false;
         recompute();
       }
-      for (let d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; ++d) {
+      for (let d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; d += 1) {
         vOut[d] = vIn[d] * scales[d];
       }
       return vOut;
@@ -432,7 +432,7 @@ export function GlobalView(div, startupOptions) {
         invalid = false;
         recompute();
       }
-      for (let d = 0, nd = vOut.length; d < nd; ++d) {
+      for (let d = 0, nd = vOut.length; d < nd; d += 1) {
         vOut[d] = offsets[d] + (vIn[activeInputs[d]] * scales[d]);
       }
       return vOut;
@@ -442,7 +442,7 @@ export function GlobalView(div, startupOptions) {
         invalid = false;
         recompute();
       }
-      for (let d = 0, nd = vOut.length; d < nd; ++d) {
+      for (let d = 0, nd = vOut.length; d < nd; d += 1) {
         vOut[d] = vIn[activeInputs[d]] * scales[d];
       }
       return vOut;
@@ -452,7 +452,7 @@ export function GlobalView(div, startupOptions) {
         invalid = false;
         recompute();
       }
-      for (let d = 0, nd = vOut.length; d < nd; ++d) {
+      for (let d = 0, nd = vOut.length; d < nd; d += 1) {
         vOut[d] = vIn[activeInputs[d]] * dataset.dataVectors[activeInputs[d]].scale;
       }
       return vOut;
@@ -463,7 +463,7 @@ export function GlobalView(div, startupOptions) {
       invalid = false;
 
       // Compute offsets and scales for active inputs
-      for (let d = 0; d < ND; ++d) {
+      for (let d = 0; d < ND; d += 1) {
         offsets[d] = dataset.dataVectors[activeInputs[d]].offset;
         scales[d] = dataset.dataVectors[activeInputs[d]].scale;
         animatedScales[d] = 0;
@@ -489,7 +489,7 @@ export function GlobalView(div, startupOptions) {
       // Compute offsets and scales, either static based on activeInputs, or animated between activeInputs and animatedInputs
       const oi = animatedInputs.map(anim => anim.origin);
       const di = activeInputs;
-      for (let d = 0; d < ND; ++d) {
+      for (let d = 0; d < ND; d += 1) {
         const ts = dataset.dataVectors[di[d]].scale;
         const tt = dataset.dataVectors[di[d]].offset;
 
@@ -571,7 +571,7 @@ export function GlobalView(div, startupOptions) {
     const nv = dataset.dataVectors.length;
 
     // Compute offsets and scales to fit dataset inside view
-    for (let v = 0; v < nv; ++v) {
+    for (let v = 0; v < nv; v += 1) {
       tf.setFromMinMax(v, dataset.dataVectors[v].minimum, dataset.dataVectors[v].maximum);
     }
   }
@@ -1200,7 +1200,7 @@ export function GlobalView(div, startupOptions) {
     if (dataset) {
       dataset.iterateDensityMaps(function (densityMap) {
         if (densityMap.stencilMap && densityMap.stencilMap.data) {
-          for (let i = 0, stencilMap = densityMap.stencilMap.data, len = stencilMap.length; i < len; ++i) {
+          for (let i = 0, stencilMap = densityMap.stencilMap.data, len = stencilMap.length; i < len; i += 1) {
             stencilMap[i] = 0;
           }
         }
@@ -1517,8 +1517,8 @@ export function GlobalView(div, startupOptions) {
 
     const detectOverlap = function (R, overlapThreshold) {
       const P = [];
-      for (let j = 1; j < R.length; ++j) {
-        for (let i = 0; i < j; ++i) {
+      for (let j = 1; j < R.length; j += 1) {
+        for (let i = 0; i < j; i += 1) {
           if (Math.abs(R[i] - R[j]) < overlapThreshold) {
             P.push([i, j]);
           }
@@ -1544,7 +1544,7 @@ export function GlobalView(div, startupOptions) {
       rank.sort((a, b) => imageLocations[a] < imageLocations[b] ? -1 : imageLocations[a] > imageLocations[b] ? 1 : 0);
 
       let P = detectOverlap(R, overlapThreshold);
-      for (let iter = 0; iter < maxNumIterations && P.length !== 0; ++iter) {
+      for (let iter = 0; iter < maxNumIterations && P.length !== 0; iter += 1) {
         // TODO: Shuffle P
         P.forEach(pair => removeOverlap(R, pair[0], pair[1], rank, overlapThreshold + 0.0001));
         P = detectOverlap(R, overlapThreshold);
@@ -1555,7 +1555,7 @@ export function GlobalView(div, startupOptions) {
       const newRank = Array.create(R.length, i => i);
       newRank.sort((a, b) => R[a] < R[b] ? -1 : R[a] > R[b] ? 1 : 0);
       const R_repaired = new Array(R.length);
-      for (let i = 0; i < R.length; ++i) {
+      for (let i = 0; i < R.length; i += 1) {
         R_repaired[rank[i]] = R[newRank[i]];
       }
 
@@ -1572,7 +1572,8 @@ export function GlobalView(div, startupOptions) {
       const imagePos = dataPos.slice(0);
 
       // Convert scalar to position on rectangle [bl, br, tl, tr] -> dest
-      dest = locToPos(imageLocations[idx++]);
+      dest = locToPos(imageLocations[idx]);
+      idx += 1;
       tf.deviceCoordToDatasetCoord(dest, dest);
       imagePos[d0] = dest[0];
       imagePos[d1] = dest[1];
@@ -1633,11 +1634,11 @@ export function GlobalView(div, startupOptions) {
   this.highlightImage = function (image) {
     const images = imageViewer.getImages();
     if (libUtility.isNumber(image)) {
-      for (let i = 0; i < images.length; ++i) {
+      for (let i = 0; i < images.length; i += 1) {
         images[i].highlighted = i === image;
       }
     } else {
-      for (let i = 0; i < images.length; ++i) {
+      for (let i = 0; i < images.length; i += 1) {
         images[i].highlighted = images[i] === image;
       }
     }
@@ -2077,7 +2078,7 @@ export function GlobalView(div, startupOptions) {
         // TODO: Find points within mousePolygon -> selection
 
         // Transform mousePolygon from canvas space to dataset coordinates
-        for (let i = 0; i < mousePolygon.length; ++i) {
+        for (let i = 0; i < mousePolygon.length; i += 1) {
           const p = mousePolygon[i];
 
           // Transform p from canvas space to device coordinates

@@ -52,7 +52,7 @@ export function debugLog(x) {
 Array.create = function (n, func) {
   const array = new Array(n);
   if (isFunction(func)) {
-    for (let i = 0; i < n; ++i) {
+    for (let i = 0; i < n; i += 1) {
       array[i] = func(i);
     }
   } else {
@@ -187,7 +187,7 @@ export function hexToRgb(hex) {
 
 export function rgbStringToFloatArray(rgbstr) {
   const rgb = rgbstr.match(/\d+/g);
-  for (let i = 0; i < 4; ++i) {
+  for (let i = 0; i < 4; i += 1) {
     rgb[i] = i < rgb.length ? Math.max(0x00, Math.min(0xFF, rgb[i] / 0xFF)) : 1.0;
   }
   return rgb;
@@ -208,7 +208,7 @@ export function F32toI24(floats, bounds) {
     value = Math.floor(value);
     value = Math.max(0, value);
     value = Math.min(0xFFFFFE, value);
-    ++value;
+    value += 1;
     bytes[i + 0] = (value >> 16) & 0xFF;
     bytes[i + 1] = (value >> 8) & 0xFF;
     bytes[i + 2] = (value >> 0) & 0xFF;
@@ -222,8 +222,8 @@ export function F32toI24flipY(floats, bounds, width, height) {
   let i = 0;
   const voffset = -bounds[0];
   const vscale = 0xFFFFFE / (bounds[1] - bounds[0]);
-  for(let y = 0; y < height; ++y) {
-    for(let x = 0; x < width; ++x) {
+  for(let y = 0; y < height; y += 1) {
+    for(let x = 0; x < width; x += 1) {
     // var value = Math.floor((floats[(height - y - 1) * width + x] - bounds[0]) * vscale) + 1;
       let value = floats[((height - y - 1) * width) + x];
       value += voffset;
@@ -231,7 +231,7 @@ export function F32toI24flipY(floats, bounds, width, height) {
       value = Math.floor(value);
       value = Math.max(0, value);
       value = Math.min(0xFFFFFE, value);
-      ++value;
+      value += 1;
       bytes[i + 0] = (value >> 16) & 0xFF;
       bytes[i + 1] = (value >> 8) & 0xFF;
       bytes[i + 2] = (value >> 0) & 0xFF;
@@ -321,7 +321,8 @@ export function imageUrlFromBytes(bytes, width, height) {
 
 let _seededRandom_seed = 1;
 Math.seededRandom = function () { // Source: https://stackoverflow.com/a/19303725
-  const x = Math.sin(_seededRandom_seed++) * 10000;
+  const x = Math.sin(_seededRandom_seed) * 10000;
+  _seededRandom_seed += 1;
   return x - Math.floor(x);
 }
 
@@ -344,7 +345,7 @@ export function readCookie(name) {
   // Source: http://www.quirksmode.org/js/cookies.html
   const nameEQ = name + '=';
   const ca = document.cookie.split(';');
-  for(let i = 0; i < ca.length; ++i) {
+  for(let i = 0; i < ca.length; i += 1) {
     let c = ca[i];
     while (c.charAt(0) === ' ') {
       c = c.substring(1, c.length);
@@ -481,7 +482,7 @@ export function ForwardList(value) {
   this.size = function () {
     let size = 0;
     for (let node = this; node; node = node.next) {
-      ++size;
+      size += 1;
     }
     return size;
   }
@@ -530,18 +531,18 @@ export function PriorityQueue(priorityProperty) {
   const data = [];
   this.length = 0;
   this.push = function (element) {
-    ++this.length;
+    this.length += 1;
     let i;
     const p = element[priorityProperty];
-    for (i = 0; i < data.length && data[i][priorityProperty] >= p; i++) {}
+    for (i = 0; i < data.length && data[i][priorityProperty] >= p; i += 1) {}
     data.splice(i, 0, element);
   }
   this.pop = function () {
-    --this.length;
+    this.length -= 1;
     return data.pop();
   }
   this.shift = function () {
-    --this.length;
+    this.length -= 1;
     return data.shift();
   }
 }
@@ -575,7 +576,7 @@ export function HashSet(onchanged) {
   this.push = function (value) {
     if (hash[value] !== true) {
       hash[value] = true;
-      ++this.length;
+      this.length += 1;
       this.onchanged();
     }
   }
@@ -592,7 +593,7 @@ export function HashSet(onchanged) {
     values.forEach(function (value) {
       if (hash[value] !== true) {
         hash[value] = true;
-        ++self.length;
+        self.length += 1;
         invalidate = true;
       }
     });
@@ -671,7 +672,7 @@ export function HashSet(onchanged) {
   this.erase = function (value) {
     if (hash[value] === true) {
       delete hash[value];
-      --this.length;
+      this.length -= 1;
       this.onchanged();
     }
   }
@@ -688,7 +689,7 @@ export function HashSet(onchanged) {
     values.forEach(function (value) {
       if (hash[value] === true) {
         delete hash[value];
-        --self.length;
+        self.length -= 1;
         invalidate = true;
       }
     });
@@ -727,7 +728,7 @@ export function HashSet(onchanged) {
     // var last = Number.MIN_SAFE_INTEGER, badOrder = 0;
     for (let value in hash) {
       value = Number.parseInt(value, 10);
-      // if (value < last) ++badOrder; last = value;
+      // if (value < last) {badOrder += 1; last = value;}
       callback(value);
     }
     // if (badOrder !== 0) console.log('bad order: ' + badOrder + ' times');

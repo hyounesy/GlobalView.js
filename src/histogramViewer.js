@@ -223,18 +223,21 @@ export function HistogramViewer(gl, globalView) {
 
     let positions = new Float32Array((6 * numBins) * 3);
     const v3_set = function (i, x, y) {
-      i *= 3; positions[i++] = x; positions[i++] = y; positions[i++] = 0.0;
+      i *= 3;
+      positions[i] = x; i += 1;
+      positions[i] = y; i += 1;
+      positions[i] = 0.0; i += 1;
     };
-    for (let b = 0, i = -1, x_scale = 1 / numBins; b < numBins; ++b) {
+    for (let b = 0, i = -1, x_scale = 1 / numBins; b < numBins; b += 1) {
       const y = axis.histogram.data[b] / axis.histogram.maximum;
 
-      v3_set(++i, (b + 0) * x_scale, 0);
-      v3_set(++i, (b + 1) * x_scale, 0);
-      v3_set(++i, (b + 1) * x_scale, y);
+      v3_set(i += 1, (b + 0) * x_scale, 0);
+      v3_set(i += 1, (b + 1) * x_scale, 0);
+      v3_set(i += 1, (b + 1) * x_scale, y);
 
-      v3_set(++i, (b + 1) * x_scale, y);
-      v3_set(++i, (b + 0) * x_scale, y);
-      v3_set(++i, (b + 0) * x_scale, 0);
+      v3_set(i += 1, (b + 1) * x_scale, y);
+      v3_set(i += 1, (b + 0) * x_scale, y);
+      v3_set(i += 1, (b + 0) * x_scale, 0);
     }
     axis.meshHistogram.reset(positions, null, null, null, null, null, gl.TRIANGLES);
 
@@ -243,9 +246,9 @@ export function HistogramViewer(gl, globalView) {
     for (let b = 0, i = 0, x_scale = 1 / numBins; b < numBins;) {
       const y = axis.histogram.data[b] / axis.histogram.maximum;
 
-      v3_set(++i, b * x_scale, y);
-      v3_set(++i, ++b * x_scale, y);
-      v3_set(++i, b * x_scale, 0);
+      v3_set(i += 1, b * x_scale, y);
+      v3_set(i += 1, (b += 1) * x_scale, y);
+      v3_set(i += 1, b * x_scale, 0);
     }
     axis.meshLineHistogram.reset(positions, null, null, null, null, null, gl.LINE_STRIP);
   }

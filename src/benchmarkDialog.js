@@ -172,7 +172,7 @@ function BenchmarkDialog() {
     const tEnd = performance.now();
 
     time += (tEnd - tStart) / 1000.0;
-    ++frames;
+    frames += 1;
     const passTime = (tEnd - passStartTime) / 1000.0;
 
     if (reportProgress(benchmarkCounter / numBenchmarks, passTime / SECONDS_PER_BENCHMARK)) {
@@ -199,12 +199,12 @@ function BenchmarkDialog() {
       zip.file(name + '.png', image, { base64: true });
     }
 
-    // console.log(++benchmarkCounter / numBenchmarks);
     // <<<<<<<<<< END RUN BENCHMARK >>>>>>>>>>
 
     const getKeyByIndex = function (map, idx) {
       for (key in map) {
-        if (idx-- === 0) {
+        idx -= 1;
+        if (idx === -1) {
           return key;
         }
       }
@@ -213,14 +213,14 @@ function BenchmarkDialog() {
 
     let o = 0;
     let option = getKeyByIndex(benchmarkOptionIndices, o);
-    while (option !== null && ++benchmarkOptionIndices[option] === benchmarkOptions[option].length) {
+    while (option !== null && (benchmarkOptionIndices[option] += 1) === benchmarkOptions[option].length) {
       benchmarkOptionIndices[option] = 0;
-      option = getKeyByIndex(benchmarkOptionIndices, ++o);
+      option = getKeyByIndex(benchmarkOptionIndices, (o += 1));
     }
 
     reportResult(csvRow);
 
-    if (reportProgress(++benchmarkCounter / numBenchmarks, 1) && option !== null) {
+    if (reportProgress((benchmarkCounter += 1) / numBenchmarks, 1) && option !== null) {
       setTimeout(startBenchmarkPass, 0);
     } else if (option !== null) {
       cancelBenchmark();

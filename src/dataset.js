@@ -54,7 +54,7 @@ export function DataVector(dataset, source) {
       'PI': libFormulaCompiler.FormulaCompiler.types.float,
       'i': libFormulaCompiler.FormulaCompiler.types.float
     };
-    for (let c = 0; c < nc; ++c) {
+    for (let c = 0; c < nc; c += 1) {
       globalTypes['c' + c] = libFormulaCompiler.FormulaCompiler.types.float;
     }
     const globals = {
@@ -73,7 +73,7 @@ export function DataVector(dataset, source) {
 
     this.getValue = function (i) {
       globals.i = i; // ?! debug?
-      for (let c = 0; c < nc; ++c) {
+      for (let c = 0; c < nc; c += 1) {
         globals['c' + c] = dataset.fdata[(i * nc) + c];
       }
 
@@ -82,7 +82,7 @@ export function DataVector(dataset, source) {
 
     this.minimum = Number.MAX_VALUE;
     this.maximum = Number.MIN_VALUE;
-    for (let i = 0, n = dataset.length; i < n; ++i) {
+    for (let i = 0, n = dataset.length; i < n; i += 1) {
       const value = this.getValue(i);
       this.minimum = Math.min(this.minimum, value);
       this.maximum = Math.max(this.maximum, value);
@@ -387,12 +387,12 @@ export function Dataset() {
         this.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
           // Execute an asynchronous worker that computes _clusterMaps[d0][d1]
           const p = new Parallel([libUtility.makeCloneable(densityMap), d0, d1, new libAlgorithm.ClusterMapOptions(options)], { evalPath: 'eval.js' });
-          p.require(libAlgorithm.computeClusterMap_method3);
+          p.require(libAlgorithm.computeClusterMap);
           p.require(libUtility.ForwardList);
           p.require(libUtility.PriorityQueue);
           p.spawn(params =>
             // the following code will be evaled from a blob in Parallel. so no need for libAlgorithm.
-            computeClusterMap_method3.apply(null, params)
+            computeClusterMap.apply(null, params)
           ).then((clusterMap) => {
             clusterMap = new libAlgorithm.ClusterMap(clusterMap);
             // Set _clusterMaps[d0][d1]
@@ -423,7 +423,7 @@ export function Dataset() {
         const densityMap = this.requestDensityMap(d0, d1, undefined, undefined);
         if (densityMap) {
           // var tStart = performance.now();
-          _clusterMaps[d0][d1] = clusterMap = new libAlgorithm.ClusterMap(libAlgorithm.computeClusterMap_method3(densityMap, d0, d1, new libAlgorithm.ClusterMapOptions(options)));
+          _clusterMaps[d0][d1] = clusterMap = new libAlgorithm.ClusterMap(libAlgorithm.computeClusterMap(densityMap, d0, d1, new libAlgorithm.ClusterMapOptions(options)));
           // console.log(performance.now() - tStart + "ms");
         } else {
           _clusterMaps[d0][d1] = clusterMap = null;
@@ -454,10 +454,10 @@ export function Dataset() {
     const data = this.data;
     const data_inflated = new Array(n_inflated * nc);
 
-    for (let i = 0, len = n * nc; i < len; ++i) {
+    for (let i = 0, len = n * nc; i < len; i += 1) {
       fdata_inflated[i] = fdata[i];
     }
-    for (let i = 0, len = n * nc; i < len; ++i) {
+    for (let i = 0, len = n * nc; i < len; i += 1) {
       data_inflated[i] = data[i];
     }
 
@@ -465,11 +465,11 @@ export function Dataset() {
     let samples;
     let sample;
     const sampleScale = 1 / densityMapChain[0].size;
-    for (let i, i_inflated = n, len = n * nc; i_inflated < n_inflated; ++i_inflated) {
+    for (let i, i_inflated = n, len = n * nc; i_inflated < n_inflated; i_inflated += 1) {
       i = i_inflated % n;
 
       samples = libAlgorithm.sampleDensityMapChain(densityMapChain);
-      for (let c = 0; c < nc; ++c) {
+      for (let c = 0; c < nc; c += 1) {
         column = this.columns[c];
         sample = column.minimum + ((column.maximum - column.minimum) * samples[c] * sampleScale);
 
@@ -490,11 +490,11 @@ export function Dataset() {
     if (this.names !== null) {
       const names = /** @type {Array<string>} */ (this.names);
       const names_inflated = new Array(n_inflated);
-      for (let i = 0, len = n; i < len; ++i) {
+      for (let i = 0, len = n; i < len; i += 1) {
         names_inflated[i] = names[i];
       }
-      for (let index = 0, i_inflated = n, len = n * nc; i_inflated < n_inflated; ++i_inflated) {
-        names_inflated[i_inflated] = 'generated datapoint ' + ++index;
+      for (let index = 0, i_inflated = n, len = n * nc; i_inflated < n_inflated; i_inflated += 1) {
+        names_inflated[i_inflated] = 'generated datapoint ' + (index += 1);
       }
       this.names = names_inflated;
     }
@@ -502,10 +502,10 @@ export function Dataset() {
     if (this.imageFilenames !== null) {
       const imageFilenames = /** @type {Array<string>} */ (this.imageFilenames),
         imageFilenames_inflated = new Array(n_inflated);
-      for (let i = 0, len = n; i < len; ++i) {
+      for (let i = 0, len = n; i < len; i += 1) {
         imageFilenames_inflated[i] = imageFilenames[i];
       }
-      for (let i_inflated = n, len = n * nc; i_inflated < n_inflated; ++i_inflated) {
+      for (let i_inflated = n, len = n * nc; i_inflated < n_inflated; i_inflated += 1) {
         imageFilenames_inflated[i_inflated] = imageFilenames[i_inflated % n];
       }
       this.imageFilenames = imageFilenames_inflated;
@@ -528,10 +528,10 @@ export function Dataset() {
 
     // Create csv header array
     const header = new Array(csv_nc);
-    for (let c = 0, ci = 0; c < csv_nc; ++c, ++ci) {
+    for (let c = 0, ci = 0; c < csv_nc; c += 1, ci += 1) {
       if (c === nameColumn) {
         header[c] = nameColumnLabel;
-        --ci;
+        ci -= 1;
       } else {
         header[c] = this.columns[ci].label;
       }
@@ -539,12 +539,12 @@ export function Dataset() {
     csv[0] = header;
 
     // Create csv body arrays
-    for (let i = 0; i < this.length; ++i) {
+    for (let i = 0; i < this.length; i += 1) {
       const row = new Array(csv_nc);
-      for (let c = 0, ci = 0; c < csv_nc; ++c, ++ci) {
+      for (let c = 0, ci = 0; c < csv_nc; c += 1, ci += 1) {
         if (c === nameColumn) {
           row[c] = this.names[i];
-          --ci;
+          ci -= 1;
         } else {
           row[c] = this.data[(i * nc) + ci];
         }
@@ -573,14 +573,14 @@ export function RandomDataset(n, nc, onload) {
 
   this.numColumns = nc;
   this.length = n;
-  for (let i = 0; i < nc; ++i) {
+  for (let i = 0; i < nc; i += 1) {
     this.columns.push({minimum: 0, maximum: 1, label: generateColumnName(i, nc)});
     this.dataVectors.push(new DataVector(this, i));
   }
 
   const nnc = n * nc;
   this.fdata = new Float32Array(nnc);
-  for (let i = 0; i < nnc; ++i) {
+  for (let i = 0; i < nnc; i += 1) {
     this.fdata[i] = Math.random();
   }
   this.data = this.fdata;
@@ -698,7 +698,7 @@ export function CsvDataset(file, options, onload) {
         options.nameColumn = null;
 
         // If any row consists of only unique strings, we can assume it contains data point names
-        for (let c = 0; c < data[0].length; ++c) {
+        for (let c = 0; c < data[0].length; c += 1) {
           const valueMap = {};
           if (data.every(row => (row.length > c && isNaN(parseData(row[c])) && !(row[c] in valueMap)) ? valueMap[row[c]] = true : false)) {
             options.nameColumn = c;
@@ -719,9 +719,9 @@ export function CsvDataset(file, options, onload) {
     let columnLabels;
     if (libUtility.isFunction(options.columnLabels)) {
       columnLabels = new Array(n);
-      for (let c = 0, ci = 0; c < data[0].length; ++c, ++ci) {
+      for (let c = 0, ci = 0; c < data[0].length; c += 1, ci += 1) {
         if (c === options.nameColumn) {
-          --ci;
+          ci -= 1;
           continue;
         }
 
@@ -742,9 +742,9 @@ export function CsvDataset(file, options, onload) {
     dataset.fdata = new Float32Array(nc * n);
     let i,
       di;
-    for (let c = 0, ci = 0; c < data[0].length; ++c, ++ci) {
+    for (let c = 0, ci = 0; c < data[0].length; c += 1, ci += 1) {
       if (c === options.nameColumn) {
-        --ci;
+        ci -= 1;
         continue;
       }
 
@@ -752,10 +752,10 @@ export function CsvDataset(file, options, onload) {
       let min = Number.MAX_VALUE;
       let max = Number.MIN_VALUE;
       let isNumeric = true;
-      for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
+      for (i = firstRow, di = 0; i < data.length; i += 1, di += 1) {
         // Skip blank lines
         if (data[i].length === 1 && data[i][0] === '') {
-          --di;
+          di -= 1;
           continue;
         }
 
@@ -778,10 +778,10 @@ export function CsvDataset(file, options, onload) {
         valueList = [];
         const valueMap = {};
         let valueIdx = 0;
-        for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
+        for (i = firstRow, di = 0; i < data.length; i += 1, di += 1) {
           // Skip blank lines
           if (data[i].length === 1 && data[i][0] === '') {
-            --di;
+            di -= 1;
             continue;
           }
 
@@ -790,7 +790,8 @@ export function CsvDataset(file, options, onload) {
           let fvalue;
           if (typeof cls === 'undefined') {
             valueList.push(value);
-            fvalue = valueMap[value] = valueIdx++;
+            fvalue = valueMap[value] = valueIdx;
+            valueIdx += 1;
           } else {
             fvalue = cls;
           }
@@ -825,7 +826,7 @@ export function CsvDataset(file, options, onload) {
       } else {
         const trimedFdata = new Float32Array(nc * n);
         let len;
-        for (i = 0, len = trimedFdata.length; i < len; ++i) {
+        for (i = 0, len = trimedFdata.length; i < len; i += 1) {
           trimedFdata[i] = dataset.fdata[i];
         }
         dataset.fdata = trimedFdata;
@@ -839,10 +840,10 @@ export function CsvDataset(file, options, onload) {
     if (options.nameColumn) {
       const names = dataset.names = new Array(n);
       const nameColumn = options.nameColumn;
-      for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
+      for (i = firstRow, di = 0; i < data.length; i += 1, di += 1) {
         // Skip blank lines
         if (data[i].length === 1 && data[i][0] === '') {
-          --di;
+          di -= 1;
           continue;
         }
 
@@ -855,10 +856,10 @@ export function CsvDataset(file, options, onload) {
     // Generate image filenames
     if (libUtility.isFunction(options.imageFilenames)) {
       dataset.imageFilenames = new Array(n);
-      for (i = firstRow, di = 0; i < data.length; ++i, ++di) {
+      for (i = firstRow, di = 0; i < data.length; i += 1, di += 1) {
         // Skip blank lines
         if (data[i].length === 1 && data[i][0] === '') {
-          --di;
+          di -= 1;
           continue;
         }
 

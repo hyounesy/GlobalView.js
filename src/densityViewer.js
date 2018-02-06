@@ -72,7 +72,7 @@ export function DensityViewer(gl, globalView) {
         if (!texture) {
           const densityMap = this.showDensityMap ? dataset.requestDensityMap(d0, d1, undefined, undefined) : null; // Retrieve densityMap synchronously (since we already know it's ready)
           const rgba = new Uint8Array(4 * clusterMap.data.length);
-          for (let i = 0; i < clusterMap.data.length; ++i) {
+          for (let i = 0; i < clusterMap.data.length; i += 1) {
             let c = clusterMap.data[i];
 
             if (c === 0) {
@@ -82,13 +82,13 @@ export function DensityViewer(gl, globalView) {
               rgba[(4 * i) + 3] = 0;
             } else {
               // Use random RGB color (deprecated)
-              /* var clr = [Math.sin(++c) * 10000, Math.sin(++c) * 10000, Math.sin(++c) * 10000];
+              /* var clr = [Math.sin(c += 1) * 10000, Math.sin(c += 1) * 10000, Math.sin(c += 1) * 10000];
               clr[0] -= Math.floor(clr[0]);
               clr[1] -= Math.floor(clr[1]);
               clr[2] -= Math.floor(clr[2]); */
 
               // Use evenly spaced hues
-              --c; // --c ... ID to index
+              c -= 1; // c -= 1 ... ID to index
               let d = densityMap ? (densityMap.data[i] - clusterMap.minDensities[c]) / (clusterMap.densities[c] - clusterMap.minDensities[c]) : 0.75;
               if (d < 0.0) {
                 d = 0.0;
@@ -238,7 +238,7 @@ export function DensityViewer(gl, globalView) {
       }
     }
 
-    for (let i = 0; i < bodies.length; ++i) {
+    for (let i = 0; i < bodies.length; i += 1) {
       const sample_x = Math.floor(bodies[i].x);
       const sample_y = Math.floor(bodies[i].y);
       const density = densityMap[(sample_x * width) + sample_y];
@@ -261,7 +261,7 @@ export function DensityViewer(gl, globalView) {
       }
     }
 
-    for (let i = 0; i < bodies.length; ++i) {
+    for (let i = 0; i < bodies.length; i += 1) {
       bodies[i].x += bodies[i].fx;
       bodies[i].y += bodies[i].fy;
 

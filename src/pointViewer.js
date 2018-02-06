@@ -57,7 +57,7 @@ export function PointViewer(gl, globalView) {
           count = 0;
         this.forEach(function (index) {
           if (index === lastIndex + 1) {
-            ++count;
+            count += 1;
           } else {
             if (count !== 0) {
               meshDataPoints.drawLines(texture, pointDrag, startIndex, count);
@@ -222,7 +222,7 @@ export function PointViewer(gl, globalView) {
 
     // Create vertex ID buffer
     const vertexIds = new Float32Array(numvertices);
-    for (let i = 0; i < numvertices; ++i) {
+    for (let i = 0; i < numvertices; i += 1) {
       vertexIds[i] = i;
     }
     const vidbuffer = gl.createBuffer();
@@ -245,16 +245,16 @@ vec{1} getPos()
       const inputs = [/c(\d+)/g, '0.0'];
       const inputCode = [];
       const animatedInputCode = [];
-      for (let d = 0, i = 0; d < ndim; d += 4, ++i) {
+      for (let d = 0, i = 0; d < ndim; d += 4, i += 1) {
         const attrLen = Math.min(4, ndim - d);
         attrDeclCode += 'attribute ' + (attrLen === 1 ? 'float' : 'vec' + attrLen) + ' p' + i + ';\n';
-        for (let a = 0; a < attrLen; ++a) {
+        for (let a = 0; a < attrLen; a += 1) {
           inputs.push('p' + i + (attrLen === 1 ? '' : '[' + a + ']'));
         }
       }
       // HY:
       const ND = 4; // todo: should use the globalView.ND
-      for (let d = 0; d < ND; ++d) {
+      for (let d = 0; d < ND; d += 1) {
         inputCode.push(String.prototype.format2.apply(activeInputVectors[d] ? activeInputVectors[d].getValueCode : '0.0', inputs));
         animatedInputCode.push(String.prototype.format2.apply(activeInputVectors[d] ? animatedInputVectors[d].getValueCode : '0.0', inputs));
       }
@@ -353,7 +353,7 @@ vec{1} getPos()
         count = numvertices;
       }
 
-      for(let i = 0; i < 16; i++) {
+      for(let i = 0; i < 16; i += 1) {
         gl.disableVertexAttribArray(i);
         if (gl.ext) {
           gl.ext.vertexAttribDivisorANGLE(i, 0);
@@ -362,7 +362,7 @@ vec{1} getPos()
 
       if (posbuffer) {
         gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
-        for(let d = 0, i = 0; d < ndim; d += 4, ++i) {
+        for(let d = 0, i = 0; d < ndim; d += 4, i += 1) {
           if (this.sdr.posattr[i] !== -1) {
             gl.enableVertexAttribArray(this.sdr.posattr[i]);
             gl.vertexAttribPointer(this.sdr.posattr[i], Math.min(4, ndim - d), gl.FLOAT, false, ndim * 4, ((offset * ndim) + d) * 4);
@@ -385,7 +385,7 @@ vec{1} getPos()
       gl.drawArrays(gl.POINTS, 0, Math.min(count, numvertices - offset));
     }
     this.drawIndexed = function (texture, idxbuffer, count) {
-      for(let i = 0; i < 16; i++) {
+      for(let i = 0; i < 16; i += 1) {
         gl.disableVertexAttribArray(i);
         if (gl.ext) {
           gl.ext.vertexAttribDivisorANGLE(i, 0);
@@ -394,7 +394,7 @@ vec{1} getPos()
 
       if (posbuffer) {
         gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
-        for(let d = 0, i = 0; d < ndim; d += 4, ++i) {
+        for(let d = 0, i = 0; d < ndim; d += 4, i += 1) {
           if (this.sdr.posattr[i] !== -1) {
             gl.enableVertexAttribArray(this.sdr.posattr[i]);
             gl.vertexAttribPointer(this.sdr.posattr[i], Math.min(4, ndim - d), gl.FLOAT, false, ndim * 4, d * 4);
@@ -427,14 +427,14 @@ vec{1} getPos()
         count = numvertices;
       }
 
-      for(let i = 0; i < 16; i++) {
+      for(let i = 0; i < 16; i += 1) {
         gl.disableVertexAttribArray(i);
         gl.ext.vertexAttribDivisorANGLE(i, 0);
       }
 
       if (posbuffer) {
         gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
-        for(let d = 0, i = 0; d < ndim; d += 4, ++i) {
+        for(let d = 0, i = 0; d < ndim; d += 4, i += 1) {
           if (this.sdrLine.posattr[i] !== -1) {
             gl.enableVertexAttribArray(this.sdrLine.posattr[i]);
             gl.vertexAttribPointer(this.sdrLine.posattr[i], Math.min(4, ndim - d), gl.FLOAT, false, ndim * 4, ((offset * ndim) + d) * 4);

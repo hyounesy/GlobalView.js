@@ -139,7 +139,7 @@ export function WebGLUtils () {
   function create3DContext(canvas, opt_attribs) {
     const names = ['webgl', 'experimental-webgl', 'webkit-3d', 'moz-webgl'];
     let context = null;
-    for (let ii = 0; ii < names.length; ++ii) {
+    for (let ii = 0; ii < names.length; ii += 1) {
       try {
         context = /** @type {WebGLRenderingContext} */ (canvas.getContext(names[ii], opt_attribs));
       } catch(e) {}

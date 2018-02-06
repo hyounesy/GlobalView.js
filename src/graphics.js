@@ -56,7 +56,7 @@ export function Shader(gl, vs, fs, debug) {
 
   /* // Print active uniforms
   var count = gl.getProgramParameter(sdr, gl.ACTIVE_UNIFORMS);
-  for (var i = 0; i < count; ++i)
+  for (var i = 0; i < count; i += 1)
     console.log(gl.getActiveUniform(sdr, i).name); */
 
   this.vertexPositionAttribute = gl.getAttribLocation(sdr, 'vpos');
@@ -353,7 +353,7 @@ export function Mesh(_gl, positions, normals, tangents, binormals, texcoords, in
 
     sdr.bind();
 
-    for(let i = 0; i < 16; i++) {
+    for(let i = 0; i < 16; i += 1) {
       gl.disableVertexAttribArray(i);
       if (gl.ext) {
         gl.ext.vertexAttribDivisorANGLE(i, 0);
@@ -387,7 +387,7 @@ export function Mesh(_gl, positions, normals, tangents, binormals, texcoords, in
       if(libUtility.isArray(texture)) {
         if(sdr.samplerArrayUniform) {
           const idxarray = new Array(texture.length);
-          for(let i = 0; i < texture.length; i++) {
+          for(let i = 0; i < texture.length; i += 1) {
             gl.activeTexture(gl.TEXTURE0 + i);
             gl.bindTexture(gl.TEXTURE_2D, texture[i]);
             idxarray[i] = i;

@@ -155,7 +155,7 @@ export function Colormap(gl, globalView) {
     sdrLine.matWorldViewProj(mattrans);
     meshLine.draw();
     libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -1.0, 0.0]);
-    for (let i = 0; i < axis.tickCount; ++i) {
+    for (let i = 0; i < axis.tickCount; i += 1) {
       const y = axis.tickOffset + (i * axis.tickDistance);
       const tickPos = (y - axis.minimum) / (axis.maximum - axis.minimum);
 
@@ -193,7 +193,7 @@ export function Colormap(gl, globalView) {
     axis.maximum = maximum;
     axis.values = null;
 
-    for (let numTicks = NUM_TICKS; numTicks >= 0; --numTicks) {
+    for (let numTicks = NUM_TICKS; numTicks >= 0; numTicks -= 1) {
       if (changeTickDistance === false) {
         axis.tickOffset = Math.ceil(minimum / axis.tickDistance) * axis.tickDistance;
         axis.tickCount = Math.floor((maximum - axis.tickOffset) / axis.tickDistance) + 1;
@@ -202,10 +202,11 @@ export function Colormap(gl, globalView) {
         let exp = Math.ceil(Math.log(axis.tickDistance) / Math.log(10)); // Compute power-of-10 just above tickDistance -> pow(10, exp)
 
         // Try less aggressive rounding in each iteration until break condition is met
-        for (let i = 0; i < 10; ++i) {
+        for (let i = 0; i < 10; i += 1) {
           // Maximum 10 iterations
           axis.tickDistance = (maximum - minimum) / numTicks;
-          const base = Math.pow(10, exp--);
+          const base = Math.pow(10, exp);
+          exp -= 1;
           axis.tickDistance = Math.round(axis.tickDistance / base) * base; // Round tickDistance to base
           axis.tickOffset = Math.ceil(minimum / axis.tickDistance) * axis.tickDistance;
           axis.tickCount = Math.floor((maximum - axis.tickOffset) / axis.tickDistance) + 1;
@@ -324,7 +325,7 @@ export function validateColormap(colormap) {
     }
     if (libUtility.isString(colormap[0])) {
       let err;
-      for (let i = 0; i < colormap.length; ++i) {
+      for (let i = 0; i < colormap.length; i += 1) {
         if ((err = validateColor(colormap[i])) !== true) {
           return err;
         }
@@ -334,7 +335,7 @@ export function validateColormap(colormap) {
       if (colormap.length % 4 !== 0) {
         return 'Colormap array length must be multiple of 4.';
       }
-      for (let i = 0; i < colormap.length; ++i) {
+      for (let i = 0; i < colormap.length; i += 1) {
         if (!libUtility.isNumber(colormap[i]) || colormap[i] < 0x00 || colormap[i] > 0xFF) {
           return 'Colormap array must contain numbers between 0 and 255.';
         }
@@ -358,7 +359,7 @@ export function parseColormap(colormap) {
     if (libUtility.isString(colormap[0])) {
       const array = [];
       let color;
-      for (let i = 0; i < colormap.length; ++i) {
+      for (let i = 0; i < colormap.length; i += 1) {
         if ((color = parseColor(colormap[i]))) {
           Array.prototype.push.apply(array, color);
         } else {

@@ -54,7 +54,7 @@ domready(function () {
       plot.showImages(plot.referencePoints, 'lowDensity');
     });
 
-    for (let i = 0, nc = dataset.numColumns; i < dataset.length; ++i) {
+    for (let i = 0, nc = dataset.numColumns; i < dataset.length; i += 1) {
       const protein = dataset.data[(i * nc) + 0];
       let proteinPoints = pointsByProtein[protein];
       if (!proteinPoints) {
@@ -63,7 +63,7 @@ domready(function () {
       proteinPoints.push(i);
     }
 
-    for (let i = 0; i < COLUMN_HINTS.length; ++i) {
+    for (let i = 0; i < COLUMN_HINTS.length; i += 1) {
       dataset.dataVectors[i].hint = COLUMN_HINTS[i];
     }
   });
@@ -117,7 +117,7 @@ function addAllEventListeners() {
 
 function cmdSelectAll_onClick(sender) {
   const elements = document.querySelectorAll("input[type='checkbox']");
-  for (let i = 0; i < elements.length; ++i) {
+  for (let i = 0; i < elements.length; i += 1) {
     if (elements[i].checked === false) {
       elements[i].checked = true;
       cbProtein_onChange(elements[i]);
@@ -127,7 +127,7 @@ function cmdSelectAll_onClick(sender) {
 
 function cmdDeselectAll_onClick(sender) {
   const elements = document.querySelectorAll("input[type='checkbox']");
-  for (let i = 0; i < elements.length; ++i) {
+  for (let i = 0; i < elements.length; i += 1) {
     if (elements[i].checked === true) {
       elements[i].checked = false;
       cbProtein_onChange(elements[i]);

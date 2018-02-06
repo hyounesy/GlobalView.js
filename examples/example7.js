@@ -54,8 +54,8 @@ domready(function () {
       OPTIONS.padding = [y * subPlotHeight, (ndim - x - 1) * subPlotWidth, (ndim - y - 1) * subPlotHeight, x * subPlotWidth];
 
       // Adjust indices, since we don't plot dataVectors[0] (tagged protein)
-      ++x;
-      ++y;
+      x += 1;
+      y += 1;
 
       const thumbnailWidth = (OPTIONS.thumbnailSize * (dataset.dataVectors[x].maximum - dataset.dataVectors[x].minimum)) / (PLOT_SIZE - OPTIONS.padding[1] - OPTIONS.padding[3]);
       const thumbnailHeight = (OPTIONS.thumbnailSize * (dataset.dataVectors[y].maximum - dataset.dataVectors[y].minimum)) / (PLOT_SIZE - OPTIONS.padding[0] - OPTIONS.padding[2]);

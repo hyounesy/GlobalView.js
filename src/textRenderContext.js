@@ -124,7 +124,7 @@ export function TextRenderContext(gl, canvas) {
     }
     ctx.beginPath();
     ctx.moveTo(points[0][0], points[0][1]);
-    for (let i = 1; i < points.length; ++i) {
+    for (let i = 1; i < points.length; i += 1) {
       ctx.lineTo(points[i][0], points[i][1]);
     }
     ctx.closePath();
@@ -143,7 +143,7 @@ export function TextRenderContext(gl, canvas) {
     }
     ctx.beginPath();
     ctx.moveTo(points[0][0], points[0][1]);
-    for (let i = 1; i < points.length; ++i) {
+    for (let i = 1; i < points.length; i += 1) {
       ctx.lineTo(points[i][0], points[i][1]);
     }
     ctx.closePath();

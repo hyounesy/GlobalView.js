@@ -229,7 +229,8 @@ export function ImageViewer(gl, globalView) {
         refPos[1] = ((1 - refPos[1]) * gl.height) / 2;
         refPos[0] += ((0.5 * LABEL_HEIGHT) + LABEL_WIDTH) - LABEL_TEXT_PADDING; // Right-align label
         refPos[1] -= (0.5 * LABEL_HEIGHT) - LABEL_TEXT_PADDING; // Right-align label
-        gl.drawText(label++, refPos[0], refPos[1], 'topright');
+        gl.drawText(label, refPos[0], refPos[1], 'topright');
+        label += 1;
       });
     } else {
       // Draw lines between image.imagePos and image.refPos
@@ -346,7 +347,8 @@ export function ImageViewer(gl, globalView) {
         imagePos[0] += (1.0 * scale[0]) - ((LABEL_TEXT_PADDING * 2) / gl.width); // Right-align label (right-padding = 4)
         imagePos[1] -= (LABEL_TEXT_PADDING * 2) / gl.height; // Right-align label (top-padding = 5)
         imagePos[1] = PixelAlignY(imagePos[1]);
-        gl.drawText(label++, (gl.width * (1 + imagePos[0])) / 2, (gl.height * (1 - imagePos[1])) / 2, 'topright');
+        gl.drawText(label, (gl.width * (1 + imagePos[0])) / 2, (gl.height * (1 - imagePos[1])) / 2, 'topright');
+        label += 1;
       }
     });
 
@@ -419,11 +421,11 @@ export function ImageViewer(gl, globalView) {
     const b = libGlMatrix.vec2.create();
     const c = libGlMatrix.vec2.create();
     const d = libGlMatrix.vec2.create();
-    for (let i = 1; i < images.length; ++i) {
+    for (let i = 1; i < images.length; i += 1) {
       if (images[i].imagePos) {
         tf.transformPos(a, images[i].imagePos);
         tf.transformPos(b, images[i].refPos);
-        for (let j = 0; j < i; ++j) {
+        for (let j = 0; j < i; j += 1) {
           if (images[j].imagePos) {
             tf.transformPos(c, images[j].imagePos);
             tf.transformPos(d, images[j].refPos);
@@ -439,11 +441,11 @@ export function ImageViewer(gl, globalView) {
         }
       }
     }
-    for (let i = 1; i < images.length; ++i) {
+    for (let i = 1; i < images.length; i += 1) {
       if (images[i].imagePos) {
         tf.transformPos(a, images[i].imagePos);
         tf.transformPos(b, images[i].refPos);
-        for (let j = 0; j < i; ++j) {
+        for (let j = 0; j < i; j += 1) {
           if (images[j].imagePos) {
             tf.transformPos(c, images[j].imagePos);
             tf.transformPos(d, images[j].refPos);

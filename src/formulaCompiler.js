@@ -78,7 +78,7 @@ export const FormulaCompiler = {
       curTok = null,
       curVal;
     function getch() {
-      return chr = formula.charAt(++chrPos);
+      return chr = formula.charAt(chrPos += 1);
     }
     function getTok() {
       let sign = 1,
@@ -411,7 +411,7 @@ export const FormulaCompiler = {
           if (!getTok()) {
             return null;
           } // Eat ','
-          ++len;
+          len += 1;
         }
         if (!getTok()) {
           return null;
@@ -508,17 +508,17 @@ export const FormulaCompiler = {
     let scope = global;
 
     let postOpScope;
-    while (++IP < code.length) {
+    while ((IP += 1) < code.length) {
       postOpScope = global; // By default, reset scope after operation
       switch (code[IP]) {
-        case 'float = float': scope[stack[--SP]] = stack[SP - 1]; break;
-        case 'float += float': scope[stack[--SP]] += stack[--SP]; break;
-        case 'float -= float': scope[stack[--SP]] -= stack[--SP]; break;
-        case 'float *= float': scope[stack[--SP]] *= stack[--SP]; break;
-        case 'float /= float': scope[stack[--SP]] /= stack[--SP]; break;
-        case 'float + float': stack[SP - 2] += stack[--SP]; break;
-        case 'float * float': stack[SP - 2] *= stack[--SP]; break;
-        case 'float / float': stack[SP - 2] /= stack[--SP]; break;
+        case 'float = float': scope[stack[SP -= 1]] = stack[SP - 1]; break;
+        case 'float += float': scope[stack[SP -= 1]] += stack[SP -= 1]; break;
+        case 'float -= float': scope[stack[SP -= 1]] -= stack[SP -= 1]; break;
+        case 'float *= float': scope[stack[SP -= 1]] *= stack[SP -= 1]; break;
+        case 'float /= float': scope[stack[SP -= 1]] /= stack[SP -= 1]; break;
+        case 'float + float': stack[SP - 2] += stack[SP -= 1]; break;
+        case 'float * float': stack[SP - 2] *= stack[SP -= 1]; break;
+        case 'float / float': stack[SP - 2] /= stack[SP -= 1]; break;
 
         case 'sin(float)': stack[SP - 1] = Math.sin(stack[SP - 1]); break;
         case 'cos(float)': stack[SP - 1] = Math.cos(stack[SP - 1]); break;
@@ -539,8 +539,8 @@ export const FormulaCompiler = {
       case 'ceil': FormulaCompiler.types.float,
       case 'fract': FormulaCompiler.types.float,
       case 'mod': FormulaCompiler.types.float, */
-        case 'min(float, float)': stack[SP - 2] = Math.min(stack[SP - 2], stack[--SP]); break;
-        case 'max(float, float)': stack[SP - 2] = Math.max(stack[SP - 2], stack[--SP]); break;
+        case 'min(float, float)': stack[SP - 2] = Math.min(stack[SP - 2], stack[SP -= 1]); break;
+        case 'max(float, float)': stack[SP - 2] = Math.max(stack[SP - 2], stack[SP -= 1]); break;
           /* case 'clamp': FormulaCompiler.types.float,
       case 'mix': FormulaCompiler.types.float,
       case 'step': FormulaCompiler.types.float,
@@ -554,7 +554,7 @@ export const FormulaCompiler = {
         case 'vec3(float, float, float)': /* Nothing to do */
           break;
         case 'vec3 = vec3':
-          scope[stack[--SP]] = [stack[SP - 3], stack[SP - 2], stack[SP - 1]];
+          scope[stack[SP -= 1]] = [stack[SP - 3], stack[SP - 2], stack[SP - 1]];
           break;
         case 'vec3 + vec3':
           stack[SP - 6] += stack[SP - 3];
@@ -563,7 +563,7 @@ export const FormulaCompiler = {
           SP -= 3;
           break;
         case 'vec3 * float':
-          const f = stack[--SP];
+          const f = stack[SP -= 1];
           stack[SP - 3] *= f;
           stack[SP - 2] *= f;
           stack[SP - 1] *= f;
@@ -571,18 +571,20 @@ export const FormulaCompiler = {
 
         case '@': stack[SP - 1] = scope[stack[SP - 1]]; break; // Load scalar from scope
         case '@[]': // Load array from scope
-          const variable = scope[stack[--SP]];
-          for (let i = 0; i < variable.length; ++i) {
-            stack[SP++] = variable[i];
+          const variable = scope[stack[SP -= 1]];
+          for (let i = 0; i < variable.length; i += 1) {
+            stack[SP] = variable[i];
+            SP += 1;
           }
           break;
-        case '.': scope = scope[stack[--SP]]; // Dereference member
+        case '.': scope = scope[stack[SP -= 1]]; // Dereference member
           postOpScope = scope; // Don't reset scope after operation
           break;
         case ';': SP = 0; break;
 
         default:
-          stack[SP++] = code[IP];
+          stack[SP] = code[IP];
+          SP += 1;
           postOpScope = scope; // Don't reset scope after operation
       }
       scope = postOpScope;
@@ -624,7 +626,7 @@ function verify(formula, result) {
     let match;
     if (libUtility.isArray(result) && libUtility.isArray(computedResult) && result.length === computedResult.length) {
       match = true;
-      for (let i = 0; i < result.length; ++i) {
+      for (let i = 0; i < result.length; i += 1) {
         if (computedResult[i] !== result[i]) {
           match = false;
           break;
@@ -647,7 +649,7 @@ function benchmark(nIter, javascriptCode, formulaCode, evalCode) {
 
   sum = 0.0;
   tStart = performance.now();
-  for (let i = 0; i < nIter; ++i) {
+  for (let i = 0; i < nIter; i += 1) {
     sum += javascriptCode();
   }
   console.log(sum);
@@ -657,7 +659,7 @@ function benchmark(nIter, javascriptCode, formulaCode, evalCode) {
   tStart = performance.now();
   const code = FormulaCompiler.compile(formulaCode);
   const stack = new Array(16);
-  for (let i = 0; i < nIter; ++i) {
+  for (let i = 0; i < nIter; i += 1) {
     sum += FormulaCompiler.run(code, stack, {});
   }
   console.log(sum);
@@ -665,7 +667,7 @@ function benchmark(nIter, javascriptCode, formulaCode, evalCode) {
 
   sum = 0.0;
   tStart = performance.now();
-  for (let i = 0; i < nIter; ++i) {
+  for (let i = 0; i < nIter; i += 1) {
     sum += eval(evalCode);
   }
   console.log(sum);

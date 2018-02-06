@@ -98,7 +98,7 @@ export function CoordinateSystem(gl, globalView) {
       sdrLine.matWorldViewProj(mattrans);
       meshLine.draw();
       libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -1.0, 0.0]);
-      for (let i = 0; i < axis.tickCount; ++i) {
+      for (let i = 0; i < axis.tickCount; i += 1) {
         const x = axis.tickOffset + (i * axis.tickDistance);
         const tickPos = (x - axis.minimum) / (axis.maximum - axis.minimum);
 
@@ -133,7 +133,7 @@ export function CoordinateSystem(gl, globalView) {
       sdrLine.matWorldViewProj(mattrans);
       meshLine.draw();
       libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -1.0, 0.0]);
-      for (let i = 0; i < axis.tickCount; ++i) {
+      for (let i = 0; i < axis.tickCount; i += 1) {
         const y = axis.tickOffset + (i * axis.tickDistance);
         const tickPos = (y - axis.minimum) / (axis.maximum - axis.minimum);
 
@@ -171,7 +171,7 @@ export function CoordinateSystem(gl, globalView) {
         axis = axes[0];
         let overlap = Number.MIN_VALUE;
         plotBounds = globalView.getPlotBounds();
-        for (let i = 0; i < axis.tickCount; ++i) {
+        for (let i = 0; i < axis.tickCount; i += 1) {
           const x = axis.tickOffset + (i * axis.tickDistance);
           const tickPos = (x - axis.minimum) / (axis.maximum - axis.minimum);
 
@@ -209,7 +209,7 @@ export function CoordinateSystem(gl, globalView) {
     axis.maximum = maximum;
     axis.values = null;
 
-    for (let numTicks = NUM_TICKS; numTicks >= 0; --numTicks) {
+    for (let numTicks = NUM_TICKS; numTicks >= 0; numTicks -= 1) {
       if (changeTickDistance === false) {
         axis.tickOffset = Math.ceil(minimum / axis.tickDistance) * axis.tickDistance;
         axis.tickCount = Math.floor((maximum - axis.tickOffset) / axis.tickDistance) + 1;
@@ -218,10 +218,11 @@ export function CoordinateSystem(gl, globalView) {
         let exp = Math.ceil(Math.log(axis.tickDistance) / Math.log(10)); // Compute power-of-10 just above tickDistance -> pow(10, exp)
 
         // Try less aggressive rounding in each iteration until break condition is met
-        for (let i = 0; i < 10; ++i) {
+        for (let i = 0; i < 10; i += 1) {
           // Maximum 10 iterations
           axis.tickDistance = (maximum - minimum) / numTicks;
-          const base = Math.pow(10, exp--);
+          const base = Math.pow(10, exp);
+          exp -= 1;
           axis.tickDistance = Math.round(axis.tickDistance / base) * base; // Round tickDistance to base
           axis.tickOffset = Math.ceil(minimum / axis.tickDistance) * axis.tickDistance;
           axis.tickCount = Math.floor((maximum - axis.tickOffset) / axis.tickDistance) + 1;
@@ -259,7 +260,7 @@ export function CoordinateSystem(gl, globalView) {
     axes[1].tickLength = TICK_LENGTH + (options.showYAxisHistogram ? options.histogramHeight : 0);
   }
   this.onPlotBoundsChanged = function (plotBounds) {
-    for (let i = 0; i < 2; ++i) {
+    for (let i = 0; i < 2; i += 1) {
       axes[i].values === null ?
         this.setNumericRange(i, axes[i].minimum, axes[i].maximum, true) :
         this.setEnumRange(i, axes[i].minimum + 0.5, axes[i].maximum + 0.5, axes[i].values);

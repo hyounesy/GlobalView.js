@@ -33,7 +33,7 @@ domready(function () {
   measureTime('Random dataset generation', 1);
 
   let frames = 0;
-  for (frames = 0; performance.now() - tStart < 1000; ++frames) {
+  for (frames = 0; performance.now() - tStart < 1000; frames += 1) {
     plot.renderOffscreenBuffer();
   }
   measureTime('Render time', frames);
