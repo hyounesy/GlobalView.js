@@ -248,7 +248,6 @@ export function validateGLSL(gl, code) {
 }
 
 
-
 /**
  * A renderable WebGL mesh
  * @constructor
@@ -464,7 +463,7 @@ function handleLoadedTexture(gl, texture, onload) {
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   gl.bindTexture(gl.TEXTURE_2D, null);
 
-  if(typeof(onload) === 'function') {
+  if(typeof (onload) === 'function') {
     onload(texture);
   }
 }

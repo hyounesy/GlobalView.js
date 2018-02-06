@@ -59,7 +59,7 @@ let OptionDescription;
 export function GlobalView(div, startupOptions) {
   const globalView = this;
   if (!(this instanceof GlobalView)) {
-    throw 'GlobalView cannot be invoked without "new"';
+    throw new Error('GlobalView cannot be invoked without "new"');
   }
 
   let canvas = null;
@@ -255,7 +255,7 @@ export function GlobalView(div, startupOptions) {
     }
   };
   let reresizeTimer = null;
-  function onresize () {
+  function onresize() {
     const rect = canvas.getBoundingClientRect();
     const width = rect.right - rect.left;
     const height = rect.bottom - rect.top;
@@ -2371,7 +2371,7 @@ export function GlobalView(div, startupOptions) {
  * @interface
  * @package
  */
-const Viewer = function (){};
+const Viewer = function () {};
 /** @type  {Function} */ Viewer.prototype.render;
 /** @type  {function(Dataset, Object)} */ Viewer.prototype.setDataset;
 /** @type  {function(Object, boolean)} */ Viewer.prototype.onOptionsChanged;

@@ -58,11 +58,6 @@ function BenchmarkDialog() {
   }
 
 
-
-
-
-
-
   /* var benchmarkOptions = {
     enableTransparency: [true, false],
     pointShape: ['Rectangle'],

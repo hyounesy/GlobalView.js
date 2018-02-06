@@ -383,7 +383,7 @@ function cmdRunBenchmark_onClick(sender) {
 let numThumbnails,
   densityRatio;
 function rNumThumbnails_onChange(sender) {
-  numThumbnails = 1 << Number.parseInt(sender.value);
+  numThumbnails = 2 ** Number.parseInt(sender.value, 10);
   pNumThumbnails.innerText = '# of thumbnails: ' + numThumbnails;
 }
 function rDensityRatio_onChange(sender) {

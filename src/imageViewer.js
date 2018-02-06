@@ -498,7 +498,6 @@ export function ImageViewer(gl, globalView) {
       if (p[0] >= imageBounds[0] && p[0] <= imageBounds[1] &&
         p[1] >= imageBounds[2] && p[1] <= imageBounds[3]) {
         selectedImage = image;
-        return;
       }
     });
 

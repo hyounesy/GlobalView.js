@@ -197,22 +197,22 @@ module.exports = {
         "no-self-assign": 0,                    // disallow assignments where both sides are exactly the same
         "no-self-compare": 0,                   // disallow comparisons where both sides are exactly the same
         "no-sequences": 0,                      // disallow comma operators
-        "no-throw-literal": 0,                  // disallow throwing literals as exceptions
+        "no-throw-literal": 'error',                  // disallow throwing literals as exceptions
         "no-unmodified-loop-condition": 0,      // disallow unmodified loop conditions
         "no-unused-expressions": 0,             // disallow unused expressions
         "no-unused-labels": 0,                  // disallow unused labels
         "no-useless-call": 0,                   // disallow unnecessary calls to .call() and .apply()
         "no-useless-concat": 0,                 // disallow unnecessary concatenation of literals or template literals
-        "no-useless-escape": 0,                 // disallow unnecessary escape characters
-        "no-useless-return": 0,                 // disallow redundant return statements
+        "no-useless-escape": 'error',                 // disallow unnecessary escape characters
+        "no-useless-return": 'error',                 // disallow redundant return statements
         "no-void": 0,                           // disallow void operators
         "no-warning-comments": 0,               // disallow specified warning terms in comments
         "no-with": 0,                           // disallow with statements
         "prefer-promise-reject-errors": 0,      // require using Error objects as Promise rejection reasons
-        "radix": 0,                             // enforce the consistent use of the radix argument when using parseInt()
+        "radix": 'error',                             // enforce the consistent use of the radix argument when using parseInt()
         "require-await": 0,                     // disallow async functions which have no await expression
         "vars-on-top": 0,                       // require var declarations be placed at the top of their containing scope
-        "wrap-iife": 0,                         // require parentheses around immediate function invocations
+        'wrap-iife': ['error', 'outside', { functionPrototypeMethods: false }], // require parentheses around immediate function invocations
         "yoda": 0,                              // require or disallow �Yoda� conditions
 
 
@@ -313,7 +313,8 @@ module.exports = {
         }],            // disallow mixed binary operators
         "no-mixed-spaces-and-tabs": 0,          // disallow mixed spaces and tabs for indentation
         "no-multi-assign": 0,                   // disallow use of chained assignment expressions
-        "no-multiple-empty-lines": 0,           // disallow multiple empty lines
+        // disallow multiple empty lines and only one newline at the end
+        'no-multiple-empty-lines': ['error', { max: 2, maxEOF: 1 }],
         "no-negated-condition": 0,              // disallow negated conditions
         "no-nested-ternary": 0,                 // disallow nested ternary expressions
         "no-new-object": 0,                     // disallow Object constructors
@@ -333,9 +334,10 @@ module.exports = {
         "one-var-declaration-per-line": 2,      // require or disallow newlines around variable declarations
         "operator-assignment": 0,               // require or disallow assignment operator shorthand where possible
         "operator-linebreak": 0,                // enforce consistent linebreak style for operators
-        "padded-blocks": 0,                     // require or disallow padding within blocks
+        // disallow padding within blocks
+        'padded-blocks': ['error', { blocks: 'never', classes: 'never', switches: 'never' }],
         "padding-line-between-statements": 0,   // require or disallow padding lines between statements
-        "quote-props": 0,                       // require quotes around object literal property names
+        'quote-props': ['error', 'as-needed', { keywords: false, unnecessary: true, numbers: false }], // // require quotes around object literal property names
         "quotes": ["error", "single", { "avoidEscape": true }], // enforce the consistent use of either backticks, double, or single quotes
         "require-jsdoc": 0,                     // require JSDoc comments
         'semi': ['error', 'always'],    // require or disallow use of semicolons instead of ASI
@@ -343,11 +345,22 @@ module.exports = {
         'semi-style': ['error', 'last'],        // enforce location of semicolons
         "sort-keys": 0,                         // require object keys to be sorted
         "sort-vars": 0,                         // require variables within the same declaration block to be sorted
-        "space-before-blocks": 0,               // enforce consistent spacing before blocks
-        "space-before-function-paren": 0,       // enforce consistent spacing before function definition opening parenthesis
+        "space-before-blocks": 'error',               // enforce consistent spacing before blocks
+        // require or disallow space before function opening parenthesis
+        'space-before-function-paren': ['error', {
+          anonymous: 'always',
+          named: 'never',
+          asyncArrow: 'always'
+        }],
         "space-in-parens": 2,                   // enforce consistent spacing inside parentheses
         "space-infix-ops": 0,                   // require spacing around infix operators
-        "space-unary-ops": 0,                   // enforce consistent spacing before or after unary operators
+        // Require or disallow spaces before/after unary operators
+        'space-unary-ops': ['error', {
+          words: true,
+          nonwords: false,
+          overrides: {
+          },
+        }],
         "spaced-comment": 0,                    // enforce consistent spacing after the // or /* in a comment
         "switch-colon-spacing": 0,              // enforce spacing around colons of switch statements
         "template-tag-spacing": 0,              // require or disallow spacing between template tags and their literals
@@ -382,7 +395,7 @@ module.exports = {
         }],                                     // require const declarations for variables that are never reassigned after declared
         "prefer-destructuring": 0,              // require destructuring from arrays and/or objects
         "prefer-numeric-literals": 0,           // disallow parseInt() and Number.parseInt() in favor of binary, octal, and hexadecimal literals
-        "prefer-rest-params": 0,                // require rest parameters instead of arguments
+        "prefer-rest-params": 'error',                // require rest parameters instead of arguments
         "prefer-spread": 0,                     // require spread operators instead of .apply()
         "prefer-template": 0,                   // require template literals instead of string concatenation
         "require-yield": 0,                     // require generator functions to contain yield

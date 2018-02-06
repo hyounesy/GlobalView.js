@@ -58,8 +58,7 @@
  * visible.
  */
 
-export function WebGLUtils () {
-
+export function WebGLUtils() {
   /**
      * Creates the HTLM for a failure message
      * @param {string} msg
@@ -168,7 +167,7 @@ const window_requestAnimFrame = (function () {
           function (/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
             window.setTimeout(callback, 1000/60);
           };
-})();
+}());
 
 
 /**

@@ -1135,7 +1135,7 @@ export function findClosePointOfLowDensityND_descend(dataset, p, densityMap, min
     a[c] = -1;
   }
   do {
-    if (!a.every(function (aa){
+    if (!a.every(function (aa) {
       return aa === 0;
     })) {
       actions.push(a.slice());

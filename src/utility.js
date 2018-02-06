@@ -73,7 +73,7 @@ if (!String.prototype.format) {
    * @param {...*} var_args
    */
   String.prototype.format = function (var_args) {
-    const args = arguments;
+    const args = arguments; // eslint-disable-line prefer-rest-params
     return this.replace(/{(\d+)}/g, function (match, number) {
       return typeof args[number] !== 'undefined' ? args[number] : match;
     });
@@ -86,7 +86,7 @@ if (!String.prototype.format) {
    * @param {...*} var_args
    */
 String.prototype.format2 = function (pattern, mismatch, var_args) {
-  const args = arguments;
+  const args = arguments; // eslint-disable-line prefer-rest-params
   return this.replace(pattern, function (match, number) {
     number = Number.parseInt(number, 10) + 2;
     return typeof args[number] !== 'undefined' ? args[number] : mismatch;
@@ -376,7 +376,7 @@ export function getParameterByName(name, url) {
   if (!url) {
     url = window.location.href;
   }
-  name = name.replace(/[\[\]]/g, '\\$&');
+  name = name.replace(/[\[\]]/g, '\\$&'); // eslint-disable-line no-useless-escape
   const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
   const results = regex.exec(url);
   if (!results) {
