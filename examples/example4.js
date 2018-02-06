@@ -27,7 +27,7 @@ domready(function () {
   });
   measureTime('Initialization', 1);
 
-  new globalView.RandomDataset(1e6, 2, function (dataset) {
+  new globalView.RandomDataset(1e6, 2, function (dataset) { // eslint-disable-line no-new
     plot.load(dataset, 0, 1, 1, 1);
   });
   measureTime('Random dataset generation', 1);

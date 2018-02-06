@@ -5,9 +5,17 @@ const libColormap = require('./colormap.js');
 const libGlMatrix = require('gl-matrix');
 
 // const LABEL_HEIGHT = 12, LABEL_WIDTH = 16.5;
-export let LABEL_HEIGHT = 12;
-export let LABEL_WIDTH = 16.5;
+let LABEL_HEIGHT = 12;
+let LABEL_WIDTH = 16.5;
 const LABEL_TEXT_PADDING = 2;
+
+export function getLabelHeight() {
+  return LABEL_HEIGHT;
+}
+
+export function getLabelWidth() {
+  return LABEL_WIDTH;
+}
 
 /**
  * An image label associated to a single datapoint of the dataset

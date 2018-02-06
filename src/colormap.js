@@ -122,9 +122,11 @@ export function Colormap(gl, globalView) {
     if (flipY === true) {
       libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
     }
-    libGlMatrix.mat4.translate(mattrans, mattrans,
+    libGlMatrix.mat4.translate(
+      mattrans, mattrans,
       [((2 * (plotBounds.x + plotBounds.width + 0.5)) / gl.width) - 1,
-        ((2 * (plotBounds.y + 0.5)) / gl.height) - 1, 0]); // 0.5 ... center inside pixel
+        ((2 * (plotBounds.y + 0.5)) / gl.height) - 1, 0],
+    ); // 0.5 ... center inside pixel
     libGlMatrix.mat4.scale(mattrans, mattrans, [(2 * COLORMAP_WIDTH) / gl.width, (2 * plotBounds.height) / gl.height, 1]);
     sdrColormap.matWorldViewProj(mattrans);
     meshQuad.draw();
@@ -145,9 +147,11 @@ export function Colormap(gl, globalView) {
     if (flipY === true) {
       libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
     }
-    libGlMatrix.mat4.translate(mattrans, mattrans,
+    libGlMatrix.mat4.translate(
+      mattrans, mattrans,
       [((2 * (plotBounds.x + plotBounds.width + COLORMAP_WIDTH + 0.5)) / gl.width) - 1,
-        ((2 * (plotBounds.y + 0.5)) / gl.height) - 1, 0]); // 0.5 ... center inside pixel
+        ((2 * (plotBounds.y + 0.5)) / gl.height) - 1, 0],
+    ); // 0.5 ... center inside pixel
     libGlMatrix.mat4.scale(mattrans, mattrans, [(2 * axis.tickLength) / gl.width, (2 * plotBounds.height) / gl.height, 1]);
     sdrLine.matWorldViewProj(mattrans);
     meshLine.draw();

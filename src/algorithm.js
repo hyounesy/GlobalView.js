@@ -1654,16 +1654,14 @@ export function pointInsidePolygon(P, V) {
           wn += 1;
         }
       } // We have a valid up intersect
-    } else {
-      // If edge-start is above P
-      if (V[i + 1][1] <= P[1]) {
-        // If edge is downward crossing
-        if (isLeft(V[i], V[i + 1], P) < 0) {
-          // If P is to the right of edge
-          wn -= 1;
-        }
-      } // We have a valid down intersect
+    } else if (V[i + 1][1] <= P[1]) { // If edge-start is above P
+      // If edge is downward crossing
+      if (isLeft(V[i], V[i + 1], P) < 0) {
+        // If P is to the right of edge
+        wn -= 1;
+      }
     }
+    // We have a valid down intersect
   }
   return wn !== 0;
 }

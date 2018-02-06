@@ -377,7 +377,7 @@ String.prototype.replaceAll = function (oldstr, newstr) {
   });
 } */
 function cmdRunBenchmark_onClick(sender) {
-  new BenchmarkDialog();
+  new BenchmarkDialog(); // eslint-disable-line no-new
 }
 
 let numThumbnails,
@@ -432,8 +432,7 @@ function onMouseOverDatapoint(dataset, index) {
     if (dataset.data) {
       const nc = dataset.numColumns;
       pDataPoint.innerText = dataset.dataVectors.map(dataVector =>
-        `${dataVector.label}: ${dataVector.values ? dataVector.values[Math.floor(dataVector.getValue(index))] : dataVector.getValue(index)}`,
-      ).join('\n');
+        `${dataVector.label}: ${dataVector.values ? dataVector.values[Math.floor(dataVector.getValue(index))] : dataVector.getValue(index)}`).join('\n');
     } else {
       pDataPoint.innerText = dataset.names ? dataset.names[index] : `datapoint ${index}`;
     }
@@ -444,13 +443,11 @@ function onSelectionChanged(dataset, selection) {
     if (!shiftPressed) {
       plot.selectedPoints.clear();
     }
-  } else {
-    if (shiftPressed) {
+  } else if (shiftPressed) {
       plot.selectedPoints.append(selection);
     } else if (selection.length !== 1 || !plot.selectedPoints.contains(selection[0])) {
       plot.selectedPoints.assign(selection);
     }
-  }
 }
 
 function ondragover(event) {
@@ -500,7 +497,7 @@ function ondrop(event) {
     var eventY = event.clientY - targetRect.top;
     var fileExt = files[0].name; */
 
-    new CsvDataset(files[0], {autoDetect: true}, dataset_onLoad);
+    new CsvDataset(files[0], {autoDetect: true}, dataset_onLoad); // eslint-disable-line no-new
   }
 }
 

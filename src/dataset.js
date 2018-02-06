@@ -266,10 +266,9 @@ export function Dataset() {
         const p = new Parallel([libUtility.makeCloneable(histogram), new libAlgorithm.DensityMapOptions(options)], { evalPath: 'eval.js' });
         p.require(libAlgorithm.DensityMap);
         p.require(libAlgorithm.computeDensityMap);
-        p.spawn(params =>
-          // the following code will be evaled from a blob in Parallel. so no need for libAlgorithm.
-          computeDensityMap.apply(null, params), // eslint-disable-line prefer-spread
-        ).then((densityMap) => {
+        // the following code will be evaled from a blob in Parallel. so no need for libAlgorithm.
+        // eslint-disable-next-line prefer-spread
+        p.spawn(params => computeDensityMap.apply(null, params)).then((densityMap) => {
           densityMap = new libAlgorithm.DensityMap(densityMap);
           // Free histogram
           histogram = null;
@@ -389,10 +388,9 @@ export function Dataset() {
           p.require(libAlgorithm.computeClusterMap);
           p.require(libUtility.ForwardList);
           p.require(libUtility.PriorityQueue);
-          p.spawn(params =>
-            // the following code will be evaled from a blob in Parallel. so no need for libAlgorithm.
-            computeClusterMap.apply(null, params), // eslint-disable-line prefer-spread
-          ).then((clusterMap) => {
+          // the following code will be evaled from a blob in Parallel. so no need for libAlgorithm.
+          // eslint-disable-next-line prefer-spread
+          p.spawn(params => computeClusterMap.apply(null, params)).then((clusterMap) => {
             clusterMap = new libAlgorithm.ClusterMap(clusterMap);
             // Set _clusterMaps[d0][d1]
             const pending = _clusterMaps[d0][d1].pending;

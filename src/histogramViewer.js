@@ -46,13 +46,11 @@ export function HistogramViewer(gl, globalView) {
     tf.datasetCoordToDeviceCoord(pos, [
       axes[0].histogram ? axes[0].histogram.invTransformX(0) : 0.0,
       axes[1].histogram ? axes[1].histogram.invTransformX(0) : 0.0,
-      axes[2].histogram ? axes[2].histogram.invTransformX(0) : 0.0],
-    );
+      axes[2].histogram ? axes[2].histogram.invTransformX(0) : 0.0]);
     tf.datasetDistToDeviceDist(scl, [
       axes[0].histogram ? axes[0].histogram.width / axes[0].histogram.transform[0] : 1.0,
       axes[1].histogram ? axes[1].histogram.width / axes[1].histogram.transform[0] : 1.0,
-      axes[2].histogram ? axes[2].histogram.width / axes[2].histogram.transform[0] : 1.0],
-    );
+      axes[2].histogram ? axes[2].histogram.width / axes[2].histogram.transform[0] : 1.0]);
 
     // Transform color-dimension from [0 ... 1] to [plotBounds.y .. plotBounds.y + plotBounds.height] in device y-space -> pos[2], scl[2]
     pos[2] = (((plotBounds.y + (plotBounds.height * pos[2])) * 2) / gl.height) - 1;
@@ -146,9 +144,11 @@ export function HistogramViewer(gl, globalView) {
       if (flipY === true) {
         libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
       }
-      libGlMatrix.mat4.translate(mattrans, mattrans,
+      libGlMatrix.mat4.translate(
+        mattrans, mattrans,
         [((2 * (plotBounds.x + plotBounds.width + libColormap.COLORMAP_WIDTH + 0.5 + 64)) / gl.width) - 1,
-          ((2 * (plotBounds.y + 0.5)) / gl.height) - 1, 0]); // 0.5 ... center inside pixel
+          ((2 * (plotBounds.y + 0.5)) / gl.height) - 1, 0],
+      ); // 0.5 ... center inside pixel
       libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
       libGlMatrix.mat4.scale(mattrans, mattrans, [(2 * plotBounds.height) / gl.height, 1, 1]);
       sdrLine.matWorldViewProj(mattrans);
@@ -158,9 +158,11 @@ export function HistogramViewer(gl, globalView) {
       if (flipY === true) {
         libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
       }
-      libGlMatrix.mat4.translate(mattrans, mattrans,
+      libGlMatrix.mat4.translate(
+        mattrans, mattrans,
         [((2 * (plotBounds.x + plotBounds.width + libColormap.COLORMAP_WIDTH + 0.5)) / gl.width) - 1,
-          pos[2] + ((0.5 * 2) / gl.height), 0.0]); // 0.5 ... center inside pixel
+          pos[2] + ((0.5 * 2) / gl.height), 0.0],
+      ); // 0.5 ... center inside pixel
       libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
       libGlMatrix.mat4.scale(mattrans, mattrans, [scl[2], (-64 * 2) / gl.width, 1.0]);
 

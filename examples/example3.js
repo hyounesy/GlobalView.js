@@ -18,6 +18,7 @@ domready(function () {
     // pointColor: "violet"
   });
 
+  // eslint-disable-next-line no-new
   new globalView.CsvDataset('datasets/iris.data', {
     columnLabels: ['Sepal Length [cm]', 'Sepal Width [cm]', 'Petal Length [cm]', 'Petal Width [cm]', 'Class'],
   }, function (dataset) {

@@ -38,7 +38,7 @@ domready(function () {
   const csvPath = 'datasets/AICS_Cell-feature-analysis_v1.5.csv'; // 'http://homepage.univie.ac.at/a0929188/GlobalView/AICS_Cell-feature-analysis_v1.5.csv"
   const imagesPath = 'datasets/AICS_Cell-feature-analysis_v1.5_images/'; // 'http://homepage.univie.ac.at/a0929188/GlobalView/images/"
 
-  new globalView.CsvDataset(csvPath, {
+  new globalView.CsvDataset(csvPath, { // eslint-disable-line no-new
     hasHeader: true,
     nameColumn: 1,
     columnLabels: COLUMN_NAMES,

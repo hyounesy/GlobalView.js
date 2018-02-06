@@ -668,7 +668,7 @@ function benchmark(nIter, javascriptCode, formulaCode, evalCode) {
   sum = 0.0;
   tStart = performance.now();
   for (let i = 0; i < nIter; i += 1) {
-    sum += eval(evalCode);
+    sum += eval(evalCode); // eslint-disable-line no-eval
   }
   console.log(sum);
   console.log(`${performance.now() - tStart}ms`);

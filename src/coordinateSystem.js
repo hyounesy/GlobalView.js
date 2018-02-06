@@ -108,8 +108,10 @@ export function CoordinateSystem(gl, globalView) {
         libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -tickPos, 0.0]);
 
         const tickLabel = axis.values ? axis.values[x] : x.toPrecision(6) / 1;
-        gl.drawText(tickLabel, plotBounds.x + (plotBounds.width * tickPos),
-          (gl.height - plotBounds.y) + axis.tickLength + 2, 'topcenter');
+        gl.drawText(
+          tickLabel, plotBounds.x + (plotBounds.width * tickPos),
+          (gl.height - plotBounds.y) + axis.tickLength + 2, 'topcenter',
+        );
       }
       xTickLabel_top = (gl.height - plotBounds.y) + axis.tickLength + 10 + gl.measureTextHeight();
     }
@@ -144,8 +146,10 @@ export function CoordinateSystem(gl, globalView) {
 
         const tickLabel = axis.values ? axis.values[y] : y.toPrecision(6) / 1;
         yTickLabel_left = Math.max(yTickLabel_left, gl.measureTextWidth(tickLabel));
-        gl.drawText(tickLabel, plotBounds.x - axis.tickLength - 2,
-          gl.height - plotBounds.y - (plotBounds.height * tickPos), 'middleright');
+        gl.drawText(
+          tickLabel, plotBounds.x - axis.tickLength - 2,
+          gl.height - plotBounds.y - (plotBounds.height * tickPos), 'middleright',
+        );
       }
       yTickLabel_left = Math.ceil(plotBounds.x - axis.tickLength - 10 - yTickLabel_left);
     }
@@ -157,8 +161,10 @@ export function CoordinateSystem(gl, globalView) {
       gl.drawText(axes[0].label, plotBounds.x + (plotBounds.width / 2), xTickLabel_top, 'topcenter');
     }
     if (this.visible[1] && axes[1].label) {
-      gl.drawText(axes[1].label, yTickLabel_left,
-        gl.height - plotBounds.y - (plotBounds.height / 2), 'bottomcenter', -Math.PI / 2);
+      gl.drawText(
+        axes[1].label, yTickLabel_left,
+        gl.height - plotBounds.y - (plotBounds.height / 2), 'bottomcenter', -Math.PI / 2,
+      );
     }
   };
 
@@ -246,8 +252,10 @@ export function CoordinateSystem(gl, globalView) {
 
     axis.tickDistance = 1;
     axis.tickOffset = Math.max(0, Math.ceil(minimum / axis.tickDistance) * axis.tickDistance);
-    axis.tickCount = Math.min(values.length - axis.tickOffset,
-      Math.floor(((maximum - axis.tickOffset) + 1) / axis.tickDistance));
+    axis.tickCount = Math.min(
+      values.length - axis.tickOffset,
+      Math.floor(((maximum - axis.tickOffset) + 1) / axis.tickDistance),
+    );
   };
   this.setLabel = function (d, label) {
     axes[d].label = label;

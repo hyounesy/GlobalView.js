@@ -25,9 +25,9 @@ module.exports = {
 
             "globalReturn": false,              // allow return statements in the global scope
             "impliedStrict": false,             // enable global strict mode (if ecmaVersion is 5 or greater)
-            "jsx": false,                       // enable JSX
+            "jsx": true,                       // enable JSX
 
-            "experimentalObjectRestSpread": false   // enable support for the experimental object rest/spread properties
+            "experimentalObjectRestSpread": true   // enable support for the experimental object rest/spread properties
             // (IMPORTANT: This is an experimental feature that may change significantly in the future.
             // It�s recommended that you do not write rules relying on this functionality unless you are
             // willing to incur maintenance cost when it changes.)
@@ -37,7 +37,7 @@ module.exports = {
     },
 
 
-    // "parser": "espree",                         // compatible parsers: "espree" (default), "esprima", "babel-eslint", and "typescript-eslint-parser" (experimental)
+    "parser": "babel-eslint",                   // compatible parsers: "espree" (default), "esprima", "babel-eslint", and "typescript-eslint-parser" (experimental)
 
 
     "env": {
@@ -279,7 +279,8 @@ module.exports = {
         "func-name-matching": 0,                // require function names to match the name of the variable or property to which they are assigned
         "func-names": 0,                        // require or disallow named function expressions
         "func-style": 0,                        // enforce the consistent use of either function declarations or expressions
-        "function-paren-newline": 0,            // enforce consistent line breaks inside function parentheses
+        // enforce consistent line breaks inside function parentheses
+        'function-paren-newline': ['error', 'multiline'],
         "id-blacklist": 0,                      // disallow specified identifiers
         "id-length": 0,                         // enforce minimum and maximum identifier lengths
         "id-match": 0,                          // require identifiers to match a specified regular expression

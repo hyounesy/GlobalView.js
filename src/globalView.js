@@ -538,13 +538,11 @@ export function GlobalView(div, startupOptions) {
     if (libUtility.isArray(padding) && padding.length === 4) {
       computedPadding = padding.map((v, i) => Math.floor(libUtility.isString(v) ?
         Number.parseFloat(v) * (v.endsWith('%') ? (i % 2 === 0 ? canvas.width : canvas.height) / 100 : 1) :
-        padding[i]),
-      );
+        padding[i]));
     } else if(libUtility.isNumber(padding) || libUtility.isString(padding)) {
       computedPadding = Array.create(4, i => Math.floor(libUtility.isString(padding) ?
         Number.parseFloat(padding) * (padding.endsWith('%') ? (i % 2 === 0 ? canvas.width : canvas.height) / 100 : 1) :
-        padding),
-      );
+        padding));
     }
 
     const newPlotBounds = {
@@ -1236,10 +1234,12 @@ export function GlobalView(div, startupOptions) {
           if (dataset.imageFilenames[r]) {
             const dataPos = dataset.dataVectors.map(v => v.getValue(r));
             const imagePos = dataPos.slice(0);
-            const p = libAlgorithm.findClosePointOfLowDensity(dataset, d0, d1, r,
+            const p = libAlgorithm.findClosePointOfLowDensity(
+              dataset, d0, d1, r,
               densityMap, densityMap.stencilMap,
               (0.6 * options.thumbnailSize) / gl.width,
-              (0.6 * (options.thumbnailSize + libImageViewer.LABEL_HEIGHT)) / gl.height); // EDIT: Factor 0.6: WHY?
+              (0.6 * (options.thumbnailSize + libImageViewer.getLabelHeight())) / gl.height,
+            ); // EDIT: Factor 0.6: WHY?
             imagePos[d0] = p[0];
             imagePos[d1] = p[1];
             const imageSize = dataset.dataVectors.map(v => options.thumbnailSize * (v.maximum - v.minimum));
@@ -1265,7 +1265,7 @@ export function GlobalView(div, startupOptions) {
 
       dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
         let imageWidth = (0.6 * options.thumbnailSize) / gl.width,
-          imageHeight = ((0.6 * options.thumbnailSize) + libImageViewer.LABEL_HEIGHT) / gl.height; // EDIT: Factor 0.6: WHY?
+          imageHeight = ((0.6 * options.thumbnailSize) + libImageViewer.getLabelHeight()) / gl.height; // EDIT: Factor 0.6: WHY?
         if (d1 < d0) {
           // Swap d0 <-> d1
           let temp = d0;
@@ -1281,8 +1281,10 @@ export function GlobalView(div, startupOptions) {
         const dataPos = dataset.dataVectors.map(v => v.getValue(index));
         let imagePos;
         if (libUtility.isUndefined(densityMap.data)) { // If densityMap is nD
-          imagePos = libAlgorithm.findClosePointOfLowDensityND_descend(dataset, index, densityMap,
-            (0.6 * options.thumbnailSize) / Math.min(gl.width, gl.height));
+          imagePos = libAlgorithm.findClosePointOfLowDensityND_descend(
+            dataset, index, densityMap,
+            (0.6 * options.thumbnailSize) / Math.min(gl.width, gl.height),
+          );
         } else { // EDIT: Factor 0.6: WHY?
           imagePos = dataPos.slice(0);
 
@@ -1318,7 +1320,7 @@ export function GlobalView(div, startupOptions) {
         d1 = activeInputs[1];
       dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
         let imageWidth = (0.6 * options.thumbnailSize) / gl.width,
-          imageHeight = ((0.6 * options.thumbnailSize) + libImageViewer.LABEL_HEIGHT) / gl.height; // EDIT: Factor 0.6: WHY?
+          imageHeight = ((0.6 * options.thumbnailSize) + libImageViewer.getLabelHeight()) / gl.height; // EDIT: Factor 0.6: WHY?
         if (d1 < d0) {
           // Swap d0 <-> d1
           let temp = d0;
@@ -1432,8 +1434,8 @@ export function GlobalView(div, startupOptions) {
 
     // Define corners of AABB
     const imageSize = dataset.dataVectors.map(v => options.thumbnailSize * (v.maximum - v.minimum));
-    const labelHeightOffset = 1.0 + (libImageViewer.LABEL_HEIGHT / options.thumbnailSize);
-    const labelWidthOffset = 1.0 + ((libImageViewer.LABEL_HEIGHT + (2 * libImageViewer.LABEL_WIDTH)) / options.thumbnailSize);
+    const labelHeightOffset = 1.0 + (libImageViewer.getLabelHeight() / options.thumbnailSize);
+    const labelWidthOffset = 1.0 + ((libImageViewer.getLabelHeight() + (2 * libImageViewer.getLabelWidth())) / options.thumbnailSize);
     const bl = [
       tf.getMinimum(0) - ((imageSize[d0] * 0.6) / plotBounds.width),
       tf.getMinimum(1) - ((imageSize[d1] * 0.6) / plotBounds.height),
@@ -2053,14 +2055,12 @@ export function GlobalView(div, startupOptions) {
           this.onMouseOverDatapoint(dataset, mouseOverDatapoint);
         }
       }
-    } else {
-      if (mouseOverDatapoint !== closestIndex) {
+    } else if (mouseOverDatapoint !== closestIndex) {
         mouseOverDatapoint = closestIndex;
         if (this.onMouseOverDatapoint !== null) {
           this.onMouseOverDatapoint(dataset, mouseOverDatapoint);
         }
       }
-    }
   }.bind(this));
   libUtility.addMouseUpHandler(function (event) {
     if (tf === null || offscreenRendering !== null || (event.target !== canvas && pointDragDownPos === null && viewDragStartPos === null && mouseRect === null)) {
@@ -2224,7 +2224,7 @@ export function GlobalView(div, startupOptions) {
       tf.translate(d2, p[2]);
       tf.scale(d2, zoom);
     }
-  }.bind(this));
+  });
 
   this.ondragover = null;
   canvas.ondragover = function (event) {

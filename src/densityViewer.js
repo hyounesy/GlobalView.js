@@ -125,13 +125,11 @@ export function DensityViewer(gl, globalView) {
         }
         tf.datasetCoordToDeviceCoord(pos, d0 > d1 ?
           [clusterMap.invTransformY(0), clusterMap.invTransformX(0)] :
-          [clusterMap.invTransformX(0), clusterMap.invTransformY(0)],
-        );
+          [clusterMap.invTransformX(0), clusterMap.invTransformY(0)]);
         libGlMatrix.mat4.translate(mattrans, mattrans, [pos[0], pos[1], 0.0]);
         tf.datasetDistToDeviceDist(pos, d0 > d1 ?
           [clusterMap.height / clusterMap.transform[2], clusterMap.width / clusterMap.transform[0]] :
-          [clusterMap.width / clusterMap.transform[0], clusterMap.height / clusterMap.transform[2]],
-        );
+          [clusterMap.width / clusterMap.transform[0], clusterMap.height / clusterMap.transform[2]]);
         libGlMatrix.mat4.scale(mattrans, mattrans, [pos[0], pos[1], 1.0]);
         sdrClusterMap.matWorldViewProj(mattrans);
 
@@ -165,13 +163,11 @@ export function DensityViewer(gl, globalView) {
         }
         tf.datasetCoordToDeviceCoord(pos, d0 > d1 ?
           [densityMap.invTransformY(0), densityMap.invTransformX(0)] :
-          [densityMap.invTransformX(0), densityMap.invTransformY(0)],
-        );
+          [densityMap.invTransformX(0), densityMap.invTransformY(0)]);
         libGlMatrix.mat4.translate(mattrans, mattrans, [pos[0], pos[1], 0.0]);
         tf.datasetDistToDeviceDist(pos, d0 > d1 ?
           [densityMap.height / densityMap.transform[2], densityMap.width / densityMap.transform[0]] :
-          [densityMap.width / densityMap.transform[0], densityMap.height / densityMap.transform[2]],
-        );
+          [densityMap.width / densityMap.transform[0], densityMap.height / densityMap.transform[2]]);
         libGlMatrix.mat4.scale(mattrans, mattrans, [pos[0], pos[1], 1.0]);
         sdrDensityMap.matWorldViewProj(mattrans);
 

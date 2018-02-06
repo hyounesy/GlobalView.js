@@ -11,6 +11,7 @@ domready(function () {
     pointShape: 'Cross',
   });
 
+  // eslint-disable-next-line no-new
   new globalView.RandomDataset(1000, 2, function (dataset) {
     plot.load(dataset, 0, 1, 1, 1);
   });
