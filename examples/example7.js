@@ -48,8 +48,8 @@ domready(function () {
     const subPlotWidth = PLOT_SIZE / ndim;
     const subPlotHeight = subPlotWidth;
     plots = Array.create(ndim * ndim, function (d) {
-      let x = d % ndim,
-        y = Math.floor(d / ndim);
+      let x = d % ndim;
+      let y = Math.floor(d / ndim);
 
       OPTIONS.padding = [y * subPlotHeight, (ndim - x - 1) * subPlotWidth, (ndim - y - 1) * subPlotHeight, x * subPlotWidth];
 

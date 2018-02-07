@@ -3,14 +3,16 @@ const domready = require('domready');
 
 // Global variables
 // var gl;
-let plot,
-  dataset;
+let plot;
+let dataset;
+let ctrlPressed = false;
+let shiftPressed = false;
 
-let cbDataset,
-  cbColumnX,
-  cbColumnY,
-  cbColumnC,
-  cbColumnS;
+let cbDataset;
+let cbColumnX;
+let cbColumnY;
+let cbColumnC;
+let cbColumnS;
 
 domready(function () {
   cbDataset = document.getElementById('cbDataset');
@@ -217,19 +219,19 @@ function dataset_onLoad(_dataset) {
   }
 
   // Update active-column comboboxes
-  for(let i = cbColumnX.options.length - 1; i >= 0; i -= 1) {
+  for (let i = cbColumnX.options.length - 1; i >= 0; i -= 1) {
     cbColumnX.remove(i);
   }
-  for(let i = cbColumnY.options.length - 1; i >= 0; i -= 1) {
+  for (let i = cbColumnY.options.length - 1; i >= 0; i -= 1) {
     cbColumnY.remove(i);
   }
-  for(let i = cbColumnC.options.length - 1; i >= 0; i -= 1) {
+  for (let i = cbColumnC.options.length - 1; i >= 0; i -= 1) {
     cbColumnC.remove(i);
   }
-  for(let i = cbColumnS.options.length - 1; i >= 0; i -= 1) {
+  for (let i = cbColumnS.options.length - 1; i >= 0; i -= 1) {
     cbColumnS.remove(i);
   }
-  for(let i = 0; i < dataset.numColumns; i += 1) {
+  for (let i = 0; i < dataset.numColumns; i += 1) {
     let option = document.createElement('option');
     option.text = dataset.columns[i].label;
     cbColumnX.add(option);
@@ -380,8 +382,8 @@ function cmdRunBenchmark_onClick(sender) {
   new BenchmarkDialog(); // eslint-disable-line no-new
 }
 
-let numThumbnails,
-  densityRatio;
+let numThumbnails;
+let densityRatio;
 function rNumThumbnails_onChange(sender) {
   numThumbnails = 2 ** Number.parseInt(sender.value, 10);
   pNumThumbnails.innerText = `# of thumbnails: ${numThumbnails}`;
@@ -423,7 +425,7 @@ function onMouseOverDatapoint(dataset, index) {
   if (index === -1) {
     plot.highlightedPoints.clear();
     imgDataPoint.src = '';
-    pDataPoint.innerText =  '';
+    pDataPoint.innerText = '';
   } else {
     plot.highlightedPoints.set(index);
 
@@ -444,10 +446,10 @@ function onSelectionChanged(dataset, selection) {
       plot.selectedPoints.clear();
     }
   } else if (shiftPressed) {
-      plot.selectedPoints.append(selection);
-    } else if (selection.length !== 1 || !plot.selectedPoints.contains(selection[0])) {
-      plot.selectedPoints.assign(selection);
-    }
+    plot.selectedPoints.append(selection);
+  } else if (selection.length !== 1 || !plot.selectedPoints.contains(selection[0])) {
+    plot.selectedPoints.assign(selection);
+  }
 }
 
 function ondragover(event) {
@@ -490,7 +492,7 @@ function ondrop(event) {
   event.preventDefault();
   event = event || window.event;
   const files = (event.files || event.dataTransfer.files);
-  if(files) {
+  if (files) {
     /* fileDropIsCopy = fileDropIsCopy || event.ctrlKey || event.metaKey;
     var targetRect = event.target.getBoundingClientRect()
     var eventX = event.clientX - targetRect.left;
@@ -501,17 +503,15 @@ function ondrop(event) {
   }
 }
 
-let ctrlPressed = false;
-let shiftPressed = false;
 const CTRL = navigator.appVersion.indexOf('Mac') === -1 ? 17 : 224;
 function handleKeyDown(event) {
-  if(event.keyCode === CTRL) {
+  if (event.keyCode === CTRL) {
     ctrlPressed = true;
-  } else if(event.keyCode === 16) {
+  } else if (event.keyCode === 16) {
     shiftPressed = true;
   }
 
-  switch(event.keyCode) {
+  switch (event.keyCode) {
     case 46: // DELETE key
       plot.points.remove(plot.selectedPoints.get());
       plot.selectedPoints.clear();
@@ -525,9 +525,9 @@ function handleKeyDown(event) {
   }
 }
 function handleKeyUp(event) {
-  if(event.which === CTRL) {
+  if (event.which === CTRL) {
     ctrlPressed = false;
-  } else if(event.keyCode === 16) {
+  } else if (event.keyCode === 16) {
     shiftPressed = false;
   }
 }

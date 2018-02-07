@@ -172,9 +172,9 @@ export function ImageViewer(gl, globalView) {
   LABEL_WIDTH = gl.measureTextWidth('888') + (2 * LABEL_TEXT_PADDING);
   const meshLabel = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
-    0.0,  0.0, 0,
-    (0.5 * LABEL_HEIGHT),  0.5 * LABEL_HEIGHT, 0,
-    (0.5 * LABEL_HEIGHT) + LABEL_WIDTH,  0.5 * LABEL_HEIGHT, 0,
+    0.0, 0.0, 0,
+    (0.5 * LABEL_HEIGHT), 0.5 * LABEL_HEIGHT, 0,
+    (0.5 * LABEL_HEIGHT) + LABEL_WIDTH, 0.5 * LABEL_HEIGHT, 0,
     (0.5 * LABEL_HEIGHT) + LABEL_WIDTH, -0.5 * LABEL_HEIGHT, 0,
     (0.5 * LABEL_HEIGHT), -0.5 * LABEL_HEIGHT, 0,
   ]), null, null, null, null, null, gl.TRIANGLE_FAN);
@@ -182,9 +182,9 @@ export function ImageViewer(gl, globalView) {
   // Create a 2D line arrow mesh
   const meshLineLabel = new libGraphics.Mesh(gl, new Float32Array([
     // Positions
-    0.0,  0.0, 0,
-    (0.5 * LABEL_HEIGHT),  0.5 * LABEL_HEIGHT, 0,
-    (0.5 * LABEL_HEIGHT) + LABEL_WIDTH,  0.5 * LABEL_HEIGHT, 0,
+    0.0, 0.0, 0,
+    (0.5 * LABEL_HEIGHT), 0.5 * LABEL_HEIGHT, 0,
+    (0.5 * LABEL_HEIGHT) + LABEL_WIDTH, 0.5 * LABEL_HEIGHT, 0,
     (0.5 * LABEL_HEIGHT) + LABEL_WIDTH, -0.5 * LABEL_HEIGHT, 0,
     (0.5 * LABEL_HEIGHT), -0.5 * LABEL_HEIGHT, 0,
   ]), null, null, null, null, null, gl.LINE_LOOP);
@@ -390,16 +390,16 @@ export function ImageViewer(gl, globalView) {
   this.showImage = function (imageFilename, refIndex, refPos, imagePos, imageSize, imageAnchor) {
     // Convert imageAnchor from string to vec3
     let imageAnchorVector;
-    switch(imageAnchor) {
-      case 'topleft':      imageAnchorVector = [-0.0, -1.0, 0.0]; break;
-      case 'topcenter':    imageAnchorVector = [-0.5, -1.0, 0.0]; break;
-      case 'topright':     imageAnchorVector = [-1.0, -1.0, 0.0]; break;
-      case 'middleleft':   imageAnchorVector = [-0.0, -0.5, 0.0]; break;
-      default:             imageAnchorVector = [-0.5, -0.5, 0.0]; break;
-      case 'middleright':  imageAnchorVector = [-1.0, -0.5, 0.0]; break;
-      case 'bottomleft':   imageAnchorVector = [-0.0, -0.0, 0.0]; break;
+    switch (imageAnchor) {
+      case 'topleft': imageAnchorVector = [-0.0, -1.0, 0.0]; break;
+      case 'topcenter': imageAnchorVector = [-0.5, -1.0, 0.0]; break;
+      case 'topright': imageAnchorVector = [-1.0, -1.0, 0.0]; break;
+      case 'middleleft': imageAnchorVector = [-0.0, -0.5, 0.0]; break;
+      default: imageAnchorVector = [-0.5, -0.5, 0.0]; break;
+      case 'middleright': imageAnchorVector = [-1.0, -0.5, 0.0]; break;
+      case 'bottomleft': imageAnchorVector = [-0.0, -0.0, 0.0]; break;
       case 'bottomcenter': imageAnchorVector = [-0.5, -0.0, 0.0]; break;
-      case 'bottomright':  imageAnchorVector = [-1.0, -0.0, 0.0]; break;
+      case 'bottomright': imageAnchorVector = [-1.0, -0.0, 0.0]; break;
     }
 
     const newImage = new Thumbnail(globalView);

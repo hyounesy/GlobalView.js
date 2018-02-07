@@ -371,7 +371,7 @@ export function parseColormap(colormap) {
         }
       }
       return new Uint8Array(array);
-    } else if(libUtility.isNumber(colormap[0])) {
+    } else if (libUtility.isNumber(colormap[0])) {
       return new Uint8Array(colormap);
     }
   }

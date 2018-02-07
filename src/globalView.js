@@ -85,7 +85,7 @@ export function GlobalView(div, startupOptions) {
   this.invalidate = function () {}; // Silently ignore calls to invalidate during initialization
 
   const gl = canvas.getContext('webgl');
-  if(!gl) {
+  if (!gl) {
     alert('Error: WebGL not supported');
     return;
   }
@@ -136,11 +136,11 @@ export function GlobalView(div, startupOptions) {
     this.invalidate();
   };
 
-  let t = performance.now(),
-    dt = 0.1,
-    fps = null,
-    fpsStart = t,
-    frameCounter = 0;
+  let t = performance.now();
+  let dt = 0.1;
+  let fps = null;
+  let fpsStart = t;
+  let frameCounter = 0;
 
   const pointViewer = new libPointViewer.PointViewer(gl, this);
   const imageViewer = new libImageViewer.ImageViewer(gl, this);
@@ -161,8 +161,8 @@ export function GlobalView(div, startupOptions) {
   this.createPointSet = pointViewer.createPointSet;
   this.removePointSet = pointViewer.removePointSet;
 
-  let mouseRect = null,
-    mousePolygon = null;
+  let mouseRect = null;
+  let mousePolygon = null;
   let pointDrag = null;
 
   let invalidating = false;
@@ -539,7 +539,7 @@ export function GlobalView(div, startupOptions) {
       computedPadding = padding.map((v, i) => Math.floor(libUtility.isString(v) ?
         Number.parseFloat(v) * (v.endsWith('%') ? (i % 2 === 0 ? canvas.width : canvas.height) / 100 : 1) :
         padding[i]));
-    } else if(libUtility.isNumber(padding) || libUtility.isString(padding)) {
+    } else if (libUtility.isNumber(padding) || libUtility.isString(padding)) {
       computedPadding = Array.create(4, i => Math.floor(libUtility.isString(padding) ?
         Number.parseFloat(padding) * (padding.endsWith('%') ? (i % 2 === 0 ? canvas.width : canvas.height) / 100 : 1) :
         padding));
@@ -893,8 +893,8 @@ export function GlobalView(div, startupOptions) {
    * @param  {Object} newOptions A JavaScript object of options
    */
   this.setOptions = function (newOptions) {
-    let requireRecompile = false,
-      requireRedraw = false;
+    let requireRecompile = false;
+    let requireRedraw = false;
     for (const option in newOptions) {
       if (!newOptions.hasOwnProperty(option)) {
         continue;
@@ -951,7 +951,7 @@ export function GlobalView(div, startupOptions) {
    */
   this.setDefaultOptions = function () {
     const defaultOptions = {};
-    for(const option in OPTIONS) {
+    for (const option in OPTIONS) {
       if (OPTIONS.hasOwnProperty(option)) {
         defaultOptions[option] = OPTIONS[option].default;
       }
@@ -1173,8 +1173,8 @@ export function GlobalView(div, startupOptions) {
     if (!dataset) {
       return;
     }
-    let d0 = activeInputs[0],
-      d1 = activeInputs[1];
+    let d0 = activeInputs[0];
+    let d1 = activeInputs[1];
     dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
       if (d1 < d0) {
         // Swap d0 <-> d1
@@ -1213,8 +1213,8 @@ export function GlobalView(div, startupOptions) {
   this.showData2D = function () {
     imageViewer.clearImages();
 
-    let d0 = activeInputs[0],
-      d1 = activeInputs[1];
+    let d0 = activeInputs[0];
+    let d1 = activeInputs[1];
     dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
       if (d1 < d0) {
         // Swap d0 <-> d1
@@ -1258,14 +1258,15 @@ export function GlobalView(div, startupOptions) {
    */
   this.showImage_lowDensity = function (index) {
     if (dataset.imageFilenames && dataset.imageFilenames[index]) {
-      let d0 = activeInputs[0],
-        d1 = activeInputs[1];
+      let d0 = activeInputs[0];
+      let d1 = activeInputs[1];
       // console.log(dataset.requestDensityMap(d0, d1, undefined, undefined));
       // dataset.requestDensityMap(d0, d1, undefined, undefined, function(densityMap) { console.log(densityMap); });
 
       dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
-        let imageWidth = (0.6 * options.thumbnailSize) / gl.width,
-          imageHeight = ((0.6 * options.thumbnailSize) + libImageViewer.getLabelHeight()) / gl.height; // EDIT: Factor 0.6: WHY?
+        let imageWidth = (0.6 * options.thumbnailSize) / gl.width;
+        let imageHeight = ((0.6 * options.thumbnailSize) + libImageViewer.getLabelHeight()) /
+          gl.height; // EDIT: Factor 0.6: WHY?
         if (d1 < d0) {
           // Swap d0 <-> d1
           let temp = d0;
@@ -1316,11 +1317,12 @@ export function GlobalView(div, startupOptions) {
    */
   this.showImages_lowDensity = function (points) {
     if (dataset.imageFilenames) {
-      let d0 = activeInputs[0],
-        d1 = activeInputs[1];
+      let d0 = activeInputs[0];
+      let d1 = activeInputs[1];
       dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
-        let imageWidth = (0.6 * options.thumbnailSize) / gl.width,
-          imageHeight = ((0.6 * options.thumbnailSize) + libImageViewer.getLabelHeight()) / gl.height; // EDIT: Factor 0.6: WHY?
+        let imageWidth = (0.6 * options.thumbnailSize) / gl.width;
+        let imageHeight = ((0.6 * options.thumbnailSize) + libImageViewer.getLabelHeight()) /
+          gl.height; // EDIT: Factor 0.6: WHY?
         if (d1 < d0) {
           // Swap d0 <-> d1
           let temp = d0;
@@ -1597,7 +1599,7 @@ export function GlobalView(div, startupOptions) {
    * @param  {string} placement
    */
   this.showImage = function (index, placement) {
-    switch(placement) {
+    switch (placement) {
       case 'none': return this.showImage_none(index);
       case 'adjacent': return this.showImage_adjacent(index);
       case 'lowDensity': return this.showImage_lowDensity(index);
@@ -1617,7 +1619,7 @@ export function GlobalView(div, startupOptions) {
    * @param  {string} placement
    */
   this.showImages = function (points, placement) {
-    switch(placement) {
+    switch (placement) {
       case 'none': return this.showImages_none(points);
       case 'adjacent': return this.showImages_adjacent(points);
       case 'lowDensity': return this.showImages_lowDensity(points);
@@ -1656,16 +1658,16 @@ export function GlobalView(div, startupOptions) {
 
   // >>> Mouse handlers
 
-  let mouseOverDatapoint = -1,
-    pointDragDownPos = null,
-    viewDragStartPos = null,
-    viewDragX,
-    viewDragY,
-    viewDragZ;
-  let mouseOverAxisLabel = null,
-    mouseOverImage = null,
-    imageDragStartPos = null,
-    imageDragImages = [];
+  let mouseOverDatapoint = -1;
+  let pointDragDownPos = null;
+  let viewDragStartPos = null;
+  let viewDragX;
+  let viewDragY;
+  let viewDragZ;
+  let mouseOverAxisLabel = null;
+  let mouseOverImage = null;
+  let imageDragStartPos = null;
+  let imageDragImages = [];
 
   /**
    * @callback onMouseDownCallback
@@ -1786,16 +1788,16 @@ export function GlobalView(div, startupOptions) {
   let shiftPressed = false;
   const CTRL = navigator.appVersion.indexOf('Mac') === -1 ? 17 : 224;
   libUtility.addKeyDownHandler(function (event) {
-    if(event.keyCode === CTRL) {
+    if (event.keyCode === CTRL) {
       ctrlPressed = true;
-    } else if(event.keyCode === 16) {
+    } else if (event.keyCode === 16) {
       shiftPressed = true;
     }
   });
   libUtility.addKeyUpHandler(function (event) {
-    if(event.which === CTRL) {
+    if (event.which === CTRL) {
       ctrlPressed = false;
-    } else if(event.keyCode === 16) {
+    } else if (event.keyCode === 16) {
       shiftPressed = false;
     }
   });
@@ -1871,9 +1873,9 @@ export function GlobalView(div, startupOptions) {
     // Transform p from device coordinates to dataset coordinates
     tf.deviceCoordToDatasetCoord(p, p);
 
-    let closest = Number.MAX_VALUE,
-      closestIndex = -1,
-      sqDist;
+    let closest = Number.MAX_VALUE;
+    let closestIndex = -1;
+    let sqDist;
     const sqscl0 = tf.getScale(0) * tf.getScale(0);
     const sqscl1 = tf.getScale(1) * tf.getScale(1);
     const v0 = dataset.dataVectors[activeInputs[0]];
@@ -2023,9 +2025,9 @@ export function GlobalView(div, startupOptions) {
     // Transform p from device coordinates to dataset coordinates
     tf.deviceCoordToDatasetCoord(p, p);
 
-    let closest = Number.MAX_VALUE,
-      closestIndex = -1,
-      sqDist;
+    let closest = Number.MAX_VALUE;
+    let closestIndex = -1;
+    let sqDist;
     const sqscl0 = tf.getScale(0) * tf.getScale(0);
     const sqscl1 = tf.getScale(1) * tf.getScale(1);
     const v0 = dataset.dataVectors[d0];
@@ -2056,11 +2058,11 @@ export function GlobalView(div, startupOptions) {
         }
       }
     } else if (mouseOverDatapoint !== closestIndex) {
-        mouseOverDatapoint = closestIndex;
-        if (this.onMouseOverDatapoint !== null) {
-          this.onMouseOverDatapoint(dataset, mouseOverDatapoint);
-        }
+      mouseOverDatapoint = closestIndex;
+      if (this.onMouseOverDatapoint !== null) {
+        this.onMouseOverDatapoint(dataset, mouseOverDatapoint);
       }
+    }
   }.bind(this));
   libUtility.addMouseUpHandler(function (event) {
     if (tf === null || offscreenRendering !== null || (event.target !== canvas && pointDragDownPos === null && viewDragStartPos === null && mouseRect === null)) {
@@ -2185,9 +2187,9 @@ export function GlobalView(div, startupOptions) {
     const canvasBounds = canvas.getBoundingClientRect();
     const p = new Float32Array([event.clientX - canvasBounds.left, event.clientY - canvasBounds.top, event.clientY - canvasBounds.top]);
 
-    let scrollX,
-      scrollY,
-      scrollZ;
+    let scrollX;
+    let scrollY;
+    let scrollZ;
     if (p[0] > plotBounds.x + plotBounds.width) {
       scrollX = scrollY = false;
       scrollZ = true;

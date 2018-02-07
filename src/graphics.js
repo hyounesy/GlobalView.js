@@ -264,15 +264,15 @@ export function validateGLSL(gl, code) {
  */
 export function Mesh(_gl, positions, normals, tangents, binormals, texcoords, indices, _primitivetype, _ndim) {
   const gl = _gl;
-  let posbuffer,
-    nmlbuffer,
-    tgtbuffer,
-    bnmbuffer,
-    texcoordbuffer,
-    idxbuffer;
-  let primitivetype,
-    numvertices,
-    numindices;
+  let posbuffer;
+  let nmlbuffer;
+  let tgtbuffer;
+  let bnmbuffer;
+  let texcoordbuffer;
+  let idxbuffer;
+  let primitivetype;
+  let numvertices;
+  let numindices;
   let ndim;
 
   this.reset = function (positions, normals, tangents, binormals, texcoords, indices, _primitivetype, _ndim) {
@@ -281,78 +281,78 @@ export function Mesh(_gl, positions, normals, tangents, binormals, texcoords, in
     numvertices = Math.floor(positions.length / ndim);
     numindices = 0;
 
-    if(!posbuffer) {
+    if (!posbuffer) {
       posbuffer = gl.createBuffer();
     }
     gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
     gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
-    if(normals) {
-      if(!nmlbuffer) {
+    if (normals) {
+      if (!nmlbuffer) {
         nmlbuffer = gl.createBuffer();
       }
       gl.bindBuffer(gl.ARRAY_BUFFER, nmlbuffer);
       gl.bufferData(gl.ARRAY_BUFFER, normals, gl.STATIC_DRAW);
-    } else if(!nmlbuffer) {
+    } else if (!nmlbuffer) {
       gl.deleteBuffer(nmlbuffer);
     }
-    if(tangents) {
-      if(!tgtbuffer) {
+    if (tangents) {
+      if (!tgtbuffer) {
         tgtbuffer = gl.createBuffer();
       }
       gl.bindBuffer(gl.ARRAY_BUFFER, tgtbuffer);
       gl.bufferData(gl.ARRAY_BUFFER, tangents, gl.STATIC_DRAW);
-    } else if(!tgtbuffer) {
+    } else if (!tgtbuffer) {
       gl.deleteBuffer(tgtbuffer);
     }
-    if(binormals) {
-      if(!bnmbuffer) {
+    if (binormals) {
+      if (!bnmbuffer) {
         bnmbuffer = gl.createBuffer();
       }
       gl.bindBuffer(gl.ARRAY_BUFFER, bnmbuffer);
       gl.bufferData(gl.ARRAY_BUFFER, binormals, gl.STATIC_DRAW);
-    } else if(!bnmbuffer) {
+    } else if (!bnmbuffer) {
       gl.deleteBuffer(bnmbuffer);
     }
-    if(texcoords) {
-      if(!texcoordbuffer) {
+    if (texcoords) {
+      if (!texcoordbuffer) {
         texcoordbuffer = gl.createBuffer();
       }
       gl.bindBuffer(gl.ARRAY_BUFFER, texcoordbuffer);
       gl.bufferData(gl.ARRAY_BUFFER, texcoords, gl.STATIC_DRAW);
-    } else if(!texcoordbuffer) {
+    } else if (!texcoordbuffer) {
       gl.deleteBuffer(texcoordbuffer);
     }
-    if(indices) {
-      if(!idxbuffer) {
+    if (indices) {
+      if (!idxbuffer) {
         idxbuffer = gl.createBuffer();
       }
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxbuffer);
       gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
       numindices = indices.length;
-      if(typeof primitivetype === 'undefined') {
+      if (typeof primitivetype === 'undefined') {
         primitivetype = gl.TRIANGLES;
       } // Default primitive type for indexed geometry is TRIANGLES
     } else {
-      if(!idxbuffer) {
+      if (!idxbuffer) {
         gl.deleteBuffer(idxbuffer);
       }
-      if(typeof primitivetype === 'undefined') {
+      if (typeof primitivetype === 'undefined') {
         primitivetype = gl.TRIANGLE_STRIP;
       } // Default primitive type for non-indexed geometry is TRIANGLE_STRIP
     }
   };
-  if(positions) { // Mesh vertex positions array can't be null
+  if (positions) { // Mesh vertex positions array can't be null
     this.reset(positions, normals, tangents, binormals, texcoords, indices, _primitivetype, _ndim);
   }
 
   this.bind = function (sdr, texture) {
-    if(!posbuffer) { // Mesh without vertex positions can't be rendered
+    if (!posbuffer) { // Mesh without vertex positions can't be rendered
       return;
     }
 
     sdr.bind();
 
-    for(let i = 0; i < 16; i += 1) {
+    for (let i = 0; i < 16; i += 1) {
       gl.disableVertexAttribArray(i);
       if (gl.ext) {
         gl.ext.vertexAttribDivisorANGLE(i, 0);
@@ -362,31 +362,31 @@ export function Mesh(_gl, positions, normals, tangents, binormals, texcoords, in
     gl.enableVertexAttribArray(sdr.vertexPositionAttribute);
     gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
     gl.vertexAttribPointer(sdr.vertexPositionAttribute, ndim, gl.FLOAT, false, 0, 0);
-    if(nmlbuffer && sdr.vertexNormalAttribute !== -1) {
+    if (nmlbuffer && sdr.vertexNormalAttribute !== -1) {
       gl.enableVertexAttribArray(sdr.vertexNormalAttribute);
       gl.bindBuffer(gl.ARRAY_BUFFER, nmlbuffer);
       gl.vertexAttribPointer(sdr.vertexNormalAttribute, ndim, gl.FLOAT, false, 0, 0);
     }
-    if(tgtbuffer && sdr.vertexTangentAttribute !== -1) {
+    if (tgtbuffer && sdr.vertexTangentAttribute !== -1) {
       gl.enableVertexAttribArray(sdr.vertexTangentAttribute);
       gl.bindBuffer(gl.ARRAY_BUFFER, tgtbuffer);
       gl.vertexAttribPointer(sdr.vertexTangentAttribute, ndim, gl.FLOAT, false, 0, 0);
     }
-    if(bnmbuffer && sdr.vertexBinormalAttribute !== -1) {
+    if (bnmbuffer && sdr.vertexBinormalAttribute !== -1) {
       gl.enableVertexAttribArray(sdr.vertexBinormalAttribute);
       gl.bindBuffer(gl.ARRAY_BUFFER, bnmbuffer);
       gl.vertexAttribPointer(sdr.vertexBinormalAttribute, ndim, gl.FLOAT, false, 0, 0);
     }
-    if(texcoordbuffer && sdr.VertexTexCoordAttribute !== -1) {
+    if (texcoordbuffer && sdr.VertexTexCoordAttribute !== -1) {
       gl.enableVertexAttribArray(sdr.VertexTexCoordAttribute);
       gl.bindBuffer(gl.ARRAY_BUFFER, texcoordbuffer);
       gl.vertexAttribPointer(sdr.VertexTexCoordAttribute, 2, gl.FLOAT, false, 0, 0);
     }
-    if(texture) {
-      if(libUtility.isArray(texture)) {
-        if(sdr.samplerArrayUniform) {
+    if (texture) {
+      if (libUtility.isArray(texture)) {
+        if (sdr.samplerArrayUniform) {
           const idxarray = new Array(texture.length);
-          for(let i = 0; i < texture.length; i += 1) {
+          for (let i = 0; i < texture.length; i += 1) {
             gl.activeTexture(gl.TEXTURE0 + i);
             gl.bindTexture(gl.TEXTURE_2D, texture[i]);
             idxarray[i] = i;
@@ -396,25 +396,25 @@ export function Mesh(_gl, positions, normals, tangents, binormals, texcoords, in
       } else {
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, texture);
-        if(sdr.samplerUniform) {
+        if (sdr.samplerUniform) {
           gl.uniform1i(sdr.samplerUniform, 0);
         }
-        if(sdr.samplerArrayUniform) {
+        if (sdr.samplerArrayUniform) {
           gl.uniform1iv(sdr.samplerArrayUniform, [0]);
         }
       }
     }
-    if(idxbuffer) {
+    if (idxbuffer) {
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxbuffer);
     }
   };
 
   this.draw = function () {
-    if(!posbuffer) { // Mesh without vertex positions can't be rendered
+    if (!posbuffer) { // Mesh without vertex positions can't be rendered
       return;
     }
 
-    if(idxbuffer) {
+    if (idxbuffer) {
       gl.drawElements(primitivetype, numindices, gl.UNSIGNED_SHORT, 0);
     } else {
       gl.drawArrays(primitivetype, 0, numvertices);
@@ -422,27 +422,27 @@ export function Mesh(_gl, positions, normals, tangents, binormals, texcoords, in
   };
 
   this.free = function () {
-    if(posbuffer) {
+    if (posbuffer) {
       gl.deleteBuffer(posbuffer);
       posbuffer = null;
     }
-    if(nmlbuffer) {
+    if (nmlbuffer) {
       gl.deleteBuffer(posbuffer);
       posbuffer = null;
     }
-    if(tgtbuffer) {
+    if (tgtbuffer) {
       gl.deleteBuffer(posbuffer);
       posbuffer = null;
     }
-    if(bnmbuffer) {
+    if (bnmbuffer) {
       gl.deleteBuffer(posbuffer);
       posbuffer = null;
     }
-    if(texcoordbuffer) {
+    if (texcoordbuffer) {
       gl.deleteBuffer(posbuffer);
       posbuffer = null;
     }
-    if(idxbuffer) {
+    if (idxbuffer) {
       gl.deleteBuffer(posbuffer);
       posbuffer = null;
     }
@@ -463,7 +463,7 @@ function handleLoadedTexture(gl, texture, onload) {
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   gl.bindTexture(gl.TEXTURE_2D, null);
 
-  if(typeof (onload) === 'function') {
+  if (typeof (onload) === 'function') {
     onload(texture);
   }
 }

@@ -76,16 +76,16 @@ function BenchmarkDialog() {
   benchmarkDialog.dialog('open');
 
 
-  let zip,
-    csv,
-    numBenchmarks,
-    benchmarkCounter,
-    benchmarkOptionIndices,
-    currentOptions,
-    n,
-    time,
-    frames,
-    passStartTime;
+  let zip;
+  let csv;
+  let numBenchmarks;
+  let benchmarkCounter;
+  let benchmarkOptionIndices;
+  let currentOptions;
+  let n;
+  let time;
+  let frames;
+  let passStartTime;
 
   function startBenchmark() {
     globalView.pushOptions();

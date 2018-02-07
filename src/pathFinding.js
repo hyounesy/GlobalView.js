@@ -179,8 +179,8 @@ function SimpleGreedySearch(problem) {
     return state;
   } // Start state is goal
 
-  let cheapestCost = Number.MAX_VALUE,
-    cheapestSuccessor;
+  let cheapestCost = Number.MAX_VALUE;
+  let cheapestSuccessor;
   while (true) {
     cheapestSuccessor = null;
     problem.forEachSuccessor(state, function (successor, successor_cost) {

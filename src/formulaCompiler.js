@@ -73,16 +73,16 @@ export const FormulaCompiler = {
 
     // >>> Tokenizer
 
-    let chrPos = 0,
-      chr = formula.charAt(0),
-      curTok = null,
-      curVal;
+    let chrPos = 0;
+    let chr = formula.charAt(0);
+    let curTok = null;
+    let curVal;
     function getch() {
       return chr = formula.charAt(chrPos += 1);
     }
     function getTok() {
-      let sign = 1,
-        repeat = false;
+      let sign = 1;
+      let repeat = false;
       do {
         repeat = false;
         switch (chr) {
@@ -128,8 +128,8 @@ export const FormulaCompiler = {
       while (repeat);
 
       if (chr >= '0' && chr <= '9') {
-        let numberString = chr,
-          hasDot = false;
+        let numberString = chr;
+        let hasDot = false;
         while (getch() !== '') {
           if (chr >= '0' && chr <= '9') {
             numberString += chr;
@@ -217,7 +217,7 @@ export const FormulaCompiler = {
           const binOp = curTok;
           if (!getTok()) {
             return null;
-          }  // eat binop
+          } // eat binop
 
           if (binOp !== '?') {
             // Parse the expression after the binary operator.
@@ -644,8 +644,8 @@ function verify(formula, result) {
 }
 
 function benchmark(nIter, javascriptCode, formulaCode, evalCode) {
-  let sum,
-    tStart;
+  let sum;
+  let tStart;
 
   sum = 0.0;
   tStart = performance.now();

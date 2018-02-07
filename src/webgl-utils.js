@@ -111,7 +111,7 @@ export function WebGLUtils() {
         }
         container.innerHTML = makeFailHTML(str);
       }
-    };
+    }
 
     opt_onError = opt_onError || handleCreationError;
 
@@ -141,7 +141,7 @@ export function WebGLUtils() {
     for (let ii = 0; ii < names.length; ii += 1) {
       try {
         context = /** @type {WebGLRenderingContext} */ (canvas.getContext(names[ii], opt_attribs));
-      } catch(e) {}
+      } catch (e) { /* empty */ }
       if (context) {
         break;
       }
@@ -153,7 +153,7 @@ export function WebGLUtils() {
     create3DContext: create3DContext,
     setupWebGL: setupWebGL,
   };
-};
+}
 
 /**
  * Provides requestAnimationFrame in a cross browser way.

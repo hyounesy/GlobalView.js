@@ -52,9 +52,9 @@ export function PointViewer(gl, globalView) {
       } else if (this.size() !== 0) {
         // drawLines doesn't support index buffers
         // Therefore, draw point group as continuous index sequences
-        let startIndex = 0,
-          lastIndex = -1,
-          count = 0;
+        let startIndex = 0;
+        let lastIndex = -1;
+        let count = 0;
         this.forEach(function (index) {
           if (index === lastIndex + 1) {
             count += 1;
@@ -194,8 +194,8 @@ export function PointViewer(gl, globalView) {
     }
   };
 
-  let activeInputVectors = null,
-    animatedInputVectors = null;
+  let activeInputVectors = null;
+  let animatedInputVectors = null;
   this.onInputChanged = function (activeInputs, animatedInputs, options) {
     activeInputVectors = activeInputs.map(i => _dataset.dataVectors[i]);
     animatedInputVectors = animatedInputs.map(animatedInput => _dataset.dataVectors[animatedInput.origin]);
@@ -272,8 +272,8 @@ vec{1} getPos()
       return getPosCode;
     };
 
-    let posattr,
-      lineattr;
+    let posattr;
+    let lineattr;
     this.sdr = null;
     this.sdrLine = null;
     this.recompileShader = function (options) {
@@ -355,7 +355,7 @@ vec{1} getPos()
         count = numvertices;
       }
 
-      for(let i = 0; i < 16; i += 1) {
+      for (let i = 0; i < 16; i += 1) {
         gl.disableVertexAttribArray(i);
         if (gl.ext) {
           gl.ext.vertexAttribDivisorANGLE(i, 0);
@@ -364,7 +364,7 @@ vec{1} getPos()
 
       if (posbuffer) {
         gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
-        for(let d = 0, i = 0; d < ndim; d += 4, i += 1) {
+        for (let d = 0, i = 0; d < ndim; d += 4, i += 1) {
           if (this.sdr.posattr[i] !== -1) {
             gl.enableVertexAttribArray(this.sdr.posattr[i]);
             gl.vertexAttribPointer(this.sdr.posattr[i], Math.min(4, ndim - d), gl.FLOAT, false, ndim * 4, ((offset * ndim) + d) * 4);
@@ -378,7 +378,7 @@ vec{1} getPos()
         gl.vertexAttribPointer(this.sdr.vidattr, 1, gl.FLOAT, false, 4, offset * 4);
       }
 
-      if(texture && this.sdr.samplerUniform) {
+      if (texture && this.sdr.samplerUniform) {
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.uniform1i(this.sdr.samplerUniform, 0);
@@ -387,7 +387,7 @@ vec{1} getPos()
       gl.drawArrays(gl.POINTS, 0, Math.min(count, numvertices - offset));
     };
     this.drawIndexed = function (texture, idxbuffer, count) {
-      for(let i = 0; i < 16; i += 1) {
+      for (let i = 0; i < 16; i += 1) {
         gl.disableVertexAttribArray(i);
         if (gl.ext) {
           gl.ext.vertexAttribDivisorANGLE(i, 0);
@@ -396,7 +396,7 @@ vec{1} getPos()
 
       if (posbuffer) {
         gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
-        for(let d = 0, i = 0; d < ndim; d += 4, i += 1) {
+        for (let d = 0, i = 0; d < ndim; d += 4, i += 1) {
           if (this.sdr.posattr[i] !== -1) {
             gl.enableVertexAttribArray(this.sdr.posattr[i]);
             gl.vertexAttribPointer(this.sdr.posattr[i], Math.min(4, ndim - d), gl.FLOAT, false, ndim * 4, d * 4);
@@ -410,7 +410,7 @@ vec{1} getPos()
         gl.vertexAttribPointer(this.sdr.vidattr, 1, gl.FLOAT, false, 4, 0);
       }
 
-      if(texture && this.sdr.samplerUniform) {
+      if (texture && this.sdr.samplerUniform) {
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.uniform1i(this.sdr.samplerUniform, 0);
@@ -429,14 +429,14 @@ vec{1} getPos()
         count = numvertices;
       }
 
-      for(let i = 0; i < 16; i += 1) {
+      for (let i = 0; i < 16; i += 1) {
         gl.disableVertexAttribArray(i);
         gl.ext.vertexAttribDivisorANGLE(i, 0);
       }
 
       if (posbuffer) {
         gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
-        for(let d = 0, i = 0; d < ndim; d += 4, i += 1) {
+        for (let d = 0, i = 0; d < ndim; d += 4, i += 1) {
           if (this.sdrLine.posattr[i] !== -1) {
             gl.enableVertexAttribArray(this.sdrLine.posattr[i]);
             gl.vertexAttribPointer(this.sdrLine.posattr[i], Math.min(4, ndim - d), gl.FLOAT, false, ndim * 4, ((offset * ndim) + d) * 4);
@@ -452,7 +452,7 @@ vec{1} getPos()
         gl.ext.vertexAttribDivisorANGLE(this.sdrLine.vidattr, 1);
       }
 
-      if(texture && this.sdrLine.samplerUniform) {
+      if (texture && this.sdrLine.samplerUniform) {
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.uniform1i(this.sdrLine.samplerUniform, 0);
@@ -484,7 +484,7 @@ vec{1} getPos()
       gl.deleteBuffer(linebuffer);
       linebuffer = null;
 
-      if(this.sdr != null) {
+      if (this.sdr != null) {
         this.sdr.free();
       }
     };

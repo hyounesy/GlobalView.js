@@ -118,12 +118,12 @@ module.exports = {
         "no-dupe-args": 0,                      // disallow duplicate arguments in function definitions
         "no-dupe-keys": 0,                      // disallow duplicate keys in object literals
         "no-duplicate-case": 0,                 // disallow duplicate case labels
-        "no-empty": 0,                          // disallow empty block statements
+        "no-empty": 'error',                          // disallow empty block statements
         "no-empty-character-class": 0,          // disallow empty character classes in regular expressions
         "no-ex-assign": 0,                      // disallow reassigning exceptions in catch clauses
         "no-extra-boolean-cast": 0,             // disallow unnecessary boolean casts
         "no-extra-parens": 0,                   // disallow unnecessary parentheses
-        "no-extra-semi": 0,                     // disallow unnecessary semicolons
+        "no-extra-semi": 'error',                     // disallow unnecessary semicolons
         "no-func-assign": 0,                    // disallow reassigning function declarations
         "no-inner-declarations": 0,             // disallow variable or function declarations in nested blocks
         "no-invalid-regexp": 0,                 // disallow invalid regular expression strings in RegExp constructors
@@ -180,7 +180,7 @@ module.exports = {
         "no-lone-blocks": 0,                    // disallow unnecessary nested blocks
         "no-loop-func": 0,                      // disallow function declarations and expressions inside loop statements
         "no-magic-numbers": 0,                  // disallow magic numbers
-        "no-multi-spaces": 0,                   // disallow multiple spaces
+        "no-multi-spaces": 'error',                   // disallow multiple spaces
         "no-multi-str": 0,                      // disallow multiline strings
         "no-new": 0,                            // disallow new operators outside of assignments or comparisons
         "no-new-func": 0,                       // disallow new operators with the Function object
@@ -287,8 +287,19 @@ module.exports = {
         "implicit-arrow-linebreak": 0,          // enforce the location of arrow function bodies
         "indent": ["error", 2, { "SwitchCase": 1 }], // enforce consistent indentation
         "jsx-quotes": 0,                        // enforce the consistent use of either double or single quotes in JSX attributes
-        "key-spacing": 0,                       // enforce consistent spacing between keys and values in object literal properties
-        "keyword-spacing": 0,                   // enforce consistent spacing before and after keywords
+        // enforces spacing between keys and values in object literal properties
+        'key-spacing': ['error', { beforeColon: false, afterColon: true }],
+
+        // require a space before & after certain keywords
+        'keyword-spacing': ['error', {
+          before: true,
+          after: true,
+          overrides: {
+            return: { after: true },
+            throw: { after: true },
+            case: { after: true }
+          }
+        }],
         "line-comment-position": 0,             // enforce position of line comments
         "linebreak-style": 0,                   // enforce consistent linebreak style
         "lines-around-comment": 0,              // require empty lines around comments
@@ -342,7 +353,8 @@ module.exports = {
         "object-curly-newline": 0,              // enforce consistent line breaks inside braces
         "object-curly-spacing": 0,              // enforce consistent spacing inside braces
         "object-property-newline": 0,           // enforce placing object properties on separate lines
-        "one-var": 0,                           // enforce variables to be declared either together or separately in functions
+        // allow just one var statement per function
+        'one-var': ['error', 'never'],
         "one-var-declaration-per-line": 2,      // require or disallow newlines around variable declarations
         "operator-assignment": 0,               // require or disallow assignment operator shorthand where possible
         "operator-linebreak": 0,                // enforce consistent linebreak style for operators

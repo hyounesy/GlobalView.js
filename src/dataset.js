@@ -312,7 +312,7 @@ export function Dataset() {
         // If the deprecated densityMap satisfies our requested options
         densityMap = densityMap.old;
       } else {
-        while (!libUtility.isUndefined(_densityMaps[d0][d1].pending)) {}
+        while (!libUtility.isUndefined(_densityMaps[d0][d1].pending)) { /* empty */ }
       } // Wait while _densityMaps[d0][d1] is being computed asynchronously
 
       if (libUtility.isFunction(ondone)) {
@@ -429,7 +429,7 @@ export function Dataset() {
         // If the deprecated clusterMap satisfies our requested options
         clusterMap = clusterMap.old;
       } else {
-        while (!libUtility.isUndefined(clusterMap.pending)) {}
+        while (!libUtility.isUndefined(clusterMap.pending)) { /* empty */ }
       } // Wait while _clusterMaps[d0][d1] is being computed asynchronously
 
       if (libUtility.isFunction(ondone)) {
@@ -498,8 +498,8 @@ export function Dataset() {
     }
 
     if (this.imageFilenames !== null) {
-      const imageFilenames = /** @type {Array<string>} */ (this.imageFilenames),
-        imageFilenames_inflated = new Array(n_inflated);
+      const imageFilenames = /** @type {Array<string>} */ (this.imageFilenames);
+      const imageFilenames_inflated = new Array(n_inflated);
       for (let i = 0, len = n; i < len; i += 1) {
         imageFilenames_inflated[i] = imageFilenames[i];
       }
@@ -738,8 +738,8 @@ export function CsvDataset(file, options, onload) {
 
     dataset.data = new Array(nc * n);
     dataset.fdata = new Float32Array(nc * n);
-    let i,
-      di;
+    let i;
+    let di;
     for (let c = 0, ci = 0; c < data[0].length; c += 1, ci += 1) {
       if (c === options.nameColumn) {
         ci -= 1;
@@ -910,7 +910,7 @@ function generateColumnName(i, nc) {
   } else {
     return `c${i + 1}`; // c1, c2, c3, ...
   }
-};
+}
 
 function parseData(input) {
   return parseFloat(input);
