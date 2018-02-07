@@ -59,7 +59,7 @@ domready(function () {
 
       const thumbnailWidth = (OPTIONS.thumbnailSize * (dataset.dataVectors[x].maximum - dataset.dataVectors[x].minimum)) / (PLOT_SIZE - OPTIONS.padding[1] - OPTIONS.padding[3]);
       const thumbnailHeight = (OPTIONS.thumbnailSize * (dataset.dataVectors[y].maximum - dataset.dataVectors[y].minimum)) / (PLOT_SIZE - OPTIONS.padding[0] - OPTIONS.padding[2]);
-      console.log(thumbnailWidth, thumbnailHeight);
+      globalView.consoleLog(thumbnailWidth, thumbnailHeight);
 
       const plot = new globalView.GlobalView(divPlots, OPTIONS);
       plot.load(dataset, x, y, 0, 0);

@@ -26,4 +26,8 @@ export {
   urlExists,
   createCookie,
   download,
+  consoleLog,
+  consoleWarn,
+  consoleError,
+  showAlert,
 } from './utility';

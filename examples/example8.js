@@ -223,7 +223,7 @@ const inflated = false;
 function dataset_onLoad(_dataset) {
   dataset = _dataset;
   if (dataset.columns.length < 2) {
-    alert(`Invalid dataset\nDataset has ${dataset.columns.length} column(s) (at least 2 required).`);
+    globalView.showAlert(`Invalid dataset\nDataset has ${dataset.columns.length} column(s) (at least 2 required).`);
     return;
   }
 
@@ -466,7 +466,7 @@ function ondragover(event) {
 }
 let dragOverCanvas = null;
 function ondragenter(event) {
-  console.log('ondragenter');
+  globalView.consoleLog('ondragenter');
   if (!dragOverCanvas) {
     const padding = plot.getOption('padding');
 
@@ -489,7 +489,7 @@ function ondragenter(event) {
   }
 }
 function ondragleave(event) {
-  console.log('ondragleave');
+  globalView.consoleLog('ondragleave');
   if (dragOverCanvas) {
     document.getElementById('divGlobalView').removeChild(dragOverCanvas);
     dragOverCanvas = null;
@@ -497,7 +497,7 @@ function ondragleave(event) {
 }
 function ondrop(pEvent) {
   let event = pEvent;
-  console.log('ondrop');
+  globalView.consoleLog('ondrop');
   ondragleave(event);
   event.preventDefault();
   event = event || window.event;

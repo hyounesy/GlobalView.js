@@ -102,9 +102,9 @@ export function PointViewer(gl, globalView) {
           pointSet.colormap = libGraphics.LoadTextureFromByteArray(gl, c, c.length / 4, 1);
         }
       } else {
-        console.warn(`GlobalView warning: Invalid value for point set color: ${color}`);
+        libUtility.consoleWarn(`GlobalView warning: Invalid value for point set color: ${color}`);
         if (libUtility.isString(validationResult)) {
-          console.warn(`                    ${validationResult}`);
+          libUtility.consoleWarn(`                    ${validationResult}`);
         }
       }
     }
@@ -167,7 +167,7 @@ export function PointViewer(gl, globalView) {
 
     // Validate numvertices
     if (dataset.fdata.length !== dataset.length * dataset.numColumns) {
-      alert("'dataset.fdata.length !== dataset.length * dataset.numColumns'");
+      libUtility.showAlert("'dataset.fdata.length !== dataset.length * dataset.numColumns'");
       return;
     }
 
@@ -272,7 +272,7 @@ vec{1} getPos()
       }
 
 
-      // console.log(getPosCode);
+      // libUtility.consoleLog(getPosCode);
       return getPosCode;
     };
 

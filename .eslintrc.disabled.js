@@ -162,7 +162,9 @@ module.exports = {
         "no-caller": 0,                         // disallow the use of arguments.caller or arguments.callee
         "no-case-declarations": 0,              // disallow lexical declarations in case clauses
         "no-div-regex": 0,                      // disallow division operators explicitly at the beginning of regular expressions
-        "no-else-return": 0,                    // disallow else blocks after return statements in if statements
+        // disallow else after a return in an if
+        // https://eslint.org/docs/rules/no-else-return
+        'no-else-return': ['error', { allowElseIf: true }],
         "no-empty-function": 0,                 // disallow empty functions
         "no-empty-pattern": 0,                  // disallow empty destructuring patterns
         "no-eq-null": 0,                        // disallow null comparisons without type-checking operators

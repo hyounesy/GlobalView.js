@@ -1,4 +1,5 @@
 const libUtility = require('./utility.js');
+const libPathFinding = require('./pathFinding.js');
 
 export function addTransformFunctions(cls) {
   const varCls = cls;
@@ -337,13 +338,13 @@ export function computeDensityMap(histogram, options) {
 
   expectedRuntime = inflateToFit ? 0.011447356659209 * Math.pow(expectedRuntime, 0.508796587646921) : 0.017471566555264 * Math.pow(expectedRuntime, 0.466050299746328);
   expectedRuntime *= t1;
-  // console.log("Expected runtime: " + expectedRuntime + "s");
+  // libUtility.consoleLog("Expected runtime: " + expectedRuntime + "s");
 
   while (expectedRuntime > options.maxExpectedRuntime && width >= 2 && height >= 2) {
     // Downscale density map size by a factor of 2
     const downScaledWidth = Math.floor(width / 2);
     const downScaledHeight = Math.floor(height / 2);
-    // console.log("Expected runtime too high. Down-scaling to: " + downScaledWidth + "x" + downScaledHeight);
+    // libUtility.consoleLog("Expected runtime too high. Down-scaling to: " + downScaledWidth + "x" + downScaledHeight);
 
     transform[0] *= downScaledWidth / width;
     transform[1] *= downScaledWidth / width;
@@ -407,9 +408,9 @@ export function computeDensityMap(histogram, options) {
 
     expectedRuntime = inflateToFit ? 0.011447356659209 * Math.pow(expectedRuntime, 0.508796587646921) : 0.017471566555264 * Math.pow(expectedRuntime, 0.466050299746328);
     expectedRuntime *= t1;
-    // console.log("Expected runtime: " + expectedRuntime + "s");
+    // libUtility.consoleLog("Expected runtime: " + expectedRuntime + "s");
   }
-  // console.log("Expected runtime acceptable");
+  // libUtility.consoleLog("Expected runtime acceptable");
 
   let densitMapWidth;
   let densitMapHeight;
@@ -442,10 +443,10 @@ export function computeDensityMap(histogram, options) {
   } */
 
   // Compute extend of the largest gaussian based on cutoffIntensity and normalizedGaussScale -> maxExtend
-  // console.log(maxExtend);
+  // libUtility.consoleLog(maxExtend);
   maxExtend = Math.min(Math.floor(Math.sqrt(Math.log(cutoffIntensity / maxDensity) / normalizedGaussScale)), maxExtend); // Set upper bound for maxExtend: Precomputed map of gaussian scales shouldn't be larger than densityMap (size*size)
   // var maxExtend = ext[maxDensity - 1]; // Get precomputed maxExtend
-  // console.log(maxExtend);
+  // libUtility.consoleLog(maxExtend);
 
   // Precompute 2D map array of gaussian scales within maxExtend*maxExtend -> gauss[]
   let gauss = new Float32Array(maxExtend * maxExtend);
@@ -513,7 +514,7 @@ export function computeDensityMap(histogram, options) {
     }
   }
   const t2 = tok(); // t2 = Measured runtime
-  // console.log("Actual runtime: " + t2 + "s");
+  // libUtility.consoleLog("Actual runtime: " + t2 + "s");
 
   // Free precomputed gaussian scales
   gauss = null;
@@ -668,12 +669,11 @@ export function findRepresentativePoints(dataset, d0, d1, densityMap, k, dist, t
       pointIsHigh = 1;
       d_high -= 1;
       return d_high + 1; // Retrieve next high density data point
-    } else {
-      // If ratio is too high or ratio is perfect and targetRatioChoose k characteristic points from the given dataset based on the given density map is low
-      pointIsHigh = 0;
-      d_low += 1;
-      return d_low - 1; // Retrieve next low density data point
     }
+    // If ratio is too high or ratio is perfect and targetRatioChoose k characteristic points from the given dataset based on the given density map is low
+    pointIsHigh = 0;
+    d_low += 1;
+    return d_low - 1; // Retrieve next low density data point
   };
   const representativePoints = [indices[next()]]; // Set first represenatative point
   numHighRepresentativePoints += pointIsHigh;
@@ -693,8 +693,8 @@ export function findRepresentativePoints(dataset, d0, d1, densityMap, k, dist, t
       ratio = numHighRepresentativePoints / representativePoints.length;
     }
   }
-  // console.log([targetRatio, ratio]);
-  // console.log("[" + representativePoints.join(", ") + "]");
+  // libUtility.consoleLog([targetRatio, ratio]);
+  // libUtility.consoleLog("[" + representativePoints.join(", ") + "]");
   return representativePoints;
 }
 
@@ -820,7 +820,7 @@ export function findRepresentativePointsND(dataset, densityMap, numPointsToRetur
       representativePoints.push(di);
     }
   }
-  // console.log("[" + representativePoints.join(", ") + "]");
+  // libUtility.consoleLog("[" + representativePoints.join(", ") + "]");
   return representativePoints;
 }
 /**
@@ -1047,8 +1047,8 @@ export function findClosePointOfLowDensity_descend(dataset, d0, d1, p, densityMa
   // Transform data point from data space to density map space
   const p0 = ((data[(p * nc) + d0] * s0) + o0) * width;
   const p1 = ((data[(p * nc) + d1] * s1) + o1) * height;
-  // console.log(p0);
-  // console.log(p1);
+  // libUtility.consoleLog(p0);
+  // libUtility.consoleLog(p1);
 
   // Transform density, minDistX, minDistY from [0 ... 1] space to density map space
   densityOffset *= (width + height) / 2;
@@ -1101,7 +1101,7 @@ export function findClosePointOfLowDensity_descend(dataset, d0, d1, p, densityMa
       return Math.pow(densityOffset + (densities[(state.y * width) + state.x] * densityScale), 2);
     },
   };
-  SimpleUniformCostSearch(searchProblem);
+  libPathFinding.SimpleUniformCostSearch(searchProblem);
   const closestPoint = [bestState.x, bestState.y];
 
   // Transform closestPoint back from density map space to data space
@@ -1229,13 +1229,13 @@ export function findClosePointOfLowDensityND_descend(dataset, p, densityMap, min
     },
   };
   // var tStart = performance.now();
-  // BreadthFirstSearch(searchProblem);
-  // DepthFirstSearch(searchProblem);
-  SimpleUniformCostSearch(searchProblem);
-  // SimpleAStarSearch(searchProblem);
-  // SimpleGreedySearch(searchProblem);
+  // libPathFinding.BreadthFirstSearch(searchProblem);
+  // libPathFinding.DepthFirstSearch(searchProblem);
+  libPathFinding.SimpleUniformCostSearch(searchProblem);
+  // libPathFinding.SimpleAStarSearch(searchProblem);
+  // libPathFinding.SimpleGreedySearch(searchProblem);
   // var tEnd = performance.now();
-  // console.log((tEnd - tStart) / 1000.0);
+  // libUtility.consoleLog((tEnd - tStart) / 1000.0);
   const closestPoint = bestState.p;
 
   /* var xMin = Math.max(0, closestPoint[0] - 2 * minDistX), xMax = Math.min(size, closestPoint[0] + 2 * minDistX);
@@ -1605,14 +1605,14 @@ export function vectorLineIntersection2D(vpos, vdir, a, b) {
     return null;
   } // Line and vector are parallel or coincident
 
-  // console.log([(x1 * y2 - y1 * x2) / denom, (x3 * y4 - y3 * x4) / denom]);
+  // libUtility.consoleLog([(x1 * y2 - y1 * x2) / denom, (x3 * y4 - y3 * x4) / denom]);
 
   const xi = ((((x1 * y2) - (y1 * x2)) * (x3 - x4)) - ((x1 - x2) * ((x3 * y4) - (y3 * x4)))) / denom;
   const yi = ((((x1 * y2) - (y1 * x2)) * (y3 - y4)) - ((y1 - y2) * ((x3 * y4) - (y3 * x4)))) / denom;
 
 
   const u = Math.abs(x4 - x3) > Math.abs(y4 - y3) ? (xi - x3) / (x4 - x3) : (yi - y3) / (y4 - y3);
-  // console.log(u);
+  // libUtility.consoleLog(u);
   if (u < 0.0 || u > 1.0) {
     return null;
   } // Intersection lies outside the range a...b

@@ -1,4 +1,30 @@
-/* feslint-disable no-bitwise */
+const enableConsole = true;
+const enableAlert = true;
+
+export function consoleLog(message) {
+  if (enableConsole) {
+    console.log(message); // eslint-disable-line no-console
+  }
+}
+
+export function consoleWarn(message) {
+  if (enableConsole) {
+    console.warn(message); // eslint-disable-line no-console
+  }
+}
+
+export function consoleError(message) {
+  if (enableConsole) {
+    console.error(message); // eslint-disable-line no-console
+  }
+}
+
+export function showAlert(message) {
+  if (enableAlert) {
+    alert(message); // eslint-disable-line no-alert
+  }
+}
+
 export function linspace(first, second, last) {
   const offset = second - first;
   const halfOffset = 0.5 * offset;
@@ -9,7 +35,7 @@ export function linspace(first, second, last) {
     values.push(first + (i * offset));
   }
   values[i] = last;
-  console.log(values);
+  consoleLog(values);
   return new Float32Array(values);
 }
 // linspace(1, 1.1, 10);
@@ -46,7 +72,7 @@ const enableDebugLog = true;
 export function debugLog(x) {
   // TODO: disable for release
   if (enableDebugLog) {
-    console.log(x);
+    consoleLog(x);
   }
 }
 
@@ -602,7 +628,7 @@ export function ForwardList(value) {
     for (let node = this; node; node = node.next) {
       array.push(node.value);
     }
-    console.log(array.join(', '));
+    consoleLog(array.join(', '));
   };
   this.size = function () {
     let size = 0;
@@ -683,7 +709,7 @@ queue.push({str: 'medium-low-2', p: 3});
 queue.push({str: 'medium-high', p: 7});
 queue.push({str: 'very-high', p: 15});
 while (queue.length)
-  console.log(queue.shift()); */
+  consoleLog(queue.shift()); */
 
 
 /**
@@ -725,7 +751,7 @@ export function HashSet(onchanged) {
         invalidate = true;
       }
     });
-    // console.log('append ' + values.length + ': ' + (performance.now() - t));
+    // consoleLog('append ' + values.length + ': ' + (performance.now() - t));
     if (invalidate) {
       this.onchanged();
     }
@@ -768,7 +794,7 @@ export function HashSet(onchanged) {
 
     hash = newHash;
     this.length = values.length;
-    // console.log('assign ' + values.length + ': ' + (performance.now() - t));
+    // consoleLog('assign ' + values.length + ': ' + (performance.now() - t));
 
     if (identical === false) {
       this.onchanged();
@@ -788,7 +814,7 @@ export function HashSet(onchanged) {
     hash = new Array(n);
     hash.fill(true);
     this.length = n;
-    // console.log('assignRange ' + n + ': ' + (performance.now() - t));
+    // consoleLog('assignRange ' + n + ': ' + (performance.now() - t));
     this.onchanged();
   };
 
@@ -821,7 +847,7 @@ export function HashSet(onchanged) {
         invalidate = true;
       }
     });
-    // console.log('remove ' + values.length + ': ' + (performance.now() - t));
+    // consoleLog('remove ' + values.length + ': ' + (performance.now() - t));
     if (invalidate) {
       this.onchanged();
     }
@@ -859,7 +885,7 @@ export function HashSet(onchanged) {
       // if (value < last) {badOrder += 1; last = value;}
       callback(value);
     }
-    // if (badOrder !== 0) console.log('bad order: ' + badOrder + ' times');
+    // if (badOrder !== 0) consoleLog('bad order: ' + badOrder + ' times');
   };
 
 

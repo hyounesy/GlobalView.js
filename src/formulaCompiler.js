@@ -612,21 +612,21 @@ FormulaCompiler.types.vec3.members = {
 function verboseTest(formula, symbols, symbolTypes) {
   const code = FormulaCompiler.compile(formula, symbolTypes || {});
 
-  console.log(`formula: ${formula}`);
+  libUtility.consoleLog(`formula: ${formula}`);
   if (libUtility.isString(code)) {
-    console.log(`err: ${code}`);
+    libUtility.consoleLog(`err: ${code}`);
   } else {
     const globalScope = symbols || {};
-    console.log(`code: ${code.map(c => libUtility.isString(c) ? `"${c}"` : c).join(' ')}`);
-    console.log(`result: ${FormulaCompiler.run(code, new Array(16), globalScope)}`);
-    console.log(`locals: ${JSON.stringify(globalScope)}`);
+    libUtility.consoleLog(`code: ${code.map(c => libUtility.isString(c) ? `"${c}"` : c).join(' ')}`);
+    libUtility.consoleLog(`result: ${FormulaCompiler.run(code, new Array(16), globalScope)}`);
+    libUtility.consoleLog(`locals: ${JSON.stringify(globalScope)}`);
   }
 }
 
 function verify(formula, result) {
   const code = FormulaCompiler.compile(formula);
   if (libUtility.isString(code)) {
-    console.log("Formula '{0}' failed with error '{1}'".format(formula, code));
+    libUtility.consoleLog("Formula '{0}' failed with error '{1}'".format(formula, code));
   } else {
     const computedResult = FormulaCompiler.run(code, new Array(16), {});
 
@@ -644,7 +644,7 @@ function verify(formula, result) {
     }
 
     if (!match) {
-      console.log("Formula '{0}' returned '{1}', instead of '{2}'".format(formula, computedResult, result));
+      libUtility.consoleLog("Formula '{0}' returned '{1}', instead of '{2}'".format(formula, computedResult, result));
     }
   }
   return true;
@@ -659,8 +659,8 @@ function benchmark(nIter, javascriptCode, formulaCode, evalCode) {
   for (let i = 0; i < nIter; i += 1) {
     sum += javascriptCode();
   }
-  console.log(sum);
-  console.log(`${performance.now() - tStart}ms`);
+  libUtility.consoleLog(sum);
+  libUtility.consoleLog(`${performance.now() - tStart}ms`);
 
   sum = 0.0;
   tStart = performance.now();
@@ -669,16 +669,16 @@ function benchmark(nIter, javascriptCode, formulaCode, evalCode) {
   for (let i = 0; i < nIter; i += 1) {
     sum += FormulaCompiler.run(code, stack, {});
   }
-  console.log(sum);
-  console.log(`${performance.now() - tStart}ms`);
+  libUtility.consoleLog(sum);
+  libUtility.consoleLog(`${performance.now() - tStart}ms`);
 
   sum = 0.0;
   tStart = performance.now();
   for (let i = 0; i < nIter; i += 1) {
     sum += eval(evalCode); // eslint-disable-line no-eval
   }
-  console.log(sum);
-  console.log(`${performance.now() - tStart}ms`);
+  libUtility.consoleLog(sum);
+  libUtility.consoleLog(`${performance.now() - tStart}ms`);
 }
 
 /* benchmark(1000000, function() {

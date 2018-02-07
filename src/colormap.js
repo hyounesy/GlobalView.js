@@ -343,17 +343,16 @@ export function validateColormap(colormap) {
         }
       }
       return true;
-    } else {
-      if (colormap.length % 4 !== 0) {
-        return 'Colormap array length must be multiple of 4.';
-      }
-      for (let i = 0; i < colormap.length; i += 1) {
-        if (!libUtility.isNumber(colormap[i]) || colormap[i] < 0x00 || colormap[i] > 0xFF) {
-          return 'Colormap array must contain numbers between 0 and 255.';
-        }
-      }
-      return true;
     }
+    if (colormap.length % 4 !== 0) {
+      return 'Colormap array length must be multiple of 4.';
+    }
+    for (let i = 0; i < colormap.length; i += 1) {
+      if (!libUtility.isNumber(colormap[i]) || colormap[i] < 0x00 || colormap[i] > 0xFF) {
+        return 'Colormap array must contain numbers between 0 and 255.';
+      }
+    }
+    return true;
   }
 
   return `Unknown colormap ${colormap}`;

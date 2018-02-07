@@ -1,3 +1,4 @@
+const globalView = require('../../dist/global-view.js');
 const $ = require('jquery');
 const domready = require('domready');
 const JSZip = require('jszip');
@@ -24,7 +25,7 @@ function getImageDataFromUrl(url, callback) {
         ctx.drawImage(this, 0, 0);
         result = ctx.getImageData(0, 0, canvas.width, canvas.height);
       } catch (error) {
-        console.error(error);
+        globalView.consoleError(error);
         result = null;
       }
       // Get raw image data
@@ -35,7 +36,7 @@ function getImageDataFromUrl(url, callback) {
     };
     image.src = url;
   } catch (error) {
-    console.error(error);
+    globalView.consoleError(error);
     callback(null);
   }
 }
@@ -116,7 +117,7 @@ domready(() => {
     testResults.push(testResult);
     testResult.name = allTests[i].name;
     const logText = `Running test (${i + 1} of ${allTests.length}): ${testResult.name} ...`;
-    console.log(logText);
+    globalView.consoleLog(logText);
     progress.text(logText);
 
     const imageWidth = 300;
@@ -166,9 +167,9 @@ domready(() => {
             );
             if (errorPixels === 0) {
               testResult.success = true;
-              console.log(`[Ok] Output of ${testResult.name} matches the expected output.`);
+              globalView.consoleLog(`[Ok] Output of ${testResult.name} matches the expected output.`);
             } else {
-              console.error(`[Fail] Output of ${testResult.name} does not match the expected output.`);
+              globalView.consoleError(`[Fail] Output of ${testResult.name} does not match the expected output.`);
             }
             const canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
             canvas.width = imageWidth;
@@ -179,7 +180,7 @@ domready(() => {
           });
         });
       } catch (error) {
-        console.error(error);
+        globalView.consoleError(error);
       }
       runTest(i + 1);
     });

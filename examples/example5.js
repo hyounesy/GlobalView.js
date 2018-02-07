@@ -42,8 +42,8 @@ domready(function () {
   plot.highlightedPoints = plot.createPointSet('red', 1);
   const csvPath = 'datasets/AICS_Cell-feature-analysis_v1.5.csv'; // 'http://homepage.univie.ac.at/a0929188/GlobalView/AICS_Cell-feature-analysis_v1.5.csv"
   const imagesPath = 'datasets/AICS_Cell-feature-analysis_v1.5_images/'; // 'http://homepage.univie.ac.at/a0929188/GlobalView/images/"
-  new globalView.CsvDataset(
-    csvPath, { // eslint-disable-line no-new
+  new globalView.CsvDataset( // eslint-disable-line no-new
+    csvPath, {
       hasHeader: true,
       nameColumn: 1,
       columnLabels: COLUMN_NAMES,

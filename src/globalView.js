@@ -11,27 +11,6 @@ const libAlgorithm = require('./algorithm.js');
 const libGraphics = require('./graphics.js');
 const libGlMatrix = require('gl-matrix');
 
-/*
-function myAlert(msg) {
-  alert(msg); // eslint-disable-line no-alert, no-undef
-}
-
-export function initCanvas(canvasElement) {
-  // var canvas = document.getElementById("canvas");
-  const gl = canvasElement.getContext('webgl') ||
-    canvasElement.getContext('experimental-webgl');
-
-  // Only continue if WebGL is available and working
-  if (!gl) {
-    myAlert('Unable to initialize WebGL. Your browser or machine may not support it.');
-    return;
-  }
-
-  gl.clearColor(1, 0, 0, 1);
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // eslint-disable-line no-bitwise
-}
-*/
-
 // >>> Options
 
 let ENABLE_CONTINUOUS_RENDERING = false;
@@ -86,16 +65,16 @@ export function GlobalView(div, startupOptions) {
 
   const gl = canvas.getContext('webgl');
   if (!gl) {
-    alert('Error: WebGL not supported');
+    libUtility.showAlert('Error: WebGL not supported');
     return;
   }
   const OES_element_index_uint = gl.getExtension('OES_element_index_uint');
   if (!OES_element_index_uint) {
-    console.warn('GlobalView warning: Unsupported WebGL extension: OES_element_index_uint');
+    libUtility.consoleWarn('GlobalView warning: Unsupported WebGL extension: OES_element_index_uint');
   }
   gl.ext = gl.getExtension('ANGLE_instanced_arrays');
   if (!gl.ext) {
-    console.warn('GlobalView warning: Unsupported WebGL extension: ANGLE_instanced_arrays');
+    libUtility.consoleWarn('GlobalView warning: Unsupported WebGL extension: ANGLE_instanced_arrays');
   }
 
   const divStyle = window.getComputedStyle(div);
@@ -895,7 +874,7 @@ export function GlobalView(div, startupOptions) {
   this.setOption = function (option, value) {
     // Validate option
     if (!OPTIONS.hasOwnProperty(option)) {
-      console.warn(`GlobalView warning: Unsupported option: ${option}`);
+      libUtility.consoleWarn(`GlobalView warning: Unsupported option: ${option}`);
       return;
     }
     const optionDefinition = OPTIONS[option];
@@ -907,9 +886,9 @@ export function GlobalView(div, startupOptions) {
       optionDefinition.valid.indexOf(value) === -1) ||
       (libUtility.isFunction(optionDefinition.valid) &&
       (validationResult = optionDefinition.valid(value)) !== true)) {
-      console.warn(`GlobalView warning: Invalid value for option ${option}: ${value}`);
+      libUtility.consoleWarn(`GlobalView warning: Invalid value for option ${option}: ${value}`);
       if (libUtility.isString(validationResult)) {
-        console.warn(`                    ${validationResult}`);
+        libUtility.consoleWarn(`                    ${validationResult}`);
       }
       return;
     }
@@ -934,7 +913,7 @@ export function GlobalView(div, startupOptions) {
 
       // Validate option
       if (!OPTIONS.hasOwnProperty(option)) {
-        console.warn(`GlobalView warning: Unsupported option: ${option}`);
+        libUtility.consoleWarn(`GlobalView warning: Unsupported option: ${option}`);
         continue;
       }
       const optionDefinition = OPTIONS[option];
@@ -947,11 +926,11 @@ export function GlobalView(div, startupOptions) {
       optionDefinition.valid.indexOf(value) === -1) ||
         (libUtility.isFunction(optionDefinition.valid) &&
         (validationResult = optionDefinition.valid(value)) !== true)) {
-        console.warn(`GlobalView warning: Invalid value for option ${option}: ${value}`);
+        libUtility.consoleWarn(`GlobalView warning: Invalid value for option ${option}: ${value}`);
         if (libUtility.isString(validationResult)) {
           // HY:
           validationResult = optionDefinition.valid(value);
-          console.warn(`                    ${validationResult}`);
+          libUtility.consoleWarn(`                    ${validationResult}`);
         }
         continue;
       }
@@ -973,7 +952,7 @@ export function GlobalView(div, startupOptions) {
   this.setDefaultOption = function (option) {
     // Validate option
     if (!OPTIONS.hasOwnProperty(option)) {
-      console.warn(`GlobalView warning: Unsupported option: ${option}`);
+      libUtility.consoleWarn(`GlobalView warning: Unsupported option: ${option}`);
       return;
     }
     const optionDefinition = OPTIONS[option];
@@ -1302,8 +1281,8 @@ export function GlobalView(div, startupOptions) {
     if (dataset.imageFilenames && dataset.imageFilenames[index]) {
       let d0 = activeInputs[0];
       let d1 = activeInputs[1];
-      // console.log(dataset.requestDensityMap(d0, d1, undefined, undefined));
-      // dataset.requestDensityMap(d0, d1, undefined, undefined, function(densityMap) { console.log(densityMap); });
+      // libUtility.consoleLog(dataset.requestDensityMap(d0, d1, undefined, undefined));
+      // dataset.requestDensityMap(d0, d1, undefined, undefined, function(densityMap) { libUtility.consoleLog(densityMap); });
 
       dataset.requestDensityMap(d0, d1, undefined, undefined, function (pDensityMap) {
         const densityMap = pDensityMap;
@@ -1600,7 +1579,7 @@ export function GlobalView(div, startupOptions) {
         P.forEach(pair => removeOverlap(R, pair[0], pair[1], rank, overlapThreshold + 0.0001));
         P = detectOverlap(R, overlapThreshold);
       }
-      // console.log(iter, overlapThreshold);
+      // libUtility.consoleLog(iter, overlapThreshold);
 
       // Repair order
       const newRank = Array.create(R.length, i => i);
@@ -1647,11 +1626,18 @@ export function GlobalView(div, startupOptions) {
    */
   this.showImage = function (index, placement) {
     switch (placement) {
-      case 'none': return this.showImage_none(index);
-      case 'adjacent': return this.showImage_adjacent(index);
-      case 'lowDensity': return this.showImage_lowDensity(index);
-      case 'project': console.warn("GlobalView warning: Can't place a single image using the 'project'-strategy"); return false;
-      default: console.warn(`GlobalView warning: Unknown image placement strategy: ${placement}`); return false;
+      case 'none':
+        return this.showImage_none(index);
+      case 'adjacent':
+        return this.showImage_adjacent(index);
+      case 'lowDensity':
+        return this.showImage_lowDensity(index);
+      case 'project':
+        libUtility.consoleWarn("GlobalView warning: Can't place a single image using the 'project'-strategy");
+        return false;
+      default:
+        libUtility.consoleWarn(`GlobalView warning: Unknown image placement strategy: ${placement}`);
+        return false;
     }
   };
 
@@ -1667,11 +1653,17 @@ export function GlobalView(div, startupOptions) {
    */
   this.showImages = function (points, placement) {
     switch (placement) {
-      case 'none': return this.showImages_none(points);
-      case 'adjacent': return this.showImages_adjacent(points);
-      case 'lowDensity': return this.showImages_lowDensity(points);
-      case 'project': return this.showImages_project(points);
-      default: console.warn(`GlobalView warning: Unknown image placement strategy: ${placement}`); return false;
+      case 'none':
+        return this.showImages_none(points);
+      case 'adjacent':
+        return this.showImages_adjacent(points);
+      case 'lowDensity':
+        return this.showImages_lowDensity(points);
+      case 'project':
+        return this.showImages_project(points);
+      default:
+        libUtility.consoleWarn(`GlobalView warning: Unknown image placement strategy: ${placement}`);
+        return false;
     }
   };
 
@@ -1884,11 +1876,11 @@ export function GlobalView(div, startupOptions) {
         viewDragStartPos = p;
       } // Initiate view dragging
       return; // Prevent other mouse-down events
-    } else {
-      // Transform mousepos from canvas space to device coordinates
-      p[0] = ((2 * p[0]) / canvasBounds.width) - 1;
-      p[1] = 1 - ((2 * p[1]) / canvasBounds.height);
     }
+    // Transform mousepos from canvas space to device coordinates
+    p[0] = ((2 * p[0]) / canvasBounds.width) - 1;
+    p[1] = 1 - ((2 * p[1]) / canvasBounds.height);
+
 
     const selectedImage = imageViewer.imageFromPoint(tf, p);
     if (!shiftPressed && !ctrlPressed && imageDragImages.length !== 0 && (selectedImage === null || imageDragImages.indexOf(selectedImage) === -1)) {
@@ -1999,7 +1991,7 @@ export function GlobalView(div, startupOptions) {
 
     if (pointDragDownPos) {
       const scale = (1 / (dataset.dataVectors[activeInputs[3]].getValue(pointDragDownPos[2]) * tf.getScale(3))) + tf.getOffset(3);
-      // console.log(scale);
+      // libUtility.consoleLog(scale);
 
       pointDrag = [scale * (p[0] - pointDragDownPos[0]), scale * (p[1] - pointDragDownPos[1])];
       this.invalidate();

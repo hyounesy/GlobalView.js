@@ -63,8 +63,8 @@ export function DataVector(dataset, source) {
 
     const code = libFormulaCompiler.FormulaCompiler.compile(`${source};`, globalTypes);
     if (libUtility.isString(code)) {
-      console.error("GlobalView error: Error while parsing data vector formula '{0}'".format(source));
-      console.error(`                  ${code}`);
+      libUtility.consoleError("GlobalView error: Error while parsing data vector formula '{0}'".format(source));
+      libUtility.consoleError(`                  ${code}`);
       return;
     }
     const formula = source;
@@ -86,7 +86,7 @@ export function DataVector(dataset, source) {
       this.minimum = Math.min(this.minimum, value);
       this.maximum = Math.max(this.maximum, value);
     }
-    // console.log([this.minimum, this.maximum]);
+    // libUtility.consoleLog([this.minimum, this.maximum]);
     this.scale = this.maximum - this.minimum;
     if (this.scale > -1e-5 && this.scale < 1e-5) {
       this.offset = 0.5 - (0.5 * (this.minimum + this.maximum) * (this.scale = 0.5));
@@ -235,7 +235,7 @@ export function Dataset() {
     let size = mapSize;
     // Validate inputs
     if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) {
-      console.warn('GlobalView warning: Requesting density map for dimensions {0}, {1} on a dataset with only {2} data vectors'.format(d0, d1, this.dataVectors.length));
+      libUtility.consoleWarn('GlobalView warning: Requesting density map for dimensions {0}, {1} on a dataset with only {2} data vectors'.format(d0, d1, this.dataVectors.length));
       return null;
     }
     // Firefox tends to crash with Parallel.js
@@ -332,7 +332,7 @@ export function Dataset() {
       ));
       densityMapsArray[d0][d1] = densityMap;
       histogram = null; // Free histogram
-      // console.log(performance.now() - tStart + "ms");
+      // libUtility.consoleLog(performance.now() - tStart + "ms");
     } else if (densityMap.old &&
         (!options || libAlgorithm.DensityMapOptions.equals(densityMap.old.options, options))) {
       // If the deprecated densityMap satisfies our requested options
@@ -376,7 +376,7 @@ export function Dataset() {
     let d1 = dim1;
     // Validate inputs
     if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) {
-      console.warn('GlobalView warning: Requesting cluster map for dimensions {0}, {1} on a dataset with only {2} data vectors'.format(d0, d1, this.dataVectors.length));
+      libUtility.consoleWarn('GlobalView warning: Requesting cluster map for dimensions {0}, {1} on a dataset with only {2} data vectors'.format(d0, d1, this.dataVectors.length));
       return null;
     }
     // Firefox tends to crash with Parallel.js
@@ -458,7 +458,7 @@ export function Dataset() {
             new libAlgorithm.ClusterMapOptions(options),
           ));
           clusterMapsArray[d0][d1] = clusterMap;
-          // console.log(performance.now() - tStart + "ms");
+          // libUtility.consoleLog(performance.now() - tStart + "ms");
         } else {
           clusterMapsArray[d0][d1] = null;
           clusterMap = null;
@@ -698,7 +698,7 @@ export function CsvDataset(file, options, onload) {
 
     // Validate option
     if (!CSV_DATASET_OPTIONS.hasOwnProperty(option)) {
-      console.warn(`CsvDataset warning: Unsupported option: ${option}`);
+      libUtility.consoleWarn(`CsvDataset warning: Unsupported option: ${option}`);
       continue;
     }
     const optionDefinition = CSV_DATASET_OPTIONS[option];
@@ -707,7 +707,7 @@ export function CsvDataset(file, options, onload) {
     const value = varOptions[option];
     if ((optionDefinition.valid && optionDefinition.valid.indexOf(value) === -1) ||
       (optionDefinition.validRange && (value < optionDefinition.validRange[0] || value > optionDefinition.validRange[1]))) {
-      console.warn(`CsvDataset warning: Invalid value for option ${option}: ${value}`);
+      libUtility.consoleWarn(`CsvDataset warning: Invalid value for option ${option}: ${value}`);
       delete varOptions[option];
       continue;
     }
@@ -731,7 +731,7 @@ export function CsvDataset(file, options, onload) {
         if (firstRowOnlyStrings && secondRowHasNumbers) {
           varOptions.hasHeader = true;
         }
-        console.log(`Assuming hasHeader = ${varOptions.hasHeader}`);
+        libUtility.consoleLog(`Assuming hasHeader = ${varOptions.hasHeader}`);
       }
       if (libUtility.isUndefined(varOptions.nameColumn)) {
         // Assume no name column by default
@@ -744,15 +744,14 @@ export function CsvDataset(file, options, onload) {
             if (row.length > c && isNaN(parseData(row[c])) && !(row[c] in valueMap)) {
               valueMap[row[c]] = true;
               return true;
-            } else {
-              return false;
             }
+            return false;
           })) {
             varOptions.nameColumn = c;
             break;
           }
         }
-        console.log(`Assuming nameColumn = ${varOptions.nameColumn}`);
+        libUtility.consoleLog(`Assuming nameColumn = ${varOptions.nameColumn}`);
       }
     }
 
@@ -776,7 +775,7 @@ export function CsvDataset(file, options, onload) {
       }
     } else if (libUtility.isArray(varOptions.columnLabels)) {
       if (varOptions.columnLabels.length !== nc) {
-        console.warn(`CsvDataset warning: Number of provided column labels (${varOptions.columnLabels.length}) differs from number of data columns in the dataset (${nc})`);
+        libUtility.consoleWarn(`CsvDataset warning: Number of provided column labels (${varOptions.columnLabels.length}) differs from number of data columns in the dataset (${nc})`);
         columnLabels = null;
       } else {
         columnLabels = varOptions.columnLabels;
@@ -928,7 +927,7 @@ export function CsvDataset(file, options, onload) {
       }
     } else if (libUtility.isArray(varOptions.imageFilenames)) {
       if (varOptions.imageFilenames.length !== n) {
-        console.warn(`CsvDataset warning: Number of provided image filenames (${varOptions.imageFilenames.length}) differs from number of data points (${n})`);
+        libUtility.consoleWarn(`CsvDataset warning: Number of provided image filenames (${varOptions.imageFilenames.length}) differs from number of data points (${n})`);
         dataset.imageFilenames = null;
       } else {
         dataset.imageFilenames = varOptions.imageFilenames;

@@ -256,7 +256,7 @@ export function DensityViewer(gl, globalView) {
       });
       if (bestDir !== null) {
         repellPoint(bodies[i], bodies[i].x + bestDir[0], bodies[i].y + bestDir[1], Number.MIN_VALUE, 0, 0.0, density);
-        console.log(density);
+        libUtility.consoleLog(density);
       }
     }
     const varImages = images;

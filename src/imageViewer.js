@@ -3,6 +3,7 @@ const libShaders = require('./shaders.js');
 const libAlgorithm = require('./algorithm.js');
 const libColormap = require('./colormap.js');
 const libGlMatrix = require('gl-matrix');
+const libUtility = require('./utility.js');
 
 // const LABEL_HEIGHT = 12, LABEL_WIDTH = 16.5;
 let LABEL_HEIGHT = 12;
@@ -439,7 +440,7 @@ export function ImageViewer(gl, globalView) {
             tf.transformPos(d, images[j].refPos);
 
             if (libGlMatrix.vec2.sqrDist(a, b) + libGlMatrix.vec2.sqrDist(c, d) > libGlMatrix.vec2.sqrDist(a, d) + libGlMatrix.vec2.sqrDist(c, b) && !libAlgorithm.linesIntersect(a, d, c, b)) {
-            // console.log("exchange {0} - {1}".format(i, j));
+            // libUtility.consoleLog("exchange {0} - {1}".format(i, j));
               const tmp = images[j].imagePos;
               images[j].imagePos = images[i].imagePos;
               images[i].imagePos = tmp;
@@ -459,7 +460,7 @@ export function ImageViewer(gl, globalView) {
             tf.transformPos(d, images[j].refPos);
 
             if (libAlgorithm.linesIntersect(a, b, c, d)) {
-            // console.log("intersection {0} - {1}".format(i, j));
+            // libUtility.consoleLog("intersection {0} - {1}".format(i, j));
               const tmp = images[j].imagePos;
               images[j].imagePos = images[i].imagePos;
               images[i].imagePos = tmp;

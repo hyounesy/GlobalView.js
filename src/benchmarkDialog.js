@@ -1,4 +1,4 @@
-// const libUtility = require('utility')
+const globalView = require('../dist/global-view.js');
 
 function BenchmarkDialog() {
   let cancel = false;
@@ -242,10 +242,10 @@ function BenchmarkDialog() {
       zip.file('benchmark.csv', $.csv.fromArrays(csv));
 
       zip.generateAsync({ type: 'base64' }).then(function (base64) {
-        libUtility.download('benchmark.zip', `data:application/zip;base64,${base64}`);
+        globalView.download('benchmark.zip', `data:application/zip;base64,${base64}`);
       });
     } else {
-      libUtility.download('benchmark.csv', `data:text/csv;charset=utf-8,${encodeURIComponent($.csv.fromArrays(csv))}`);
+      globalView.download('benchmark.csv', `data:text/csv;charset=utf-8,${encodeURIComponent($.csv.fromArrays(csv))}`);
     }
   }
 }

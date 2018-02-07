@@ -3,6 +3,7 @@ const libShaders = require('./shaders.js');
 const libAlgorithm = require('./algorithm.js');
 const libColormap = require('./colormap.js');
 const libGlMatrix = require('gl-matrix');
+const libUtility = require('./utility.js');
 
 /**
  * A class drawing histograms for x-, y- and color axes to the left-, bottom- and right of the scatter plot.
@@ -228,7 +229,7 @@ export function HistogramViewer(gl, globalView) {
 
     axis.histogram = libAlgorithm.computeHistogram(dataset, axis.d = d, numBins);
     libAlgorithm.addTransformFunctions(axis.histogram);
-    // console.log(axis.histogram);
+    // libUtility.consoleLog(axis.histogram);
 
     let positions = new Float32Array((6 * numBins) * 3);
     const v3_set = function (pi, x, y) {

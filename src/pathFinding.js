@@ -1,4 +1,6 @@
-function DepthFirstSearch(problem) {
+const libUtility = require('./utility.js');
+
+export function DepthFirstSearch(problem) {
   const fringe = [];
   const closed = {};
   let result = null;
@@ -72,7 +74,7 @@ function BreadthFirstSearch(problem) {
   }
 }
 
-function UniformCostSearch(problem) {
+export function UniformCostSearch(problem) {
   let fringe = new libUtility.PriorityQueue('cost');
   const closed = {};
 
@@ -103,7 +105,8 @@ function UniformCostSearch(problem) {
     }
   }
 }
-function SimpleUniformCostSearch(problem) {
+
+export function SimpleUniformCostSearch(problem) {
   let fringe = new libUtility.PriorityQueue('cost');
   const closed = {};
 
@@ -134,7 +137,7 @@ function SimpleUniformCostSearch(problem) {
   }
 }
 
-function SimpleAStarSearch(problem, heuristic) {
+export function SimpleAStarSearch(problem, heuristic) {
   let fringe = new libUtility.PriorityQueue('cost');
   const closed = {};
 
@@ -172,7 +175,7 @@ function SimpleAStarSearch(problem, heuristic) {
   }
 }
 
-function SimpleGreedySearch(problem) {
+export function SimpleGreedySearch(problem) {
   const startstate = problem.getStartState();
   let state = startstate;
   if (problem.isGoalState(state)) {
