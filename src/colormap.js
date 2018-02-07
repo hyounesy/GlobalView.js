@@ -104,7 +104,9 @@ export function Colormap(gl, globalView) {
     1, 0,
   ]));
 
-  const axis = {minimum: 0, maximum: 100, values: null, tickOffset: 0, tickDistance: 10, tickCount: 11, tickLength: TICK_LENGTH};
+  const axis = {
+    minimum: 0, maximum: 100, values: null, tickOffset: 0, tickDistance: 10, tickCount: 11, tickLength: TICK_LENGTH,
+  };
 
   this.visible = true;
   this.render = function (flipY, plotBounds) {

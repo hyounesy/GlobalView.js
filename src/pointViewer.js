@@ -13,13 +13,15 @@ const libGlMatrix = require('gl-matrix');
  * @param {Object} globalView // {GlobalView}
  */
 export function PointViewer(gl, globalView) {
-  let _dataset;
+  let varDataset;
   let meshDataPoints = null;
 
-  let _pointOpacity = 1.0;
-  /* var highlightTexture = libGraphics.LoadTextureFromByteArray(gl, new Uint8Array([255, 255, 0, 255]), 1, 1);
-  var selectionTexture = libGraphics.LoadTextureFromByteArray(gl, new Uint8Array([255, 0, 0, 255]), 1, 1);
-  var representativeTexture = libGraphics.LoadTextureFromByteArray(gl, new Uint8Array([0, 255, 0, 255]), 1, 1); */
+  let varPointOpacity = 1.0;
+  /*
+  var highlightTexture = LoadTextureFromByteArray(gl, new Uint8Array([255, 255, 0, 255]), 1, 1);
+  var selectionTexture = LoadTextureFromByteArray(gl, new Uint8Array([255, 0, 0, 255]), 1, 1);
+  var representativeTexture = LoadTextureFromByteArray(gl, new Uint8Array([0, 255, 0, 255]), 1, 1);
+  */
 
   /**
    * A renderable set of points
@@ -39,16 +41,17 @@ export function PointViewer(gl, globalView) {
 
     libUtility.HashSet.call(this, onchange);
 
-    this.render = function (texture) {
-      if (this.size() === _dataset.length) {
-        meshDataPoints.draw(texture, 0, _dataset.length);
+    this.render = function fRender(texture) {
+      if (this.size() === varDataset.length) {
+        meshDataPoints.draw(texture, 0, varDataset.length);
       } else if (this.size() !== 0) {
         meshDataPoints.drawIndexed(texture, idxbuffer, this.size());
       }
     };
-    this.renderLines = function (texture, pointDrag) {
-      if (this.size() === _dataset.length) {
-        meshDataPoints.drawLines(texture, pointDrag, 0, _dataset.length);
+
+    this.renderLines = function fRenderLines(texture, pointDrag) {
+      if (this.size() === varDataset.length) {
+        meshDataPoints.drawLines(texture, pointDrag, 0, varDataset.length);
       } else if (this.size() !== 0) {
         // drawLines doesn't support index buffers
         // Therefore, draw point group as continuous index sequences
@@ -73,7 +76,7 @@ export function PointViewer(gl, globalView) {
       }
     };
 
-    this.free = function () {
+    this.free = function fFree() {
       if (idxbuffer !== -1) {
         gl.deleteBuffer(idxbuffer);
         idxbuffer = -1;
@@ -89,7 +92,7 @@ export function PointViewer(gl, globalView) {
    * @param  {number=} opacity
    * @return {HashSet}
    */
-  this.createPointSet = function (color, opacity) {
+  this.createPointSet = function fCreatePointSet(color, opacity) {
     const pointSet = new PointGroup();
     if (color) {
       let validationResult;
@@ -109,19 +112,20 @@ export function PointViewer(gl, globalView) {
     pointSets.push(pointSet);
     return pointSet;
   };
+
   /**
    * Remove point subset
    * (This does not remove any of the points)
    * @param  {HashSet} pointSet
    */
-  this.removePointSet = function (pointSet) {
+  this.removePointSet = function fRemovePointSet(pointSet) {
     const index = pointSets.indexOf(pointSet);
     if (index !== -1) {
       pointSets.splice(index, 1);
     }
   };
 
-  this.render = function (flipY, tf, colormapTexture, pointDrag) {
+  this.render = function fRender(flipY, tf, colormapTexture, pointDrag) {
     if (meshDataPoints === null) {
       return;
     }
@@ -133,7 +137,7 @@ export function PointViewer(gl, globalView) {
     meshDataPoints.sdr.animatedScales.apply(meshDataPoints.sdr, tf.getAnimatedScales());
     meshDataPoints.sdr.flipY(flipY ? 1 : 0);
     pointSets.forEach(function (pointSet) {
-      meshDataPoints.sdr.pointOpacity(pointSet.opacity ? pointSet.opacity : _pointOpacity);
+      meshDataPoints.sdr.pointOpacity(pointSet.opacity ? pointSet.opacity : varPointOpacity);
       pointSet.render(pointSet.colormap ? pointSet.colormap : colormapTexture);
     });
 
@@ -144,22 +148,22 @@ export function PointViewer(gl, globalView) {
       meshDataPoints.sdrLine.animatedScales.apply(meshDataPoints.sdrLine, tf.getAnimatedScales());
       meshDataPoints.sdrLine.flipY(flipY ? 1 : 0);
       pointSets.forEach(function (pointSet) {
-        meshDataPoints.sdrLine.pointOpacity(pointSet.opacity ? pointSet.opacity : Math.max(0.1, _pointOpacity / 2.0));
+        meshDataPoints.sdrLine.pointOpacity(pointSet.opacity ? pointSet.opacity : Math.max(0.1, varPointOpacity / 2.0));
         pointSet.renderLines(pointSet.colormap ? pointSet.colormap : colormapTexture, pointDrag);
       });
     }
     /* eslint-enable prefer-spread */
   };
 
-  this.setDataset = function (dataset, options) {
+  this.setDataset = function fSetDataset(dataset, options) {
     // Remove old mesh
     if (meshDataPoints != null) {
       meshDataPoints.free();
     }
     pointSets.forEach(pointSet => pointSet.clear());
 
-    _dataset = dataset;
-    _pointOpacity = options.pointOpacity;
+    varDataset = dataset;
+    varPointOpacity = options.pointOpacity;
 
     // Validate numvertices
     if (dataset.fdata.length !== dataset.length * dataset.numColumns) {
@@ -183,8 +187,8 @@ export function PointViewer(gl, globalView) {
     this.points.assignRange(dataset.length);
   };
 
-  this.onOptionsChanged = function (options, recompileShader) {
-    _pointOpacity = options.pointOpacity;
+  this.onOptionsChanged = function fOnOptionsChanged(options, recompileShader) {
+    varPointOpacity = options.pointOpacity;
     if (meshDataPoints) {
       if (recompileShader === true) {
         meshDataPoints.recompileShader(options);
@@ -196,15 +200,15 @@ export function PointViewer(gl, globalView) {
 
   let activeInputVectors = null;
   let animatedInputVectors = null;
-  this.onInputChanged = function (activeInputs, animatedInputs, options) {
-    activeInputVectors = activeInputs.map(i => _dataset.dataVectors[i]);
-    animatedInputVectors = animatedInputs.map(animatedInput => _dataset.dataVectors[animatedInput.origin]);
+  this.onInputChanged = function fOnInputChanged(activeInputs, animatedInputs, options) {
+    activeInputVectors = activeInputs.map(i => varDataset.dataVectors[i]);
+    animatedInputVectors = animatedInputs.map(animatedInput => varDataset.dataVectors[animatedInput.origin]);
     if (meshDataPoints != null) {
       meshDataPoints.recompileShader(options);
     }
   };
 
-  this.onPlotBoundsChanged = function (plotBounds) {};
+  this.onPlotBoundsChanged = function fOnPlotBoundsChanged() { /* plotBounds */ };
 
   /**
    * A renderable WebGL mesh of ndim-dimensional points
@@ -231,7 +235,7 @@ export function PointViewer(gl, globalView) {
     gl.bindBuffer(gl.ARRAY_BUFFER, vidbuffer);
     gl.bufferData(gl.ARRAY_BUFFER, vertexIds, gl.STATIC_DRAW);
 
-    this.getPosCode = function (forLineSdr) {
+    this.getPosCode = function fGetPosCode(forLineSdr) {
       // Create shader code for getPos() function -> getPosCode
       let getPosCode = `
 {0}
@@ -254,8 +258,7 @@ vec{1} getPos()
           inputs.push(`p${i}${attrLen === 1 ? '' : `[${a}]`}`);
         }
       }
-      // HY:
-      const ND = 4; // todo: should use the globalView.ND
+      const ND = 4; // same as globalView.ND
       for (let d = 0; d < ND; d += 1) {
         inputCode.push(String.prototype.format2.apply(activeInputVectors[d] ? activeInputVectors[d].getValueCode : '0.0', inputs));
         animatedInputCode.push(String.prototype.format2.apply(activeInputVectors[d] ? animatedInputVectors[d].getValueCode : '0.0', inputs));

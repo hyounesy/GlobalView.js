@@ -8,5 +8,7 @@ module.exports = {
     "window": true,
     "document": true,
     "ImageData": true,
+    "XMLHttpRequest": true,
+    "FileReader": true,
   },
 };

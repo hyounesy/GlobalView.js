@@ -43,7 +43,7 @@ module.exports = {
     "env": {
 
         "browser": false,                       // browser global variables
-        "node": false,                          // Node.js global variables and Node.js scoping.
+        "node": true,                          // Node.js global variables and Node.js scoping.
         "commonjs": false,                      // CommonJS global variables and CommonJS scoping (use this for browser-only code that uses Browserify/WebPack).
         "shared-node-browser": false,           // Globals common to both Node and Browser.
         "es6": false,                           // enable all ECMAScript 6 features except for modules (this automatically sets the ecmaVersion parser option to 6).
@@ -66,17 +66,18 @@ module.exports = {
         "atomtest": false,                      // Atom test helper globals.
         "embertest": false,                     // Ember test helper globals.
         "webextensions": false,                 // WebExtensions globals.
-        "greasemonkey": false                   // GreaseMonkey globals.
-
+        "greasemonkey": false,                  // GreaseMonkey globals.
+        "mocha": true,
     },
 
 
     "globals": {
-
-        // e.g. "angular": true
-
+      "Image": true,
+      "window": true,
+      "document": true,
+      "ImageData": true,
     },
-
+  
 
     "plugins": [
 
@@ -317,7 +318,7 @@ module.exports = {
         "new-parens": 0,                        // require parentheses when invoking a constructor with no arguments
         "newline-per-chained-call": 0,          // require a newline after each call in a method chain
         "no-array-constructor": 0,              // disallow Array constructors
-        "no-bitwise": 0,                        // disallow bitwise operators
+        "no-bitwise": 'error',                        // disallow bitwise operators
         "no-continue": 0,                       // disallow continue statements
         "no-inline-comments": 0,                // disallow inline comments after code
         "no-lonely-if": 0,                      // disallow if statements as the only statement in else blocks
@@ -343,16 +344,32 @@ module.exports = {
         "no-tabs": 2,                           // disallow all tabs
         "no-ternary": 0,                        // disallow ternary operators
         "no-trailing-spaces": 2,                // disallow trailing whitespace at the end of lines
-        "no-underscore-dangle": 0,              // disallow dangling underscores in identifiers
+        // disallow dangling underscores in identifiers
+        'no-underscore-dangle': ['error', {
+          allow: [],
+          allowAfterThis: false,
+          allowAfterSuper: false,
+          enforceInMethodNames: false,
+        }],
         // disallow the use of Boolean literals in conditional expressions
         // also, prefer `a || b` over `a ? a : b`
         // http://eslint.org/docs/rules/no-unneeded-ternary
         'no-unneeded-ternary': ['error', { defaultAssignment: false }],
         "no-whitespace-before-property": 0,     // disallow whitespace before properties
         "nonblock-statement-body-position": 0,  // enforce the location of single-line statements
-        "object-curly-newline": 0,              // enforce consistent line breaks inside braces
-        "object-curly-spacing": 0,              // enforce consistent spacing inside braces
-        "object-property-newline": 0,           // enforce placing object properties on separate lines
+        // enforce line breaks between braces
+        // http://eslint.org/docs/rules/object-curly-newline
+        'object-curly-newline': ['error', {
+          ObjectExpression: { minProperties: 4, multiline: true, consistent: true },
+          ObjectPattern: { minProperties: 4, multiline: true, consistent: true }
+        }],
+        // require padding inside curly braces
+        'object-curly-spacing': ['error', 'always'],
+        // enforce "same line" or "multiple line" on object properties.
+        // http://eslint.org/docs/rules/object-property-newline
+        'object-property-newline': ['error', {
+          allowMultiplePropertiesPerLine: true,
+        }],
         // allow just one var statement per function
         'one-var': ['error', 'never'],
         "one-var-declaration-per-line": 2,      // require or disallow newlines around variable declarations

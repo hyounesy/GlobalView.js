@@ -597,9 +597,9 @@ FormulaCompiler.types = {
   vec3: { name: 'vec3' },
 };
 FormulaCompiler.types.vec3.members = {
-  x: {index: 0, type: FormulaCompiler.types.float},
-  y: {index: 1, type: FormulaCompiler.types.float},
-  z: {index: 2, type: FormulaCompiler.types.float},
+  x: { index: 0, type: FormulaCompiler.types.float },
+  y: { index: 1, type: FormulaCompiler.types.float },
+  z: { index: 2, type: FormulaCompiler.types.float },
 };
 
 function verboseTest(formula, symbols, symbolTypes) {

@@ -212,7 +212,9 @@ export function DensityViewer(gl, globalView) {
       const y = densityMap.transformY(image.imagePos[d1]);
       const rx = densityMap.transformX(image.refPos[d0]);
       const ry = densityMap.transformY(image.refPos[d1]);
-      return {x: x, y: y, rx: rx, ry: ry, vx: 0, vy: 0, fx: 0, fy: 0};
+      return {
+        x: x, y: y, rx: rx, ry: ry, vx: 0, vy: 0, fx: 0, fy: 0,
+      };
     });
 
     const repellPoint = function (body, point_x, point_y, minDist, minDistMagnitude, maxDist, maxDistMagnitude) {

@@ -22,17 +22,25 @@ domready(function () {
   cbColumnS = document.getElementById('cbColumnS');
 
   const DATASETS = [
-    {name: '10 random points', create: () => new globalView.RandomDataset(10, 3, dataset_onLoad)},
-    {name: '100 random points', create: () => new globalView.RandomDataset(100, 3, dataset_onLoad)},
-    {name: '1.000 random points', create: () => new globalView.RandomDataset(1000, 3, dataset_onLoad)},
-    {name: '10.000 random points', create: () => new globalView.RandomDataset(10000, 3, dataset_onLoad)},
-    {name: '100.000 random points', create: () => new globalView.RandomDataset(100000, 3, dataset_onLoad)},
-    {name: '1.000.000 random points', create: () => new globalView.RandomDataset(1000000, 3, dataset_onLoad)},
-    {name: '10.000.000 random points', create: () => new globalView.RandomDataset(10000000, 3, dataset_onLoad)},
-    {name: 'iris', url: 'datasets/iris.data', create: () => new globalView.CsvDataset('datasets/iris.data', {columnLabels: ['Sepal Length [cm]', 'Sepal Width [cm]', 'Petal Length [cm]', 'Petal Width [cm]', 'Class']}, dataset_onLoad)},
-    {name: 'allencell', url: 'datasets/AICS_Cell-feature-analysis_v1.5.csv', create: () => new globalView.CsvDataset('datasets/AICS_Cell-feature-analysis_v1.5.csv', {hasHeader: true, nameColumn: 1, imageFilenames: function (data) {
-      return `datasets/AICS_Cell-feature-analysis_v1.5_images/${data[1]}.png`;
-    }}, dataset_onLoad)},
+    { name: '10 random points', create: () => new globalView.RandomDataset(10, 3, dataset_onLoad) },
+    { name: '100 random points', create: () => new globalView.RandomDataset(100, 3, dataset_onLoad) },
+    { name: '1.000 random points', create: () => new globalView.RandomDataset(1000, 3, dataset_onLoad) },
+    { name: '10.000 random points', create: () => new globalView.RandomDataset(10000, 3, dataset_onLoad) },
+    { name: '100.000 random points', create: () => new globalView.RandomDataset(100000, 3, dataset_onLoad) },
+    { name: '1.000.000 random points', create: () => new globalView.RandomDataset(1000000, 3, dataset_onLoad) },
+    { name: '10.000.000 random points', create: () => new globalView.RandomDataset(10000000, 3, dataset_onLoad) },
+    { name: 'iris', url: 'datasets/iris.data', create: () => new globalView.CsvDataset('datasets/iris.data', { columnLabels: ['Sepal Length [cm]', 'Sepal Width [cm]', 'Petal Length [cm]', 'Petal Width [cm]', 'Class'] }, dataset_onLoad) },
+    {
+      name: 'allencell',
+      url: 'datasets/AICS_Cell-feature-analysis_v1.5.csv',
+      create: () => new globalView.CsvDataset('datasets/AICS_Cell-feature-analysis_v1.5.csv', {
+        hasHeader: true,
+        nameColumn: 1,
+        imageFilenames: function (data) {
+          return `datasets/AICS_Cell-feature-analysis_v1.5_images/${data[1]}.png`;
+        },
+      }, dataset_onLoad),
+    },
     // {name: "allencell x2", url: "datasets/AICS_Cell-feature-analysis_v1.5_x2.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x2.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
     // {name: "allencell x10", url: "datasets/AICS_Cell-feature-analysis_v1.5_x10.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x10.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
     // {name: "allencell x100", url: "datasets/AICS_Cell-feature-analysis_v1.5_x100.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x100.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
@@ -499,7 +507,7 @@ function ondrop(event) {
     var eventY = event.clientY - targetRect.top;
     var fileExt = files[0].name; */
 
-    new CsvDataset(files[0], {autoDetect: true}, dataset_onLoad); // eslint-disable-line no-new
+    new CsvDataset(files[0], { autoDetect: true }, dataset_onLoad); // eslint-disable-line no-new
   }
 }
 

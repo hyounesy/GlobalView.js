@@ -4,7 +4,7 @@ function DepthFirstSearch(problem) {
   let result = null;
 
   // Create start node with empty path
-  const startnode = {state: problem.getStartState()};
+  const startnode = { state: problem.getStartState() };
   let node = startnode;
   if (problem.isGoalState(node.state)) {
     return node.state;
@@ -23,7 +23,7 @@ function DepthFirstSearch(problem) {
       // Avoid already pushed states (graph search)
       const successor_hash = problem.computeHash(successor);
       if (libUtility.isUndefined(closed[successor_hash])) {
-        fringe.push({state: successor});
+        fringe.push({ state: successor });
         closed[successor_hash] = successor;
       }
     });
@@ -45,7 +45,7 @@ function BreadthFirstSearch(problem) {
   let fringe = [];
   const closed = {};
 
-  const startnode = {state: problem.getStartState()};
+  const startnode = { state: problem.getStartState() };
   let node = startnode;
   if (problem.isGoalState(node.state)) {
     return node.state;
@@ -56,7 +56,7 @@ function BreadthFirstSearch(problem) {
     problem.forEachSuccessor(node.state, function (successor) {
       const successor_hash = problem.computeHash(successor);
       if (libUtility.isUndefined(closed[successor_hash])) {
-        fringe.push({state: successor});
+        fringe.push({ state: successor });
         closed[successor_hash] = successor;
       }
     });
@@ -76,20 +76,20 @@ function UniformCostSearch(problem) {
   let fringe = new libUtility.PriorityQueue('cost');
   const closed = {};
 
-  const startnode = {state: problem.getStartState(), cost: 0.0};
+  const startnode = { state: problem.getStartState(), cost: 0.0 };
   let node = startnode;
   if (problem.isGoalState(node.state)) {
     return node.state;
   } // Start state is goal
-  closed[problem.computeHash(node.state)] = {state: node.state, prevCost: node.cost};
+  closed[problem.computeHash(node.state)] = { state: node.state, prevCost: node.cost };
 
   while (true) {
     problem.forEachSuccessor(node.state, function (successor, successor_cost) {
       const successor_hash = problem.computeHash(successor);
-      let _successor;
-      if (libUtility.isUndefined(_successor = closed[successor_hash]) || node.cost + successor_cost < _successor.prevCost) {
-        fringe.push({state: successor, cost: node.cost + successor_cost});
-        closed[successor_hash] = {state: successor, prevCost: node.cost + successor_cost};
+      let varSuccessor;
+      if (libUtility.isUndefined(varSuccessor = closed[successor_hash]) || node.cost + successor_cost < varSuccessor.prevCost) {
+        fringe.push({ state: successor, cost: node.cost + successor_cost });
+        closed[successor_hash] = { state: successor, prevCost: node.cost + successor_cost };
       }
     });
 
@@ -107,7 +107,7 @@ function SimpleUniformCostSearch(problem) {
   let fringe = new libUtility.PriorityQueue('cost');
   const closed = {};
 
-  const startnode = {state: problem.getStartState(), cost: 0.0};
+  const startnode = { state: problem.getStartState(), cost: 0.0 };
   let node = startnode;
   if (problem.isGoalState(node.state)) {
     return node.state;
@@ -118,7 +118,7 @@ function SimpleUniformCostSearch(problem) {
     problem.forEachSuccessor(node.state, function (successor, successor_cost) {
       const successor_hash = problem.computeHash(successor);
       if (libUtility.isUndefined(closed[successor_hash])) {
-        fringe.push({state: successor, cost: successor_cost});
+        fringe.push({ state: successor, cost: successor_cost });
         closed[successor_hash] = successor;
       }
     });
@@ -140,7 +140,7 @@ function SimpleAStarSearch(problem, heuristic) {
 
   const CHECK_CONSISTENCY = false;
 
-  const startnode = {state: problem.getStartState(), f: 0.0, g: 0.0};
+  const startnode = { state: problem.getStartState(), f: 0.0, g: 0.0 };
   let node = startnode;
   if (problem.isGoalState(node.state)) {
     return node.state;
@@ -156,7 +156,7 @@ function SimpleAStarSearch(problem, heuristic) {
       }
       const successor_hash = problem.computeHash(successor);
       if (libUtility.isUndefined(closed[successor_hash])) {
-        fringe.push({state: successor, f: g + h, g: g});
+        fringe.push({ state: successor, f: g + h, g: g });
         closed[successor_hash] = successor;
       }
     });

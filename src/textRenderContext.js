@@ -14,16 +14,18 @@ export function TextRenderContext(gl, canvas) {
   textCanvas.style.zIndex = canvas.style.zIndex + 1;
   textCanvas.style.position = 'static';// "absolute";
   // textCanvas.style.left = textCanvas.style.top = "0px";
-  textCanvas.style.width = textCanvas.style.height = '100%';
+  textCanvas.style.width = '100%';
+  textCanvas.style.height = '100%';
   canvas.parentElement.appendChild(textCanvas);
   let ctx = textCanvas.getContext('2d');
-  let _font = ctx.font;
+  let varFont = ctx.font;
   let fontHeight = ctx.measureText('M').width;
 
 
   this.clear = function () {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.strokeStyle = ctx.fillStyle = gl.foreColorString;
+    ctx.strokeStyle = gl.foreColorString;
+    ctx.fillStyle = gl.foreColorString;
   };
 
   gl.drawText = function (str, x, y, anchor, rotation, color) {
@@ -154,7 +156,8 @@ export function TextRenderContext(gl, canvas) {
   };
 
   this.setFont = function (font) {
-    ctx.font = _font = font;
+    ctx.font = font;
+    varFont = font;
 
     // Compute fontHeight (Source: http://stackoverflow.com/a/7462767)
     const body = document.getElementsByTagName('body')[0];
@@ -185,7 +188,7 @@ export function TextRenderContext(gl, canvas) {
       textCanvas.width = rect.right - rect.left;
       textCanvas.height = rect.bottom - rect.top;
     }
-    this.setFont(_font); // Reset canvas font
+    this.setFont(varFont); // Reset canvas font
   };
 
   this.enableOffscreenRendering = function (width, height) {

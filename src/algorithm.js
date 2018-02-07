@@ -204,7 +204,8 @@ export function computeHistogram(dataset, d, width) {
   histogram = {
     data: histogram,
     maximum: maximum,
-    width: width, height: 1,
+    width: width,
+    height: 1,
     transform: transform,
   };
   return histogram;
@@ -244,7 +245,8 @@ export function computeHistogram2D(dataset, d0, d1, width, height) {
   histogram = {
     data: histogram,
     maximum: maximum,
-    width: width, height: height,
+    width: width,
+    height: height,
     transform: transform,
     /* transformX: x => transform[0] * x + transform[1],
     transformY: y => transform[2] * y + transform[3],
@@ -266,12 +268,12 @@ export function computeHistogram2D(dataset, d0, d1, width, height) {
  * To get a {@link DensityMap} from the output object, call `new DensityMap(output)`.
  */
 export function computeDensityMap(histogram, options) {
-  let _tiktok_start;
+  let tiktokStart;
   const tik = function () {
-    _tiktok_start = performance.now();
+    tiktokStart = performance.now();
   };
   const tok = function () {
-    return (performance.now() - _tiktok_start) / 1000;
+    return (performance.now() - tiktokStart) / 1000;
   };
 
   // Get required information from histogram
@@ -336,8 +338,8 @@ export function computeDensityMap(histogram, options) {
 
   while (expectedRuntime > options.maxExpectedRuntime && width >= 2 && height >= 2) {
     // Downscale density map size by a factor of 2
-    const downScaledWidth = width >> 1;
-    const downScaledHeight = height >> 1;
+    const downScaledWidth = Math.floor(width / 2);
+    const downScaledHeight = Math.floor(height / 2);
     // console.log("Expected runtime too high. Down-scaling to: " + downScaledWidth + "x" + downScaledHeight);
 
     transform[0] *= downScaledWidth / width;
@@ -569,7 +571,8 @@ export function computeDensityMap(histogram, options) {
     maximum: maxDensity,
     scale: 1.0 / (maxDensity - minDensity),
     offset: -minDensity / (maxDensity - minDensity),
-    width: densitMapWidth, height: densitMapHeight,
+    width: densitMapWidth,
+    height: densitMapHeight,
     transform: transform,
     options: options,
     /* transformX: x => transform[0] * x + transform[1],
@@ -780,7 +783,7 @@ export function findRepresentativePointsND(dataset, densityMap, k, dist) {
   d_high -= 1;
   while (d_high >= d_low && representativePoints.length < k) {
     let di;
-    if (representativePoints.length & 0x1) {
+    if (representativePoints.length % 2 === 1) {
       di = indices[d_low];
       d_low += 1;
     } else {
@@ -1052,7 +1055,7 @@ export function findClosePointOfLowDensity_descend(dataset, d0, d1, p, densityMa
     return (1e5 * sqDensity) + sqDist;
   };
 
-  let bestState = {penalty: Number.MAX_VALUE};
+  let bestState = { penalty: Number.MAX_VALUE };
   let maxIterations = 5000;
   const searchProblem = {
     getStartState: function () {
@@ -1069,7 +1072,7 @@ export function findClosePointOfLowDensity_descend(dataset, d0, d1, p, densityMa
         const x = state.x + action[0];
         const y = state.y + action[1];
         if (x >= xMin && x < xMax && y >= yMin && y < yMax) {
-          const newState = {x: x, y: y, penalty: computePenalty(x, y)};
+          const newState = { x: x, y: y, penalty: computePenalty(x, y) };
           if (newState.penalty < bestState.penalty && (x < p0 - minDistX || x > p0 + minDistX) && (y < p0 - minDistY || y > p0 + minDistY)) {
             bestState = newState;
           }
@@ -1161,15 +1164,15 @@ export function findClosePointOfLowDensityND_descend(dataset, p, densityMap, min
     return sqDensity + sqDist;
   };
 
-  let bestState = {penalty: Number.MAX_VALUE};
+  let bestState = { penalty: Number.MAX_VALUE };
   let maxIterations = 100;// 5000;
   const searchProblem = {
     getStartState: function () {
-      const _start = new Float32Array(nc);
+      const startArray = new Float32Array(nc);
       for (let c = 0; c < nc; c += 1) {
-        _start[c] = Math.max(min, Math.min(max - 1, Math.floor(start[c])));
+        startArray[c] = Math.max(min, Math.min(max - 1, Math.floor(start[c])));
       }
-      return {p: _start};
+      return { p: startArray };
     },
     isGoalState: function (state) {
       return (maxIterations -= 1) === 0;
@@ -1183,7 +1186,7 @@ export function findClosePointOfLowDensityND_descend(dataset, p, densityMap, min
             return;
           }
         }
-        const newState = {p: p, penalty: computePenalty(p)};
+        const newState = { p: p, penalty: computePenalty(p) };
         if (newState.penalty < bestState.penalty /* && p.every(function(pp, pi) { return pp < start[pi] - minDist || pp > start[pi] + minDist; }) */) {
           bestState = newState;
         }
@@ -1461,7 +1464,9 @@ export function computeClusterMap(densityMap, d0, d1, options) {
             (y > 0 && clustermap[((y - 1) * width) + x] === 0) ||
             (y < height - 1 && clustermap[((y + 1) * width) + x] === 0)
           )) {
-          neighborQueue.push({c: clustermap[(y * width) + x], x: x, y: y, d: densities[(y * width) + x]});
+          neighborQueue.push({
+            c: clustermap[(y * width) + x], x: x, y: y, d: densities[(y * width) + x],
+          });
         }
       }
     }
@@ -1476,7 +1481,9 @@ export function computeClusterMap(densityMap, d0, d1, options) {
       if (x !== -1) {
         let nd = densities[(y * width) + x];
         if (nd !== 0 && clustermap[(y * width) + x] === 0) {
-          neighborQueue.push({c: clustermap[(y * width) + x] = id, x: x, y: y, d: nd = densities[(y * width) + x]});
+          neighborQueue.push({
+            c: clustermap[(y * width) + x] = id, x: x, y: y, d: nd = densities[(y * width) + x],
+          });
           clusterMinDensities[id - 1] = Math.min(clusterMinDensities[id - 1], nd);
         }
       }
@@ -1485,7 +1492,9 @@ export function computeClusterMap(densityMap, d0, d1, options) {
       if (x !== width) {
         let nd = densities[(y * width) + x];
         if (nd !== 0 && clustermap[(y * width) + x] === 0) {
-          neighborQueue.push({c: clustermap[(y * width) + x] = id, x: x, y: y, d: nd = densities[(y * width) + x]});
+          neighborQueue.push({
+            c: clustermap[(y * width) + x] = id, x: x, y: y, d: nd = densities[(y * width) + x],
+          });
           clusterMinDensities[id - 1] = Math.min(clusterMinDensities[id - 1], nd);
         }
       }
@@ -1494,7 +1503,9 @@ export function computeClusterMap(densityMap, d0, d1, options) {
       if ((y -= 1) !== -1) {
         let nd = densities[(y * width) + x];
         if (nd !== 0 && clustermap[(y * width) + x] === 0) {
-          neighborQueue.push({c: clustermap[(y * width) + x] = id, x: x, y: y, d: nd = densities[(y * width) + x]});
+          neighborQueue.push({
+            c: clustermap[(y * width) + x] = id, x: x, y: y, d: nd = densities[(y * width) + x],
+          });
           clusterMinDensities[id - 1] = Math.min(clusterMinDensities[id - 1], nd);
         }
       }
@@ -1503,7 +1514,9 @@ export function computeClusterMap(densityMap, d0, d1, options) {
       if ((y += 1) !== height) {
         let nd = densities[(y * width) + x];
         if (nd !== 0 && clustermap[(y * width) + x] === 0) {
-          neighborQueue.push({c: clustermap[(y * width) + x] = id, x: x, y: y, d: nd = densities[(y * width) + x]});
+          neighborQueue.push({
+            c: clustermap[(y * width) + x] = id, x: x, y: y, d: nd = densities[(y * width) + x],
+          });
           clusterMinDensities[id - 1] = Math.min(clusterMinDensities[id - 1], nd);
         }
       }
@@ -1517,7 +1530,8 @@ export function computeClusterMap(densityMap, d0, d1, options) {
     minDensities: clusterMinDensities,
     threshold: densityThreshold,
     n: numClusters,
-    width: width, height: height,
+    width: width,
+    height: height,
     transform: densityMap.transform,
     /* transformX: densityMap.transformX,
     transformY: densityMap.transformY,

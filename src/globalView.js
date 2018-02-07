@@ -153,7 +153,7 @@ export function GlobalView(div, startupOptions) {
   let dataset = null;
   let activeInputs = Array.create(ND, -1);
   const animatedInputs = Array.create(ND, function () {
-    return {target: null, f: 0};
+    return { target: null, f: 0 };
   });
 
   this.points = pointViewer.points;
@@ -167,7 +167,9 @@ export function GlobalView(div, startupOptions) {
 
   let invalidating = false;
   let tf = null;
-  let plotBounds = {x: 0, y: 0, width: 0, height: 0}; // Plot bounds [pixel]
+  let plotBounds = {
+    x: 0, y: 0, width: 0, height: 0,
+  }; // Plot bounds [pixel]
 
   function render(flipY) {
     invalidating = false;
@@ -1903,7 +1905,9 @@ export function GlobalView(div, startupOptions) {
         if (event.polygonLassoSelection) {
           mousePolygon = [];
         } else {
-          mouseRect = {x: event.clientX - canvasBounds.left, y: event.clientY - canvasBounds.top, width: 0, height: 0};
+          mouseRect = {
+            x: event.clientX - canvasBounds.left, y: event.clientY - canvasBounds.top, width: 0, height: 0,
+          };
         }
       }
       if (event.pointSelection && this.onSelectionChanged !== null) {

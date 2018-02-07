@@ -30,8 +30,12 @@ export function CoordinateSystem(gl, globalView) {
   ]), null, null, null, null, null, gl.LINES);
 
   const axes = [
-    {minimum: 0, maximum: 100, values: null, tickOffset: 0, tickDistance: 10, tickCount: 11, tickLength: TICK_LENGTH},
-    {minimum: 0, maximum: 100, values: null, tickOffset: 0, tickDistance: 10, tickCount: 11, tickLength: TICK_LENGTH},
+    {
+      minimum: 0, maximum: 100, values: null, tickOffset: 0, tickDistance: 10, tickCount: 11, tickLength: TICK_LENGTH,
+    },
+    {
+      minimum: 0, maximum: 100, values: null, tickOffset: 0, tickDistance: 10, tickCount: 11, tickLength: TICK_LENGTH,
+    },
   ];
 
   /** @type {number} */ let xTickLabel_top = 0;
@@ -300,7 +304,9 @@ export function CoordinateSystem(gl, globalView) {
         }
         const halfTextWidth = gl.measureTextWidth(axes[0].label) / 2;
         const plotCenter = plotBounds.x + (plotBounds.width / 2);
-        return {l: plotCenter - halfTextWidth, r: plotCenter + halfTextWidth, t: xTickLabel_top, b: xTickLabel_top + gl.measureTextHeight() + 2};
+        return {
+          l: plotCenter - halfTextWidth, r: plotCenter + halfTextWidth, t: xTickLabel_top, b: xTickLabel_top + gl.measureTextHeight() + 2,
+        };
       }
 
       case 1: {
@@ -309,7 +315,9 @@ export function CoordinateSystem(gl, globalView) {
         }
         const halfTextWidth = gl.measureTextWidth(axes[1].label) / 2;
         const plotCenter = gl.height - plotBounds.y - (plotBounds.height / 2);
-        return {l: yTickLabel_left - gl.measureTextHeight(), r: yTickLabel_left + 2, t: plotCenter - halfTextWidth, b: plotCenter + halfTextWidth};
+        return {
+          l: yTickLabel_left - gl.measureTextHeight(), r: yTickLabel_left + 2, t: plotCenter - halfTextWidth, b: plotCenter + halfTextWidth,
+        };
       }
     }
     return null;
