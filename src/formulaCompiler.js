@@ -1,7 +1,7 @@
 const libUtility = require('./utility.js');
 
 export const FormulaCompiler = {
-  compile: function (formula, symbolTypes) {
+  compile(formula, symbolTypes) {
     /* // Parse case-insensitive
     formula = formula.toLowerCase(); */
 
@@ -78,7 +78,8 @@ export const FormulaCompiler = {
     let curTok = null;
     let curVal;
     function getch() {
-      return chr = formula.charAt(chrPos += 1);
+      chr = formula.charAt(chrPos += 1);
+      return chr;
     }
     function getTok() {
       let sign = 1;
@@ -318,7 +319,7 @@ export const FormulaCompiler = {
         }
 
         variable.push(type === FormulaCompiler.types.float ? '@' : '@[]');
-        return { code: variable, type: type }; // Variable reference
+        return { code: variable, type }; // Variable reference
       }
       function identifierAndPostAST() {
         const identifier = identifierAST();
@@ -357,7 +358,7 @@ export const FormulaCompiler = {
         decl.push('#');
         return { code: decl, type: type }; */
         variable.push(type === FormulaCompiler.types.float ? '@' : '@[]');
-        return { code: variable, type: type };
+        return { code: variable, type };
       }
       function functionAST(funcName) {
         if (!getTok()) {
@@ -417,7 +418,7 @@ export const FormulaCompiler = {
         if (!getTok()) {
           return null;
         } // Eat termTok
-        return { code: code, type: typeList };
+        return { code, type: typeList };
       }
       function primaryAST() {
         switch (curTok) {
@@ -504,14 +505,14 @@ export const FormulaCompiler = {
 
     return buildAST();
   },
-  run: function (code, pStack, global) {
+  run(code, pStack, global) {
     const stack = pStack;
     let IP = -1; // Instruction pointer
     let SP = 0; // Stack pointer
     let scope = global;
 
     let postOpScope;
-    while ((IP += 1) < code.length) {
+    while ((IP += 1) < code.length) { // eslint-disable-line no-cond-assign
       postOpScope = global; // By default, reset scope after operation
       switch (code[IP]) {
         case 'float = float': scope[stack[SP -= 1]] = stack[SP - 1]; break;
@@ -529,31 +530,34 @@ export const FormulaCompiler = {
         case 'asin(float)': stack[SP - 1] = Math.asin(stack[SP - 1]); break;
         case 'acos(float)': stack[SP - 1] = Math.acos(stack[SP - 1]); break;
         case 'atan(float)': stack[SP - 1] = Math.atan(stack[SP - 1]); break;
-          /* case 'pow': FormulaCompiler.types.float,
-      case 'exp': FormulaCompiler.types.float,
-      case 'log': FormulaCompiler.types.float,
-      case 'exp2': FormulaCompiler.types.float,
-      case 'log2': FormulaCompiler.types.float,
-      case 'sqrt': FormulaCompiler.types.float,
-      case 'inversesqrt': FormulaCompiler.types.float,
-      case 'abs': FormulaCompiler.types.float,
-      case 'sign': FormulaCompiler.types.float,
-      case 'floor': FormulaCompiler.types.float,
-      case 'ceil': FormulaCompiler.types.float,
-      case 'fract': FormulaCompiler.types.float,
-      case 'mod': FormulaCompiler.types.float, */
+        /*
+        case 'pow': FormulaCompiler.types.float,
+        case 'exp': FormulaCompiler.types.float,
+        case 'log': FormulaCompiler.types.float,
+        case 'exp2': FormulaCompiler.types.float,
+        case 'log2': FormulaCompiler.types.float,
+        case 'sqrt': FormulaCompiler.types.float,
+        case 'inversesqrt': FormulaCompiler.types.float,
+        case 'abs': FormulaCompiler.types.float,
+        case 'sign': FormulaCompiler.types.float,
+        case 'floor': FormulaCompiler.types.float,
+        case 'ceil': FormulaCompiler.types.float,
+        case 'fract': FormulaCompiler.types.float,
+        case 'mod': FormulaCompiler.types.float,
+        */
         case 'min(float, float)': stack[SP - 2] = Math.min(stack[SP - 2], stack[SP -= 1]); break;
         case 'max(float, float)': stack[SP - 2] = Math.max(stack[SP - 2], stack[SP -= 1]); break;
-          /* case 'clamp': FormulaCompiler.types.float,
-      case 'mix': FormulaCompiler.types.float,
-      case 'step': FormulaCompiler.types.float,
-      case 'smoothstep': FormulaCompiler.types.float,
-      case 'length': FormulaCompiler.types.float,
-      case 'distance': FormulaCompiler.types.float,
-      case 'dot': FormulaCompiler.types.float,
-      case 'cross': FormulaCompiler.types.float,
-      case 'normalize': FormulaCompiler.types.float, */
-
+        /*
+        case 'clamp': FormulaCompiler.types.float,
+        case 'mix': FormulaCompiler.types.float,
+        case 'step': FormulaCompiler.types.float,
+        case 'smoothstep': FormulaCompiler.types.float,
+        case 'length': FormulaCompiler.types.float,
+        case 'distance': FormulaCompiler.types.float,
+        case 'dot': FormulaCompiler.types.float,
+        case 'cross': FormulaCompiler.types.float,
+        case 'normalize': FormulaCompiler.types.float,
+        */
         case 'vec3(float, float, float)': /* Nothing to do */
           break;
         case 'vec3 = vec3':

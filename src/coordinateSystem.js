@@ -251,8 +251,8 @@ export function CoordinateSystem(gl, globalView) {
 
   this.setEnumRange = function (d, rangeMin, rangeMax, values) {
     const axis = axes[d];
-    minimum = rangeMin - 0.5; // 0.5 ... Move to center of value-bin
-    maximum = rangeMax - 0.5; // 0.5 ... Move to center of value-bin
+    const minimum = rangeMin - 0.5; // 0.5 ... Move to center of value-bin
+    const maximum = rangeMax - 0.5; // 0.5 ... Move to center of value-bin
     axis.minimum = minimum;
     axis.maximum = maximum;
     axis.values = values;
@@ -276,9 +276,11 @@ export function CoordinateSystem(gl, globalView) {
   };
   this.onPlotBoundsChanged = function (plotBounds) {
     for (let i = 0; i < 2; i += 1) {
-      axes[i].values === null ?
-        this.setNumericRange(i, axes[i].minimum, axes[i].maximum, true) :
+      if (axes[i].values === null) {
+        this.setNumericRange(i, axes[i].minimum, axes[i].maximum, true);
+      } else {
         this.setEnumRange(i, axes[i].minimum + 0.5, axes[i].maximum + 0.5, axes[i].values);
+      }
     }
   };
 

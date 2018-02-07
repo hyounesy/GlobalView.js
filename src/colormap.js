@@ -265,9 +265,11 @@ export function Colormap(gl, globalView) {
     }
   };
   this.onPlotBoundsChanged = function (plotBounds) {
-    axis.values === null ?
-      this.setNumericRange(axis.minimum, axis.maximum, true) :
+    if (axis.values === null) {
+      this.setNumericRange(axis.minimum, axis.maximum, true);
+    } else {
       this.setEnumRange(axis.minimum + 0.5, axis.maximum + 0.5, axis.values);
+    }
   };
 
   this.getTexture = function () {
@@ -284,8 +286,8 @@ export function validateColor(color) {
     if (!libUtility.isUndefined(libUtility.colorNameToHex(color))) {
       return true;
     } // color is known color name
-    let rgb;
-    if ((rgb = libUtility.hexToRgb(color)) !== null &&
+    const rgb = libUtility.hexToRgb(color);
+    if (rgb !== null &&
       rgb.r >= 0x00 && rgb.r <= 0xFF &&
       rgb.g >= 0x00 && rgb.g <= 0xFF &&
       rgb.b >= 0x00 && rgb.b <= 0xFF) {
@@ -334,9 +336,9 @@ export function validateColormap(colormap) {
       return 'Colormap array cannot be empty.';
     }
     if (libUtility.isString(colormap[0])) {
-      let err;
       for (let i = 0; i < colormap.length; i += 1) {
-        if ((err = validateColor(colormap[i])) !== true) {
+        const err = validateColor(colormap[i]);
+        if (err !== true) {
           return err;
         }
       }
@@ -368,9 +370,9 @@ export function parseColormap(colormap) {
     }
     if (libUtility.isString(colormap[0])) {
       const array = [];
-      let color;
       for (let i = 0; i < colormap.length; i += 1) {
-        if ((color = parseColor(colormap[i]))) {
+        const color = parseColor(colormap[i]);
+        if (color) {
           Array.prototype.push.apply(array, color);
         } else {
           return null;

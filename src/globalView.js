@@ -349,7 +349,10 @@ export function GlobalView(div, startupOptions) {
         globalView.invalidate();
       }
     };
-    this.onInputChanged = () => invalid = true;
+    this.onInputChanged = () => {
+      invalid = true;
+      return true;
+    };
 
     // Getter methods
     this.getOffset = function (d) {
@@ -579,7 +582,10 @@ export function GlobalView(div, startupOptions) {
       newPlotBounds.y !== plotBounds.y ||
       newPlotBounds.width !== plotBounds.width ||
       newPlotBounds.height !== plotBounds.height) {
-      viewers.forEach(viewer => viewer.onPlotBoundsChanged(plotBounds = newPlotBounds));
+      plotBounds = newPlotBounds;
+      viewers.forEach((viewer) => {
+        viewer.onPlotBoundsChanged(plotBounds);
+      });
     } else {
       plotBounds = newPlotBounds;
     }
@@ -896,8 +902,11 @@ export function GlobalView(div, startupOptions) {
 
     // Validate value
     let validationResult;
-    if ((libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1) ||
-      (libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true)) {
+    // eslint-disable-next-line no-cond-assign
+    if ((libUtility.isArray(optionDefinition.valid) &&
+      optionDefinition.valid.indexOf(value) === -1) ||
+      (libUtility.isFunction(optionDefinition.valid) &&
+      (validationResult = optionDefinition.valid(value)) !== true)) {
       console.warn(`GlobalView warning: Invalid value for option ${option}: ${value}`);
       if (libUtility.isString(validationResult)) {
         console.warn(`                    ${validationResult}`);
@@ -933,8 +942,11 @@ export function GlobalView(div, startupOptions) {
       // Validate value
       const value = newOptions[option];
       let validationResult;
-      if ((libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1) ||
-        (libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true)) {
+      // eslint-disable-next-line no-cond-assign
+      if ((libUtility.isArray(optionDefinition.valid) &&
+      optionDefinition.valid.indexOf(value) === -1) ||
+        (libUtility.isFunction(optionDefinition.valid) &&
+        (validationResult = optionDefinition.valid(value)) !== true)) {
         console.warn(`GlobalView warning: Invalid value for option ${option}: ${value}`);
         if (libUtility.isString(validationResult)) {
           // HY:
@@ -997,9 +1009,12 @@ export function GlobalView(div, startupOptions) {
 
     // Validate value
     let validationResult;
-    if ((libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1) ||
-      (libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true)) {
-      return `Invalid value for option ${option}: ${value}${libUtility.isString(validationResult) ? `\n    ${validationResult}` : ''}`;
+    // eslint-disable-next-line no-cond-assign
+    if ((libUtility.isArray(optionDefinition.valid) &&
+      optionDefinition.valid.indexOf(value) === -1) ||
+      (libUtility.isFunction(optionDefinition.valid) &&
+      (validationResult = optionDefinition.valid(value)) !== true)) {
+      return `Invalid value for option ${option}: ${value}${libUtility.isString(validationResult)}` ? `\n    ${validationResult}` : '';
     }
 
     return true;
@@ -1027,8 +1042,11 @@ export function GlobalView(div, startupOptions) {
       // Validate value
       const value = newOptions[option];
       let validationResult;
-      if ((libUtility.isArray(optionDefinition.valid) && optionDefinition.valid.indexOf(value) === -1) ||
-        (libUtility.isFunction(optionDefinition.valid) && (validationResult = optionDefinition.valid(value)) !== true)) {
+      // eslint-disable-next-line no-cond-assign
+      if ((libUtility.isArray(optionDefinition.valid) &&
+        optionDefinition.valid.indexOf(value) === -1) ||
+        (libUtility.isFunction(optionDefinition.valid) &&
+        (validationResult = optionDefinition.valid(value)) !== true)) {
         errors.push(`Invalid value for option ${option}: ${value}${libUtility.isString(validationResult) ? `\n    ${validationResult}` : ''}`);
         continue;
       }
@@ -1875,7 +1893,10 @@ export function GlobalView(div, startupOptions) {
     const selectedImage = imageViewer.imageFromPoint(tf, p);
     if (!shiftPressed && !ctrlPressed && imageDragImages.length !== 0 && (selectedImage === null || imageDragImages.indexOf(selectedImage) === -1)) {
       // Deselect images
-      imageDragImages.forEach(image => image.highlighted = false); // eslint-disable-line no-param-reassign
+      imageDragImages.forEach((image) => {
+        const varImage = image;
+        varImage.highlighted = false;
+      });
       imageDragImages = [];
       this.invalidate();
       if (this.onThumbnailSelectionChanged !== null) {
@@ -1988,8 +2009,12 @@ export function GlobalView(div, startupOptions) {
     if (this.onMouseOverAxisLabel) {
       const newMouseOverAxisLabel = coordSys.labelFromPoint(plotBounds, p);
       if (newMouseOverAxisLabel !== mouseOverAxisLabel) {
-        if ((mouseOverAxisLabel = newMouseOverAxisLabel) !== null) {
-          this.onMouseOverAxisLabel(dataset.dataVectors[activeInputs[mouseOverAxisLabel]], coordSys.getLabelBounds(plotBounds, mouseOverAxisLabel));
+        mouseOverAxisLabel = newMouseOverAxisLabel;
+        if (mouseOverAxisLabel !== null) {
+          this.onMouseOverAxisLabel(
+            dataset.dataVectors[activeInputs[mouseOverAxisLabel]],
+            coordSys.getLabelBounds(plotBounds, mouseOverAxisLabel),
+          );
         } else {
           this.onMouseOverAxisLabel(null, null);
         }
@@ -2405,9 +2430,31 @@ export function GlobalView(div, startupOptions) {
  * @interface
  * @package
  */
-const Viewer = function () {};
-/** @type  {Function} */ Viewer.prototype.render;
-/** @type  {function(Dataset, Object)} */ Viewer.prototype.setDataset;
-/** @type  {function(Object, boolean)} */ Viewer.prototype.onOptionsChanged;
-/** @type  {function(Array<number>, Array<number>, Object)} */ Viewer.prototype.onInputChanged;
-/** @type  {function(Object)} */ Viewer.prototype.onPlotBoundsChanged;
+const Viewer = function () {
+  throw new Error('not implemented');
+};
+
+/** @type  {Function} */
+Viewer.prototype.render = function () {
+  throw new Error('not implemented');
+};
+
+/** @type  {function(Dataset, Object)} */
+Viewer.prototype.setDataset = function () {
+  throw new Error('not implemented');
+};
+
+/** @type  {function(Object, boolean)} */
+Viewer.prototype.onOptionsChanged = function () {
+  throw new Error('not implemented');
+};
+
+/** @type  {function(Array<number>, Array<number>, Object)} */
+Viewer.prototype.onInputChanged = function () {
+  throw new Error('not implemented');
+};
+
+/** @type  {function(Object)} */
+Viewer.prototype.onPlotBoundsChanged = function () {
+  throw new Error('not implemented');
+};

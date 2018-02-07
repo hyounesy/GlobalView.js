@@ -213,7 +213,7 @@ export function DensityViewer(gl, globalView) {
       const rx = densityMap.transformX(image.refPos[d0]);
       const ry = densityMap.transformY(image.refPos[d1]);
       return {
-        x: x, y: y, rx: rx, ry: ry, vx: 0, vy: 0, fx: 0, fy: 0,
+        x, y, rx, ry, vx: 0, vy: 0, fx: 0, fy: 0,
       };
     });
 

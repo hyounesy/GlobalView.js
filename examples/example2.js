@@ -35,8 +35,8 @@ function tOptions_onChange(sender) {
     return;
   }
 
-  let err;
-  if ((err = plot.validateOptions(options)) === true) {
+  const err = plot.validateOptions(options);
+  if (err === true) {
     plot.setOptions(options);
     preStatus.innerText = '';
   } else {

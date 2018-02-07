@@ -111,7 +111,8 @@ module.exports = {
         "getter-return": 0,                     // enforce return statements in getters
         "no-await-in-loop": 0,                  // disallow await inside of loops
         "no-compare-neg-zero": 0,               // disallow comparing against -0
-        "no-cond-assign": 0,                    // disallow assignment operators in conditional expressions
+        // disallow assignment in conditional expressions
+        'no-cond-assign': ['error', 'always'],
         "no-console": 0,                        // disallow the use of console
         "no-constant-condition": 0,             // disallow constant expressions in conditions
         "no-control-regex": 0,                  // disallow control characters in regular expressions
@@ -207,7 +208,8 @@ module.exports = {
         "no-proto": 0,                          // disallow the use of the __proto__ property
         "no-redeclare": 0,                      // disallow variable redeclaration
         "no-restricted-properties": 0,          // disallow certain properties on certain objects
-        "no-return-assign": 0,                  // disallow assignment operators in return statements
+        // disallow use of assignment in return statement
+        'no-return-assign': ['error', 'always'],
         "no-return-await": 0,                   // disallow unnecessary return await
         "no-script-url": 0,                     // disallow javascript: urls
         "no-self-assign": 0,                    // disallow assignments where both sides are exactly the same
@@ -215,7 +217,12 @@ module.exports = {
         "no-sequences": 0,                      // disallow comma operators
         "no-throw-literal": 'error',                  // disallow throwing literals as exceptions
         "no-unmodified-loop-condition": 0,      // disallow unmodified loop conditions
-        "no-unused-expressions": 0,             // disallow unused expressions
+        // disallow usage of expressions in statement position
+        'no-unused-expressions': ['error', {
+          allowShortCircuit: false,
+          allowTernary: false,
+          allowTaggedTemplates: false,
+        }],
         "no-unused-labels": 0,                  // disallow unused labels
         "no-useless-call": 0,                   // disallow unnecessary calls to .call() and .apply()
         "no-useless-concat": 0,                 // disallow unnecessary concatenation of literals or template literals
@@ -443,7 +450,12 @@ module.exports = {
         "no-useless-constructor": 0,            // disallow unnecessary constructors
         "no-useless-rename": 0,                 // disallow renaming import, export, and destructured assignments to the same name
         'no-var': 'error',                      // require let or const instead of var
-        "object-shorthand": 0,                  // require or disallow method and property shorthand syntax for object literals
+        // require method and property shorthand syntax for object literals
+        // http://eslint.org/docs/rules/object-shorthand
+        'object-shorthand': ['error', 'always', {
+          ignoreConstructors: false,
+          avoidQuotes: true,
+        }],
         "prefer-arrow-callback": 0,             // require using arrow functions for callbacks
         'prefer-const': ['error', {
           destructuring: 'any',

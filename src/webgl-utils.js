@@ -151,8 +151,8 @@ export function WebGLUtils() {
   }
 
   return {
-    create3DContext: create3DContext,
-    setupWebGL: setupWebGL,
+    create3DContext,
+    setupWebGL,
   };
 }
 

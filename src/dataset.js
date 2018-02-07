@@ -740,7 +740,14 @@ export function CsvDataset(file, options, onload) {
         // If any row consists of only unique strings, we can assume it contains data point names
         for (let c = 0; c < data[0].length; c += 1) {
           const valueMap = {};
-          if (data.every(row => (row.length > c && isNaN(parseData(row[c])) && !(row[c] in valueMap)) ? valueMap[row[c]] = true : false)) {
+          if (data.every((row) => {
+            if (row.length > c && isNaN(parseData(row[c])) && !(row[c] in valueMap)) {
+              valueMap[row[c]] = true;
+              return true;
+            } else {
+              return false;
+            }
+          })) {
             varOptions.nameColumn = c;
             break;
           }

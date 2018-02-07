@@ -9,13 +9,13 @@ function BenchmarkDialog() {
     resizable: false,
     buttons: [{
       text: 'Cancel',
-      click: function () {
+      click() {
         cancel = true;
         benchmarkDialog.dialog('close');
       },
     }],
     open: startBenchmark,
-    beforeClose: function () {
+    beforeClose() {
       cancel = true;
     },
   });
@@ -27,14 +27,14 @@ function BenchmarkDialog() {
   let tblResults_body;
   pbOverall.progressbar({
     value: false,
-    change: function () {
+    change() {
       progressLabel.text(`Progress: ${Math.floor(pbOverall.progressbar('value') * 100) / 100}%`);
     },
-    complete: function () {
+    complete() {
       progressLabel.text('Complete!');
       benchmarkDialog.dialog('option', 'buttons', [{
         text: 'Close',
-        click: function () {
+        click() {
           cancel = true;
           benchmarkDialog.dialog('close');
         },
@@ -209,6 +209,7 @@ function BenchmarkDialog() {
 
     let o = 0;
     let option = getKeyByIndex(benchmarkOptionIndices, o);
+    // eslint-disable-next-line no-cond-assign
     while (option !== null && (benchmarkOptionIndices[option] += 1) === benchmarkOptions[option].length) {
       benchmarkOptionIndices[option] = 0;
       option = getKeyByIndex(benchmarkOptionIndices, (o += 1));
@@ -216,7 +217,8 @@ function BenchmarkDialog() {
 
     reportResult(csvRow);
 
-    if (reportProgress((benchmarkCounter += 1) / numBenchmarks, 1) && option !== null) {
+    benchmarkCounter += 1;
+    if (reportProgress(benchmarkCounter / numBenchmarks, 1) && option !== null) {
       setTimeout(startBenchmarkPass, 0);
     } else if (option !== null) {
       cancelBenchmark();

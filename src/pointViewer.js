@@ -95,8 +95,8 @@ export function PointViewer(gl, globalView) {
   this.createPointSet = function fCreatePointSet(color, opacity) {
     const pointSet = new PointGroup();
     if (color) {
-      let validationResult;
-      if ((validationResult = libColormap.validateColormap(color)) === true) {
+      const validationResult = libColormap.validateColormap(color);
+      if (validationResult === true) {
         const c = libColormap.parseColormap(color);
         if (c) {
           pointSet.colormap = libGraphics.LoadTextureFromByteArray(gl, c, c.length / 4, 1);

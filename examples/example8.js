@@ -36,7 +36,7 @@ domready(function () {
       create: () => new globalView.CsvDataset('datasets/AICS_Cell-feature-analysis_v1.5.csv', {
         hasHeader: true,
         nameColumn: 1,
-        imageFilenames: function (data) {
+        imageFilenames(data) {
           return `datasets/AICS_Cell-feature-analysis_v1.5_images/${data[1]}.png`;
         },
       }, dataset_onLoad),
@@ -338,7 +338,7 @@ function cbShowHistograms_onChange(sender) {
     showXAxisHistogram: sender.checked,
     showYAxisHistogram: sender.checked,
     showColormapHistogram: sender.checked,
-    padding: padding,
+    padding,
   });
 }
 function rVariance_onChange(sender) {
