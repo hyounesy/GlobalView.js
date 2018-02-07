@@ -1,17 +1,18 @@
 const libUtility = require('./utility.js');
 
 export function addTransformFunctions(cls) {
-  cls.transformX = function (x) {
-    return (cls.transform[0] * x) + cls.transform[1];
+  const varCls = cls;
+  varCls.transformX = function (x) {
+    return (varCls.transform[0] * x) + varCls.transform[1];
   };
-  cls.transformY = function (y) {
-    return (cls.transform[2] * y) + cls.transform[3];
+  varCls.transformY = function (y) {
+    return (varCls.transform[2] * y) + varCls.transform[3];
   };
-  cls.invTransformX = function (x) {
-    return (x - cls.transform[1]) / cls.transform[0];
+  varCls.invTransformX = function (x) {
+    return (x - varCls.transform[1]) / varCls.transform[0];
   };
-  cls.invTransformY = function (y) {
-    return (y - cls.transform[3]) / cls.transform[2];
+  varCls.invTransformY = function (y) {
+    return (y - varCls.transform[3]) / varCls.transform[2];
   };
 }
 
@@ -709,14 +710,16 @@ export function findRepresentativePoints(dataset, d0, d1, densityMap, k, dist, t
  * @return {Array<number>} An array of up to k point indices of characteristic points
  */
 export function findRepresentativePoints2(dataset, d0, d1, densityMap, k, targetRatio) {
-  if (libUtility.isUndefined(targetRatio)) {
-    targetRatio = 0.5;
+  let varK = k;
+  let varTargetRatio = targetRatio;
+  if (libUtility.isUndefined(varTargetRatio)) {
+    varTargetRatio = 0.5;
   } // Default ratio is "fifty-fifty"
 
-  k = Math.min(k, dataset.length);
+  varK = Math.min(varK, dataset.length);
   let dist = 0.1;
   let representativePoints;
-  while ((representativePoints = findRepresentativePoints(dataset, d0, d1, densityMap, k, dist, targetRatio)).length < k) {
+  while ((representativePoints = findRepresentativePoints(dataset, d0, d1, densityMap, varK, dist, varTargetRatio)).length < varK) {
     dist /= 2.0;
   }
   return representativePoints;
@@ -727,12 +730,12 @@ export function findRepresentativePoints2(dataset, d0, d1, densityMap, k, target
  * @package
  * @param  {Dataset} dataset
  * @param  {Array<Array<DensityMap>>} densityMap
- * @param  {number} k Maximum number of points to return
+ * @param  {number} numPointsToReturn Maximum number of points to return
  * @param  {number} dist Minimum Euclidean distance between returned points in normalized space (in percentage of overall data space bounds)
  * @return {Array<number>} An array of up to k point indices of characteristic points
  */
-export function findRepresentativePointsND(dataset, densityMap, k, dist) {
-  if (k <= 0) {
+export function findRepresentativePointsND(dataset, densityMap, numPointsToReturn, dist) {
+  if (numPointsToReturn <= 0) {
     return [];
   } // No representative points
 
@@ -781,7 +784,7 @@ export function findRepresentativePointsND(dataset, densityMap, k, dist) {
   let d_low = 0;
   const representativePoints = [indices[d_high]]; // First represenatative point is point with highest density
   d_high -= 1;
-  while (d_high >= d_low && representativePoints.length < k) {
+  while (d_high >= d_low && representativePoints.length < numPointsToReturn) {
     let di;
     if (representativePoints.length % 2 === 1) {
       di = indices[d_low];
@@ -819,11 +822,11 @@ export function findRepresentativePointsND(dataset, densityMap, k, dist) {
  * @package
  * @param  {Dataset} dataset
  * @param  {Array<Array<DensityMap>>} densityMap
- * @param  {number} k Maximum number of points to return
+ * @param  {number} numPointsToReturn Maximum number of points to return
  * @return {Array<number>} An array of up to k point indices of characteristic points
  */
-export function findRepresentativePointsND2(dataset, densityMap, k) {
-  k = Math.min(k, dataset.length);
+export function findRepresentativePointsND2(dataset, densityMap, numPointsToReturn) {
+  k = Math.min(numPointsToReturn, dataset.length);
   let dist = 0.2;
   let representativePoints;
   while ((representativePoints = findRepresentativePointsND(dataset, densityMap, k, dist)).length < k) {
@@ -857,29 +860,30 @@ export function findClosePointOfLowDensity(dataset, d0, d1, p, densityMap, stenc
   // Transform density, minDistX, minDistY from [0 ... 1] space to density map space
   densityOffset *= (width + height) / 2;
   densityScale *= (width + height) / 2;
-  minDistX = Math.ceil(minDistX * width);
-  minDistY = Math.ceil(minDistY * height);
+  const minDMDistX = Math.ceil(minDistX * width);
+  const minDMDistY = Math.ceil(minDistY * height);
 
   // Transform data point and data space bounds from data space to density map space
   const p0 = densityMap.transformX(v0.getValue(p));
   const p1 = densityMap.transformY(v1.getValue(p));
-  const xmin = Math.min(0, Math.floor(densityMap.transformX(v0.minimum)) - minDistX - 1); // TODO: -1 ... Why?
-  const xmax = Math.max(width, Math.ceil(densityMap.transformX(v0.maximum)) + minDistX + 2); // TODO: +2 ... Why?
-  const ymin = Math.min(0, Math.floor(densityMap.transformY(v1.minimum)) - minDistY - 1); // TODO: -1 ... Why?
-  const ymax = Math.max(height, Math.ceil(densityMap.transformY(v1.maximum)) + minDistY + 2); // TODO: +2 ... Why?
+  const xmin = Math.min(0, Math.floor(densityMap.transformX(v0.minimum)) - minDMDistX - 1); // TODO: -1 ... Why?
+  const xmax = Math.max(width, Math.ceil(densityMap.transformX(v0.maximum)) + minDMDistX + 2); // TODO: +2 ... Why?
+  const ymin = Math.min(0, Math.floor(densityMap.transformY(v1.minimum)) - minDMDistY - 1); // TODO: -1 ... Why?
+  const ymax = Math.max(height, Math.ceil(densityMap.transformY(v1.maximum)) + minDMDistY + 2); // TODO: +2 ... Why?
   const stencilStride = xmax - xmin;
 
   // Create stencilMap if it doesn't exist
-  if (!stencilMap.data) {
-    stencilMap.data = new Uint8Array((stencilMap.width = xmax - xmin) * (stencilMap.height = ymax - ymin));
+  const varStencilMap = stencilMap;
+  if (!varStencilMap.data) {
+    varStencilMap.data = new Uint8Array((varStencilMap.width = xmax - xmin) * (varStencilMap.height = ymax - ymin));
   }
-  const stencil = stencilMap.data;
+  const stencil = varStencilMap.data;
 
   // Mark p in stencil map
-  let imgxmin = Math.max(xmin, Math.floor(p0) - minDistX);
-  let imgxmax = Math.min(xmax, Math.floor(p0) + minDistX);
-  let imgymin = Math.max(ymin, Math.floor(p1) - minDistY);
-  let imgymax = Math.min(ymax, Math.floor(p1) + minDistY);
+  let imgxmin = Math.max(xmin, Math.floor(p0) - minDMDistX);
+  let imgxmax = Math.min(xmax, Math.floor(p0) + minDMDistX);
+  let imgymin = Math.max(ymin, Math.floor(p1) - minDMDistY);
+  let imgymax = Math.min(ymax, Math.floor(p1) + minDMDistY);
   for (let y = imgymin; y < imgymax; y += 1) {
     for (let x = imgxmin; x < imgxmax; x += 1) {
       stencil[((y - ymin) * stencilStride) + (x - xmin)] = 1;
@@ -887,8 +891,8 @@ export function findClosePointOfLowDensity(dataset, d0, d1, p, densityMap, stenc
   }
 
   // Square minimum distances
-  const sqMinDistX = minDistX * minDistX;
-  const sqMinDistY = minDistY * minDistY;
+  const sqMinDistX = minDMDistX * minDMDistX;
+  const sqMinDistY = minDMDistY * minDMDistY;
   const sqDensityOffset = densityOffset * densityOffset;
 
   let closestPoint = null;
@@ -917,8 +921,8 @@ export function findClosePointOfLowDensity(dataset, d0, d1, p, densityMap, stenc
   }
 
   // Mark image in stencil map
-  imgxmin = Math.max(xmin, closestPoint[0] - (2 * minDistX)); imgxmax = Math.min(xmax, closestPoint[0] + (2 * minDistX));
-  imgymin = Math.max(ymin, closestPoint[1] - (2 * minDistY)); imgymax = Math.min(ymax, closestPoint[1] + (2 * minDistY));
+  imgxmin = Math.max(xmin, closestPoint[0] - (2 * minDMDistX)); imgxmax = Math.min(xmax, closestPoint[0] + (2 * minDMDistX));
+  imgymin = Math.max(ymin, closestPoint[1] - (2 * minDMDistY)); imgymax = Math.min(ymax, closestPoint[1] + (2 * minDMDistY));
   for (let y = imgymin; y < imgymax; y += 1) {
     for (let x = imgxmin; x < imgxmax; x += 1) {
       stencil[((y - ymin) * stencilStride) + (x - xmin)] = 1;
@@ -954,29 +958,30 @@ export function markPointsInStencilMap(dataset, d0, d1, points, densityMap, sten
   const v1 = dataset.dataVectors[d1];
 
   // Transform minDistX, minDistY from [0 ... 1] space to density map space
-  minDistX = Math.ceil(minDistX * width);
-  minDistY = Math.ceil(minDistY * height);
+  const minDMDistX = Math.ceil(minDistX * width);
+  const minDMDistY = Math.ceil(minDistY * height);
 
   // Transform data space bounds from data space to density map space
-  const xmin = Math.min(0, Math.floor(densityMap.transformX(v0.minimum)) - minDistX - 1); // TODO: -1 ... Why?
-  const xmax = Math.max(width, Math.ceil(densityMap.transformX(v0.maximum)) + minDistX + 2); // TODO: +2 ... Why?
-  const ymin = Math.min(0, Math.floor(densityMap.transformY(v1.minimum)) - minDistY - 1); // TODO: -1 ... Why?
-  const ymax = Math.max(height, Math.ceil(densityMap.transformY(v1.maximum)) + minDistY + 2); // TODO: +2 ... Why?
+  const xmin = Math.min(0, Math.floor(densityMap.transformX(v0.minimum)) - minDMDistX - 1); // TODO: -1 ... Why?
+  const xmax = Math.max(width, Math.ceil(densityMap.transformX(v0.maximum)) + minDMDistX + 2); // TODO: +2 ... Why?
+  const ymin = Math.min(0, Math.floor(densityMap.transformY(v1.minimum)) - minDMDistY - 1); // TODO: -1 ... Why?
+  const ymax = Math.max(height, Math.ceil(densityMap.transformY(v1.maximum)) + minDMDistY + 2); // TODO: +2 ... Why?
   const stencilStride = xmax - xmin;
 
   // Create stencilMap if it doesn't exist
-  if (!stencilMap.data) {
-    stencilMap.data = new Uint8Array((stencilMap.width = xmax - xmin) * (stencilMap.height = ymax - ymin));
+  const varStencilMap = stencilMap;
+  if (!varStencilMap.data) {
+    varStencilMap.data = new Uint8Array((varStencilMap.width = xmax - xmin) * (varStencilMap.height = ymax - ymin));
   }
-  const stencil = stencilMap.data;
+  const stencil = varStencilMap.data;
 
   points.forEach(function (p) {
     const p0 = Math.floor(densityMap.transformX(v0.getValue(p)));
     const p1 = Math.floor(densityMap.transformY(v1.getValue(p)));
-    const imgxmin = Math.max(xmin, p0 - minDistX);
-    const imgxmax = Math.min(xmax, p0 + minDistX);
-    const imgymin = Math.max(ymin, p1 - minDistY);
-    const imgymax = Math.min(ymax, p1 + minDistY);
+    const imgxmin = Math.max(xmin, p0 - minDMDistX);
+    const imgxmax = Math.min(xmax, p0 + minDMDistX);
+    const imgymin = Math.max(ymin, p1 - minDMDistY);
+    const imgymax = Math.min(ymax, p1 + minDMDistY);
     for (let y = imgymin; y < imgymax; y += 1) {
       for (let x = imgxmin; x < imgxmax; x += 1) {
         stencil[((y - ymin) * stencilStride) + (x - xmin)] = 1;
@@ -989,9 +994,10 @@ export function markPointsInStencilMap(dataset, d0, d1, points, densityMap, sten
  * @summary Download the given stencil map as black-and-white image
  * @package
  * @param  {Object} stencilMap
- * @param  {string=} fileName=stencilMap.png The file name of the downloaded image.
+ * @param  {string=} outputFileName=stencilMap.png The file name of the downloaded image.
  */
-export function downloadStencilMap(stencilMap, fileName) {
+export function downloadStencilMap(stencilMap, outputFileName) {
+  let fileName = outputFileName;
   if (!fileName) {
     fileName = 'stencilMap.png';
   }
@@ -1040,14 +1046,14 @@ export function findClosePointOfLowDensity_descend(dataset, d0, d1, p, densityMa
   // Transform density, minDistX, minDistY from [0 ... 1] space to density map space
   densityOffset *= (width + height) / 2;
   densityScale *= (width + height) / 2;
-  minDistX = Math.ceil(minDistX * width);
-  minDistY = Math.ceil(minDistY * height);
+  const minDMDistX = Math.ceil(minDistX * width);
+  const minDMDistY = Math.ceil(minDistY * height);
 
   // Define overall bounds
-  const xMin = minDistX;
-  const xMax = width - minDistX;
-  const yMin = minDistY;
-  const yMax = height - minDistY;
+  const xMin = minDMDistX;
+  const xMax = width - minDMDistX;
+  const yMin = minDMDistY;
+  const yMax = height - minDMDistY;
 
   const computePenalty = function (x, y) {
     const sqDensity = Math.pow(densityOffset + (densities[(y * width) + x] * densityScale), 2);
@@ -1073,7 +1079,7 @@ export function findClosePointOfLowDensity_descend(dataset, d0, d1, p, densityMa
         const y = state.y + action[1];
         if (x >= xMin && x < xMax && y >= yMin && y < yMax) {
           const newState = { x: x, y: y, penalty: computePenalty(x, y) };
-          if (newState.penalty < bestState.penalty && (x < p0 - minDistX || x > p0 + minDistX) && (y < p0 - minDistY || y > p0 + minDistY)) {
+          if (newState.penalty < bestState.penalty && (x < p0 - minDMDistX || x > p0 + minDMDistX) && (y < p0 - minDMDistY || y > p0 + minDMDistY)) {
             bestState = newState;
           }
           onSuccessor(newState, newState.penalty);
@@ -1124,11 +1130,11 @@ export function findClosePointOfLowDensityND_descend(dataset, p, densityMap, min
   // Transform density and minDist from [0 ... 1] space to [0 ... size] space
   densityOffset *= size;
   densityScale *= size;
-  minDist = Math.ceil(minDist * size);
+  const minDistSize = Math.ceil(minDist * size);
 
   // Define overall bounds
-  const min = minDist;
-  const max = size - minDist;
+  const min = minDistSize;
+  const max = size - minDistSize;
 
 
   const actions = [];
@@ -1159,7 +1165,7 @@ export function findClosePointOfLowDensityND_descend(dataset, p, densityMap, min
     }
     const sqDist = p.reduce(function (a, p, pi) {
       const dp = Math.abs(p - start[pi]);
-      return a + (dp > minDist ? Math.pow(dp - minDist, 2) : Math.pow(minDist - dp, 2));
+      return a + (dp > minDistSize ? Math.pow(dp - minDistSize, 2) : Math.pow(minDistSize - dp, 2));
     });
     return sqDensity + sqDist;
   };
@@ -1265,56 +1271,58 @@ export function sampleDensityMap(densityMap) {
  * @summary Find a point within a fixed column of the density map by sampling densities
  * @package
  * @param  {DensityMap} densityMap
- * @param  {number} sample_y The column of the density map to sample
+ * @param  {number} sampleCol The column of the density map to sample
  * @param  {number} maxIterations The maximum number of attempts, before `NaN` is returned
  * @return {number} The y-coordinate (row) of the sampled point or `NaN` if maxIterations attempts were unsuccessful
  */
-export function sampleDensityMapRow(densityMap, sample_y, maxIterations) {
-  if (libUtility.isUndefined(maxIterations)) {
-    maxIterations = Number.MAX_SAFE_INTEGER;
+export function sampleDensityMapRow(densityMap, sampleCol, maxIterations) {
+  let varMaxIterations = maxIterations;
+  if (libUtility.isUndefined(varMaxIterations)) {
+    varMaxIterations = Number.MAX_SAFE_INTEGER;
   }
 
   const width = densityMap.width;
   const height = densityMap.height;
   const scale = densityMap.maximum;
-  sample_y = Math.floor(sample_y) * height;
+  const sampleY = Math.floor(sampleCol) * height;
 
   let sample_x;
   let sample_d;
   do {
     sample_x = Math.random() * width;
     sample_d = Math.random() * scale;
-  } while ((maxIterations -= 1) && densityMap.data[sample_y + Math.floor(sample_x)] < sample_d);
+  } while ((varMaxIterations -= 1) && densityMap.data[sampleY + Math.floor(sample_x)] < sample_d);
 
-  return densityMap.data[sample_y + Math.floor(sample_x)] >= sample_d ? sample_x : NaN;
+  return densityMap.data[sampleY + Math.floor(sample_x)] >= sample_d ? sample_x : NaN;
 }
 /**
  * This function uses rejection sampling
  * @summary Find a point within a fixed row of the density map by sampling densities
  * @package
  * @param  {DensityMap} densityMap
- * @param  {number} sample_x The row of the density map to sample
+ * @param  {number} sampleRow The row of the density map to sample
  * @param  {number} maxIterations The maximum number of attempts, before `NaN` is returned
  * @return {number} The x-coordinate (column) of the sampled point or `NaN` if maxIterations attempts were unsuccessful
  */
-export function sampleDensityMapColumn(densityMap, sample_x, maxIterations) {
-  if (libUtility.isUndefined(maxIterations)) {
-    maxIterations = Number.MAX_SAFE_INTEGER;
+export function sampleDensityMapColumn(densityMap, sampleRow, maxIterations) {
+  let varMaxIterations = maxIterations;
+  if (libUtility.isUndefined(varMaxIterations)) {
+    varMaxIterations = Number.MAX_SAFE_INTEGER;
   }
 
   const width = densityMap.width;
   const height = densityMap.height;
   const scale = densityMap.maximum;
-  sample_x = Math.floor(sample_x);
+  const sampleX = Math.floor(sampleRow);
 
   let sample_y;
   let sample_d;
   do {
     sample_y = Math.random() * height;
     sample_d = Math.random() * scale;
-  } while ((maxIterations -= 1) && densityMap.data[(Math.floor(sample_y) * width) + sample_x] < sample_d);
+  } while ((varMaxIterations -= 1) && densityMap.data[(Math.floor(sample_y) * width) + sampleX] < sample_d);
 
-  return densityMap.data[(Math.floor(sample_y) * width) + sample_x] >= sample_d ? sample_y : NaN;
+  return densityMap.data[(Math.floor(sample_y) * width) + sampleX] >= sample_d ? sample_y : NaN;
 }
 
 /**
@@ -1545,9 +1553,10 @@ export function computeClusterMap(densityMap, d0, d1, options) {
  * @summary Download the given density map as floating point image
  * @package
  * @param  {DensityMap} densityMap
- * @param  {string=} fileName=densityMap.png The file name of the downloaded image.
+ * @param  {string=} outputFileName=densityMap.png The file name of the downloaded image.
  */
-export function downloadDensityMap(densityMap, fileName) {
+export function downloadDensityMap(densityMap, outputFileName) {
+  let fileName = outputFileName;
   if (!fileName) {
     fileName = 'densityMap.png';
   }

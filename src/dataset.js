@@ -172,11 +172,13 @@ export function Dataset() {
   /**
    * Checks if a density map on dimensions d0 and d1 is available.
    * Hint: d0 and d1 can't be identical. The order of d0 and d1 is ignored.
-   * @param  {number!} d0
-   * @param  {number!} d1
+   * @param  {number!} dim0
+   * @param  {number!} dim1
    * @return {boolean!} True, if a densitymap for dimensions d0, d1 has been computed
    */
-  this.isDensityMapReady = function fIsDensityMapReady(d0, d1) {
+  this.isDensityMapReady = function fIsDensityMapReady(dim0, dim1) {
+    let d0 = dim0;
+    let d1 = dim1;
     // Validate inputs
     if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) {
       return false;
@@ -220,14 +222,17 @@ export function Dataset() {
    * After the worker has finished all ondone events for calls to this function are fired.
    * Hint: d0 and d1 can't be identical. The order of d0 and d1 is ignored.
    * @summary Returns a density map for dimensions d0 and d1.
-   * @param  {!number} d0
-   * @param  {!number} d1
+   * @param  {!number} dim0
+   * @param  {!number} dim1
    * @param  {number=} size=1024 The width and height of the density map
    * @param  {DensityMapOptions=} options
    * @param  {function(DensityMap)=} ondone A function to be called when the density map is ready
    * @return {DensityMap}
    */
-  this.requestDensityMap = function fRequestDensityMap(d0, d1, size, options, ondone) {
+  this.requestDensityMap = function fRequestDensityMap(dim0, dim1, mapSize, options, ondone) {
+    let d0 = dim0;
+    let d1 = dim1;
+    let size = mapSize;
     // Validate inputs
     if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) {
       console.warn('GlobalView warning: Requesting density map for dimensions {0}, {1} on a dataset with only {2} data vectors'.format(d0, d1, this.dataVectors.length));
@@ -283,8 +288,8 @@ export function Dataset() {
         p.require(libAlgorithm.computeDensityMap);
         // the following code will be evaled from a blob in Parallel. so no need for libAlgorithm.
         // eslint-disable-next-line prefer-spread
-        p.spawn(params => computeDensityMap.apply(null, params)).then((densityMap) => {
-          densityMap = new libAlgorithm.DensityMap(densityMap);
+        p.spawn(params => computeDensityMap.apply(null, params)).then((pDensityMap) => {
+          const densityMap = new libAlgorithm.DensityMap(pDensityMap);
           // Free histogram
           histogram = null;
 
@@ -342,7 +347,9 @@ export function Dataset() {
     return /** @type {DensityMap} */(densityMap);
   };
 
-  this.isClusterMapReady = function fIsClusterMapReady(d0, d1) {
+  this.isClusterMapReady = function fIsClusterMapReady(dim0, dim1) {
+    let d0 = dim0;
+    let d1 = dim1;
     // Validate inputs
     if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) {
       return false;
@@ -364,7 +371,9 @@ export function Dataset() {
       (libUtility.isUndefined(clusterMapsArray[d0][d1].pending) || clusterMapsArray[d0][d1].old);
   };
 
-  this.requestClusterMap = function fRequestClusterMap(d0, d1, options, ondone) {
+  this.requestClusterMap = function fRequestClusterMap(dim0, dim1, options, ondone) {
+    let d0 = dim0;
+    let d1 = dim1;
     // Validate inputs
     if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) {
       console.warn('GlobalView warning: Requesting cluster map for dimensions {0}, {1} on a dataset with only {2} data vectors'.format(d0, d1, this.dataVectors.length));
@@ -414,8 +423,8 @@ export function Dataset() {
           p.require(libUtility.PriorityQueue);
           // the following code will be evaled from a blob in Parallel. so no need for libAlgorithm.
           // eslint-disable-next-line prefer-spread
-          p.spawn(params => computeClusterMap.apply(null, params)).then((clusterMap) => {
-            clusterMap = new libAlgorithm.ClusterMap(clusterMap);
+          p.spawn(params => computeClusterMap.apply(null, params)).then((pClusterMap) => {
+            const clusterMap = new libAlgorithm.ClusterMap(pClusterMap);
             // Set clusterMapsArray[d0][d1]
             const pending = clusterMapsArray[d0][d1].pending;
             clusterMapsArray[d0][d1] = clusterMap;
@@ -542,7 +551,8 @@ export function Dataset() {
     this.length = n_inflated;
   };
 
-  this.save = function fSave(filename, nameColumn, nameColumnLabel) {
+  this.save = function fSave(filename, nameColumnIndex, nameColumnLabel) {
+    let nameColumn = nameColumnIndex;
     const nc = this.numColumns;
     let csv_nc;
     if (this.names &&
@@ -678,10 +688,11 @@ const CSV_DATASET_OPTIONS = {
  */
 export function CsvDataset(file, options, onload) {
   Dataset.call(this);
+  const varOptions = options;
 
   // Validate options
-  for (const option in options) {
-    if (!options.hasOwnProperty(option)) {
+  for (const option in varOptions) {
+    if (!varOptions.hasOwnProperty(option)) {
       continue;
     }
 
@@ -693,11 +704,11 @@ export function CsvDataset(file, options, onload) {
     const optionDefinition = CSV_DATASET_OPTIONS[option];
 
     // Validate value
-    const value = options[option];
+    const value = varOptions[option];
     if ((optionDefinition.valid && optionDefinition.valid.indexOf(value) === -1) ||
       (optionDefinition.validRange && (value < optionDefinition.validRange[0] || value > optionDefinition.validRange[1]))) {
       console.warn(`CsvDataset warning: Invalid value for option ${option}: ${value}`);
-      delete options[option];
+      delete varOptions[option];
       continue;
     }
   }
@@ -707,10 +718,10 @@ export function CsvDataset(file, options, onload) {
   const parseCsv = function fParseCsv(csv) {
     const data = $.csv.toArrays(csv);
 
-    if (options.autoDetect) {
-      if (libUtility.isUndefined(options.hasHeader)) {
+    if (varOptions.autoDetect) {
+      if (libUtility.isUndefined(varOptions.hasHeader)) {
         // Assume no-header by default
-        options.hasHeader = false;
+        varOptions.hasHeader = false;
 
         const firstRowOnlyStrings = data[0].every(value => isNaN(parseData(value)));
         const secondRowHasNumbers = data[1].some(value => !isNaN(parseData(value)));
@@ -718,50 +729,50 @@ export function CsvDataset(file, options, onload) {
         // If the first row consists of only string values, but the second row
         // has at least one numeric value, we can assume the first row is a header
         if (firstRowOnlyStrings && secondRowHasNumbers) {
-          options.hasHeader = true;
+          varOptions.hasHeader = true;
         }
-        console.log(`Assuming hasHeader = ${options.hasHeader}`);
+        console.log(`Assuming hasHeader = ${varOptions.hasHeader}`);
       }
-      if (libUtility.isUndefined(options.nameColumn)) {
+      if (libUtility.isUndefined(varOptions.nameColumn)) {
         // Assume no name column by default
-        options.nameColumn = null;
+        varOptions.nameColumn = null;
 
         // If any row consists of only unique strings, we can assume it contains data point names
         for (let c = 0; c < data[0].length; c += 1) {
           const valueMap = {};
           if (data.every(row => (row.length > c && isNaN(parseData(row[c])) && !(row[c] in valueMap)) ? valueMap[row[c]] = true : false)) {
-            options.nameColumn = c;
+            varOptions.nameColumn = c;
             break;
           }
         }
-        console.log(`Assuming nameColumn = ${options.nameColumn}`);
+        console.log(`Assuming nameColumn = ${varOptions.nameColumn}`);
       }
     }
 
 
     let n = data.length;
-    const nc = data[0].length - (options.nameColumn ? 1 : 0);
-    const firstRow = (options.hasHeader ? 1 : 0);
+    const nc = data[0].length - (varOptions.nameColumn ? 1 : 0);
+    const firstRow = (varOptions.hasHeader ? 1 : 0);
     dataset.numColumns = nc;
 
     // Generate column labels
     let columnLabels;
-    if (libUtility.isFunction(options.columnLabels)) {
+    if (libUtility.isFunction(varOptions.columnLabels)) {
       columnLabels = new Array(n);
       for (let c = 0, ci = 0; c < data[0].length; c += 1, ci += 1) {
-        if (c === options.nameColumn) {
+        if (c === varOptions.nameColumn) {
           ci -= 1;
           continue;
         }
 
-        columnLabels[ci] = options.columnLabels(c);
+        columnLabels[ci] = varOptions.columnLabels(c);
       }
-    } else if (libUtility.isArray(options.columnLabels)) {
-      if (options.columnLabels.length !== nc) {
-        console.warn(`CsvDataset warning: Number of provided column labels (${options.columnLabels.length}) differs from number of data columns in the dataset (${nc})`);
+    } else if (libUtility.isArray(varOptions.columnLabels)) {
+      if (varOptions.columnLabels.length !== nc) {
+        console.warn(`CsvDataset warning: Number of provided column labels (${varOptions.columnLabels.length}) differs from number of data columns in the dataset (${nc})`);
         columnLabels = null;
       } else {
-        columnLabels = options.columnLabels;
+        columnLabels = varOptions.columnLabels;
       }
     } else {
       columnLabels = null;
@@ -772,7 +783,7 @@ export function CsvDataset(file, options, onload) {
     let i;
     let di;
     for (let c = 0, ci = 0; c < data[0].length; c += 1, ci += 1) {
-      if (c === options.nameColumn) {
+      if (c === varOptions.nameColumn) {
         ci -= 1;
         continue;
       }
@@ -838,7 +849,7 @@ export function CsvDataset(file, options, onload) {
       let theLabel;
       if (columnLabels) {
         theLabel = columnLabels[ci];
-      } else if (options.hasHeader) {
+      } else if (varOptions.hasHeader) {
         theLabel = data[0][c];
       } else {
         theLabel = generateColumnName(ci, nc);
@@ -880,9 +891,9 @@ export function CsvDataset(file, options, onload) {
     dataset.length = n;
 
     // Extract data point names
-    if (options.nameColumn) {
+    if (varOptions.nameColumn) {
       const names = dataset.names = new Array(n);
-      const nameColumn = options.nameColumn;
+      const nameColumn = varOptions.nameColumn;
       for (i = firstRow, di = 0; i < data.length; i += 1, di += 1) {
         // Skip blank lines
         if (data[i].length === 1 && data[i][0] === '') {
@@ -897,7 +908,7 @@ export function CsvDataset(file, options, onload) {
     }
 
     // Generate image filenames
-    if (libUtility.isFunction(options.imageFilenames)) {
+    if (libUtility.isFunction(varOptions.imageFilenames)) {
       dataset.imageFilenames = new Array(n);
       for (i = firstRow, di = 0; i < data.length; i += 1, di += 1) {
         // Skip blank lines
@@ -906,14 +917,14 @@ export function CsvDataset(file, options, onload) {
           continue;
         }
 
-        dataset.imageFilenames[di] = options.imageFilenames(data[i], i);
+        dataset.imageFilenames[di] = varOptions.imageFilenames(data[i], i);
       }
-    } else if (libUtility.isArray(options.imageFilenames)) {
-      if (options.imageFilenames.length !== n) {
-        console.warn(`CsvDataset warning: Number of provided image filenames (${options.imageFilenames.length}) differs from number of data points (${n})`);
+    } else if (libUtility.isArray(varOptions.imageFilenames)) {
+      if (varOptions.imageFilenames.length !== n) {
+        console.warn(`CsvDataset warning: Number of provided image filenames (${varOptions.imageFilenames.length}) differs from number of data points (${n})`);
         dataset.imageFilenames = null;
       } else {
-        dataset.imageFilenames = options.imageFilenames;
+        dataset.imageFilenames = varOptions.imageFilenames;
       }
     } else {
       dataset.imageFilenames = null;

@@ -248,10 +248,13 @@ export function CoordinateSystem(gl, globalView) {
       }
     }
   };
-  this.setEnumRange = function (d, minimum, maximum, values) {
+
+  this.setEnumRange = function (d, rangeMin, rangeMax, values) {
     const axis = axes[d];
-    axis.minimum = minimum -= 0.5; // 0.5 ... Move to center of value-bin
-    axis.maximum = maximum -= 0.5; // 0.5 ... Move to center of value-bin
+    minimum = rangeMin - 0.5; // 0.5 ... Move to center of value-bin
+    maximum = rangeMax - 0.5; // 0.5 ... Move to center of value-bin
+    axis.minimum = minimum;
+    axis.maximum = maximum;
     axis.values = values;
 
     axis.tickDistance = 1;

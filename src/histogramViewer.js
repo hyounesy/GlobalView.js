@@ -217,7 +217,8 @@ export function HistogramViewer(gl, globalView) {
       }
     }
   }
-  function createHistogram(axis, dataset, d, numBins) {
+  function createHistogram(pAxis, dataset, d, numBins) {
+    const axis = pAxis;
     if (d < 0 || d >= dataset.dataVectors.length) {
       return;
     } // Validate inputs
@@ -230,8 +231,8 @@ export function HistogramViewer(gl, globalView) {
     // console.log(axis.histogram);
 
     let positions = new Float32Array((6 * numBins) * 3);
-    const v3_set = function (i, x, y) {
-      i *= 3;
+    const v3_set = function (pi, x, y) {
+      let i = pi * 3;
       positions[i] = x; i += 1;
       positions[i] = y; i += 1;
       positions[i] = 0.0; i += 1;

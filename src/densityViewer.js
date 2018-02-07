@@ -217,7 +217,8 @@ export function DensityViewer(gl, globalView) {
       };
     });
 
-    const repellPoint = function (body, point_x, point_y, minDist, minDistMagnitude, maxDist, maxDistMagnitude) {
+    const repellPoint = function (pBody, point_x, point_y, minDist, minDistMagnitude, maxDist, maxDistMagnitude) {
+      const body = pBody;
       const dx = body.x - point_x;
       const dy = body.y - point_y;
       let dist = Math.sqrt((dx * dx) + (dy * dy));
@@ -258,13 +259,13 @@ export function DensityViewer(gl, globalView) {
         console.log(density);
       }
     }
-
+    const varImages = images;
     for (let i = 0; i < bodies.length; i += 1) {
       bodies[i].x += bodies[i].fx;
       bodies[i].y += bodies[i].fy;
 
-      images[i].imagePos[d0] = densityMap.invTransformX(bodies[i].x);
-      images[i].imagePos[d1] = densityMap.invTransformY(bodies[i].y);
+      varImages[i].imagePos[d0] = densityMap.invTransformX(bodies[i].x);
+      varImages[i].imagePos[d1] = densityMap.invTransformY(bodies[i].y);
     }
   };
 }

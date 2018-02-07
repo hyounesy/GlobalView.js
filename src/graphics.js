@@ -6,11 +6,13 @@ let currentShader = null;
  * @constructor
  * @package
  * @param {Object} gl // {WebGLRenderingContext}
- * @param {string|Array<string>} vs
- * @param {string|Array<string>} fs
+ * @param {string|Array<string>} vSh
+ * @param {string|Array<string>} fSh
  * @param {boolean=} debug = false
  */
-export function Shader(gl, vs, fs, debug) {
+export function Shader(gl, vSh, fSh, debug) {
+  let vs = vSh;
+  let fs = fSh;
   if (libUtility.isArray(vs)) {
     vs = vs.join('\n');
   }

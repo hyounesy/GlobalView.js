@@ -196,7 +196,8 @@ function BenchmarkDialog() {
 
     // <<<<<<<<<< END RUN BENCHMARK >>>>>>>>>>
 
-    const getKeyByIndex = function (map, idx) {
+    const getKeyByIndex = function (map, index) {
+      let idx = index;
       for (key in map) {
         idx -= 1;
         if (idx === -1) {

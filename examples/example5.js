@@ -42,31 +42,35 @@ domready(function () {
   plot.highlightedPoints = plot.createPointSet('red', 1);
   const csvPath = 'datasets/AICS_Cell-feature-analysis_v1.5.csv'; // 'http://homepage.univie.ac.at/a0929188/GlobalView/AICS_Cell-feature-analysis_v1.5.csv"
   const imagesPath = 'datasets/AICS_Cell-feature-analysis_v1.5_images/'; // 'http://homepage.univie.ac.at/a0929188/GlobalView/images/"
-  new globalView.CsvDataset(csvPath, { // eslint-disable-line no-new
-    hasHeader: true,
-    nameColumn: 1,
-    columnLabels: COLUMN_NAMES,
-    imageFilenames: data => `${imagesPath + data[1]}.png`,
-  }, function (dataset) {
-    plot.load(dataset, 2, 4, 0, 3);
-    plot.getCharacteristicPoints(8, 1, function (characteristicPoints) {
-      plot.referencePoints.assign(characteristicPoints);
-      plot.showImages(plot.referencePoints, 'lowDensity');
-    });
+  new globalView.CsvDataset(
+    csvPath, { // eslint-disable-line no-new
+      hasHeader: true,
+      nameColumn: 1,
+      columnLabels: COLUMN_NAMES,
+      imageFilenames: data => `${imagesPath + data[1]}.png`,
+    },
+    function (pDataset) {
+      const dataset = pDataset;
+      plot.load(dataset, 2, 4, 0, 3);
+      plot.getCharacteristicPoints(8, 1, function (characteristicPoints) {
+        plot.referencePoints.assign(characteristicPoints);
+        plot.showImages(plot.referencePoints, 'lowDensity');
+      });
 
-    for (let i = 0, nc = dataset.numColumns; i < dataset.length; i += 1) {
-      const protein = dataset.data[(i * nc) + 0];
-      let proteinPoints = pointsByProtein[protein];
-      if (!proteinPoints) {
-        pointsByProtein[protein] = proteinPoints = new globalView.HashSet();
+      for (let i = 0, nc = dataset.numColumns; i < dataset.length; i += 1) {
+        const protein = dataset.data[(i * nc) + 0];
+        let proteinPoints = pointsByProtein[protein];
+        if (!proteinPoints) {
+          pointsByProtein[protein] = proteinPoints = new globalView.HashSet();
+        }
+        proteinPoints.push(i);
       }
-      proteinPoints.push(i);
-    }
 
-    for (let i = 0; i < COLUMN_HINTS.length; i += 1) {
-      dataset.dataVectors[i].hint = COLUMN_HINTS[i];
-    }
-  });
+      for (let i = 0; i < COLUMN_HINTS.length; i += 1) {
+        dataset.dataVectors[i].hint = COLUMN_HINTS[i];
+      }
+    },
+  );
   addAllEventListeners();
 });
 
@@ -155,7 +159,8 @@ function cbYAxis_onChange(sender) {
   plot.setActiveColumn(1, columnIndex);
 }
 
-function plot_onMouseDown(event) {
+function plot_onMouseDown(pEvent) {
+  const event = pEvent;
   switch (event.button) {
     // On left mouse button: Enable point and lasso selection
     case 0: event.pointSelection = true; event.lassoSelection = true; break;

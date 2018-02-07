@@ -171,7 +171,8 @@ export function GlobalView(div, startupOptions) {
     x: 0, y: 0, width: 0, height: 0,
   }; // Plot bounds [pixel]
 
-  function render(flipY) {
+  function render(pFlipY) {
+    let flipY = pFlipY;
     invalidating = false;
     if (typeof flipY !== 'boolean') {
       flipY = false;
@@ -389,7 +390,9 @@ export function GlobalView(div, startupOptions) {
     };
 
     // Transformation methods
-    this.deviceCoordToDatasetCoord = function (vOut, vIn) {
+    this.deviceCoordToDatasetCoord = function (vOutCoord, vInCoord) {
+      const vOut = vOutCoord;
+      const vIn = vInCoord;
       if (invalid === true) {
         invalid = false;
         recompute();
@@ -399,7 +402,10 @@ export function GlobalView(div, startupOptions) {
       }
       return vOut;
     };
-    this.deviceDistToDatasetDist = function (vOut, vIn) {
+
+    this.deviceDistToDatasetDist = function (vOutCoord, vInCoord) {
+      const vOut = vOutCoord;
+      const vIn = vInCoord;
       if (invalid === true) {
         invalid = false;
         recompute();
@@ -409,7 +415,10 @@ export function GlobalView(div, startupOptions) {
       }
       return vOut;
     };
-    this.datasetCoordToDeviceCoord = function (vOut, vIn) {
+
+    this.datasetCoordToDeviceCoord = function (vOutCoord, vInCoord) {
+      const vOut = vOutCoord;
+      const vIn = vInCoord;
       if (invalid === true) {
         invalid = false;
         recompute();
@@ -419,7 +428,10 @@ export function GlobalView(div, startupOptions) {
       }
       return vOut;
     };
-    this.datasetDistToDeviceDist = function (vOut, vIn) {
+
+    this.datasetDistToDeviceDist = function (vOutCoord, vInCoord) {
+      const vOut = vOutCoord;
+      const vIn = vInCoord;
       if (invalid === true) {
         invalid = false;
         recompute();
@@ -429,7 +441,10 @@ export function GlobalView(div, startupOptions) {
       }
       return vOut;
     };
-    this.transformPos = function (vOut, vIn) {
+
+    this.transformPos = function (vOutCoord, vInCoord) {
+      const vOut = vOutCoord;
+      const vIn = vInCoord;
       if (invalid === true) {
         invalid = false;
         recompute();
@@ -439,7 +454,10 @@ export function GlobalView(div, startupOptions) {
       }
       return vOut;
     };
-    this.transformNml = function (vOut, vIn) {
+
+    this.transformNml = function (vOutCoord, vInCoord) {
+      const vOut = vOutCoord;
+      const vIn = vInCoord;
       if (invalid === true) {
         invalid = false;
         recompute();
@@ -449,7 +467,10 @@ export function GlobalView(div, startupOptions) {
       }
       return vOut;
     };
-    this.transformNml2 = function (vOut, vIn) {
+
+    this.transformNml2 = function (vOutCoord, vInCoord) {
+      const vOut = vOutCoord;
+      const vIn = vInCoord;
       if (invalid === true) {
         invalid = false;
         recompute();
@@ -1217,7 +1238,8 @@ export function GlobalView(div, startupOptions) {
 
     let d0 = activeInputs[0];
     let d1 = activeInputs[1];
-    dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
+    dataset.requestDensityMap(d0, d1, undefined, undefined, function (pDensityMap) {
+      const densityMap = pDensityMap;
       if (d1 < d0) {
         // Swap d0 <-> d1
         const temp = d0;
@@ -1265,7 +1287,8 @@ export function GlobalView(div, startupOptions) {
       // console.log(dataset.requestDensityMap(d0, d1, undefined, undefined));
       // dataset.requestDensityMap(d0, d1, undefined, undefined, function(densityMap) { console.log(densityMap); });
 
-      dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
+      dataset.requestDensityMap(d0, d1, undefined, undefined, function (pDensityMap) {
+        const densityMap = pDensityMap;
         let imageWidth = (0.6 * options.thumbnailSize) / gl.width;
         let imageHeight = ((0.6 * options.thumbnailSize) + libImageViewer.getLabelHeight()) /
           gl.height; // EDIT: Factor 0.6: WHY?
@@ -1321,7 +1344,8 @@ export function GlobalView(div, startupOptions) {
     if (dataset.imageFilenames) {
       let d0 = activeInputs[0];
       let d1 = activeInputs[1];
-      dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
+      dataset.requestDensityMap(d0, d1, undefined, undefined, function (pDensityMap) {
+        const densityMap = pDensityMap;
         let imageWidth = (0.6 * options.thumbnailSize) / gl.width;
         let imageHeight = ((0.6 * options.thumbnailSize) + libImageViewer.getLabelHeight()) /
           gl.height; // EDIT: Factor 0.6: WHY?
@@ -1463,7 +1487,8 @@ export function GlobalView(div, startupOptions) {
 
     // >>> Set image locations to be projections of data positions along eigenvec onto AABB
 
-    const posToLoc = function (p) {
+    const posToLoc = function (pos) {
+      const p = pos;
       p[0] = Math.max(0, Math.min(1, (p[0] - tl[0]) / (br[0] - tl[0]))); // Normalize p[0] from [l ... r] to [0 ... 1]
       p[1] = Math.max(0, Math.min(1, (p[1] - tl[1]) / (br[1] - tl[1]))); // Normalize p[1] from [t ... b] to [0 ... 1]
       switch ([p[0], p[1], 1 - p[0], 1 - p[1]].minIndex()) {
@@ -1473,8 +1498,8 @@ export function GlobalView(div, startupOptions) {
         case 3: return 4 - p[0];
       }
     };
-    const locToPos = function (l) {
-      l = (l + 4) % 4;
+    const locToPos = function (loc) {
+      const l = (loc + 4) % 4;
       let p;
       const li = Math.floor(l);
       switch (li) {
@@ -1532,7 +1557,9 @@ export function GlobalView(div, startupOptions) {
       }
       return P;
     };
-    const removeOverlap = function (R, i, j, rank, overlapThreshold) {
+
+    const removeOverlap = function (pR, i, j, rank, overlapThreshold) {
+      const R = pR;
       const overlap = overlapThreshold - Math.abs(R[i] - R[j]);
       if (overlap > 0.0) {
         const shift = 0.5 * (rank[i] > rank[j] ? overlapThreshold - (R[i] - R[j]) : (R[j] - R[i]) - overlapThreshold);
@@ -1688,7 +1715,8 @@ export function GlobalView(div, startupOptions) {
    * @memberof GlobalView
    * @type {onMouseDownCallback}
    */
-  this.onMouseDown = function (event) { // Default mouse-down handler
+  this.onMouseDown = function (pEvent) { // Default mouse-down handler
+    const event = pEvent;
     switch (event.button) {
       // On left mouse button: Enable point selection and dragging events.
       //                       If control button is pressed, initiate view dragging, else, enable lasso selection
@@ -1847,7 +1875,7 @@ export function GlobalView(div, startupOptions) {
     const selectedImage = imageViewer.imageFromPoint(tf, p);
     if (!shiftPressed && !ctrlPressed && imageDragImages.length !== 0 && (selectedImage === null || imageDragImages.indexOf(selectedImage) === -1)) {
       // Deselect images
-      imageDragImages.forEach(image => image.highlighted = false);
+      imageDragImages.forEach(image => image.highlighted = false); // eslint-disable-line no-param-reassign
       imageDragImages = [];
       this.invalidate();
       if (this.onThumbnailSelectionChanged !== null) {
@@ -1998,8 +2026,8 @@ export function GlobalView(div, startupOptions) {
       const imageDelta = libGlMatrix.vec2.create();
       tf.deviceDistToDatasetDist(imageDelta, libGlMatrix.vec2.subtract(imageDelta, p, imageDragStartPos));
       imageDragImages.forEach(function (image) {
-        image.imagePos[activeInputs[0]] += imageDelta[0];
-        image.imagePos[activeInputs[1]] += imageDelta[1];
+        image.imagePos[activeInputs[0]] += imageDelta[0]; // eslint-disable-line no-param-reassign
+        image.imagePos[activeInputs[1]] += imageDelta[1]; // eslint-disable-line no-param-reassign
       });
       imageDragStartPos = p;
       this.invalidate();

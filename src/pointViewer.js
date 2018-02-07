@@ -215,13 +215,14 @@ export function PointViewer(gl, globalView) {
    * @constructor
    * @package
    * @param {Object} gl // {WebGLRenderingContext}
-   * @param {WebGLBuffer} posbuffer
+   * @param {WebGLBuffer} glbuffer
    * @param {number} numvertices
    * @param {number} ndim
    * @param {Object} options
    */
-  function DataMesh(gl, posbuffer, numvertices, ndim, options) {
+  function DataMesh(gl, glbuffer, numvertices, ndim, options) {
     // Create line buffer
+    let posbuffer = glbuffer;
     let linebuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, linebuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, -1, 0, 1, 2, 1, 2, -1]), gl.STATIC_DRAW);
@@ -349,7 +350,9 @@ vec{1} getPos()
       this.recompileShader(options);
     }
 
-    this.draw = function (texture, offset, count) {
+    this.draw = function (texture, pOffset, pCount) {
+      let offset = pOffset;
+      let count = pCount;
       // Default values
       if (typeof offset === 'undefined') {
         offset = 0;
@@ -423,7 +426,9 @@ vec{1} getPos()
       gl.drawElements(gl.POINTS, count, gl.UNSIGNED_INT, 0);
     };
 
-    this.drawLines = function (texture, line, offset, count) {
+    this.drawLines = function (texture, line, pOffset, pCount) {
+      let offset = pOffset;
+      let count = pCount;
       // Default values
       if (typeof offset === 'undefined') {
         offset = 0;

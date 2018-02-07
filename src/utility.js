@@ -88,8 +88,8 @@ if (!String.prototype.format) {
    */
 String.prototype.format2 = function (pattern, mismatch, var_args) {
   const args = arguments; // eslint-disable-line prefer-rest-params
-  return this.replace(pattern, function (match, number) {
-    number = Number.parseInt(number, 10) + 2;
+  return this.replace(pattern, function (match, strNumber) {
+    const number = Number.parseInt(strNumber, 10) + 2;
     return typeof args[number] !== 'undefined' ? args[number] : mismatch;
   });
 };
@@ -286,11 +286,11 @@ export function colorNameToHex(color) {
   return colors[color.toLowerCase()];
 }
 
-export function hexToRgb(hex) {
+export function hexToRgb(pHex) {
   // Source: https://stackoverflow.com/a/5624139
   // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
   const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-  hex = hex.replace(shorthandRegex, function (m, r, g, b) {
+  const hex = pHex.replace(shorthandRegex, function (m, r, g, b) {
     return r + r + g + g + b + b;
   });
 
@@ -322,7 +322,8 @@ export function F32toI24(floats, bounds) {
   let i = 0;
   const voffset = -bounds[0];
   const vscale = 0xFFFFFE / (bounds[1] - bounds[0]);
-  floats.forEach(function (value) {
+  floats.forEach(function (pValue) {
+    let value = pValue;
     value += voffset;
     value *= vscale;
     value = Math.floor(value);
@@ -494,12 +495,13 @@ export function eraseCookie(name) {
   createCookie(name, '', -1);
 }
 
-export function getParameterByName(name, url) {
+export function getParameterByName(pName, pUrl) {
   // Source: https://stackoverflow.com/a/901144
+  let url = pUrl;
   if (!url) {
     url = window.location.href;
   }
-  name = name.replace(/[\[\]]/g, '\\$&'); // eslint-disable-line no-useless-escape
+  const name = pName.replace(/[\[\]]/g, '\\$&'); // eslint-disable-line no-useless-escape
   const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`);
   const results = regex.exec(url);
   if (!results) {
@@ -614,11 +616,12 @@ export function ForwardList(value) {
       callback(node.value);
     }
   };
-  ForwardList.sortedMerge = function (a, b) {
+  ForwardList.sortedMerge = function (pa, pb) {
     // Source: http://www.geeksforgeeks.org/merge-two-sorted-linked-lists/
     const dummy = new ForwardList(null);
     let tail = dummy;
-
+    let a = pa;
+    let b = pb;
     while (a !== null && b != null) {
       // While neither a nor b run out
       if (a.value <= b.value) {

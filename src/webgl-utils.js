@@ -96,10 +96,11 @@ export function WebGLUtils() {
      * tag to an error message with the correct links for WebGL.
      * @param {HTMLCanvasElement} canvas The canvas element to create a context from.
      * @param {*=} opt_attribs Any creation attributes you want to pass in.
-     * @param {function(string)=} opt_onError A function to call if there is an error during creation.
+     * @param {function(string)=} opt_onErrorFunc A function to call if there is an error during creation.
      * @return {WebGLRenderingContext} The created context.
      */
-  const setupWebGL = function (canvas, opt_attribs, opt_onError) {
+  const setupWebGL = function (canvas, opt_attribs, opt_onErrorFunc) {
+    let opt_onError = opt_onErrorFunc;
     function handleCreationError(msg) {
       const container = canvas.parentNode;
       if (container) {

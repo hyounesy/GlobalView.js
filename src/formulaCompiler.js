@@ -203,7 +203,8 @@ export const FormulaCompiler = {
 
         return [op, curTok];
       }
-      function bineryOpAST(exprPrec, lhs) {
+      function bineryOpAST(exprPrec, pLhs) {
+        const lhs = pLhs;
         // If this is a binop, find its precedence.
         while (true) {
           const tokPrec = getOperatorPrecedence(curTok);
@@ -334,8 +335,8 @@ export const FormulaCompiler = {
         } // Eat number
         return { code: [number], type: FormulaCompiler.types.float };
       }
-      function varDeclAST(type, typeName) {
-        type = FormulaCompiler.types[typeName];
+      function varDeclAST(pType, typeName) {
+        const type = FormulaCompiler.types[typeName];
         if (libUtility.isUndefined(type)) {
           return error(`Unsupported type: ${typeName}`);
         }
@@ -450,7 +451,8 @@ export const FormulaCompiler = {
       /**
        * @param  {number=} exprPrec=0
        */
-      function exprAST(exprPrec) {
+      function exprAST(pExprPrec) {
+        let exprPrec = pExprPrec;
         if (libUtility.isUndefined(exprPrec)) {
           exprPrec = 0;
         }
@@ -502,7 +504,8 @@ export const FormulaCompiler = {
 
     return buildAST();
   },
-  run: function (code, stack, global) {
+  run: function (code, pStack, global) {
+    const stack = pStack;
     let IP = -1; // Instruction pointer
     let SP = 0; // Stack pointer
     let scope = global;

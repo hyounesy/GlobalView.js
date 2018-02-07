@@ -188,7 +188,22 @@ module.exports = {
         "no-new-wrappers": 0,                   // disallow new operators with the String, Number, and Boolean objects
         "no-octal": 0,                          // disallow octal literals
         "no-octal-escape": 0,                   // disallow octal escape sequences in string literals
-        "no-param-reassign": 0,                 // disallow reassigning function parameters
+        // disallow reassignment of function parameters
+        // disallow parameter object manipulation except for specific exclusions
+        // rule: http://eslint.org/docs/rules/no-param-reassign.html
+        'no-param-reassign': ['error', {
+          props: true,
+          ignorePropertyModificationsFor: [
+            'acc', // for reduce accumulators
+            'e', // for e.returnvalue
+            'ctx', // for Koa routing
+            'req', // for Express requests
+            'request', // for Express requests
+            'res', // for Express responses
+            'response', // for Express responses
+            '$scope', // for Angular 1 scopes
+          ]
+        }],
         "no-proto": 0,                          // disallow the use of the __proto__ property
         "no-redeclare": 0,                      // disallow variable redeclaration
         "no-restricted-properties": 0,          // disallow certain properties on certain objects

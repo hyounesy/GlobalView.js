@@ -228,15 +228,19 @@ export function Colormap(gl, globalView) {
       }
     }
   };
-  this.setEnumRange = function (minimum, maximum, values) {
-    axis.minimum = minimum -= 0.5; // 0.5 ... Move to center of value-bin
-    axis.maximum = maximum -= 0.5; // 0.5 ... Move to center of value-bin
+
+  this.setEnumRange = function (rangeMin, rangeMax, values) {
+    const minimum = rangeMin - 0.5; // 0.5 ... Move to center of value-bin
+    const maximum = rangeMax - 0.5; // 0.5 ... Move to center of value-bin
+    axis.minimum = minimum;
+    axis.maximum = maximum;
     axis.values = values;
 
     axis.tickDistance = 1;
     axis.tickOffset = Math.max(0, Math.ceil(minimum / axis.tickDistance) * axis.tickDistance);
     axis.tickCount = Math.min(values.length - axis.tickOffset, Math.floor(((maximum - axis.tickOffset) + 1) / axis.tickDistance));
   };
+
   this.setLabel = function (label) {
     axis.label = label;
   };

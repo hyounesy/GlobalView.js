@@ -3,10 +3,11 @@
  * This 2D canvas is used to draw text.
  * @constructor
  * @package
- * @param {Object} gl // {WebGLRenderingContext}
+ * @param {Object} glContext // {WebGLRenderingContext}
  * @param {HTMLCanvasElement} canvas
  */
-export function TextRenderContext(gl, canvas) {
+export function TextRenderContext(glContext, canvas) {
+  const gl = glContext;
   let textCanvas = document.createElement('canvas');
   textCanvas.setAttribute('id', 'textCanvas');
   textCanvas.style.backgroundColor = 'transparent';
@@ -28,9 +29,9 @@ export function TextRenderContext(gl, canvas) {
     ctx.fillStyle = gl.foreColorString;
   };
 
-  gl.drawText = function (str, x, y, anchor, rotation, color) {
-    x = Math.floor(x);
-    y = Math.floor(y);
+  gl.drawText = function (str, px, py, anchor, rotation, color) {
+    const x = Math.floor(px);
+    const y = Math.floor(py);
 
     if (color) {
       ctx.fillStyle = color;
@@ -97,7 +98,12 @@ export function TextRenderContext(gl, canvas) {
     return fontHeight;
   };
 
-  gl.drawRect = function (x, y, width, height) {
+  gl.drawRect = function (px, py, rectWidth, rectHeight) {
+    let x = px;
+    let y = py;
+    let width = rectWidth;
+    let height = rectHeight;
+
     if (width < 0) {
       x += width;
       width = -width;

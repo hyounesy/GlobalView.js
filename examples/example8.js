@@ -54,7 +54,8 @@ domready(function () {
     // pointColor: "white"//"#AAF"
     padding: [50, 80, 50, 50],
   });
-  plot.onMouseDown = function (event) {
+  plot.onMouseDown = function (pEvent) {
+    const event = pEvent;
     switch (event.button) {
       // On left mouse button: Enable point selection and dragging events.
       //                       If control button is pressed, initiate view dragging, else, enable lasso selection
@@ -494,7 +495,8 @@ function ondragleave(event) {
     dragOverCanvas = null;
   }
 }
-function ondrop(event) {
+function ondrop(pEvent) {
+  let event = pEvent;
   console.log('ondrop');
   ondragleave(event);
   event.preventDefault();
