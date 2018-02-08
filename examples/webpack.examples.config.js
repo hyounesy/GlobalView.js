@@ -11,6 +11,7 @@ module.exports = {
     'example7.min': './examples/example7.js',
     'example8.min': './examples/example8.js',
   },
+  devtool: 'inline-source-map',
   output: {
     path: p.join(__dirname, '../bin'),
     filename: '[name].js',

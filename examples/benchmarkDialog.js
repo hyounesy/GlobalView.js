@@ -1,6 +1,7 @@
 const globalView = require('../dist/global-view.js');
-
-function BenchmarkDialog() {
+let plot = null;
+export default function BenchmarkDialog(paramPlot) {
+  plot = paramPlot;
   let cancel = false;
   const benchmarkDialog = $('#benchmarkDialog').dialog({
     autoOpen: false,
@@ -68,14 +69,12 @@ function BenchmarkDialog() {
     // pointShape: ['Rectangle'],
     // N: [1000000]//linspace(100000, 200000, 1000000)
     // N: [1e1, 1e2, 1e3/*, 1e4, 1e5, 1e6*/]
-    N: Array.create(1000, i => 10000 * i),
+    // N: Array.create(1000, i => 10000 * i)
+    // N: Array.create(36, i => 1000 * Math.pow(10, Math.floor(i / 9)) * ((i % 9) + 1))
+    N: Array.create(601, i => Math.floor(Math.pow(10, 3 + (i / 200)))),
   };
-  const SECONDS_PER_BENCHMARK = 1;// 10;
+  const SECONDS_PER_BENCHMARK = 10;// 1;
   const SAVE_SCREENSHOTS = false;
-
-  benchmarkDialog.dialog('open');
-
-
   let zip;
   let csv;
   let numBenchmarks;
@@ -87,10 +86,12 @@ function BenchmarkDialog() {
   let frames;
   let passStartTime;
 
+  benchmarkDialog.dialog('open');
+
   function startBenchmark() {
-    globalView.pushOptions();
-    // globalView.pushDataset();
-    globalView.enableOffscreenRendering(1024, 1024);
+    plot.pushOptions();
+    // plot.pushDataset();
+    plot.enableOffscreenRendering(1024, 1024);
 
     // Set default options
     const allElements = document.getElementsByTagName('*');
@@ -106,6 +107,8 @@ function BenchmarkDialog() {
 
     numBenchmarks = 1;
     benchmarkCounter = 0;
+    let option;
+
     for (option in benchmarkOptions) {
       numBenchmarks *= benchmarkOptions[option].length;
     }
@@ -137,6 +140,7 @@ function BenchmarkDialog() {
 
   function startBenchmarkPass() {
     currentOptions = {};
+    let option;
     for (option in benchmarkOptions) {
       currentOptions[option] = benchmarkOptions[option][benchmarkOptionIndices[option]];
     }
@@ -144,11 +148,11 @@ function BenchmarkDialog() {
 
     // <<<<<<<<<< START RUN BENCHMARK >>>>>>>>>>
     if (currentOptions.N !== n) {
-      globalView.load(new RandomDataset(n = currentOptions.N, 2), 0, 1, 1, 1);
+      plot.load(new globalView.RandomDataset(n = currentOptions.N, 2), 0, 1, 1, 1);
     }
 
     // Set options
-    globalView.setOptions(currentOptions);
+    plot.setOptions(currentOptions);
 
     time = 0.0;
     frames = 0;
@@ -163,7 +167,7 @@ function BenchmarkDialog() {
 
   function renderBenchmark() {
     const tStart = performance.now();
-    globalView.renderOffscreenBuffer();
+    plot.renderOffscreenBuffer();
     const tEnd = performance.now();
 
     time += (tEnd - tStart) / 1000.0;
@@ -182,13 +186,14 @@ function BenchmarkDialog() {
     const fps = frames / time;
     let name = JSON.stringify(currentOptions).replaceAll('"', "'");
     const csvRow = [fps, name];
+    let option;
     for (option in currentOptions) {
       csvRow.push(currentOptions[option]);
     }
     csv.push(csvRow);
 
     if (SAVE_SCREENSHOTS) {
-      let image = globalView.saveOffscreenBuffer();
+      let image = plot.saveOffscreenBuffer();
       image = image.substr(image.indexOf('base64,') + 'base64,'.length); // Convert base64-dataURL to base64
       name = name.replace('{', '').replace('}', '').replaceAll("'", '').replaceAll(',', ', ');
       zip.file(`${name}.png`, image, { base64: true });
@@ -198,6 +203,7 @@ function BenchmarkDialog() {
 
     const getKeyByIndex = function (map, index) {
       let idx = index;
+      let key;
       for (key in map) {
         idx -= 1;
         if (idx === -1) {
@@ -208,7 +214,7 @@ function BenchmarkDialog() {
     };
 
     let o = 0;
-    let option = getKeyByIndex(benchmarkOptionIndices, o);
+    option = getKeyByIndex(benchmarkOptionIndices, o);
     // eslint-disable-next-line no-cond-assign
     while (option !== null && (benchmarkOptionIndices[option] += 1) === benchmarkOptions[option].length) {
       benchmarkOptionIndices[option] = 0;
@@ -228,11 +234,11 @@ function BenchmarkDialog() {
   }
 
   function cancelBenchmark() {
-    // globalView.disableOffscreenRendering();
-    globalView.popOptions();
-    // globalView.popDataset();
+    // plot.disableOffscreenRendering();
+    plot.popOptions();
+    // plot.popDataset();
     cbDataset_onChange(); // Reload dataset
-    globalView.disableOffscreenRendering();
+    plot.disableOffscreenRendering();
     onResize();
   }
   function finishBenchmark() {

@@ -1,5 +1,6 @@
 const globalView = require('../dist/global-view.js');
 const domready = require('domready');
+const BenchmarkDialog = require('./benchmarkDialog').default;
 
 // Global variables
 // var gl;
@@ -388,7 +389,7 @@ String.prototype.replaceAll = function (oldstr, newstr) {
   });
 } */
 function cmdRunBenchmark_onClick(sender) {
-  new BenchmarkDialog(); // eslint-disable-line no-new
+  new BenchmarkDialog(plot); // eslint-disable-line no-new
 }
 
 let numThumbnails;
