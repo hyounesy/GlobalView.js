@@ -13,7 +13,7 @@ export function DepthFirstSearch(problem) {
   } // Start state is goal
   closed[problem.computeHash(node.state)] = node.state;
 
-  while (true) {
+  while (true) { // eslint-disable-line no-constant-condition
     problem.forEachSuccessor(node.state, function (successor) {
       // Test for goal state (before-push)
       if (problem.isGoalState(successor)) {
@@ -54,7 +54,7 @@ function BreadthFirstSearch(problem) {
   } // Start state is goal
   closed[problem.computeHash(node.state)] = node.state;
 
-  while (true) {
+  while (true) { // eslint-disable-line no-constant-condition
     problem.forEachSuccessor(node.state, function (successor) {
       const successor_hash = problem.computeHash(successor);
       if (libUtility.isUndefined(closed[successor_hash])) {
@@ -85,7 +85,7 @@ export function UniformCostSearch(problem) {
   } // Start state is goal
   closed[problem.computeHash(node.state)] = { state: node.state, prevCost: node.cost };
 
-  while (true) {
+  while (true) { // eslint-disable-line no-constant-condition
     problem.forEachSuccessor(node.state, function (successor, successor_cost) {
       const successor_hash = problem.computeHash(successor);
       const varSuccessor = closed[successor_hash];
@@ -117,7 +117,7 @@ export function SimpleUniformCostSearch(problem) {
   } // Start state is goal
   closed[problem.computeHash(node.state)] = node.state;
 
-  while (true) {
+  while (true) { // eslint-disable-line no-constant-condition
     problem.forEachSuccessor(node.state, function (successor, successor_cost) {
       const successor_hash = problem.computeHash(successor);
       if (libUtility.isUndefined(closed[successor_hash])) {
@@ -150,7 +150,7 @@ export function SimpleAStarSearch(problem, heuristic) {
   } // Start state is goal
   closed[problem.computeHash(node.state)] = node.state;
 
-  while (true) {
+  while (true) { // eslint-disable-line no-constant-condition
     problem.forEachSuccessor(node.state, function (successor, successor_cost) {
       const h = problem.heuristic(successor);
       const g = successor_cost;
@@ -184,7 +184,7 @@ export function SimpleGreedySearch(problem) {
 
   let cheapestCost = Number.MAX_VALUE;
   let cheapestSuccessor;
-  while (true) {
+  while (true) { // eslint-disable-line no-constant-condition
     cheapestSuccessor = null;
     problem.forEachSuccessor(state, function (successor, successor_cost) {
       if (successor_cost < cheapestCost) {

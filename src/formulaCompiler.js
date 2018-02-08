@@ -92,25 +92,34 @@ export const FormulaCompiler = {
             return true;
           case '+':
             switch (getch()) {
-              case '+': getch(); curTok = '++'; return true;
-              case '=': getch(); curTok = '+='; return true;
-              default: curTok = '+'; return true;
+              case '+': getch(); curTok = '++';
+                return true;
+              case '=': getch(); curTok = '+=';
+                return true;
+              default: curTok = '+';
+                return true;
             }
           case '-':
             switch (getch()) {
-              case '-': getch(); curTok = '--'; return true;
-              case '=': getch(); curTok = '-='; return true;
+              case '-': getch(); curTok = '--';
+                return true;
+              case '=': getch(); curTok = '-=';
+                return true;
               default:
                 if (chr >= '0' && chr <= '9') {
-                  sign = -1; break;
-                } else {
-                  curTok = '-'; return true;
+                  sign = -1;
+                  break;
                 }
+                curTok = '-';
+                return true;
             }
+            break; // to silence the no-fallthrough eslint error
           case '*':
             switch (getch()) {
-              case '=': getch(); curTok = '*='; return true;
-              default: curTok = '*'; return true;
+              case '=': getch(); curTok = '*=';
+                return true;
+              default: curTok = '*';
+                return true;
             }
           case '/':
             switch (getch()) {
@@ -207,7 +216,7 @@ export const FormulaCompiler = {
       function bineryOpAST(exprPrec, pLhs) {
         const lhs = pLhs;
         // If this is a binop, find its precedence.
-        while (true) {
+        while (true) { // eslint-disable-line no-constant-condition
           const tokPrec = getOperatorPrecedence(curTok);
 
           // If this is an operator that binds at least as tightly as the current binop, consume it, otherwise return lhs
@@ -397,7 +406,7 @@ export const FormulaCompiler = {
         let code = [];
         const typeList = [];
         let len = 1;
-        while (true) {
+        while (true) { // eslint-disable-line no-constant-condition
           const expr = exprAST();
           if (!expr) {
             return null;
@@ -596,7 +605,11 @@ export const FormulaCompiler = {
       }
       scope = postOpScope;
     }
-    return SP === 0 ? null : (SP === 1 ? stack[0] : stack.slice(0, SP));
+    let result = null;
+    if (SP !== 0) {
+      result = (SP === 1 ? stack[0] : stack.slice(0, SP));
+    }
+    return result;
   },
 };
 FormulaCompiler.types = {

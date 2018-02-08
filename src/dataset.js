@@ -693,13 +693,13 @@ export function CsvDataset(file, options, onload) {
   // Validate options
   for (const option in varOptions) {
     if (!varOptions.hasOwnProperty(option)) {
-      continue;
+      continue; // eslint-disable-line no-continue
     }
 
     // Validate option
     if (!CSV_DATASET_OPTIONS.hasOwnProperty(option)) {
       libUtility.consoleWarn(`CsvDataset warning: Unsupported option: ${option}`);
-      continue;
+      continue; // eslint-disable-line no-continue
     }
     const optionDefinition = CSV_DATASET_OPTIONS[option];
 
@@ -709,7 +709,7 @@ export function CsvDataset(file, options, onload) {
       (optionDefinition.validRange && (value < optionDefinition.validRange[0] || value > optionDefinition.validRange[1]))) {
       libUtility.consoleWarn(`CsvDataset warning: Invalid value for option ${option}: ${value}`);
       delete varOptions[option];
-      continue;
+      continue; // eslint-disable-line no-continue
     }
   }
 
@@ -768,7 +768,7 @@ export function CsvDataset(file, options, onload) {
       for (let c = 0, ci = 0; c < data[0].length; c += 1, ci += 1) {
         if (c === varOptions.nameColumn) {
           ci -= 1;
-          continue;
+          continue; // eslint-disable-line no-continue
         }
 
         columnLabels[ci] = varOptions.columnLabels(c);
@@ -791,7 +791,7 @@ export function CsvDataset(file, options, onload) {
     for (let c = 0, ci = 0; c < data[0].length; c += 1, ci += 1) {
       if (c === varOptions.nameColumn) {
         ci -= 1;
-        continue;
+        continue; // eslint-disable-line no-continue
       }
 
       // Loop through all values of column c -> value, fvalue, min, max
@@ -802,7 +802,7 @@ export function CsvDataset(file, options, onload) {
         // Skip blank lines
         if (data[i].length === 1 && data[i][0] === '') {
           di -= 1;
-          continue;
+          continue; // eslint-disable-line no-continue
         }
 
         const value = data[i][c];
@@ -828,7 +828,7 @@ export function CsvDataset(file, options, onload) {
           // Skip blank lines
           if (data[i].length === 1 && data[i][0] === '') {
             di -= 1;
-            continue;
+            continue; // eslint-disable-line no-continue
           }
 
           const value = data[i][c];
@@ -904,7 +904,7 @@ export function CsvDataset(file, options, onload) {
         // Skip blank lines
         if (data[i].length === 1 && data[i][0] === '') {
           di -= 1;
-          continue;
+          continue; // eslint-disable-line no-continue
         }
 
         names[di] = data[i][nameColumn];
@@ -920,7 +920,7 @@ export function CsvDataset(file, options, onload) {
         // Skip blank lines
         if (data[i].length === 1 && data[i][0] === '') {
           di -= 1;
-          continue;
+          continue; // eslint-disable-line no-continue
         }
 
         dataset.imageFilenames[di] = varOptions.imageFilenames(data[i], i);

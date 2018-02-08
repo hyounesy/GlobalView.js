@@ -226,7 +226,13 @@ export function ImageViewer(gl, globalView) {
         libGlMatrix.mat4.scale(mattrans, mattrans, [2 / gl.width, 2 / gl.height, 1]);
         sdrLine.matWorldViewProj(mattrans);
 
-        sdrLine.color(...image.highlighted ? [1, 1, 0, 1] : (image.labelColor ? image.labelColor : defaultImageLabelColor));
+        let imageLabelColor = defaultImageLabelColor;
+        if (image.highlighted) {
+          imageLabelColor = [1, 1, 0, 1];
+        } else if (image.labelColor) {
+          imageLabelColor = image.labelColor;
+        }
+        sdrLine.color(...imageLabelColor);
         meshLabel.bind(sdrLine, null);
         meshLabel.draw();
 
@@ -345,7 +351,13 @@ export function ImageViewer(gl, globalView) {
         libGlMatrix.mat4.translate(mattrans, mattrans, [-0.0, -1.0, 0.0]); // Move anchor to top of stripe
         sdrLine.matWorldViewProj(mattrans);
 
-        sdrLine.color(...image.highlighted ? [1, 1, 0, 1] : (image.labelColor ? image.labelColor : defaultImageLabelColor));
+        let imageLabelColor = defaultImageLabelColor;
+        if (image.highlighted) {
+          imageLabelColor = [1, 1, 0, 1];
+        } else if (image.labelColor) {
+          imageLabelColor = image.labelColor;
+        }
+        sdrLine.color(...imageLabelColor);
         meshQuad.bind(sdrLine, null);
         meshQuad.draw();
 

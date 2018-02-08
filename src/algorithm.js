@@ -469,7 +469,7 @@ export function computeDensityMap(histogram, options) {
           yExtend = Math.min(Math.floor(yExtend), maxExtend) - 1;
           if (yExtend <= 0) {
             densities[(y * densitMapWidth) + x] += initialDensities_xy;
-            continue;
+            continue; // eslint-disable-line no-continue
           }
           // var yExtend = ext[initialDensities_xy - 1] - 1; // Get precomputed yExtend
           const sqYExtend = yExtend * yExtend;
@@ -496,7 +496,7 @@ export function computeDensityMap(histogram, options) {
           yExtend = Math.min(Math.floor(yExtend), maxExtend) - 1;
           if (yExtend <= 0) {
             densities[(y * densitMapWidth) + x] += initialDensities_xy;
-            continue;
+            continue; // eslint-disable-line no-continue
           }
           // var yExtend = ext[initialDensities_xy - 1] - 1; // Get precomputed yExtend
           const sqYExtend = yExtend * yExtend;
@@ -1365,7 +1365,7 @@ export function sampleDensityMapChain(densityMapChain) {
       sample[i] = lastSample = sampleDensityMapRow(densityMapChain[i], lastSample, sample_m - i);
     }
     if (isNaN(lastSample)) {
-      continue;
+      continue; // eslint-disable-line no-continue
     }
 
     // Sample above initialSamples
@@ -1474,7 +1474,8 @@ export function computeClusterMap(densityMap, d0, d1, options) {
   const clusterMinDensities = Array.apply(null, Array(numClusters))
     .map(Number.prototype.valueOf, densityThreshold);
 
-  if (false) {
+  const enableExtensionToZeroDensity = false;
+  if (enableExtensionToZeroDensity) {
     // Extend clusters to fill entire density != 0 area
 
     const neighborQueue = new PriorityQueue('d'); // Queue of all neighbors of clusters (candidates ro be included in the cluster)

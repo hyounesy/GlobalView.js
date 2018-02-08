@@ -908,13 +908,13 @@ export function GlobalView(div, startupOptions) {
     let requireRedraw = false;
     for (const option in newOptions) {
       if (!newOptions.hasOwnProperty(option)) {
-        continue;
+        continue; // eslint-disable-line no-continue
       }
 
       // Validate option
       if (!OPTIONS.hasOwnProperty(option)) {
         libUtility.consoleWarn(`GlobalView warning: Unsupported option: ${option}`);
-        continue;
+        continue; // eslint-disable-line no-continue
       }
       const optionDefinition = OPTIONS[option];
 
@@ -932,7 +932,7 @@ export function GlobalView(div, startupOptions) {
           validationResult = optionDefinition.valid(value);
           libUtility.consoleWarn(`                    ${validationResult}`);
         }
-        continue;
+        continue; // eslint-disable-line no-continue
       }
 
       // Set option
@@ -1008,13 +1008,13 @@ export function GlobalView(div, startupOptions) {
     const errors = [];
     for (const option in newOptions) {
       if (!newOptions.hasOwnProperty(option)) {
-        continue;
+        continue; // eslint-disable-line no-continue
       }
 
       // Validate option
       if (!OPTIONS.hasOwnProperty(option)) {
         errors.push(`Unsupported option: ${option}`);
-        continue;
+        continue; // eslint-disable-line no-continue
       }
       const optionDefinition = OPTIONS[option];
 
@@ -1027,7 +1027,7 @@ export function GlobalView(div, startupOptions) {
         (libUtility.isFunction(optionDefinition.valid) &&
         (validationResult = optionDefinition.valid(value)) !== true)) {
         errors.push(`Invalid value for option ${option}: ${value}${libUtility.isString(validationResult) ? `\n    ${validationResult}` : ''}`);
-        continue;
+        continue; // eslint-disable-line no-continue
       }
     }
 
@@ -1571,7 +1571,14 @@ export function GlobalView(div, startupOptions) {
       const overlapThreshold = Math.min(0.15, 4 / imageLocations.length);
 
       const rank = Array.create(R.length, i => i);
-      rank.sort((a, b) => imageLocations[a] < imageLocations[b] ? -1 : imageLocations[a] > imageLocations[b] ? 1 : 0);
+      rank.sort((a, b) => {
+        if (imageLocations[a] < imageLocations[b]) {
+          return -1;
+        } else if (imageLocations[a] > imageLocations[b]) {
+          return 1;
+        }
+        return 0;
+      });
 
       let P = detectOverlap(R, overlapThreshold);
       for (let iter = 0; iter < maxNumIterations && P.length !== 0; iter += 1) {
@@ -1583,7 +1590,14 @@ export function GlobalView(div, startupOptions) {
 
       // Repair order
       const newRank = Array.create(R.length, i => i);
-      newRank.sort((a, b) => R[a] < R[b] ? -1 : R[a] > R[b] ? 1 : 0);
+      newRank.sort((a, b) => {
+        if (R[a] < R[b]) {
+          return -1;
+        } else if (R[a] > R[b]) {
+          return 1;
+        }
+        return 0;
+      });
       const R_repaired = new Array(R.length);
       for (let i = 0; i < R.length; i += 1) {
         R_repaired[rank[i]] = R[newRank[i]];
