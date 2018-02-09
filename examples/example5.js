@@ -33,11 +33,11 @@ domready(function () {
     pointColor: ['#A6CEE3', '#B2DF8A', '#33A02C', '#FB9A99', '#FDBF6F', '#FF7F00', '#CAB2D6', '#6A3D9A', '#FFFF99', '#4D61BF'],
     padding: [8, 152, 50, 50],
   });
-  plot.onMouseDown = plot_onMouseDown;
-  plot.onMouseOverDatapoint = plot_onMouseOverDatapoint;
-  plot.onMouseOverAxisLabel = plot_onMouseOverAxisLabel;
-  plot.onSelectionChanged = plot_onSelectionChanged;
-  plot.onLassoSelection = plot_onLassoSelection;
+  plot.onMouseDown = plotOnMouseDown;
+  plot.onMouseOverDatapoint = plotOnMouseOverDatapoint;
+  plot.onMouseOverAxisLabel = plotOnMouseOverAxisLabel;
+  plot.onSelectionChanged = plotOnSelectionChanged;
+  plot.onLassoSelection = plotOnLassoSelection;
   plot.referencePoints = plot.createPointSet('red', 1);
   plot.highlightedPoints = plot.createPointSet('red', 1);
   const csvPath = 'datasets/AICS_Cell-feature-analysis_v1.5.csv'; // 'http://homepage.univie.ac.at/a0929188/GlobalView/AICS_Cell-feature-analysis_v1.5.csv"
@@ -76,70 +76,70 @@ domready(function () {
 
 function addAllEventListeners() {
   document.getElementById('cmdSelectAll').addEventListener('click', function () {
-    cmdSelectAll_onClick(document.getElementById('cmdSelectAll'));
+    cmdSelectAllOnClick(document.getElementById('cmdSelectAll'));
   });
   document.getElementById('cmdDeselectAll').addEventListener('click', function () {
-    cmdDeselectAll_onClick(document.getElementById('cmdDeselectAll'));
+    cmdDeselectAllOnClick(document.getElementById('cmdDeselectAll'));
   });
   document.getElementById('Tom20').addEventListener('change', function () {
-    cbProtein_onChange(document.getElementById('Tom20'));
+    cbProteinOnChange(document.getElementById('Tom20'));
   });
   document.getElementById('Alpha tubulin').addEventListener('change', function () {
-    cbProtein_onChange(document.getElementById('Alpha tubulin'));
+    cbProteinOnChange(document.getElementById('Alpha tubulin'));
   });
   document.getElementById('Sec61 beta').addEventListener('change', function () {
-    cbProtein_onChange(document.getElementById('Sec61 beta'));
+    cbProteinOnChange(document.getElementById('Sec61 beta'));
   });
   document.getElementById('Alpha actinin').addEventListener('change', function () {
-    cbProtein_onChange(document.getElementById('Alpha actinin'));
+    cbProteinOnChange(document.getElementById('Alpha actinin'));
   });
   document.getElementById('Desmoplakin').addEventListener('change', function () {
-    cbProtein_onChange(document.getElementById('Desmoplakin'));
+    cbProteinOnChange(document.getElementById('Desmoplakin'));
   });
   document.getElementById('Lamin B1').addEventListener('change', function () {
-    cbProtein_onChange(document.getElementById('Lamin B1'));
+    cbProteinOnChange(document.getElementById('Lamin B1'));
   });
   document.getElementById('Fibrillarin').addEventListener('change', function () {
-    cbProtein_onChange(document.getElementById('Fibrillarin'));
+    cbProteinOnChange(document.getElementById('Fibrillarin'));
   });
   document.getElementById('Beta actin').addEventListener('change', function () {
-    cbProtein_onChange(document.getElementById('Beta actin'));
+    cbProteinOnChange(document.getElementById('Beta actin'));
   });
   document.getElementById('ZO1').addEventListener('change', function () {
-    cbProtein_onChange(document.getElementById('ZO1'));
+    cbProteinOnChange(document.getElementById('ZO1'));
   });
   document.getElementById('Myosin IIB').addEventListener('change', function () {
-    cbProtein_onChange(document.getElementById('Myosin IIB'));
+    cbProteinOnChange(document.getElementById('Myosin IIB'));
   });
   document.getElementById('cbXAxis').addEventListener('change', function () {
-    cbXAxis_onChange(document.getElementById('cbXAxis'));
+    cbXAxisOnChange(document.getElementById('cbXAxis'));
   });
   document.getElementById('cbYAxis').addEventListener('change', function () {
-    cbYAxis_onChange(document.getElementById('cbYAxis'));
+    cbYAxisOnChange(document.getElementById('cbYAxis'));
   });
 }
 
-function cmdSelectAll_onClick(sender) {
+function cmdSelectAllOnClick(sender) {
   const elements = document.querySelectorAll("input[type='checkbox']");
   for (let i = 0; i < elements.length; i += 1) {
     if (elements[i].checked === false) {
       elements[i].checked = true;
-      cbProtein_onChange(elements[i]);
+      cbProteinOnChange(elements[i]);
     }
   }
 }
 
-function cmdDeselectAll_onClick(sender) {
+function cmdDeselectAllOnClick(sender) {
   const elements = document.querySelectorAll("input[type='checkbox']");
   for (let i = 0; i < elements.length; i += 1) {
     if (elements[i].checked === true) {
       elements[i].checked = false;
-      cbProtein_onChange(elements[i]);
+      cbProteinOnChange(elements[i]);
     }
   }
 }
 
-function cbProtein_onChange(sender) {
+function cbProteinOnChange(sender) {
   const protein = sender.id;
   const proteinPoints = pointsByProtein[protein];
   if (sender.checked) {
@@ -149,17 +149,17 @@ function cbProtein_onChange(sender) {
   }
 }
 
-function cbXAxis_onChange(sender) {
+function cbXAxisOnChange(sender) {
   const columnIndex = COLUMN_NAMES.indexOf(sender.options[sender.selectedIndex].innerText);
   plot.setActiveColumn(0, columnIndex);
 }
 
-function cbYAxis_onChange(sender) {
+function cbYAxisOnChange(sender) {
   const columnIndex = COLUMN_NAMES.indexOf(sender.options[sender.selectedIndex].innerText);
   plot.setActiveColumn(1, columnIndex);
 }
 
-function plot_onMouseDown(pEvent) {
+function plotOnMouseDown(pEvent) {
   const event = pEvent;
   switch (event.button) {
     // On left mouse button: Enable point and lasso selection
@@ -173,7 +173,7 @@ function plot_onMouseDown(pEvent) {
   }
 }
 
-function plot_onMouseOverDatapoint(dataset, index) {
+function plotOnMouseOverDatapoint(dataset, index) {
   if (index === -1) {
     plot.highlightedPoints.clear();
   } else {
@@ -197,7 +197,7 @@ Tagged Protein: {1}
   }
 }
 
-function plot_onMouseOverAxisLabel(dataVector, labelRect) {
+function plotOnMouseOverAxisLabel(dataVector, labelRect) {
   const tooltip = document.getElementsByClassName('tooltip')[0];
   if (dataVector) {
     tooltip.innerHTML = dataVector.hint;
@@ -216,14 +216,14 @@ function plot_onMouseOverAxisLabel(dataVector, labelRect) {
   }
 }
 
-function plot_onSelectionChanged(dataset, selection) {
+function plotOnSelectionChanged(dataset, selection) {
   if (selection.length !== 0) {
     plot.referencePoints.append(selection);
     plot.showImages(selection, 'lowDensity');
   }
 }
 
-function plot_onLassoSelection(dataset, selection, mouseRect) {
+function plotOnLassoSelection(dataset, selection, mouseRect) {
   plot.zoomRect(mouseRect);
 }
 

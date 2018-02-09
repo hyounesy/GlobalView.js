@@ -69,8 +69,8 @@ export function GlobalView(div, startupOptions) {
     libUtility.showAlert('Error: WebGL not supported');
     return;
   }
-  const OES_element_index_uint = gl.getExtension('OES_element_index_uint');
-  if (!OES_element_index_uint) {
+  const OESElementIndexUint = gl.getExtension('OES_element_index_uint');
+  if (!OESElementIndexUint) {
     libUtility.consoleWarn('GlobalView warning: ' +
       'Unsupported WebGL extension: OES_element_index_uint');
   }
@@ -1375,7 +1375,7 @@ export function GlobalView(div, startupOptions) {
         const dataPos = dataset.dataVectors.map(v => v.getValue(index));
         let imagePos;
         if (libUtility.isUndefined(densityMap.data)) { // If densityMap is nD
-          imagePos = libAlgorithm.findClosePointOfLowDensityND_descend(
+          imagePos = libAlgorithm.findClosePointOfLowDensityNDDescend(
             dataset, index, densityMap,
             (0.6 * options.thumbnailSize) / Math.min(gl.width, gl.height),
           );
@@ -1537,9 +1537,9 @@ export function GlobalView(div, startupOptions) {
     const eigenvec = [-cov[1], cov[0] - Math.min(eigenval1, eigenval2)];
 
     // Normalize eigen vector
-    const eigenvec_length = Math.sqrt((eigenvec[0] * eigenvec[0]) + (eigenvec[1] * eigenvec[1]));
-    eigenvec[0] /= eigenvec_length;
-    eigenvec[1] /= eigenvec_length;
+    const eigenVecLength = Math.sqrt((eigenvec[0] * eigenvec[0]) + (eigenvec[1] * eigenvec[1]));
+    eigenvec[0] /= eigenVecLength;
+    eigenvec[1] /= eigenVecLength;
 
     // Define corners of AABB
     const imageSize = dataset.dataVectors.map(v =>
@@ -1696,12 +1696,12 @@ export function GlobalView(div, startupOptions) {
         }
         return 0;
       });
-      const R_repaired = new Array(R.length);
+      const repairedR = new Array(R.length);
       for (let i = 0; i < R.length; i += 1) {
-        R_repaired[rank[i]] = R[newRank[i]];
+        repairedR[rank[i]] = R[newRank[i]];
       }
 
-      imageLocations = R_repaired;
+      imageLocations = repairedR;
     }
 
     let idx = 0;

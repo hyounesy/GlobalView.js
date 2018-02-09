@@ -103,12 +103,12 @@ Array.prototype.maxIndex = function () {
 if (!String.prototype.format) {
   /**
    * Source: http://stackoverflow.com/a/4673436
-   * @param {...*} var_args
+   * @param {...*} args
    */
-  String.prototype.format = function (var_args) {
-    const args = arguments; // eslint-disable-line prefer-rest-params
+  String.prototype.format = function (args) {
+    const varArgs = arguments; // eslint-disable-line prefer-rest-params
     return this.replace(/{(\d+)}/g, function (match, number) {
-      return typeof args[number] !== 'undefined' ? args[number] : match;
+      return typeof varArgs[number] !== 'undefined' ? varArgs[number] : match;
     });
   };
 }
@@ -116,13 +116,13 @@ if (!String.prototype.format) {
    * Source: http://stackoverflow.com/a/4673436
    * @param {RegExp} pattern
    * @param {string} mismatch
-   * @param {...*} var_args
+   * @param {...*} args
    */
-String.prototype.format2 = function (pattern, mismatch, var_args) {
-  const args = arguments; // eslint-disable-line prefer-rest-params
+String.prototype.format2 = function (pattern, mismatch, args) {
+  const varArgs = arguments; // eslint-disable-line prefer-rest-params
   return this.replace(pattern, function (match, strNumber) {
     const number = Number.parseInt(strNumber, 10) + 2;
-    return typeof args[number] !== 'undefined' ? args[number] : mismatch;
+    return typeof varArgs[number] !== 'undefined' ? varArgs[number] : mismatch;
   });
 };
 
@@ -137,13 +137,13 @@ export function makeCloneable(obj) {
     if (!isCloneable(obj[prop])) {
     // If obj has at least on non-cloneable property
     // Create a new object and clone all cloneable properties into that new object
-      const obj_subset = {};
+      const objSubset = {};
       for (prop in obj) {
         if (isCloneable(obj[prop])) {
-          obj_subset[prop] = obj[prop];
+          objSubset[prop] = obj[prop];
         }
       }
-      return obj_subset;
+      return objSubset;
     }
   }
 

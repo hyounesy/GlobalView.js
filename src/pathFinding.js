@@ -23,10 +23,10 @@ export function DepthFirstSearch(problem) {
       }
 
       // Avoid already pushed states (graph search)
-      const successor_hash = problem.computeHash(successor);
-      if (libUtility.isUndefined(closed[successor_hash])) {
+      const successorHash = problem.computeHash(successor);
+      if (libUtility.isUndefined(closed[successorHash])) {
         fringe.push({ state: successor });
-        closed[successor_hash] = successor;
+        closed[successorHash] = successor;
       }
     });
     if (result !== null) {
@@ -56,10 +56,10 @@ function BreadthFirstSearch(problem) {
 
   while (true) { // eslint-disable-line no-constant-condition
     problem.forEachSuccessor(node.state, function (successor) {
-      const successor_hash = problem.computeHash(successor);
-      if (libUtility.isUndefined(closed[successor_hash])) {
+      const successorHash = problem.computeHash(successor);
+      if (libUtility.isUndefined(closed[successorHash])) {
         fringe.push({ state: successor });
-        closed[successor_hash] = successor;
+        closed[successorHash] = successor;
       }
     });
 
@@ -86,13 +86,13 @@ export function UniformCostSearch(problem) {
   closed[problem.computeHash(node.state)] = { state: node.state, prevCost: node.cost };
 
   while (true) { // eslint-disable-line no-constant-condition
-    problem.forEachSuccessor(node.state, function (successor, successor_cost) {
-      const successor_hash = problem.computeHash(successor);
-      const varSuccessor = closed[successor_hash];
+    problem.forEachSuccessor(node.state, function (successor, successorCost) {
+      const successorHash = problem.computeHash(successor);
+      const varSuccessor = closed[successorHash];
       if (libUtility.isUndefined(varSuccessor) ||
-        node.cost + successor_cost < varSuccessor.prevCost) {
-        fringe.push({ state: successor, cost: node.cost + successor_cost });
-        closed[successor_hash] = { state: successor, prevCost: node.cost + successor_cost };
+        node.cost + successorCost < varSuccessor.prevCost) {
+        fringe.push({ state: successor, cost: node.cost + successorCost });
+        closed[successorHash] = { state: successor, prevCost: node.cost + successorCost };
       }
     });
 
@@ -119,11 +119,11 @@ export function SimpleUniformCostSearch(problem) {
   closed[problem.computeHash(node.state)] = node.state;
 
   while (true) { // eslint-disable-line no-constant-condition
-    problem.forEachSuccessor(node.state, function (successor, successor_cost) {
-      const successor_hash = problem.computeHash(successor);
-      if (libUtility.isUndefined(closed[successor_hash])) {
-        fringe.push({ state: successor, cost: successor_cost });
-        closed[successor_hash] = successor;
+    problem.forEachSuccessor(node.state, function (successor, successorCost) {
+      const successorHash = problem.computeHash(successor);
+      if (libUtility.isUndefined(closed[successorHash])) {
+        fringe.push({ state: successor, cost: successorCost });
+        closed[successorHash] = successor;
       }
     });
 
@@ -152,16 +152,16 @@ export function SimpleAStarSearch(problem, heuristic) {
   closed[problem.computeHash(node.state)] = node.state;
 
   while (true) { // eslint-disable-line no-constant-condition
-    problem.forEachSuccessor(node.state, function (successor, successor_cost) {
+    problem.forEachSuccessor(node.state, function (successor, successorCost) {
       const h = problem.heuristic(successor);
-      const g = successor_cost;
+      const g = successorCost;
       if (CHECK_CONSISTENCY && g + h < node.f) {
         throw new Error('Inconsistency found in A*-search heuristic');
       }
-      const successor_hash = problem.computeHash(successor);
-      if (libUtility.isUndefined(closed[successor_hash])) {
+      const successorHash = problem.computeHash(successor);
+      if (libUtility.isUndefined(closed[successorHash])) {
         fringe.push({ state: successor, f: g + h, g });
-        closed[successor_hash] = successor;
+        closed[successorHash] = successor;
       }
     });
 
@@ -187,9 +187,9 @@ export function SimpleGreedySearch(problem) {
   let cheapestSuccessor;
   while (true) { // eslint-disable-line no-constant-condition
     cheapestSuccessor = null;
-    problem.forEachSuccessor(state, function (successor, successor_cost) {
-      if (successor_cost < cheapestCost) {
-        cheapestCost = successor_cost;
+    problem.forEachSuccessor(state, function (successor, successorCost) {
+      if (successorCost < cheapestCost) {
+        cheapestCost = successorCost;
         cheapestSuccessor = successor;
       }
     });

@@ -21,11 +21,11 @@ domready(function () {
   taOptions.value = JSON.stringify(plot.getOptions(), null, 4);
 
   document.getElementById('taOptions').addEventListener('input', function () {
-    tOptions_onChange(document.getElementById('taOptions'));
+    tOptionsOnChange(document.getElementById('taOptions'));
   });
 });
 
-function tOptions_onChange(sender) {
+function tOptionsOnChange(sender) {
   let options;
 
   try {

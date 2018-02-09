@@ -484,29 +484,29 @@ export function Dataset() {
 
   this.inflate = function fInflate(factor, densityMapChain) {
     const n = this.length;
-    const n_inflated = Math.floor(factor * n);
+    const nInflated = Math.floor(factor * n);
     const nc = this.numColumns;
-    if (isNaN(n_inflated) || n_inflated <= n) {
+    if (isNaN(nInflated) || nInflated <= n) {
       return;
     }
     const fdata = this.fdata;
-    const fdata_inflated = new Float32Array(n_inflated * nc);
+    const fdataInflated = new Float32Array(nInflated * nc);
     const data = this.data;
-    const data_inflated = new Array(n_inflated * nc);
+    const dataInflated = new Array(nInflated * nc);
 
     for (let i = 0, len = n * nc; i < len; i += 1) {
-      fdata_inflated[i] = fdata[i];
+      fdataInflated[i] = fdata[i];
     }
     for (let i = 0, len = n * nc; i < len; i += 1) {
-      data_inflated[i] = data[i];
+      dataInflated[i] = data[i];
     }
 
     let column;
     let samples;
     let sample;
     const sampleScale = 1 / densityMapChain[0].size;
-    for (let i, i_inflated = n, len = n * nc; i_inflated < n_inflated; i_inflated += 1) {
-      i = i_inflated % n;
+    for (let i, iInflated = n, len = n * nc; iInflated < nInflated; iInflated += 1) {
+      i = iInflated % n;
 
       samples = libAlgorithm.sampleDensityMapChain(densityMapChain);
       for (let c = 0; c < nc; c += 1) {
@@ -515,64 +515,64 @@ export function Dataset() {
 
         if (column.values) {
           // If column is qualitative
-          fdata_inflated[(i_inflated * nc) + c] =
+          fdataInflated[(iInflated * nc) + c] =
           sample =
             Math.max(0, Math.min(column.values.length - 1, Math.round(sample)));
-          data_inflated[(i_inflated * nc) + c] = column.values[sample];
+          dataInflated[(iInflated * nc) + c] = column.values[sample];
         } else {
           // If column is numeric
-          fdata_inflated[(i_inflated * nc) + c] = sample;
-          data_inflated[(i_inflated * nc) + c] = sample;
+          fdataInflated[(iInflated * nc) + c] = sample;
+          dataInflated[(iInflated * nc) + c] = sample;
         }
       }
     }
-    this.fdata = fdata_inflated;
-    this.data = data_inflated;
+    this.fdata = fdataInflated;
+    this.data = dataInflated;
 
     if (this.names !== null) {
       const names = /** @type {Array<string>} */ (this.names);
-      const names_inflated = new Array(n_inflated);
+      const namesInflated = new Array(nInflated);
       for (let i = 0, len = n; i < len; i += 1) {
-        names_inflated[i] = names[i];
+        namesInflated[i] = names[i];
       }
-      for (let index = 0, i_inflated = n, len = n * nc; i_inflated < n_inflated; i_inflated += 1) {
-        names_inflated[i_inflated] = `generated datapoint ${index += 1}`;
+      for (let index = 0, iInflated = n, len = n * nc; iInflated < nInflated; iInflated += 1) {
+        namesInflated[iInflated] = `generated datapoint ${index += 1}`;
       }
-      this.names = names_inflated;
+      this.names = namesInflated;
     }
 
     if (this.imageFilenames !== null) {
       const imageFilenames = /** @type {Array<string>} */ (this.imageFilenames);
-      const imageFilenames_inflated = new Array(n_inflated);
+      const imageFilenamesInflated = new Array(nInflated);
       for (let i = 0, len = n; i < len; i += 1) {
-        imageFilenames_inflated[i] = imageFilenames[i];
+        imageFilenamesInflated[i] = imageFilenames[i];
       }
-      for (let i_inflated = n, len = n * nc; i_inflated < n_inflated; i_inflated += 1) {
-        imageFilenames_inflated[i_inflated] = imageFilenames[i_inflated % n];
+      for (let iInflated = n, len = n * nc; iInflated < nInflated; iInflated += 1) {
+        imageFilenamesInflated[iInflated] = imageFilenames[iInflated % n];
       }
-      this.imageFilenames = imageFilenames_inflated;
+      this.imageFilenames = imageFilenamesInflated;
     }
 
-    this.length = n_inflated;
+    this.length = nInflated;
   };
 
   this.save = function fSave(filename, nameColumnIndex, nameColumnLabel) {
     let nameColumn = nameColumnIndex;
     const nc = this.numColumns;
-    let csv_nc;
+    let csvNumCols;
     if (this.names &&
       !libUtility.isUndefined(nameColumn) && !libUtility.isUndefined(nameColumnLabel)) {
-      csv_nc = nc + 1;
+      csvNumCols = nc + 1;
     } else {
       nameColumn = -1;
-      csv_nc = nc;
+      csvNumCols = nc;
     }
 
     const csv = new Array(this.length + 1); // +1 ... Header row
 
     // Create csv header array
-    const header = new Array(csv_nc);
-    for (let c = 0, ci = 0; c < csv_nc; c += 1, ci += 1) {
+    const header = new Array(csvNumCols);
+    for (let c = 0, ci = 0; c < csvNumCols; c += 1, ci += 1) {
       if (c === nameColumn) {
         header[c] = nameColumnLabel;
         ci -= 1;
@@ -584,8 +584,8 @@ export function Dataset() {
 
     // Create csv body arrays
     for (let i = 0; i < this.length; i += 1) {
-      const row = new Array(csv_nc);
-      for (let c = 0, ci = 0; c < csv_nc; c += 1, ci += 1) {
+      const row = new Array(csvNumCols);
+      for (let c = 0, ci = 0; c < csvNumCols; c += 1, ci += 1) {
         if (c === nameColumn) {
           row[c] = this.names[i];
           ci -= 1;

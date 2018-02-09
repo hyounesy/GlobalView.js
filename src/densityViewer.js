@@ -257,12 +257,12 @@ export function DensityViewer(gl, globalView) {
 
     const repellPoint = function (
       pBody,
-      point_x, point_y,
+      pointX, pointY,
       minDist, minDistMagnitude, maxDist, maxDistMagnitude,
     ) {
       const body = pBody;
-      const dx = body.x - point_x;
-      const dy = body.y - point_y;
+      const dx = body.x - pointX;
+      const dy = body.y - pointY;
       let dist = Math.sqrt((dx * dx) + (dy * dy));
 
       if (dist < minDist) {
@@ -280,15 +280,15 @@ export function DensityViewer(gl, globalView) {
     };
 
     for (let i = 0; i < bodies.length; i += 1) {
-      const sample_x = Math.floor(bodies[i].x);
-      const sample_y = Math.floor(bodies[i].y);
-      const density = densityMap[(sample_x * width) + sample_y];
+      const sampleX = Math.floor(bodies[i].x);
+      const sampleY = Math.floor(bodies[i].y);
+      const density = densityMap[(sampleX * width) + sampleY];
       let bestDir = null;
       let lowestDensity = density;
       [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]]
         .forEach(function (dir) {
-          const x = sample_x + dir[0];
-          const y = sample_y + dir[1];
+          const x = sampleX + dir[0];
+          const y = sampleY + dir[1];
           if (x >= xMin && x < xMax && y >= yMin && y < yMax) {
             const density = densityMap[(y * width) + x];
             if (density < lowestDensity) {

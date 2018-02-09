@@ -51,8 +51,8 @@ export function CoordinateSystem(gl, globalView) {
     },
   ];
 
-  /** @type {number} */ let xTickLabel_top = 0;
-  /** @type {number} */ let yTickLabel_left = 0;
+  /** @type {number} */ let xTickLabelTop = 0;
+  /** @type {number} */ let yTickLabelLeft = 0;
 
   this.visible = [true, true];
   this.render = function (flipY, plotBounds) {
@@ -96,7 +96,7 @@ export function CoordinateSystem(gl, globalView) {
     // >>> Draw ticks and tick labels
 
     // Draw x-axis ticks and tick labels
-    xTickLabel_top = 0;
+    xTickLabelTop = 0;
     if (this.visible[0]) {
       const axis = axes[0];
       libGlMatrix.mat4.identity(mattrans);
@@ -130,10 +130,10 @@ export function CoordinateSystem(gl, globalView) {
           (gl.height - plotBounds.y) + axis.tickLength + 2, 'topcenter',
         );
       }
-      xTickLabel_top = (gl.height - plotBounds.y) + axis.tickLength + 10 + gl.measureTextHeight();
+      xTickLabelTop = (gl.height - plotBounds.y) + axis.tickLength + 10 + gl.measureTextHeight();
     }
     // Draw y-axis ticks and tick labels
-    yTickLabel_left = 0;
+    yTickLabelLeft = 0;
     if (this.visible[1]) {
       const axis = axes[1];
       libGlMatrix.mat4.identity(mattrans);
@@ -162,24 +162,24 @@ export function CoordinateSystem(gl, globalView) {
         libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -tickPos, 0.0]);
 
         const tickLabel = axis.values ? axis.values[y] : y.toPrecision(6) / 1;
-        yTickLabel_left = Math.max(yTickLabel_left, gl.measureTextWidth(tickLabel));
+        yTickLabelLeft = Math.max(yTickLabelLeft, gl.measureTextWidth(tickLabel));
         gl.drawText(
           tickLabel, plotBounds.x - axis.tickLength - 2,
           gl.height - plotBounds.y - (plotBounds.height * tickPos), 'middleright',
         );
       }
-      yTickLabel_left = Math.ceil(plotBounds.x - axis.tickLength - 10 - yTickLabel_left);
+      yTickLabelLeft = Math.ceil(plotBounds.x - axis.tickLength - 10 - yTickLabelLeft);
     }
 
     // >>> Draw axis labels
 
     // Draw x-axis label
     if (this.visible[0] && axes[0].label) {
-      gl.drawText(axes[0].label, plotBounds.x + (plotBounds.width / 2), xTickLabel_top, 'topcenter');
+      gl.drawText(axes[0].label, plotBounds.x + (plotBounds.width / 2), xTickLabelTop, 'topcenter');
     }
     if (this.visible[1] && axes[1].label) {
       gl.drawText(
-        axes[1].label, yTickLabel_left,
+        axes[1].label, yTickLabelLeft,
         gl.height - plotBounds.y - (plotBounds.height / 2), 'bottomcenter', -Math.PI / 2,
       );
     }
@@ -305,16 +305,16 @@ export function CoordinateSystem(gl, globalView) {
       const plotCenter = plotBounds.x + (plotBounds.width / 2);
       if (p[0] >= plotCenter - halfTextWidth &&
         p[0] < plotCenter + halfTextWidth &&
-        p[1] >= xTickLabel_top &&
-        p[1] <= xTickLabel_top + gl.measureTextHeight() + 2) {
+        p[1] >= xTickLabelTop &&
+        p[1] <= xTickLabelTop + gl.measureTextHeight() + 2) {
         return 0;
       }
     }
     if (this.visible[1]) {
       const halfTextWidth = gl.measureTextWidth(axes[1].label) / 2;
       const plotCenter = gl.height - plotBounds.y - (plotBounds.height / 2);
-      if (p[0] >= yTickLabel_left - gl.measureTextHeight() &&
-        p[0] <= yTickLabel_left + 2 &&
+      if (p[0] >= yTickLabelLeft - gl.measureTextHeight() &&
+        p[0] <= yTickLabelLeft + 2 &&
         p[1] >= plotCenter - halfTextWidth &&
         p[1] < plotCenter + halfTextWidth) {
         return 1;
@@ -333,8 +333,8 @@ export function CoordinateSystem(gl, globalView) {
         return {
           l: plotCenter - halfTextWidth,
           r: plotCenter + halfTextWidth,
-          t: xTickLabel_top,
-          b: xTickLabel_top + gl.measureTextHeight() + 2,
+          t: xTickLabelTop,
+          b: xTickLabelTop + gl.measureTextHeight() + 2,
         };
       }
 
@@ -345,8 +345,8 @@ export function CoordinateSystem(gl, globalView) {
         const halfTextWidth = gl.measureTextWidth(axes[1].label) / 2;
         const plotCenter = gl.height - plotBounds.y - (plotBounds.height / 2);
         return {
-          l: yTickLabel_left - gl.measureTextHeight(),
-          r: yTickLabel_left + 2,
+          l: yTickLabelLeft - gl.measureTextHeight(),
+          r: yTickLabelLeft + 2,
           t: plotCenter - halfTextWidth,
           b: plotCenter + halfTextWidth,
         };

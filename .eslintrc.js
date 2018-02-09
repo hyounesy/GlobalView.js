@@ -13,5 +13,6 @@ module.exports = {
   },
   "rules": {
     'no-use-before-define': ['error', { functions: false, classes: true, variables: true }], // allow functions
+    'func-names': 0, // instead of warn
   },
 };

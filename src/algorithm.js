@@ -303,10 +303,10 @@ export function computeDensityMap(histogram, options) {
 
   // Compute a measure of expected runtime
   let expectedRuntime = 0;
-  let newBounds_l = Number.MAX_VALUE;
-  let newBounds_r = Number.MIN_VALUE;
-  let newBounds_t = Number.MAX_VALUE;
-  let newBounds_b = Number.MIN_VALUE;
+  let newBoundsL = Number.MAX_VALUE;
+  let newBoundsR = Number.MIN_VALUE;
+  let newBoundsT = Number.MAX_VALUE;
+  let newBoundsB = Number.MIN_VALUE;
   tik();
   if (inflateToFit) {
     for (let y = 0; y < height; y += 1) {
@@ -317,10 +317,10 @@ export function computeDensityMap(histogram, options) {
           r = Math.max(1, Math.min(maxExtend, r));
 
           expectedRuntime += r * r * Math.PI;
-          newBounds_l = Math.min(newBounds_l, x - r);
-          newBounds_r = Math.max(newBounds_r, x + r);
-          newBounds_t = Math.min(newBounds_t, y - r);
-          newBounds_b = Math.max(newBounds_b, y + r);
+          newBoundsL = Math.min(newBoundsL, x - r);
+          newBoundsR = Math.max(newBoundsR, x + r);
+          newBoundsT = Math.min(newBoundsT, y - r);
+          newBoundsB = Math.max(newBoundsB, y + r);
         }
       }
     }
@@ -381,10 +381,10 @@ export function computeDensityMap(histogram, options) {
 
     // Recompute expected runtime
     expectedRuntime = 0;
-    newBounds_l = Number.MAX_VALUE;
-    newBounds_r = Number.MIN_VALUE;
-    newBounds_t = Number.MAX_VALUE;
-    newBounds_b = Number.MIN_VALUE;
+    newBoundsL = Number.MAX_VALUE;
+    newBoundsR = Number.MIN_VALUE;
+    newBoundsT = Number.MAX_VALUE;
+    newBoundsB = Number.MIN_VALUE;
     tik();
     if (inflateToFit) {
       for (let y = 0; y < height; y += 1) {
@@ -396,10 +396,10 @@ export function computeDensityMap(histogram, options) {
             r = Math.max(1, Math.min(maxExtend, r));
 
             expectedRuntime += r * r * Math.PI;
-            newBounds_l = Math.min(newBounds_l, x - r);
-            newBounds_r = Math.max(newBounds_r, x + r);
-            newBounds_t = Math.min(newBounds_t, y - r);
-            newBounds_b = Math.max(newBounds_b, y + r);
+            newBoundsL = Math.min(newBoundsL, x - r);
+            newBoundsR = Math.max(newBoundsR, x + r);
+            newBoundsT = Math.min(newBoundsT, y - r);
+            newBoundsB = Math.max(newBoundsB, y + r);
           }
         }
       }
@@ -437,17 +437,17 @@ export function computeDensityMap(histogram, options) {
       // Inflate output size to keep a 1-pixel-wide frame of zeros around the density map
       // This allows algorithms that march through densities to stay
       // within density map bounds without explictly checking
-      newBounds_l -= 1;
-      newBounds_r += 1;
-      newBounds_t -= 1;
-      newBounds_b += 1;
+      newBoundsL -= 1;
+      newBoundsR += 1;
+      newBoundsT -= 1;
+      newBoundsB += 1;
     }
 
-    densitMapWidth = (newBounds_r - newBounds_l) + 1;
-    densitMapHeight = (newBounds_b - newBounds_t) + 1;
+    densitMapWidth = (newBoundsR - newBoundsL) + 1;
+    densitMapHeight = (newBoundsB - newBoundsT) + 1;
 
-    transform[1] -= newBounds_l;
-    transform[3] -= newBounds_t;
+    transform[1] -= newBoundsL;
+    transform[3] -= newBoundsT;
   } else {
     densitMapWidth = width;
     densitMapHeight = height;
@@ -491,14 +491,14 @@ export function computeDensityMap(histogram, options) {
     for (let y = 0; y < height; y += 1) {
       for (let x = 0; x < width; x += 1) {
         if (initialDensities[(y * width) + x] !== 0.0) {
-          const initialDensities_xy = initialDensities[(y * width) + x];
+          const initialDensitiesXY = initialDensities[(y * width) + x];
 
           // Compute extend of gaussian with value initialDensities_xy -> yExtend
           let yExtend = Math.sqrt(Math.log(cutoffIntensity /
-            initialDensities_xy) / normalizedGaussScale);
+            initialDensitiesXY) / normalizedGaussScale);
           yExtend = Math.min(Math.floor(yExtend), maxExtend) - 1;
           if (yExtend <= 0) {
-            densities[(y * densitMapWidth) + x] += initialDensities_xy;
+            densities[(y * densitMapWidth) + x] += initialDensitiesXY;
             continue; // eslint-disable-line no-continue
           }
           // var yExtend = ext[initialDensities_xy - 1] - 1; // Get precomputed yExtend
@@ -509,8 +509,8 @@ export function computeDensityMap(histogram, options) {
             const xExtend = Math.floor(Math.sqrt(sqYExtend - ((yy - y) * (yy - y))));
 
             for (let xx = x - xExtend, xend = x + xExtend; xx <= xend; xx += 1) {
-              densities[(((yy - newBounds_t) * densitMapWidth) + xx) - newBounds_l] +=
-                initialDensities_xy * gauss[(Math.abs(y - yy) * maxExtend) + Math.abs(x - xx)];
+              densities[(((yy - newBoundsT) * densitMapWidth) + xx) - newBoundsL] +=
+                initialDensitiesXY * gauss[(Math.abs(y - yy) * maxExtend) + Math.abs(x - xx)];
             }
           }
         }
@@ -520,14 +520,14 @@ export function computeDensityMap(histogram, options) {
     for (let y = 0; y < height; y += 1) {
       for (let x = 0; x < width; x += 1) {
         if (initialDensities[(y * width) + x] !== 0.0) {
-          const initialDensities_xy = initialDensities[(y * width) + x];
+          const initialDensitiesXY = initialDensities[(y * width) + x];
 
           // Compute extend of gaussian with value initialDensities_xy -> yExtend
           let yExtend = Math.sqrt(Math.log(cutoffIntensity /
-            initialDensities_xy) / normalizedGaussScale);
+            initialDensitiesXY) / normalizedGaussScale);
           yExtend = Math.min(Math.floor(yExtend), maxExtend) - 1;
           if (yExtend <= 0) {
-            densities[(y * densitMapWidth) + x] += initialDensities_xy;
+            densities[(y * densitMapWidth) + x] += initialDensitiesXY;
             continue; // eslint-disable-line no-continue
           }
           // var yExtend = ext[initialDensities_xy - 1] - 1; // Get precomputed yExtend
@@ -543,7 +543,7 @@ export function computeDensityMap(histogram, options) {
               xend = Math.min(densitMapWidth - 1, x + xExtend);
               xx <= xend; xx += 1) {
               densities[(yy * densitMapWidth) + xx] +=
-                initialDensities_xy * gauss[(Math.abs(y - yy) * maxExtend) + Math.abs(x - xx)];
+                initialDensitiesXY * gauss[(Math.abs(y - yy) * maxExtend) + Math.abs(x - xx)];
             }
           }
         }
@@ -558,10 +558,10 @@ export function computeDensityMap(histogram, options) {
 
   // Compute overall bounds of density map
   minDensity = Number.MAX_VALUE; maxDensity = Number.MIN_VALUE;
-  newBounds_l = densitMapWidth - 1;
-  newBounds_r = 0;
-  newBounds_t = densitMapHeight - 1;
-  newBounds_b = 0;
+  newBoundsL = densitMapWidth - 1;
+  newBoundsR = 0;
+  newBoundsT = densitMapHeight - 1;
+  newBoundsB = 0;
   for (let y = 0, i = 0; y < densitMapHeight; y += 1) {
     for (let x = 0; x < densitMapWidth; x += 1, i += 1) {
       const density = logScale ? Math.log(densities[i]) : densities[i];
@@ -569,10 +569,10 @@ export function computeDensityMap(histogram, options) {
         densities[i] = density;
         minDensity = Math.min(minDensity, density);
         maxDensity = Math.max(maxDensity, density);
-        newBounds_l = Math.min(newBounds_l, x);
-        newBounds_r = Math.max(newBounds_r, x);
-        newBounds_t = Math.min(newBounds_t, y);
-        newBounds_b = Math.max(newBounds_b, y);
+        newBoundsL = Math.min(newBoundsL, x);
+        newBoundsR = Math.max(newBoundsR, x);
+        newBoundsT = Math.min(newBoundsT, y);
+        newBoundsB = Math.max(newBoundsB, y);
       } else {
         densities[i] = 0.0;
       }
@@ -584,22 +584,22 @@ export function computeDensityMap(histogram, options) {
       // Inflate output size to keep a 1-pixel-wide frame of zeros around the density map
       // This allows algorithms that march through densities to stay
       // within density map bounds without explictly checking
-      newBounds_l -= 1;
-      newBounds_r += 1;
-      newBounds_t -= 1;
-      newBounds_b += 1;
+      newBoundsL -= 1;
+      newBoundsR += 1;
+      newBoundsT -= 1;
+      newBoundsB += 1;
     }
 
-    transform[1] -= newBounds_l;
-    transform[3] -= newBounds_t;
+    transform[1] -= newBoundsL;
+    transform[3] -= newBoundsT;
 
     // Shrink density map to exclude non-empty area
-    const resizedDensitMapWidth = Math.max(0, (newBounds_r - newBounds_l) + 1);
-    const resizedDensitMapHeight = Math.max(0, (newBounds_b - newBounds_t) + 1);
+    const resizedDensitMapWidth = Math.max(0, (newBoundsR - newBoundsL) + 1);
+    const resizedDensitMapHeight = Math.max(0, (newBoundsB - newBoundsT) + 1);
     const resizedDensityMapLength = resizedDensitMapWidth * resizedDensitMapHeight;
     const resizedDensities = new Float32Array(resizedDensityMapLength);
     if (resizedDensities.length !== 0) {
-      for (let y = 0, i = 0, j = newBounds_l + (newBounds_t * densitMapWidth);
+      for (let y = 0, i = 0, j = newBoundsL + (newBoundsT * densitMapWidth);
         y < resizedDensitMapHeight; y += 1, j += densitMapWidth - resizedDensitMapWidth) {
         for (let x = 0; x < resizedDensitMapWidth; x += 1, i += 1, j += 1) {
           resizedDensities[i] = densities[j];
@@ -710,8 +710,8 @@ export function findRepresentativePoints(dataset, d0, d1, densityMap, k, dist, t
 
   // Find k representative points
   const sqDist = dist * dist;
-  let d_high = indices.length - 1;
-  let d_low = 0;
+  let dHigh = indices.length - 1;
+  let dLow = 0;
   let pointIsHigh;
   let numHighRepresentativePoints = 0;
   let ratio = 0.5; // Initial ratio is "fifty-fifty"
@@ -719,27 +719,27 @@ export function findRepresentativePoints(dataset, d0, d1, densityMap, k, dist, t
     if (ratio < targetRatio || (ratio === targetRatio && targetRatio >= 0.5)) {
       // If ratio is too low or ratio is perfect and targetRatio is high
       pointIsHigh = 1;
-      d_high -= 1;
-      return d_high + 1; // Retrieve next high density data point
+      dHigh -= 1;
+      return dHigh + 1; // Retrieve next high density data point
     }
     // If ratio is too high or ratio is perfect and targetRatioChoose k characteristic
     // points from the given dataset based on the given density map is low
     pointIsHigh = 0;
-    d_low += 1;
-    return d_low - 1; // Retrieve next low density data point
+    dLow += 1;
+    return dLow - 1; // Retrieve next low density data point
   };
   const representativePoints = [indices[next()]]; // Set first represenatative point
   numHighRepresentativePoints += pointIsHigh;
   ratio = numHighRepresentativePoints / representativePoints.length;
-  while (d_high >= d_low && representativePoints.length < k) {
+  while (dHigh >= dLow && representativePoints.length < k) {
     const di = indices[next()];
-    const di_0 = densityMap.transformX(v0.getValue(di)) / densityMap.width;
-    const di_1 = densityMap.transformY(v1.getValue(di)) / densityMap.height;
+    const di0 = densityMap.transformX(v0.getValue(di)) / densityMap.width;
+    const di1 = densityMap.transformY(v1.getValue(di)) / densityMap.height;
 
     if (representativePoints.every(function (p) {
       const p0 = densityMap.transformX(v0.getValue(p)) / densityMap.width;
       const p1 = densityMap.transformY(v1.getValue(p)) / densityMap.height;
-      return Math.pow(p0 - di_0, 2) + Math.pow(p1 - di_1, 2) > sqDist;
+      return Math.pow(p0 - di0, 2) + Math.pow(p1 - di1, 2) > sqDist;
     })) {
       representativePoints.push(di);
       numHighRepresentativePoints += pointIsHigh;
@@ -846,19 +846,19 @@ export function findRepresentativePointsND(dataset, densityMap, numPointsToRetur
   // Find k representative points
   const sqDist = dist * dist;
   const dpsq = new Float32Array(nc);
-  let d_high = indices.length - 1;
-  let d_low = 0;
+  let dHigh = indices.length - 1;
+  let dLow = 0;
   // First represenatative point is point with highest density
-  const representativePoints = [indices[d_high]];
-  d_high -= 1;
-  while (d_high >= d_low && representativePoints.length < numPointsToReturn) {
+  const representativePoints = [indices[dHigh]];
+  dHigh -= 1;
+  while (dHigh >= dLow && representativePoints.length < numPointsToReturn) {
     let di;
     if (representativePoints.length % 2 === 1) {
-      di = indices[d_low];
-      d_low += 1;
+      di = indices[dLow];
+      dLow += 1;
     } else {
-      di = indices[d_high];
-      d_high -= 1;
+      di = indices[dHigh];
+      dHigh -= 1;
     }
     for (let c = 0; c < nc; c += 1) {
       p[c] = data[(di * nc) + c] * scales[c];
@@ -1138,7 +1138,7 @@ export function downloadStencilMap(stencilMap, outputFileName) {
  * @return {Array<number>} 2D coordinates of the found point in data space
  * @deprecated Use {@link findClosePointOfLowDensity} instead
  */
-export function findClosePointOfLowDensity_descend(
+export function findClosePointOfLowDensityDescend(
   dataset, d0, d1, p,
   densityMap, minDistX, minDistY,
 ) {
@@ -1226,7 +1226,7 @@ export function findClosePointOfLowDensity_descend(
 }
 
 /**
- * @summary N-dimensional version of {@link findClosePointOfLowDensity_descend}
+ * @summary N-dimensional version of {@link findClosePointOfLowDensityDescend}
  * @package
  * @param  {Dataset} dataset
  * @param  {number} p Index of the reference point
@@ -1238,7 +1238,7 @@ export function findClosePointOfLowDensity_descend(
  * @deprecated This function is slow and yields unsatisfying results.
  *             Consider using 2D algorithms instead.
  */
-export function findClosePointOfLowDensityND_descend(dataset, p, densityMap, minDist) {
+export function findClosePointOfLowDensityNDDescend(dataset, p, densityMap, minDist) {
   const data = dataset.fdata;
   const n = dataset.length;
   const nc = dataset.numColumns;
@@ -1393,18 +1393,18 @@ export function sampleDensityMap(densityMap) {
   const height = densityMap.height;
   const scale = densityMap.maximum;
 
-  let sample_x;
-  let sample_y;
-  let sample_d;
+  let sampleX;
+  let sampleY;
+  let sampleD;
   // var nAttempts = 0;
   do {
-    sample_x = Math.random() * width;
-    sample_y = Math.random() * height;
-    sample_d = Math.random() * scale;
+    sampleX = Math.random() * width;
+    sampleY = Math.random() * height;
+    sampleD = Math.random() * scale;
     // nAttempts += 1;
-  } while (densityMap.data[(Math.floor(sample_y) * width) + Math.floor(sample_x)] < sample_d);
+  } while (densityMap.data[(Math.floor(sampleY) * width) + Math.floor(sampleX)] < sampleD);
 
-  return [sample_x, sample_y];
+  return [sampleX, sampleY];
 }
 /**
  * This function uses rejection sampling
@@ -1427,15 +1427,15 @@ export function sampleDensityMapRow(densityMap, sampleCol, maxIterations) {
   const scale = densityMap.maximum;
   const sampleY = Math.floor(sampleCol) * height;
 
-  let sample_x;
-  let sample_d;
+  let sampleX;
+  let sampleD;
   do {
-    sample_x = Math.random() * width;
-    sample_d = Math.random() * scale;
+    sampleX = Math.random() * width;
+    sampleD = Math.random() * scale;
     varMaxIterations -= 1;
-  } while (varMaxIterations && densityMap.data[sampleY + Math.floor(sample_x)] < sample_d);
+  } while (varMaxIterations && densityMap.data[sampleY + Math.floor(sampleX)] < sampleD);
 
-  return densityMap.data[sampleY + Math.floor(sample_x)] >= sample_d ? sample_x : NaN;
+  return densityMap.data[sampleY + Math.floor(sampleX)] >= sampleD ? sampleX : NaN;
 }
 /**
  * This function uses rejection sampling
@@ -1457,17 +1457,17 @@ export function sampleDensityMapColumn(densityMap, sampleRow, maxIterations) {
   const height = densityMap.height;
   const scale = densityMap.maximum;
   const sampleX = Math.floor(sampleRow);
+  let sampleY;
+  let sampleD;
 
-  let sample_y;
-  let sample_d;
   do {
-    sample_y = Math.random() * height;
-    sample_d = Math.random() * scale;
+    sampleY = Math.random() * height;
+    sampleD = Math.random() * scale;
     varMaxIterations -= 1;
   } while (varMaxIterations &&
-      densityMap.data[(Math.floor(sample_y) * width) + sampleX] < sample_d);
+      densityMap.data[(Math.floor(sampleY) * width) + sampleX] < sampleD);
 
-  return densityMap.data[(Math.floor(sample_y) * width) + sampleX] >= sample_d ? sample_y : NaN;
+  return densityMap.data[(Math.floor(sampleY) * width) + sampleX] >= sampleD ? sampleY : NaN;
 }
 
 /**
@@ -1483,20 +1483,20 @@ export function sampleDensityMapChain(densityMapChain) {
   const sample = new Array(chainLength + 1);
 
   // Pick an initial densityMap from the chain
-  const sample_m = Math.floor(Math.random() * chainLength);
+  const sampleM = Math.floor(Math.random() * chainLength);
 
   let i;
   let lastSample;
   do {
     // Sample the initial map
-    const initialSamples = sampleDensityMap(densityMapChain[sample_m]);
-    sample[sample_m] = initialSamples[0];
-    sample[sample_m + 1] = initialSamples[1];
+    const initialSamples = sampleDensityMap(densityMapChain[sampleM]);
+    sample[sampleM] = initialSamples[0];
+    sample[sampleM + 1] = initialSamples[1];
 
     // Sample below initialSamples
     lastSample = initialSamples[0];
-    for (i = sample_m - 1; i >= 0 && !isNaN(lastSample); i -= 1) {
-      sample[i] = lastSample = sampleDensityMapRow(densityMapChain[i], lastSample, sample_m - i);
+    for (i = sampleM - 1; i >= 0 && !isNaN(lastSample); i -= 1) {
+      sample[i] = lastSample = sampleDensityMapRow(densityMapChain[i], lastSample, sampleM - i);
     }
     if (isNaN(lastSample)) {
       continue; // eslint-disable-line no-continue
@@ -1504,10 +1504,10 @@ export function sampleDensityMapChain(densityMapChain) {
 
     // Sample above initialSamples
     lastSample = initialSamples[1];
-    for (i = sample_m + 1; i < chainLength && !isNaN(lastSample); i += 1) {
+    for (i = sampleM + 1; i < chainLength && !isNaN(lastSample); i += 1) {
       sample[i + 1] =
       lastSample =
-      sampleDensityMapColumn(densityMapChain[i], lastSample, i - sample_m);
+      sampleDensityMapColumn(densityMapChain[i], lastSample, i - sampleM);
     }
   } while (isNaN(lastSample));
 

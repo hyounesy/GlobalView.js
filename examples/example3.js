@@ -27,12 +27,12 @@ domready(function () {
 
   const rangeNumLeafs = document.getElementById('rangeNumLeafs');
   rangeNumLeafs.addEventListener('input', function () {
-    rangeNumLeafs_oninput(rangeNumLeafs);
+    rangeNumLeafsOninput(rangeNumLeafs);
   }, false);
-  rangeNumLeafs_oninput(rangeNumLeafs);
+  rangeNumLeafsOninput(rangeNumLeafs);
 });
 
-function rangeNumLeafs_oninput(sender) {
+function rangeNumLeafsOninput(sender) {
   const numLeafs = Number.parseInt(sender.value, 10);
   document.getElementById('spanNumLeafs').innerText = `Number of leafs: ${numLeafs}`;
   plot.setOption('customPointShape', `{ float r = length(p), f = sin(0.5 * ${numLeafs}.0 * atan(p.x, p.y)); return pow(clamp(abs(f) - r, 0.0, 1.0), 0.5); }`);

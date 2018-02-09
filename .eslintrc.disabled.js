@@ -287,7 +287,8 @@ module.exports = {
         "array-element-newline": 0,             // enforce line breaks after each array element
         "block-spacing": 0,                     // disallow or enforce spaces inside of blocks after opening block and before closing block
         "brace-style": 2,                       // enforce consistent brace style for blocks
-        "camelcase": 0,                         // enforce camelcase naming convention
+        // require camel case names
+        camelcase: ['error', { properties: 'never' }],
         "capitalized-comments": 0,              // enforce or disallow capitalization of the first letter of a comment
         // require trailing commas in multiline object literals
         'comma-dangle': ['error', {

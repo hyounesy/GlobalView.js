@@ -154,7 +154,7 @@ export function Colormap(gl, globalView) {
     // >>> Draw ticks and tick labels
 
     // Draw y-axis ticks and tick labels
-    let tickLabel_left = 0.0;
+    let tickLabelLeft = 0.0;
     libGlMatrix.mat4.identity(mattrans);
     if (flipY === true) {
       libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
@@ -184,7 +184,7 @@ export function Colormap(gl, globalView) {
       libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -tickPos, 0.0]);
 
       const tickLabel = axis.values ? axis.values[y] : y.toPrecision(6) / 1;
-      tickLabel_left = Math.max(tickLabel_left, gl.measureTextWidth(tickLabel));
+      tickLabelLeft = Math.max(tickLabelLeft, gl.measureTextWidth(tickLabel));
       gl.drawText(
         tickLabel,
         plotBounds.x + plotBounds.width + COLORMAP_WIDTH + axis.tickLength + 2,
@@ -192,15 +192,15 @@ export function Colormap(gl, globalView) {
         'middleleft',
       );
     }
-    tickLabel_left = Math.ceil(plotBounds.x +
+    tickLabelLeft = Math.ceil(plotBounds.x +
       plotBounds.width + COLORMAP_WIDTH +
-      axis.tickLength + 10 + tickLabel_left);
+      axis.tickLength + 10 + tickLabelLeft);
 
     // >>> Draw axis label
 
     if (axis.label) {
       gl.drawText(
-        axis.label, tickLabel_left, gl.height - plotBounds.y - (plotBounds.height / 2),
+        axis.label, tickLabelLeft, gl.height - plotBounds.y - (plotBounds.height / 2),
         'topcenter', -Math.PI / 2,
       );
     }

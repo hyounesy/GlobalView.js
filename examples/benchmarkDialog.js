@@ -26,7 +26,7 @@ export default function BenchmarkDialog(paramPlot) {
   const pbPass = $('#pbPass');
   const progressLabel = $('.progress-label');
   const tblResults = $('#tblResults');
-  let tblResults_body;
+  let tblResultsBody;
   pbOverall.progressbar({
     value: false,
     change() {
@@ -53,10 +53,10 @@ export default function BenchmarkDialog(paramPlot) {
   }
   function reportHeader(header) {
     tblResults.append(`<thead><tr><th>${header.join('</th><th>')}</th></tr></thead>`);
-    tblResults_body = tblResults.append('<tbody></tbody>');
+    tblResultsBody = tblResults.append('<tbody></tbody>');
   }
   function reportResult(row) {
-    tblResults_body.append(`<tr><td>${row.join('</td><td>')}</td></tr>`);
+    tblResultsBody.append(`<tr><td>${row.join('</td><td>')}</td></tr>`);
   }
 
 

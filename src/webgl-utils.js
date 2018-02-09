@@ -95,13 +95,13 @@ export function WebGLUtils() {
      * change the contents of the container of the <canvas>
      * tag to an error message with the correct links for WebGL.
      * @param {HTMLCanvasElement} canvas The canvas element to create a context from.
-     * @param {*=} opt_attribs Any creation attributes you want to pass in.
+     * @param {*=} optAttribs Any creation attributes you want to pass in.
      * @param {function(string)=} opt_onErrorFunc A function to call if there
      *        is an error during creation.
      * @return {WebGLRenderingContext} The created context.
      */
-  const setupWebGL = function (canvas, opt_attribs, opt_onErrorFunc) {
-    let opt_onError = opt_onErrorFunc;
+  const setupWebGL = function (canvas, optAttribs, optOnErrorFunc) {
+    let optOnError = optOnErrorFunc;
     function handleCreationError(msg) {
       const container = canvas.parentNode;
       if (container) {
@@ -115,17 +115,17 @@ export function WebGLUtils() {
       }
     }
 
-    opt_onError = opt_onError || handleCreationError;
+    optOnError = optOnError || handleCreationError;
 
     if (canvas.addEventListener) {
       canvas.addEventListener('webglcontextcreationerror', function (event) {
-        opt_onError(event.statusMessage);
+        optOnError(event.statusMessage);
       }, false);
     }
-    const context = create3DContext(canvas, opt_attribs);
+    const context = create3DContext(canvas, optAttribs);
     if (!context) {
       if (!window.WebGLRenderingContext) {
-        opt_onError('');
+        optOnError('');
       }
     }
     return context;
@@ -137,12 +137,12 @@ export function WebGLUtils() {
      *     from. If one is not passed in one will be created.
      * @return {WebGLRenderingContext|null} The created context.
      */
-  function create3DContext(canvas, opt_attribs) {
+  function create3DContext(canvas, optAttribs) {
     const names = ['webgl', 'experimental-webgl', 'webkit-3d', 'moz-webgl'];
     let context = null;
     for (let ii = 0; ii < names.length; ii += 1) {
       try {
-        context = /** @type {WebGLRenderingContext} */ (canvas.getContext(names[ii], opt_attribs));
+        context = /** @type {WebGLRenderingContext} */ (canvas.getContext(names[ii], optAttribs));
       } catch (e) { /* empty */ }
       if (context) {
         break;
@@ -160,7 +160,7 @@ export function WebGLUtils() {
 /**
  * Provides requestAnimationFrame in a cross browser way.
  */
-const window_requestAnimFrame = (function () {
+const windowRequestAnimFrame = (function () {
   return window.requestAnimationFrame ||
           window.webkitRequestAnimationFrame ||
           window.mozRequestAnimationFrame ||
@@ -182,5 +182,5 @@ export function requestAnimFrame(callback) {
   // Initially tried exporting window_requestAnimFrame directly, but got "Illegal Invocation".
   // probably related to this:
   // https://stackoverflow.com/questions/10743596/why-are-certain-function-calls-termed-illegal-invocations-in-javascript
-  window_requestAnimFrame(callback);
+  windowRequestAnimFrame(callback);
 }

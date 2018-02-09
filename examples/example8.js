@@ -25,31 +25,31 @@ domready(function () {
   const DATASETS = [
     {
       name: '10 random points',
-      create: () => new globalView.RandomDataset(10, 3, dataset_onLoad),
+      create: () => new globalView.RandomDataset(10, 3, datasetOnLoad),
     },
     {
       name: '100 random points',
-      create: () => new globalView.RandomDataset(100, 3, dataset_onLoad),
+      create: () => new globalView.RandomDataset(100, 3, datasetOnLoad),
     },
     {
       name: '1.000 random points',
-      create: () => new globalView.RandomDataset(1000, 3, dataset_onLoad),
+      create: () => new globalView.RandomDataset(1000, 3, datasetOnLoad),
     },
     {
       name: '10.000 random points',
-      create: () => new globalView.RandomDataset(10000, 3, dataset_onLoad),
+      create: () => new globalView.RandomDataset(10000, 3, datasetOnLoad),
     },
     {
       name: '100.000 random points',
-      create: () => new globalView.RandomDataset(100000, 3, dataset_onLoad),
+      create: () => new globalView.RandomDataset(100000, 3, datasetOnLoad),
     },
     {
       name: '1.000.000 random points',
-      create: () => new globalView.RandomDataset(1000000, 3, dataset_onLoad),
+      create: () => new globalView.RandomDataset(1000000, 3, datasetOnLoad),
     },
     {
       name: '10.000.000 random points',
-      create: () => new globalView.RandomDataset(10000000, 3, dataset_onLoad),
+      create: () => new globalView.RandomDataset(10000000, 3, datasetOnLoad),
     },
     {
       name: 'iris',
@@ -59,7 +59,7 @@ domready(function () {
           columnLabels: ['Sepal Length [cm]',
             'Sepal Width [cm]', 'Petal Length [cm]', 'Petal Width [cm]', 'Class'],
         },
-        dataset_onLoad,
+        datasetOnLoad,
       ),
     },
     {
@@ -71,7 +71,7 @@ domready(function () {
         imageFilenames(data) {
           return `datasets/AICS_Cell-feature-analysis_v1.5_images/${data[1]}.png`;
         },
-      }, dataset_onLoad),
+      }, datasetOnLoad),
     },
     /*
     {
@@ -160,8 +160,8 @@ domready(function () {
   onResize();
 
   // Set defaults
-  rNumThumbnails_onChange(document.getElementById('rNumThumbnails'));
-  rDensityRatio_onChange(document.getElementById('rDensityRatio'));
+  rNumThumbnailsOnChange(document.getElementById('rNumThumbnails'));
+  rDensityRatioOnChange(document.getElementById('rDensityRatio'));
 
   document.onkeydown = handleKeyDown;
   document.onkeyup = handleKeyUp;
@@ -179,7 +179,7 @@ domready(function () {
         if (datasetIndex !== null) {
           cbDataset.selectedIndex = datasetIndex;
         }
-        cbDataset_onChange(); // Load even if cookie isn't set
+        cbDatasetOnChange(); // Load even if cookie isn't set
       }
     } else {
       globalView.urlExists(dataset.url, function () {
@@ -193,7 +193,7 @@ domready(function () {
           if (datasetIndex !== null) {
             cbDataset.selectedIndex = datasetIndex;
           }
-          cbDataset_onChange(); // Load even if cookie isn't set
+          cbDatasetOnChange(); // Load even if cookie isn't set
         }
       });
     }
@@ -206,65 +206,65 @@ function addAllEventListeners() {
   window.addEventListener('resize', onResize);
 
   document.getElementById('cbDataset').addEventListener('change', function () {
-    cbDataset_onChange();
+    cbDatasetOnChange();
   });
   document.getElementById('cbColumnX').addEventListener('change', function () {
-    cbColumnX_onChange();
+    cbColumnXOnChange();
   });
   document.getElementById('cbColumnY').addEventListener('change', function () {
-    cbColumnY_onChange();
+    cbColumnYOnChange();
   });
   document.getElementById('cbColumnC').addEventListener('change', function () {
-    cbColumnC_onChange();
+    cbColumnCOnChange();
   });
   document.getElementById('cbColumnS').addEventListener('change', function () {
-    cbColumnS_onChange();
+    cbColumnSOnChange();
   });
   document.getElementById('cbRenderStyle').addEventListener('change', function () {
-    cbRenderStyle_onChange(document.getElementById('cbRenderStyle'));
+    cbRenderStyleOnChange(document.getElementById('cbRenderStyle'));
   });
   document.getElementById('cbTransparency').addEventListener('change', function () {
-    cbTransparency_onChange(document.getElementById('cbTransparency'));
+    cbTransparencyOnChange(document.getElementById('cbTransparency'));
   });
   document.getElementById('cbPointShape').addEventListener('change', function () {
-    cbPointShape_onChange(document.getElementById('cbPointShape'));
+    cbPointShapeOnChange(document.getElementById('cbPointShape'));
   });
   document.getElementById('rPointSize').addEventListener('input', function () {
-    rPointSize_onChange(document.getElementById('rPointSize'));
+    rPointSizeOnChange(document.getElementById('rPointSize'));
   });
   document.getElementById('rPointOpacity').addEventListener('input', function () {
-    rPointOpacity_onChange(document.getElementById('rPointOpacity'));
+    rPointOpacityOnChange(document.getElementById('rPointOpacity'));
   });
   document.getElementById('cbShowDensity').addEventListener('change', function () {
-    cbShowDensity_onChange(document.getElementById('cbShowDensity'));
+    cbShowDensityOnChange(document.getElementById('cbShowDensity'));
   });
   document.getElementById('cbShowClusters').addEventListener('change', function () {
-    cbShowClusters_onChange(document.getElementById('cbShowClusters'));
+    cbShowClustersOnChange(document.getElementById('cbShowClusters'));
   });
   document.getElementById('cbShowHistograms').addEventListener('change', function () {
-    cbShowHistograms_onChange(document.getElementById('cbShowHistograms'));
+    cbShowHistogramsOnChange(document.getElementById('cbShowHistograms'));
   });
   document.getElementById('rVariance').addEventListener('input', function () {
-    rVariance_onChange(document.getElementById('rVariance'));
+    rVarianceOnChange(document.getElementById('rVariance'));
   });
   document.getElementById('rNumBins').addEventListener('input', function () {
-    rNumBins_onChange(document.getElementById('rNumBins'));
+    rNumBinsOnChange(document.getElementById('rNumBins'));
   });
   document.getElementById('cmdRunBenchmark').addEventListener('click', function () {
-    cmdRunBenchmark_onClick(document.getElementById('cmdRunBenchmark'));
+    cmdRunBenchmarkOnClick(document.getElementById('cmdRunBenchmark'));
   });
   // document.getElementById("cbThumbnailPositioning") // ???
   document.getElementById('rNumThumbnails').addEventListener('input', function () {
-    rNumThumbnails_onChange(document.getElementById('rNumThumbnails'));
+    rNumThumbnailsOnChange(document.getElementById('rNumThumbnails'));
   });
   document.getElementById('rDensityRatio').addEventListener('input', function () {
-    rDensityRatio_onChange(document.getElementById('rDensityRatio'));
+    rDensityRatioOnChange(document.getElementById('rDensityRatio'));
   });
   document.getElementById('cmdShowData2D').addEventListener('click', function () {
-    cmdShowData2D_onClick(document.getElementById('cmdShowData2D'));
+    cmdShowData2DOnClick(document.getElementById('cmdShowData2D'));
   });
   document.getElementById('cbLabelThumbnails').addEventListener('change', function () {
-    cbLabelThumbnails_onChange(document.getElementById('cbLabelThumbnails'));
+    cbLabelThumbnailsOnChange(document.getElementById('cbLabelThumbnails'));
   });
 }
 
@@ -280,7 +280,7 @@ function onResize() {
   document.getElementById('divGlobalView').style.height = `${y - 32}px`;
 }
 
-function cbDataset_onChange() {
+function cbDatasetOnChange() {
   globalView.createCookie('datasetIndex', cbDataset.selectedIndex);
   if (cbDataset.selectedIndex >= 0 && cbDataset.options[cbDataset.selectedIndex].createDataset) {
     cbDataset.options[cbDataset.selectedIndex].createDataset();
@@ -288,7 +288,7 @@ function cbDataset_onChange() {
 }
 
 const inflated = false;
-function dataset_onLoad(_dataset) {
+function datasetOnLoad(_dataset) {
   dataset = _dataset;
   if (dataset.columns.length < 2) {
     globalView.showAlert(`Invalid dataset\nDataset has ${dataset.columns.length} column(s) (at least 2 required).`);
@@ -369,54 +369,54 @@ function dataset_onLoad(_dataset) {
     cbColumnC.selectedIndex, cbColumnS.selectedIndex,
   );
 }
-function cbColumnX_onChange() {
+function cbColumnXOnChange() {
   globalView.createCookie('activeColumnX', cbColumnX.selectedIndex);
   plot.setActiveColumn(0, cbColumnX.selectedIndex);
 }
-function cbColumnY_onChange() {
+function cbColumnYOnChange() {
   globalView.createCookie('activeColumnY', cbColumnY.selectedIndex);
   plot.setActiveColumn(1, cbColumnY.selectedIndex);
 }
-function cbColumnC_onChange() {
+function cbColumnCOnChange() {
   globalView.createCookie('activeColumnC', cbColumnC.selectedIndex);
   plot.setActiveColumn(2, cbColumnC.selectedIndex);
 }
-function cbColumnS_onChange() {
+function cbColumnSOnChange() {
   globalView.createCookie('activeColumnS', cbColumnS.selectedIndex);
   plot.setActiveColumn(3, cbColumnS.selectedIndex);
 }
 
-function cbRenderStyle_onChange(sender) {
+function cbRenderStyleOnChange(sender) {
   plot.setOption('enableContinuousRendering', sender.selectedIndex === 1);
 }
-function cbTransparency_onChange(sender) {
+function cbTransparencyOnChange(sender) {
   plot.setOption('enableTransparency', sender.selectedIndex === 0);
 }
-function cbPointShape_onChange(sender) {
+function cbPointShapeOnChange(sender) {
   plot.setOption('pointShape', sender.value);
 }
-function rPointOpacity_onChange(sender) {
+function rPointOpacityOnChange(sender) {
   pPointOpacity.innerText = `Point opacity: ${sender.value}`;
   plot.setOption('pointOpacity', Number.parseFloat(sender.value));
 }
-function rPointSize_onChange(sender) {
+function rPointSizeOnChange(sender) {
   pPointSize.innerText = `Point size: ${sender.value}`;
   plot.setOption('pointSize', Number.parseFloat(sender.value));
 }
 
 const densityMapOptions = new globalView.DensityMapOptions();
 // densityMapOptions.logScale = false;
-function cbShowDensity_onChange(sender) {
+function cbShowDensityOnChange(sender) {
   if (sender.checked) {
     requestVariance(densityMapOptions.gaussScale, true);
   }
   plot.setOption('showPointDensity', sender.checked);
 }
-function cbShowClusters_onChange(sender) {
+function cbShowClustersOnChange(sender) {
   // plot.setOption("pointClusterThreshold", 0.01);
   plot.setOption('showPointClusters', sender.checked);
 }
-function cbShowHistograms_onChange(sender) {
+function cbShowHistogramsOnChange(sender) {
   const padding = plot.getOption('padding');
   padding[2] += (sender.checked ? 64 : 0) - (plot.getOption('showXAxisHistogram') ? 64 : 0);
   padding[3] += (sender.checked ? 64 : 0) - (plot.getOption('showYAxisHistogram') ? 64 : 0);
@@ -429,12 +429,12 @@ function cbShowHistograms_onChange(sender) {
     padding,
   });
 }
-function rVariance_onChange(sender) {
+function rVarianceOnChange(sender) {
   const variance = Math.round(Math.pow(10, Number.parseFloat(sender.value)));
   pVariance.innerText = `Variance: ${variance}`;
   requestVariance(variance, true);
 }
-function rNumBins_onChange(sender) {
+function rNumBinsOnChange(sender) {
   const numBins = Number.parseInt(sender.value, 10);
   pNumBins.innerText = `# of histogram bins: ${numBins}`;
   plot.setOption('numHistogramBins', numBins);
@@ -480,28 +480,28 @@ String.prototype.replaceAll = function (oldstr, newstr) {
     download("wget.sh", window.URL.createObjectURL(data));
   });
 } */
-function cmdRunBenchmark_onClick(sender) {
+function cmdRunBenchmarkOnClick(sender) {
   new BenchmarkDialog(plot); // eslint-disable-line no-new
 }
 
 let numThumbnails;
 let densityRatio;
-function rNumThumbnails_onChange(sender) {
+function rNumThumbnailsOnChange(sender) {
   numThumbnails = 2 ** Number.parseInt(sender.value, 10);
   pNumThumbnails.innerText = `# of thumbnails: ${numThumbnails}`;
 }
-function rDensityRatio_onChange(sender) {
+function rDensityRatioOnChange(sender) {
   densityRatio = Number.parseFloat(sender.value);
   pDensityRatio.innerText = 'Density ratio: {0}% outliers,  {1}% clusters'.format(100 - Math.round(densityRatio * 100), Math.round(densityRatio * 100));
 }
-function cmdShowData2D_onClick(sender) {
+function cmdShowData2DOnClick(sender) {
   plot.clearThumbnails();
   plot.getCharacteristicPoints(numThumbnails, densityRatio, function (characteristicPoints) {
     plot.selectedPoints.assign(characteristicPoints);
     plot.showImages(plot.selectedPoints, cbThumbnailPositioning.value);
   });
 }
-function cbLabelThumbnails_onChange(sender) {
+function cbLabelThumbnailsOnChange(sender) {
   plot.setOption('labelThumbnails', sender.checked);
 }
 
@@ -602,7 +602,7 @@ function ondrop(pEvent) {
     var eventY = event.clientY - targetRect.top;
     var fileExt = files[0].name; */
 
-    new CsvDataset(files[0], { autoDetect: true }, dataset_onLoad); // eslint-disable-line no-new
+    new CsvDataset(files[0], { autoDetect: true }, datasetOnLoad); // eslint-disable-line no-new
   }
 }
 
