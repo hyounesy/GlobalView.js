@@ -189,10 +189,11 @@ export function CoordinateSystem(gl, globalView) {
     const MIN_TICK_LABEL_DISTANCE = gl.measureTextWidth('  '); // Minimum distance between tick labels in pixel
     let axis;
     let plotBounds;
+    let overlap;
     switch (d) {
       case 0:
         axis = axes[0];
-        let overlap = Number.MIN_VALUE;
+        overlap = Number.MIN_VALUE;
         plotBounds = globalView.getPlotBounds();
         for (let i = 0; i < axis.tickCount; i += 1) {
           const x = axis.tickOffset + (i * axis.tickDistance);

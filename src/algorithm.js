@@ -243,8 +243,9 @@ export function computeHistogram2D(dataset, d0, d1, width, height) {
   for (let i = 0; i < n; i += 1) {
     const p0 = Math.floor((v0.getValue(i) * s0) + o0);
     const p1 = Math.floor((v1.getValue(i) * s1) + o1);
-    const hvalue = histogram[(Math.min(height - 1, p1) * width) + Math.min(width - 1, p0)] += 1;
-    if (hvalue > maximum) {
+    const b = (Math.min(height - 1, p1) * width) + Math.min(width - 1, p0);
+    histogram[b] += 1;
+    if (histogram[b] > maximum) {
       maximum += 1;
     } // maximum can only grow by 1, so we know histogram[...] == maximum + 1
   }
@@ -1108,10 +1109,9 @@ export function downloadStencilMap(stencilMap, outputFileName) {
 
   const bytes = new Uint8Array(4 * stencilMap.width * stencilMap.height);
   for (let i = 0; i < stencilMap.data.length; i += 1) {
-    bytes[(i * 4) + 0] =
-    bytes[(i * 4) + 1] =
-    bytes[(i * 4) + 2] =
-      stencilMap.data[i] !== 0 ? 255 : 0;
+    bytes[(i * 4) + 0] = stencilMap.data[i] !== 0 ? 255 : 0;
+    bytes[(i * 4) + 1] = bytes[(i * 4) + 0];
+    bytes[(i * 4) + 2] = bytes[(i * 4) + 0];
     bytes[(i * 4) + 3] = 255;
   }
   libUtility.download(
@@ -1496,7 +1496,8 @@ export function sampleDensityMapChain(densityMapChain) {
     // Sample below initialSamples
     lastSample = initialSamples[0];
     for (i = sampleM - 1; i >= 0 && !isNaN(lastSample); i -= 1) {
-      sample[i] = lastSample = sampleDensityMapRow(densityMapChain[i], lastSample, sampleM - i);
+      lastSample = sampleDensityMapRow(densityMapChain[i], lastSample, sampleM - i);
+      sample[i] = lastSample;
     }
     if (isNaN(lastSample)) {
       continue; // eslint-disable-line no-continue
@@ -1505,9 +1506,8 @@ export function sampleDensityMapChain(densityMapChain) {
     // Sample above initialSamples
     lastSample = initialSamples[1];
     for (i = sampleM + 1; i < chainLength && !isNaN(lastSample); i += 1) {
-      sample[i + 1] =
-      lastSample =
-      sampleDensityMapColumn(densityMapChain[i], lastSample, i - sampleM);
+      lastSample = sampleDensityMapColumn(densityMapChain[i], lastSample, i - sampleM);
+      sample[i + 1] = lastSample;
     }
   } while (isNaN(lastSample));
 
@@ -1571,11 +1571,12 @@ export function computeClusterMap(densityMap, d0, d1, options) {
           clustermap[(y * width) + x] = leftClusterId;
           // eslint-disable-next-line no-cond-assign
         } else if (y !== 0 && (topClusterId = clustermap[((y - 1) * width) + x]) !== 0) {
-          clustermap[(y * width) + x] = leftClusterId = topClusterId;
+          leftClusterId = topClusterId;
+          clustermap[(y * width) + x] = leftClusterId;
         } else {
-          clusters.push(new ForwardList(clustermap[(y * width) + x] =
-            leftClusterId =
-            clusters.length + 1));
+          leftClusterId = clusters.length + 1;
+          clustermap[(y * width) + x] = leftClusterId;
+          clusters.push(new ForwardList(leftClusterId));
         }
       } else {
         // For languages that don't initialize arrays
@@ -1597,7 +1598,8 @@ export function computeClusterMap(densityMap, d0, d1, options) {
       clusterId += 1;
     }
   }
-  const numClusters = (clusterId -= 1);
+  clusterId -= 1;
+  const numClusters = clusterId;
 
   // Assign cluster IDs to clustermap -> clustermap
   for (let i = 0; i < len; i += 1) {

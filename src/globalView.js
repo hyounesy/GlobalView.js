@@ -55,8 +55,10 @@ export function GlobalView(div, startupOptions) {
     canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
     canvas.setAttribute('id', 'webGLCanvas');
     canvas.style.position = 'static';// "absolute";
-    canvas.style.left = canvas.style.top = '0px';
-    canvas.style.width = canvas.style.height = '100%';
+    canvas.style.left = '0px';
+    canvas.style.top = '0px';
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
     canvas.style.backgroundColor = 'transparent';
     canvas.globalViewWebGLCanvas = true;
     div.appendChild(canvas);
@@ -257,7 +259,11 @@ export function GlobalView(div, startupOptions) {
     const width = rect.right - rect.left;
     const height = rect.bottom - rect.top;
     if (!offscreenRendering && (width !== gl.width || height !== gl.height)) {
-      gl.viewport(0, 0, gl.width = canvas.width = width, gl.height = canvas.height = height);
+      gl.width = width;
+      canvas.width = width;
+      gl.height = height;
+      canvas.height = height;
+      gl.viewport(0, 0, gl.width, gl.height);
       trc.onResize();
       if (options.padding) {
         setPlotBounds(options.padding);
@@ -1178,10 +1184,14 @@ export function GlobalView(div, startupOptions) {
 
     // Set new dataset
     dataset = _dataset;
-    animatedInputs[0].origin = activeInputs[0] = activeColumnX;
-    animatedInputs[1].origin = activeInputs[1] = activeColumnY;
-    animatedInputs[2].origin = activeInputs[2] = activeColumnC;
-    animatedInputs[3].origin = activeInputs[3] = activeColumnS;
+    animatedInputs[0].origin = activeColumnX;
+    activeInputs[0] = activeColumnX;
+    animatedInputs[1].origin = activeColumnY;
+    activeInputs[1] = activeColumnY;
+    animatedInputs[2].origin = activeColumnC;
+    activeInputs[2] = activeColumnC;
+    animatedInputs[3].origin = activeColumnS;
+    activeInputs[3] = activeColumnS;
     // dataset.dataVectors.push(new DataVector(dataset, "({1} + {2}) / 2.0"));//"i"));
     // dataset.dataVectors.push(new DataVector(dataset, "{2} + 2.0"));//"i"));
 
@@ -1983,7 +1993,8 @@ export function GlobalView(div, startupOptions) {
     if (event.viewDragging) {
       // If mouse-down handler set viewDragging property to a truthy value
       if (p[0] > plotBounds.x + plotBounds.width) {
-        viewDragX = viewDragY = false;
+        viewDragX = false;
+        viewDragY = false;
         viewDragZ = colormap.visible;
       } else {
         viewDragX = p[0] >= plotBounds.x;
@@ -2266,10 +2277,12 @@ export function GlobalView(div, startupOptions) {
 
     let invalidate = false;
     if (pointDragDownPos !== null) {
-      pointDragDownPos = pointDrag = null;
+      pointDragDownPos = null;
+      pointDrag = null;
       invalidate = true;
     }
-    viewDragStartPos = imageDragStartPos = null;
+    viewDragStartPos = null;
+    imageDragStartPos = null;
     if (mousePolygon !== null) {
       if (this.onSelectionChanged !== null && mousePolygon.length >= 3) {
         // TODO: Find points within mousePolygon -> selection
@@ -2389,7 +2402,8 @@ export function GlobalView(div, startupOptions) {
     let scrollY;
     let scrollZ;
     if (p[0] > plotBounds.x + plotBounds.width) {
-      scrollX = scrollY = false;
+      scrollX = false;
+      scrollY = false;
       scrollZ = true;
     } else {
       scrollX = p[0] >= plotBounds.x;
@@ -2442,14 +2456,16 @@ export function GlobalView(div, startupOptions) {
 
   // >>> Offscreen Rendering
 
-  this.enableOffscreenRendering = this.enableOffscreenRendering = function (width, height) {
+  this.enableOffscreenRendering = function (width, height) {
     if (offscreenRendering !== null) {
       return;
     }
     offscreenRendering = {};
 
-    gl.width = canvas.width = width;
-    gl.height = canvas.height = height;
+    gl.width = width;
+    canvas.width = width;
+    gl.height = height;
+    canvas.height = height;
 
     trc.enableOffscreenRendering(width, height);
 
@@ -2496,7 +2512,8 @@ export function GlobalView(div, startupOptions) {
       setPlotBounds(options.padding);
     }
   };
-  this.disableOffscreenRendering = this.disableOffscreenRendering = function () {
+
+  this.disableOffscreenRendering = function () {
     if (offscreenRendering === null) {
       return;
     }

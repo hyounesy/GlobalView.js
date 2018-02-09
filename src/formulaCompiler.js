@@ -530,6 +530,8 @@ export const FormulaCompiler = {
     let IP = -1; // Instruction pointer
     let SP = 0; // Stack pointer
     let scope = global;
+    let f;
+    let variable;
 
     let postOpScope;
     while ((IP += 1) < code.length) { // eslint-disable-line no-cond-assign
@@ -590,15 +592,16 @@ export const FormulaCompiler = {
           SP -= 3;
           break;
         case 'vec3 * float':
-          const f = stack[SP -= 1];
+          f = stack[SP -= 1];
           stack[SP - 3] *= f;
           stack[SP - 2] *= f;
           stack[SP - 1] *= f;
           break;
-
-        case '@': stack[SP - 1] = scope[stack[SP - 1]]; break; // Load scalar from scope
+        case '@':
+          stack[SP - 1] = scope[stack[SP - 1]];
+          break; // Load scalar from scope
         case '@[]': // Load array from scope
-          const variable = scope[stack[SP -= 1]];
+          variable = scope[stack[SP -= 1]];
           for (let i = 0; i < variable.length; i += 1) {
             stack[SP] = variable[i];
             SP += 1;
@@ -641,7 +644,7 @@ function verboseTest(formula, symbols, symbolTypes) {
     libUtility.consoleLog(`err: ${code}`);
   } else {
     const globalScope = symbols || {};
-    libUtility.consoleLog(`code: ${code.map(c => libUtility.isString(c) ? `"${c}"` : c).join(' ')}`);
+    libUtility.consoleLog(`code: ${code.map(c => (libUtility.isString(c) ? `"${c}"` : c)).join(' ')}`);
     libUtility.consoleLog(`result: ${FormulaCompiler.run(code, new Array(16), globalScope)}`);
     libUtility.consoleLog(`locals: ${JSON.stringify(globalScope)}`);
   }

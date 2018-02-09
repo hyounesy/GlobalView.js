@@ -31,8 +31,10 @@ domready(function () {
 
   const divPlots = document.createElement('div');
   divPlots.style.position = 'fixed';
-  divPlots.style.left = divPlots.style.top = '0px';
-  divPlots.style.width = divPlots.style.height = `${PLOT_SIZE}px`;
+  divPlots.style.left = '0px';
+  divPlots.style.top = '0px';
+  divPlots.style.width = `${PLOT_SIZE}px`;
+  divPlots.style.height = `${PLOT_SIZE}px`;
   divPlots.style.fontSize = FONT_SIZE;
   document.body.appendChild(divPlots);
 

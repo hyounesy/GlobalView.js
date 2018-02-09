@@ -93,11 +93,11 @@ Array.create = function (n, func) {
 };
 Array.prototype.minIndex = function () {
   return this.reduce((smallestIndex, currentValue, currentIndex, arr) =>
-    currentValue < arr[smallestIndex] ? currentIndex : smallestIndex, 0);
+    (currentValue < arr[smallestIndex] ? currentIndex : smallestIndex), 0);
 };
 Array.prototype.maxIndex = function () {
   return this.reduce((smallestIndex, currentValue, currentIndex, arr) =>
-    currentValue > arr[smallestIndex] ? currentIndex : smallestIndex, 0);
+    (currentValue > arr[smallestIndex] ? currentIndex : smallestIndex), 0);
 };
 
 if (!String.prototype.format) {

@@ -489,11 +489,13 @@ export function ImageViewer(gl, globalView) {
             if (libGlMatrix.vec2.sqrDist(a, b) + libGlMatrix.vec2.sqrDist(c, d) >
                 libGlMatrix.vec2.sqrDist(a, d) + libGlMatrix.vec2.sqrDist(c, b) &&
               !libAlgorithm.linesIntersect(a, d, c, b)) {
-            // libUtility.consoleLog("exchange {0} - {1}".format(i, j));
+              // libUtility.consoleLog("exchange {0} - {1}".format(i, j));
               const tmp = images[j].imagePos;
               images[j].imagePos = images[i].imagePos;
               images[i].imagePos = tmp;
-              i = j = 0; break; // EDIT: How neccessary is this?
+              i = 0;
+              j = 0;
+              break; // EDIT: How neccessary is this?
             }
           }
         }
@@ -513,7 +515,9 @@ export function ImageViewer(gl, globalView) {
               const tmp = images[j].imagePos;
               images[j].imagePos = images[i].imagePos;
               images[i].imagePos = tmp;
-              i = j = 0; break; // EDIT: How neccessary is this?
+              i = 0;
+              j = 0;
+              break; // EDIT: How neccessary is this?
             }
           }
         }

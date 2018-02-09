@@ -161,7 +161,9 @@ module.exports = {
         "guard-for-in": 0,                      // require for-in loops to include an if statement
         "no-alert": 'error',                          // disallow the use of alert, confirm, and prompt
         "no-caller": 0,                         // disallow the use of arguments.caller or arguments.callee
-        "no-case-declarations": 0,              // disallow lexical declarations in case clauses
+        // disallow lexical declarations in case/default clauses
+        // http://eslint.org/docs/rules/no-case-declarations.html
+        'no-case-declarations': 'error',
         "no-div-regex": 0,                      // disallow division operators explicitly at the beginning of regular expressions
         // disallow else after a return in an if
         // https://eslint.org/docs/rules/no-else-return
@@ -371,7 +373,9 @@ module.exports = {
           allowSamePrecedence: false
         }],            // disallow mixed binary operators
         "no-mixed-spaces-and-tabs": 0,          // disallow mixed spaces and tabs for indentation
-        "no-multi-assign": 0,                   // disallow use of chained assignment expressions
+        // disallow use of chained assignment expressions
+        // http://eslint.org/docs/rules/no-multi-assign
+        'no-multi-assign': ['error'],
         // disallow multiple empty lines and only one newline at the end
         'no-multiple-empty-lines': ['error', { max: 2, maxEOF: 1 }],
         "no-negated-condition": 0,              // disallow negated conditions
@@ -455,7 +459,11 @@ module.exports = {
         "constructor-super": 0,                 // require super() calls in constructors
         "generator-star-spacing": 0,            // enforce consistent spacing around * operators in generator functions
         "no-class-assign": 0,                   // disallow reassigning class members
-        "no-confusing-arrow": 0,                // disallow arrow functions where they could be confused with comparisons
+        // disallow arrow functions where they could be confused with comparisons
+        // http://eslint.org/docs/rules/no-confusing-arrow
+        'no-confusing-arrow': ['error', {
+          allowParens: true,
+        }],
         "no-const-assign": 0,                   // disallow reassigning const variables
         "no-dupe-class-members": 0,             // disallow duplicate class members
         "no-duplicate-imports": 0,              // disallow duplicate module imports

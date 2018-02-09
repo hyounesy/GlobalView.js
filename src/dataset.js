@@ -515,9 +515,8 @@ export function Dataset() {
 
         if (column.values) {
           // If column is qualitative
-          fdataInflated[(iInflated * nc) + c] =
-          sample =
-            Math.max(0, Math.min(column.values.length - 1, Math.round(sample)));
+          sample = Math.max(0, Math.min(column.values.length - 1, Math.round(sample)));
+          fdataInflated[(iInflated * nc) + c] = sample;
           dataInflated[(iInflated * nc) + c] = column.values[sample];
         } else {
           // If column is numeric
@@ -912,7 +911,8 @@ export function CsvDataset(file, options, onload) {
 
     // Extract data point names
     if (varOptions.nameColumn) {
-      const names = dataset.names = new Array(n);
+      dataset.names = new Array(n);
+      const names = dataset.names;
       const nameColumn = varOptions.nameColumn;
       for (i = firstRow, di = 0; i < data.length; i += 1, di += 1) {
         // Skip blank lines
