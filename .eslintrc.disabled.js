@@ -154,11 +154,13 @@ module.exports = {
         "complexity": 0,                        // enforce a maximum cyclomatic complexity allowed in a program
         "consistent-return": 'error',                 // require return statements to either always or never specify values
         "curly": 2,                             // enforce consistent brace style for all control statements
-        "default-case": 0,                      // require default cases in switch statements
+        // require default case in switch statements
+        'default-case': ['error', { commentPattern: '^no default$' }],
         "dot-location": 0,                      // enforce consistent newlines before and after dots
         'dot-notation': ['error', { allowKeywords: true }],        // enforce dot notation whenever possible
         "eqeqeq": ["error", "always", {"null": "ignore"}],                            // require the use of === and !==
-        "guard-for-in": 0,                      // require for-in loops to include an if statement
+        // make sure for-in loops have an if statement
+        'guard-for-in': 'error',
         "no-alert": 'error',                          // disallow the use of alert, confirm, and prompt
         "no-caller": 0,                         // disallow the use of arguments.caller or arguments.callee
         // disallow lexical declarations in case/default clauses
@@ -172,7 +174,8 @@ module.exports = {
         "no-empty-pattern": 0,                  // disallow empty destructuring patterns
         "no-eq-null": 0,                        // disallow null comparisons without type-checking operators
         "no-eval": 0,                           // disallow the use of eval()
-        "no-extend-native": 0,                  // disallow extending native types
+        // disallow adding to native types
+        'no-extend-native': 'error',
         "no-extra-bind": 0,                     // disallow unnecessary calls to .bind()
         "no-extra-label": 0,                    // disallow unnecessary labels
         // disallow fallthrough of case statements
@@ -186,7 +189,8 @@ module.exports = {
         "no-iterator": 0,                       // disallow the use of the __iterator__ property
         "no-labels": 0,                         // disallow labeled statements
         "no-lone-blocks": 0,                    // disallow unnecessary nested blocks
-        "no-loop-func": 0,                      // disallow function declarations and expressions inside loop statements
+        // disallow creation of functions within loops
+        'no-loop-func': 'error',
         "no-magic-numbers": 0,                  // disallow magic numbers
         "no-multi-spaces": 'error',                   // disallow multiple spaces
         "no-multi-str": 0,                      // disallow multiline strings
@@ -213,8 +217,47 @@ module.exports = {
         }],
         "no-proto": 0,                          // disallow the use of the __proto__ property
         "no-redeclare": 0,                      // disallow variable redeclaration
-        "no-restricted-properties": 0,          // disallow certain properties on certain objects
-        // disallow use of assignment in return statement
+        // disallow certain object properties
+        // http://eslint.org/docs/rules/no-restricted-properties
+        'no-restricted-properties': ['error', {
+          object: 'arguments',
+          property: 'callee',
+          message: 'arguments.callee is deprecated',
+        }, {
+          object: 'global',
+          property: 'isFinite',
+          message: 'Please use Number.isFinite instead',
+        }, {
+          object: 'self',
+          property: 'isFinite',
+          message: 'Please use Number.isFinite instead',
+        }, {
+          object: 'window',
+          property: 'isFinite',
+          message: 'Please use Number.isFinite instead',
+        }, {
+          object: 'global',
+          property: 'isNaN',
+          message: 'Please use Number.isNaN instead',
+        }, {
+          object: 'self',
+          property: 'isNaN',
+          message: 'Please use Number.isNaN instead',
+        }, {
+          object: 'window',
+          property: 'isNaN',
+          message: 'Please use Number.isNaN instead',
+        }, {
+          property: '__defineGetter__',
+          message: 'Please use Object.defineProperty instead.',
+        }, {
+          property: '__defineSetter__',
+          message: 'Please use Object.defineProperty instead.',
+        }, {
+          object: 'Math',
+          property: 'pow',
+          message: 'Use the exponentiation operator (**) instead.',
+        }],        // disallow use of assignment in return statement
         'no-return-assign': ['error', 'always'],
         "no-return-await": 0,                   // disallow unnecessary return await
         "no-script-url": 0,                     // disallow javascript: urls

@@ -72,8 +72,9 @@ export default function BenchmarkDialog(paramPlot) {
     // N: [1e1, 1e2, 1e3/*, 1e4, 1e5, 1e6*/]
     // N: Array.create(1000, i => 10000 * i)
     // N: Array.create(36, i => 1000 * Math.pow(10, Math.floor(i / 9)) * ((i % 9) + 1))
-    N: Array.create(601, i => Math.floor(Math.pow(10, 3 + (i / 200)))),
+    N: Array.create(601, i => Math.floor(10 ** (3 + (i / 200)))),
   };
+
   const SECONDS_PER_BENCHMARK = 10;// 1;
   const SAVE_SCREENSHOTS = false;
   let zip;
@@ -111,7 +112,9 @@ export default function BenchmarkDialog(paramPlot) {
     let option;
 
     for (option in benchmarkOptions) {
-      numBenchmarks *= benchmarkOptions[option].length;
+      if (benchmarkOptions.hasOwnProperty(option)) {
+        numBenchmarks *= benchmarkOptions[option].length;
+      }
     }
 
     if (SAVE_SCREENSHOTS) {
@@ -120,14 +123,18 @@ export default function BenchmarkDialog(paramPlot) {
 
     const csvHeader = ['fps', 'options'];
     for (option in benchmarkOptions) {
-      csvHeader.push(`${option}`);
+      if (benchmarkOptions.hasOwnProperty(option)) {
+        csvHeader.push(`${option}`);
+      }
     }
     csv = [csvHeader];
 
     n = -1;
     benchmarkOptionIndices = {};
     for (option in benchmarkOptions) {
-      benchmarkOptionIndices[option] = 0;
+      if (benchmarkOptions.hasOwnProperty(option)) {
+        benchmarkOptionIndices[option] = 0;
+      }
     }
 
     reportHeader(csvHeader);
@@ -143,7 +150,9 @@ export default function BenchmarkDialog(paramPlot) {
     currentOptions = {};
     let option;
     for (option in benchmarkOptions) {
-      currentOptions[option] = benchmarkOptions[option][benchmarkOptionIndices[option]];
+      if (benchmarkOptions.hasOwnProperty(option)) {
+        currentOptions[option] = benchmarkOptions[option][benchmarkOptionIndices[option]];
+      }
     }
 
 
@@ -189,7 +198,9 @@ export default function BenchmarkDialog(paramPlot) {
     const csvRow = [fps, name];
     let option;
     for (option in currentOptions) {
-      csvRow.push(currentOptions[option]);
+      if (currentOptions.hasOwnProperty(option)) {
+        csvRow.push(currentOptions[option]);
+      }
     }
     csv.push(csvRow);
 
@@ -205,7 +216,7 @@ export default function BenchmarkDialog(paramPlot) {
     const getKeyByIndex = function (map, index) {
       let idx = index;
       let key;
-      for (key in map) {
+      for (key in map) { // eslint-disable-line guard-for-in
         idx -= 1;
         if (idx === -1) {
           return key;
@@ -239,7 +250,7 @@ export default function BenchmarkDialog(paramPlot) {
     // plot.disableOffscreenRendering();
     plot.popOptions();
     // plot.popDataset();
-    cbDataset_onChange(); // Reload dataset
+    cbDatasetOnChange(); // Reload dataset
     plot.disableOffscreenRendering();
     onResize();
   }

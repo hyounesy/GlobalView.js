@@ -246,7 +246,7 @@ export function CoordinateSystem(gl, globalView) {
         for (let i = 0; i < 10; i += 1) {
           // Maximum 10 iterations
           axis.tickDistance = (maximum - minimum) / numTicks;
-          const base = Math.pow(10, exp);
+          const base = (10 ** exp);
           exp -= 1;
           // Round tickDistance to base
           axis.tickDistance = Math.round(axis.tickDistance / base) * base;
@@ -352,6 +352,8 @@ export function CoordinateSystem(gl, globalView) {
           b: plotCenter + halfTextWidth,
         };
       }
+      default:
+        return null;
     }
     return null;
   };

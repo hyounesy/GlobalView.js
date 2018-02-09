@@ -164,13 +164,19 @@ function plotOnMouseDown(pEvent) {
   const event = pEvent;
   switch (event.button) {
     // On left mouse button: Enable point and lasso selection
-    case 0: event.pointSelection = true; event.lassoSelection = true; break;
-
+    case 0:
+      event.pointSelection = true;
+      event.lassoSelection = true;
+      break;
     // On middle mouse button: Initiate view dragging
-    case 1: event.viewDragging = true; break;
-
+    case 1:
+      event.viewDragging = true;
+      break;
     // On right mouse button: Reset zoom
-    case 2: plot.zoomFit2D(); break;
+    case 2: plot.zoomFit2D();
+      break;
+    default:
+      break;
   }
 }
 

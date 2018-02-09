@@ -91,11 +91,11 @@ Array.create = function (n, func) {
   }
   return array;
 };
-Array.prototype.minIndex = function () {
+Array.prototype.minIndex = function () { // eslint-disable-line no-extend-native
   return this.reduce((smallestIndex, currentValue, currentIndex, arr) =>
     (currentValue < arr[smallestIndex] ? currentIndex : smallestIndex), 0);
 };
-Array.prototype.maxIndex = function () {
+Array.prototype.maxIndex = function () { // eslint-disable-line no-extend-native
   return this.reduce((smallestIndex, currentValue, currentIndex, arr) =>
     (currentValue > arr[smallestIndex] ? currentIndex : smallestIndex), 0);
 };
@@ -105,7 +105,7 @@ if (!String.prototype.format) {
    * Source: http://stackoverflow.com/a/4673436
    * @param {...*} args
    */
-  String.prototype.format = function (args) {
+  String.prototype.format = function (args) { // eslint-disable-line no-extend-native
     const varArgs = arguments; // eslint-disable-line prefer-rest-params
     return this.replace(/{(\d+)}/g, function (match, number) {
       return typeof varArgs[number] !== 'undefined' ? varArgs[number] : match;
@@ -118,6 +118,7 @@ if (!String.prototype.format) {
    * @param {string} mismatch
    * @param {...*} args
    */
+// eslint-disable-next-line no-extend-native
 String.prototype.format2 = function (pattern, mismatch, args) {
   const varArgs = arguments; // eslint-disable-line prefer-rest-params
   return this.replace(pattern, function (match, strNumber) {
@@ -886,9 +887,11 @@ export function HashSet(onchanged) {
   this.forEach = function (callback) {
     // var last = Number.MIN_SAFE_INTEGER, badOrder = 0;
     for (let value in hash) {
-      value = Number.parseInt(value, 10);
-      // if (value < last) {badOrder += 1; last = value;}
-      callback(value);
+      if (Object.prototype.hasOwnProperty.call(hash, value)) {
+        value = Number.parseInt(value, 10);
+        // if (value < last) {badOrder += 1; last = value;}
+        callback(value);
+      }
     }
     // if (badOrder !== 0) consoleLog('bad order: ' + badOrder + ' times');
   };

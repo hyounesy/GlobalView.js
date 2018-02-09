@@ -86,7 +86,7 @@ domready(function () {
             return `datasets/AICS_Cell-feature-analysis_v1.5_images/${data[1]}.png`;
           },
         },
-        dataset_onLoad,
+        datasetOnLoad,
       ),
     },
     {
@@ -98,7 +98,7 @@ domready(function () {
         imageFilenames(data) {
           return `datasets/AICS_Cell-feature-analysis_v1.5_images/${ data[1]}.png`;
         },
-      }, dataset_onLoad),
+      }, datasetOnLoad),
     },
     {
       name: 'allencell x100',
@@ -109,7 +109,7 @@ domready(function () {
         imageFilenames(data) {
           return `datasets/AICS_Cell-feature-analysis_v1.5_images/${data[1]}.png`;
         },
-      }, dataset_onLoad),
+      }, datasetOnLoad),
     },
     */
   ];
@@ -144,6 +144,9 @@ domready(function () {
 
       // On right mouse button: Do nothing
       case 2:
+        break;
+
+      default:
         break;
     }
   };
@@ -435,7 +438,7 @@ function cbShowHistogramsOnChange(sender) {
   });
 }
 function rVarianceOnChange(sender) {
-  const variance = Math.round(Math.pow(10, Number.parseFloat(sender.value)));
+  const variance = Math.round(10 ** Number.parseFloat(sender.value));
   pVariance.innerText = `Variance: ${variance}`;
   requestVariance(variance, true);
 }
@@ -468,12 +471,14 @@ function requestVariance(variance, fast) {
   );
 }
 
+// eslint-disable-next-line no-extend-native
 String.prototype.replaceAll = function (oldstr, newstr) {
   // Source: http://stackoverflow.com/a/1144788
   return this.split(oldstr).join(newstr);
 };
 
-/* function cmdRunBenchmark_onClick() {
+/*
+  function cmdRunBenchmarkOnClick() {
   new CsvDataset("AICS_Cell-feature-analysis_v1.5.csv", {}, function(dataset) {
     var wgetstr = "";
     dataset.names.forEach(function(name) {
@@ -497,7 +502,8 @@ function rNumThumbnailsOnChange(sender) {
 }
 function rDensityRatioOnChange(sender) {
   densityRatio = Number.parseFloat(sender.value);
-  pDensityRatio.innerText = 'Density ratio: {0}% outliers,  {1}% clusters'.format(100 - Math.round(densityRatio * 100), Math.round(densityRatio * 100));
+  pDensityRatio.innerText = 'Density ratio: {0}% outliers,  {1}% clusters'
+    .format(100 - Math.round(densityRatio * 100), Math.round(densityRatio * 100));
 }
 function cmdShowData2DOnClick(sender) {
   plot.clearThumbnails();
@@ -631,6 +637,10 @@ function handleKeyDown(event) {
       plot.renderOffscreenBuffer();
       globalView.download('globalView.png', plot.saveOffscreenBuffer());
       plot.disableOffscreenRendering();
+      break;
+
+    default:
+      break;
   }
 }
 function handleKeyUp(event) {

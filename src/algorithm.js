@@ -345,8 +345,8 @@ export function computeDensityMap(histogram, options) {
   let t1 = tok(); // t1 = Runtime of runtime estimation
 
   expectedRuntime = inflateToFit ?
-    0.011447356659209 * Math.pow(expectedRuntime, 0.508796587646921) :
-    0.017471566555264 * Math.pow(expectedRuntime, 0.466050299746328);
+    0.011447356659209 * (expectedRuntime ** 0.508796587646921) :
+    0.017471566555264 * (expectedRuntime ** 0.466050299746328);
   expectedRuntime *= t1;
   // libUtility.consoleLog("Expected runtime: " + expectedRuntime + "s");
 
@@ -424,8 +424,8 @@ export function computeDensityMap(histogram, options) {
     t1 = tok(); // t1 = Runtime of runtime estimation
 
     expectedRuntime = inflateToFit ?
-      0.011447356659209 * Math.pow(expectedRuntime, 0.508796587646921) :
-      0.017471566555264 * Math.pow(expectedRuntime, 0.466050299746328);
+      0.011447356659209 * (expectedRuntime ** 0.508796587646921) :
+      0.017471566555264 * (expectedRuntime ** 0.466050299746328);
     expectedRuntime *= t1;
     // libUtility.consoleLog("Expected runtime: " + expectedRuntime + "s");
   }
@@ -740,7 +740,7 @@ export function findRepresentativePoints(dataset, d0, d1, densityMap, k, dist, t
     if (representativePoints.every(function (p) {
       const p0 = densityMap.transformX(v0.getValue(p)) / densityMap.width;
       const p1 = densityMap.transformY(v1.getValue(p)) / densityMap.height;
-      return Math.pow(p0 - di0, 2) + Math.pow(p1 - di1, 2) > sqDist;
+      return ((p0 - di0) ** 2) + ((p1 - di1) ** 2) > sqDist;
     })) {
       representativePoints.push(di);
       numHighRepresentativePoints += pointIsHigh;
@@ -867,7 +867,7 @@ export function findRepresentativePointsND(dataset, densityMap, numPointsToRetur
 
     if (representativePoints.every(function (r) {
       for (let c = 0; c < nc; c += 1) {
-        dpsq[c] = Math.pow((data[(r * nc) + c] * scales[c]) - p[c], 2);
+        dpsq[c] = ((data[(r * nc) + c] * scales[c]) - p[c]) ** 2;
       }
 
       for (let d0 = 0; d0 < nc; d0 += 1) {
@@ -986,12 +986,12 @@ export function findClosePointOfLowDensity(
   for (let y = ymin; y < ymax; y += 1) {
     for (let x = xmin; x < xmax; x += 1) {
       if (stencil[((y - ymin) * stencilStride) + (x - xmin)] === 0) {
-        sqdx = Math.pow(x - p0, 2);
-        sqdy = Math.pow(y - p1, 2);
+        sqdx = (x - p0) ** 2;
+        sqdy = (y - p1) ** 2;
         if (sqdx > sqMinDistX && sqdy > sqMinDistY) {
           const sqDensity =
             x >= 0 && x < width && y >= 0 && y < height ?
-              Math.pow(densityOffset + (densities[(y * width) + x] * densityScale), 2) :
+              (densityOffset + (densities[(y * width) + x] * densityScale)) ** 2 :
               sqDensityOffset;
           const sqDist = sqdx + sqdy;
           const penalty = (1e10 * sqDensity) + sqDist;
@@ -1174,8 +1174,8 @@ export function findClosePointOfLowDensityDescend(
   const yMax = height - minDMDistY;
 
   const computePenalty = function (x, y) {
-    const sqDensity = Math.pow(densityOffset + (densities[(y * width) + x] * densityScale), 2);
-    const sqDist = Math.pow(x - p0, 2) + Math.pow(y - p1, 2);
+    const sqDensity = (densityOffset + (densities[(y * width) + x] * densityScale)) ** 2;
+    const sqDist = ((x - p0) ** 2) + ((y - p1) ** 2);
     return (1e5 * sqDensity) + sqDist;
   };
 
@@ -1212,7 +1212,7 @@ export function findClosePointOfLowDensityDescend(
       return (state.y * width) + state.x;
     },
     heuristic(state) {
-      return Math.pow(densityOffset + (densities[(state.y * width) + state.x] * densityScale), 2);
+      return (densityOffset + (densities[(state.y * width) + state.x] * densityScale)) ** 2;
     },
   };
   libPathFinding.SimpleUniformCostSearch(searchProblem);
@@ -1287,15 +1287,15 @@ export function findClosePointOfLowDensityNDDescend(dataset, p, densityMap, minD
     let sqDensity = 0.0;
     for (let d0 = 0; d0 < nc; d0 += 1) {
       for (let d1 = d0 + 1; d1 < nc; d1 += 1) {
-        sqDensity += Math.pow(densityOffset +
-          (densityMap[d0][d1 - d0 - 1].data[(p[d1] * size) + p[d0]] * densityScale), 2);
+        sqDensity += (densityOffset +
+          (densityMap[d0][d1 - d0 - 1].data[(p[d1] * size) + p[d0]] * densityScale)) ** 2;
       }
     }
     const sqDist = p.reduce(function (a, p, pi) {
       const dp = Math.abs(p - start[pi]);
       return a + (dp > minDistSize ?
-        Math.pow(dp - minDistSize, 2) :
-        Math.pow(minDistSize - dp, 2));
+        (dp - minDistSize) ** 2 :
+        (minDistSize - dp) ** 2);
     });
     return sqDensity + sqDist;
   };
@@ -1345,10 +1345,9 @@ export function findClosePointOfLowDensityNDDescend(dataset, p, densityMap, minD
       let sqDensity = 0.0;
       for (let d0 = 0; d0 < nc; d0 += 1) {
         for (let d1 = d0 + 1; d1 < nc; d1 += 1) {
-          sqDensity +=
-            Math.pow(densityOffset +
-              (densityMap[d0][d1 - d0 - 1].data[(state.p[d1] * size) + state.p[d0]] *
-               densityScale), 2);
+          sqDensity += (densityOffset +
+            (densityMap[d0][d1 - d0 - 1].data[(state.p[d1] * size) + state.p[d0]]
+              * densityScale)) ** 2;
         }
       }
       return sqDensity;
@@ -1592,7 +1591,7 @@ export function computeClusterMap(densityMap, d0, d1, options) {
     if (clusters[i] === null) {
       clusters[i] = 0;
     } else if (clusters[i] instanceof ForwardList) {
-      clusters[i].forEach(function (id) {
+      clusters[i].forEach(function (id) { // eslint-disable-line no-loop-func
         clusters[id - 1] = clusterId;
       });
       clusterId += 1;

@@ -96,7 +96,7 @@ export function WebGLUtils() {
      * tag to an error message with the correct links for WebGL.
      * @param {HTMLCanvasElement} canvas The canvas element to create a context from.
      * @param {*=} optAttribs Any creation attributes you want to pass in.
-     * @param {function(string)=} opt_onErrorFunc A function to call if there
+     * @param {function(string)=} optOnErrorFunc A function to call if there
      *        is an error during creation.
      * @return {WebGLRenderingContext} The created context.
      */

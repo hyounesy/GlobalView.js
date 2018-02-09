@@ -133,6 +133,9 @@ export const FormulaCompiler = {
           case ' ': case '\t': case '\r': case '\n': // Ignored characters
             getch();
             repeat = true;
+            break;
+          default:
+            break;
         }
       }
       while (repeat);

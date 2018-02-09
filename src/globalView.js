@@ -1599,10 +1599,20 @@ export function GlobalView(div, startupOptions) {
       let p;
       const li = Math.floor(l);
       switch (li) {
-        case 0: p = [0, (li + 1) - l]; break;
-        case 1: p = [l - li, 0]; break;
-        case 2: p = [1, l - li]; break;
-        case 3: p = [(li + 1) - l, 1]; break;
+        case 0:
+          p = [0, (li + 1) - l];
+          break;
+        case 1:
+          p = [l - li, 0];
+          break;
+        case 2:
+          p = [1, l - li];
+          break;
+        case 3:
+          p = [(li + 1) - l, 1];
+          break;
+        default:
+          break;
       }
       p[0] = (p[0] * (br[0] - tl[0])) + tl[0]; // Denormalize p[0] from [0 ... 1] to [l ... r]
       p[1] = (p[1] * (br[1] - tl[1])) + tl[1]; // Denormalize p[1] from [0 ... 1] to [t ... b]
@@ -1868,14 +1878,14 @@ export function GlobalView(div, startupOptions) {
           event.lassoSelection = true;
         }
         break;
-
       // On middle mouse button: Initiate view dragging
       case 1:
         event.viewDragging = true;
         break;
-
       // On right mouse button: Do nothing
       case 2:
+        break;
+      default:
         break;
     }
   };
@@ -2060,8 +2070,9 @@ export function GlobalView(div, startupOptions) {
     const v0 = dataset.dataVectors[activeInputs[0]];
     const v1 = dataset.dataVectors[activeInputs[1]];
     pointViewer.points.forEach(function (i) {
-      sqDist = (sqscl0 * Math.pow(p[0] - v0.getValue(i), 2)) +
-        (sqscl1 * Math.pow(p[1] - v1.getValue(i), 2));
+      sqDist =
+        (sqscl0 * ((p[0] - v0.getValue(i)) ** 2)) +
+        (sqscl1 * ((p[1] - v1.getValue(i)) ** 2));
       if (sqDist < closest) {
         closest = sqDist;
         closestIndex = i;
@@ -2076,9 +2087,10 @@ export function GlobalView(div, startupOptions) {
     dp[0] = (0.5 + (0.5 * dp[0])) * canvasBounds.width;
     dp[1] = (0.5 - (0.5 * dp[1])) * canvasBounds.height;
 
-    sqDist = Math.pow((event.clientX - canvasBounds.left) - dp[0], 2) +
-      Math.pow((event.clientY - canvasBounds.top) - dp[1], 2);
-    if (sqDist > Math.pow(options.pointSize / 2.0, 2)) {
+    sqDist =
+      (((event.clientX - canvasBounds.left) - dp[0]) ** 2) +
+      (((event.clientY - canvasBounds.top) - dp[1]) ** 2);
+    if (sqDist > (options.pointSize / 2.0) ** 2) {
       if ((event.lassoSelection || event.polygonLassoSelection) &&
           this.onLassoSelection !== null) {
         if (event.polygonLassoSelection) {
@@ -2236,8 +2248,9 @@ export function GlobalView(div, startupOptions) {
     const v0 = dataset.dataVectors[d0];
     const v1 = dataset.dataVectors[d1];
     pointViewer.points.forEach(function (i) {
-      sqDist = (sqscl0 * Math.pow(p[0] - v0.getValue(i), 2)) +
-        (sqscl1 * Math.pow(p[1] - v1.getValue(i), 2));
+      sqDist =
+        (sqscl0 * ((p[0] - v0.getValue(i)) ** 2)) +
+        (sqscl1 * ((p[1] - v1.getValue(i)) ** 2));
       if (sqDist < closest) {
         closest = sqDist;
         closestIndex = i;
@@ -2252,9 +2265,10 @@ export function GlobalView(div, startupOptions) {
     dp[0] = (0.5 + (0.5 * dp[0])) * canvasBounds.width;
     dp[1] = (0.5 - (0.5 * dp[1])) * canvasBounds.height;
 
-    sqDist = Math.pow((event.clientX - canvasBounds.left) - dp[0], 2) +
-      Math.pow((event.clientY - canvasBounds.top) - dp[1], 2);
-    if (sqDist > Math.pow(options.pointSize / 2.0, 2)) {
+    sqDist =
+      (((event.clientX - canvasBounds.left) - dp[0]) ** 2) +
+      (((event.clientY - canvasBounds.top) - dp[1]) ** 2);
+    if (sqDist > (options.pointSize / 2.0) ** 2) {
       if (mouseOverDatapoint !== -1) {
         mouseOverDatapoint = -1;
         if (this.onMouseOverDatapoint !== null) {
