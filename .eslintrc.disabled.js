@@ -42,7 +42,7 @@ module.exports = {
 
     "env": {
 
-        "browser": false,                       // browser global variables
+        "browser": true,                       // browser global variables
         "node": true,                          // Node.js global variables and Node.js scoping.
         "commonjs": false,                      // CommonJS global variables and CommonJS scoping (use this for browser-only code that uses Browserify/WebPack).
         "shared-node-browser": false,           // Globals common to both Node and Browser.
@@ -71,12 +71,19 @@ module.exports = {
     },
 
 
-    "globals": {
-      "Image": true,
-      "window": true,
-      "document": true,
-      "ImageData": true,
-    },
+      "globals": {
+        "Image": true,
+        "window": true,
+        "document": true,
+        "ImageData": true,
+        "XMLHttpRequest": true,
+        "FileReader": true,
+        "$": true,
+        "Float32Array": true,
+        "Float16Array": true,
+        "Uint8Array": true,
+        "Uint32Array": true,
+      },
   
 
     "plugins": [
@@ -137,7 +144,7 @@ module.exports = {
         "no-sparse-arrays": 0,                  // disallow sparse arrays
         "no-template-curly-in-string": 0,       // disallow template literal placeholder syntax in regular strings
         "no-unexpected-multiline": 0,           // disallow confusing multiline expressions
-        "no-unreachable": 0,                    // disallow unreachable code after return, throw, continue, and break statements
+        "no-unreachable": 'error',                    // disallow unreachable code after return, throw, continue, and break statements
         "no-unsafe-finally": 0,                 // disallow control flow statements in finally blocks
         "no-unsafe-negation": 0,                // disallow negating the left operand of relational operators
         "use-isnan": 0,                         // require calls to isNaN() when checking for NaN
@@ -194,7 +201,7 @@ module.exports = {
         "no-magic-numbers": 0,                  // disallow magic numbers
         "no-multi-spaces": 'error',                   // disallow multiple spaces
         "no-multi-str": 0,                      // disallow multiline strings
-        "no-new": 0,                            // disallow new operators outside of assignments or comparisons
+        'no-new': 'error',
         "no-new-func": 0,                       // disallow new operators with the Function object
         "no-new-wrappers": 0,                   // disallow new operators with the String, Number, and Boolean objects
         "no-octal": 0,                          // disallow octal literals
@@ -300,12 +307,15 @@ module.exports = {
         "no-delete-var": 0,                     // disallow deleting variables
         "no-label-var": 0,                      // disallow labels that share a name with a variable
         "no-restricted-globals": 0,             // disallow specified global variables
-        "no-shadow": 0,                         // disallow variable declarations from shadowing variables declared in the outer scope
+        // disallow declaration of variables already declared in the outer scope
+        'no-shadow': 'error',
         "no-shadow-restricted-names": 0,        // disallow identifiers from shadowing restricted names
-        "no-undef": 0,                          // disallow the use of undeclared variables unless mentioned in /*global */ comments
+        // disallow use of undeclared variables unless mentioned in a /*global */ block
+        'no-undef': 'error',
         "no-undef-init": 0,                     // disallow initializing variables to undefined
         "no-undefined": 0,                      // disallow the use of undefined as an identifier
-        "no-unused-vars": 0,                    // disallow unused variables
+        // disallow declaration of variables that are not used in the code
+        'no-unused-vars': ['error', { vars: 'all', args: 'after-used', ignoreRestSiblings: true }],
         // disallow use of variables before they are defined
         'no-use-before-define': ['error', { functions: false, classes: true, variables: true }],
 

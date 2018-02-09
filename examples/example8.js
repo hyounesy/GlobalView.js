@@ -175,11 +175,11 @@ domready(function () {
   document.onkeyup = handleKeyUp;
 
   // Fill cbDataset
-  DATASETS.forEach(function (dataset) {
-    if (typeof dataset.url === 'undefined') {
+  DATASETS.forEach(function (vDataset) {
+    if (typeof vDataset.url === 'undefined') {
       const option = document.createElement('option');
-      option.text = dataset.name;
-      option.createDataset = dataset.create;
+      option.text = vDataset.name;
+      option.createDataset = vDataset.create;
       cbDataset.add(option);
       if (cbDataset.options.length === DATASETS.length) {
         // Load dataset
@@ -190,10 +190,10 @@ domready(function () {
         cbDatasetOnChange(); // Load even if cookie isn't set
       }
     } else {
-      globalView.urlExists(dataset.url, function () {
+      globalView.urlExists(vDataset.url, function () {
         const option = document.createElement('option');
-        option.text = dataset.name;
-        option.createDataset = dataset.create;
+        option.text = vDataset.name;
+        option.createDataset = vDataset.create;
         cbDataset.add(option);
         if (cbDataset.options.length === DATASETS.length) {
           // Load dataset
@@ -288,14 +288,17 @@ function onResize() {
   document.getElementById('divGlobalView').style.height = `${y - 32}px`;
 }
 
+window.onResize = onResize;
+
 function cbDatasetOnChange() {
   globalView.createCookie('datasetIndex', cbDataset.selectedIndex);
   if (cbDataset.selectedIndex >= 0 && cbDataset.options[cbDataset.selectedIndex].createDataset) {
     cbDataset.options[cbDataset.selectedIndex].createDataset();
   }
 }
+window.cbDatasetOnChange = cbDatasetOnChange;
 
-const inflated = false;
+// const inflated = false;
 function datasetOnLoad(_dataset) {
   dataset = _dataset;
   if (dataset.columns.length < 2) {
@@ -404,11 +407,11 @@ function cbPointShapeOnChange(sender) {
   plot.setOption('pointShape', sender.value);
 }
 function rPointOpacityOnChange(sender) {
-  pPointOpacity.innerText = `Point opacity: ${sender.value}`;
+  document.getElementById('pPointOpacity').innerText = `Point opacity: ${sender.value}`;
   plot.setOption('pointOpacity', Number.parseFloat(sender.value));
 }
 function rPointSizeOnChange(sender) {
-  pPointSize.innerText = `Point size: ${sender.value}`;
+  document.getElementById('pPointSize').innerText = `Point size: ${sender.value}`;
   plot.setOption('pointSize', Number.parseFloat(sender.value));
 }
 
@@ -439,12 +442,12 @@ function cbShowHistogramsOnChange(sender) {
 }
 function rVarianceOnChange(sender) {
   const variance = Math.round(10 ** Number.parseFloat(sender.value));
-  pVariance.innerText = `Variance: ${variance}`;
+  document.getElementById('pVariance').innerText = `Variance: ${variance}`;
   requestVariance(variance, true);
 }
 function rNumBinsOnChange(sender) {
   const numBins = Number.parseInt(sender.value, 10);
-  pNumBins.innerText = `# of histogram bins: ${numBins}`;
+  document.getElementById('pNumBins').innerText = `# of histogram bins: ${numBins}`;
   plot.setOption('numHistogramBins', numBins);
 }
 
@@ -490,7 +493,7 @@ String.prototype.replaceAll = function (oldstr, newstr) {
     download("wget.sh", window.URL.createObjectURL(data));
   });
 } */
-function cmdRunBenchmarkOnClick(sender) {
+function cmdRunBenchmarkOnClick(/* sender */) {
   new BenchmarkDialog(plot); // eslint-disable-line no-new
 }
 
@@ -498,18 +501,18 @@ let numThumbnails;
 let densityRatio;
 function rNumThumbnailsOnChange(sender) {
   numThumbnails = 2 ** Number.parseInt(sender.value, 10);
-  pNumThumbnails.innerText = `# of thumbnails: ${numThumbnails}`;
+  document.getElementById('pNumThumbnails').innerText = `# of thumbnails: ${numThumbnails}`;
 }
 function rDensityRatioOnChange(sender) {
   densityRatio = Number.parseFloat(sender.value);
-  pDensityRatio.innerText = 'Density ratio: {0}% outliers,  {1}% clusters'
+  document.getElementById('pDensityRatio').innerText = 'Density ratio: {0}% outliers,  {1}% clusters'
     .format(100 - Math.round(densityRatio * 100), Math.round(densityRatio * 100));
 }
-function cmdShowData2DOnClick(sender) {
+function cmdShowData2DOnClick(/* sender */) {
   plot.clearThumbnails();
   plot.getCharacteristicPoints(numThumbnails, densityRatio, function (characteristicPoints) {
     plot.selectedPoints.assign(characteristicPoints);
-    plot.showImages(plot.selectedPoints, cbThumbnailPositioning.value);
+    plot.showImages(plot.selectedPoints, document.getElementById('cbThumbnailPositioning').value);
   });
 }
 function cbLabelThumbnailsOnChange(sender) {
@@ -534,26 +537,30 @@ function onMouseOverAxisLabel(dataVector, labelRect) {
   }
 }
 
-function onMouseOverDatapoint(dataset, index) {
+function onMouseOverDatapoint(vDataset, index) {
   if (index === -1) {
     plot.highlightedPoints.clear();
-    imgDataPoint.src = '';
-    pDataPoint.innerText = '';
+    document.getElementById('imgDataPoint').src = '';
+    document.getElementById('pDataPoint').innerText = '';
   } else {
     plot.highlightedPoints.set(index);
 
-    imgDataPoint.src = dataset.imageFilenames && dataset.imageFilenames[index] ? dataset.imageFilenames[index] : '';
+    document.getElementById('imgDataPoint').src =
+      vDataset.imageFilenames && vDataset.imageFilenames[index] ? vDataset.imageFilenames[index] : '';
 
-    if (dataset.data) {
-      const nc = dataset.numColumns;
-      pDataPoint.innerText = dataset.dataVectors.map(dataVector =>
-        `${dataVector.label}: ${dataVector.values ? dataVector.values[Math.floor(dataVector.getValue(index))] : dataVector.getValue(index)}`).join('\n');
+    if (vDataset.data) {
+      // const nc = dataset.numColumns;
+      document.getElementById('pDataPoint').innerText = vDataset.dataVectors.map(dataVector =>
+        `${dataVector.label}: ${dataVector.values ?
+          dataVector.values[Math.floor(dataVector.getValue(index))] :
+          dataVector.getValue(index)}`).join('\n');
     } else {
-      pDataPoint.innerText = dataset.names ? dataset.names[index] : `datapoint ${index}`;
+      document.getElementById('pDataPoint').innerText =
+        vDataset.names ? vDataset.names[index] : `datapoint ${index}`;
     }
   }
 }
-function onSelectionChanged(dataset, selection) {
+function onSelectionChanged(vDataset, selection) {
   if (selection.length === 0) {
     if (!shiftPressed) {
       plot.selectedPoints.clear();
@@ -569,7 +576,7 @@ function ondragover(event) {
   event.preventDefault();
 }
 let dragOverCanvas = null;
-function ondragenter(event) {
+function ondragenter(/* event */) {
   globalView.consoleLog('ondragenter');
   if (!dragOverCanvas) {
     const padding = plot.getOption('padding');
@@ -593,7 +600,7 @@ function ondragenter(event) {
     dragOverCanvas.style.height = `${rect.bottom - rect.top - padding[0] - padding[2]}px`;
   }
 }
-function ondragleave(event) {
+function ondragleave(/* event */) {
   globalView.consoleLog('ondragleave');
   if (dragOverCanvas) {
     document.getElementById('divGlobalView').removeChild(dragOverCanvas);
@@ -613,8 +620,8 @@ function ondrop(pEvent) {
     var eventX = event.clientX - targetRect.left;
     var eventY = event.clientY - targetRect.top;
     var fileExt = files[0].name; */
-
-    new CsvDataset(files[0], { autoDetect: true }, datasetOnLoad); // eslint-disable-line no-new
+    // eslint-disable-next-line no-new
+    new globalView.CsvDataset(files[0], { autoDetect: true }, datasetOnLoad);
   }
 }
 

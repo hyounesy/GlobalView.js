@@ -168,7 +168,7 @@ const windowRequestAnimFrame = (function () {
           window.msRequestAnimationFrame ||
           function (
             /* function FrameRequestCallback */ callback,
-            /* DOMElement Element */ element,
+            /* DOMElement Element */ element, // eslint-disable-line no-unused-vars
           ) {
             window.setTimeout(callback, 1000 / 60);
           };

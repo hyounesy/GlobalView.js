@@ -287,16 +287,16 @@ export function Dataset() {
         p.require(libAlgorithm.DensityMap);
         p.require(libAlgorithm.computeDensityMap);
         // the following code will be evaled from a blob in Parallel. so no need for libAlgorithm.
-        // eslint-disable-next-line prefer-spread
+        // eslint-disable-next-line prefer-spread, no-undef
         p.spawn(params => computeDensityMap.apply(null, params)).then((pDensityMap) => {
-          const densityMap = new libAlgorithm.DensityMap(pDensityMap);
+          const computedDensityMap = new libAlgorithm.DensityMap(pDensityMap);
           // Free histogram
           histogram = null;
 
           // Set densityMapsArray[d0][d1]
           densityMapsArray[d0][d1].old = null;
           const pending = densityMapsArray[d0][d1].pending;
-          densityMapsArray[d0][d1] = densityMap;
+          densityMapsArray[d0][d1] = computedDensityMap;
 
           if (clusterMapsArray.length > d0 && clusterMapsArray[d0].length > d1 &&
             clusterMapsArray[d0][d1] && libUtility.isUndefined(clusterMapsArray[d0][d1].pending)) {
@@ -305,7 +305,7 @@ export function Dataset() {
 
           // Execute queued 'ondone' functions
           pending.forEach((ondoneFunction) => {
-            ondoneFunction(densityMap);
+            ondoneFunction(computedDensityMap);
           });
         });
       } else if (!libUtility.isUndefined(densityMap.pending)) {
@@ -424,16 +424,16 @@ export function Dataset() {
           p.require(libUtility.ForwardList);
           p.require(libUtility.PriorityQueue);
           // the following code will be evaled from a blob in Parallel. so no need for libAlgorithm.
-          // eslint-disable-next-line prefer-spread
+          // eslint-disable-next-line prefer-spread, no-undef
           p.spawn(params => computeClusterMap.apply(null, params)).then((pClusterMap) => {
-            const clusterMap = new libAlgorithm.ClusterMap(pClusterMap);
+            const computedClusterMap = new libAlgorithm.ClusterMap(pClusterMap);
             // Set clusterMapsArray[d0][d1]
             const pending = clusterMapsArray[d0][d1].pending;
-            clusterMapsArray[d0][d1] = clusterMap;
+            clusterMapsArray[d0][d1] = computedClusterMap;
 
             // Execute queued 'ondone' functions
-            pending.forEach((ondone) => {
-              ondone(clusterMap);
+            pending.forEach((ondoneFunc) => {
+              ondoneFunc(computedClusterMap);
             });
           });
         });
@@ -505,8 +505,8 @@ export function Dataset() {
     let samples;
     let sample;
     const sampleScale = 1 / densityMapChain[0].size;
-    for (let i, iInflated = n, len = n * nc; iInflated < nInflated; iInflated += 1) {
-      i = iInflated % n;
+    for (let iInflated = n; iInflated < nInflated; iInflated += 1) {
+      // i = iInflated % n;
 
       samples = libAlgorithm.sampleDensityMapChain(densityMapChain);
       for (let c = 0; c < nc; c += 1) {
@@ -534,7 +534,7 @@ export function Dataset() {
       for (let i = 0, len = n; i < len; i += 1) {
         namesInflated[i] = names[i];
       }
-      for (let index = 0, iInflated = n, len = n * nc; iInflated < nInflated; iInflated += 1) {
+      for (let index = 0, iInflated = n; iInflated < nInflated; iInflated += 1) {
         namesInflated[iInflated] = `generated datapoint ${index += 1}`;
       }
       this.names = namesInflated;
@@ -546,7 +546,7 @@ export function Dataset() {
       for (let i = 0, len = n; i < len; i += 1) {
         imageFilenamesInflated[i] = imageFilenames[i];
       }
-      for (let iInflated = n, len = n * nc; iInflated < nInflated; iInflated += 1) {
+      for (let iInflated = n; iInflated < nInflated; iInflated += 1) {
         imageFilenamesInflated[iInflated] = imageFilenames[iInflated % n];
       }
       this.imageFilenames = imageFilenamesInflated;
@@ -970,7 +970,7 @@ export function CsvDataset(file, options, onload) {
     request.send();
   } else {
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = (/* event */) => {
       parseCsv(reader.result);
     };
     reader.readAsText(/** @type {!Blob} */(file));

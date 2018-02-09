@@ -276,8 +276,8 @@ export function Colormap(gl, globalView) {
   };
 
   let pointColor = null;
-  this.setDataset = function (dataset, options) {};
-  this.onInputChanged = function (activeInputs, animatedInputs, options) {};
+  this.setDataset = function (/* dataset, options */) {};
+  this.onInputChanged = function (/* activeInputs, animatedInputs, options */) {};
   this.onOptionsChanged = function (options) {
     axis.tickLength = TICK_LENGTH + (options.showColormapHistogram ? options.histogramHeight : 0);
     if (options.pointColor !== pointColor) {
@@ -294,7 +294,7 @@ export function Colormap(gl, globalView) {
       }
     }
   };
-  this.onPlotBoundsChanged = function (plotBounds) {
+  this.onPlotBoundsChanged = function (/* plotBounds */) {
     if (axis.values === null) {
       this.setNumericRange(axis.minimum, axis.maximum, true);
     } else {

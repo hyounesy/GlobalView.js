@@ -25,7 +25,7 @@ domready(function () {
   });
 });
 
-function tOptionsOnChange(sender) {
+function tOptionsOnChange(/* sender */) {
   let options;
 
   try {

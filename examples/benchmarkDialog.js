@@ -118,7 +118,8 @@ export default function BenchmarkDialog(paramPlot) {
     }
 
     if (SAVE_SCREENSHOTS) {
-      zip = new JSZip();
+      // JSZip is included from a cdn in the html
+      zip = new JSZip(); // eslint-disable-line no-undef
     }
 
     const csvHeader = ['fps', 'options'];
@@ -250,9 +251,9 @@ export default function BenchmarkDialog(paramPlot) {
     // plot.disableOffscreenRendering();
     plot.popOptions();
     // plot.popDataset();
-    cbDatasetOnChange(); // Reload dataset
+    window.cbDatasetOnChange(); // Reload dataset
     plot.disableOffscreenRendering();
-    onResize();
+    window.onResize();
   }
   function finishBenchmark() {
     cancelBenchmark();

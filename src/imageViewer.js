@@ -3,7 +3,6 @@ const libShaders = require('./shaders.js');
 const libAlgorithm = require('./algorithm.js');
 const libColormap = require('./colormap.js');
 const libGlMatrix = require('gl-matrix');
-const libUtility = require('./utility.js');
 
 // const LABEL_HEIGHT = 12, LABEL_WIDTH = 16.5;
 let LABEL_HEIGHT = 12;
@@ -410,8 +409,8 @@ export function ImageViewer(gl, globalView) {
     // gl.enable(gl.SCISSOR_TEST);
   };
 
-  this.setDataset = function (dataset, options) {};
-  this.onInputChanged = function (activeInputs, animatedInputs, options) {};
+  this.setDataset = function (/* dataset, options */) {};
+  this.onInputChanged = function (/* activeInputs, animatedInputs, options */) {};
   this.onOptionsChanged = function (_options) {
     options = _options;
     defaultImageBorderWidth = options.thumbnailBorderWidth;
@@ -425,7 +424,7 @@ export function ImageViewer(gl, globalView) {
       new Float32Array(libColormap.parseColor(options.thumbnailLabelColor)).map(c => c / 255.0) :
       gl.backColor;
   };
-  this.onPlotBoundsChanged = function (plotBounds) {};
+  this.onPlotBoundsChanged = function (/* plotBounds */) {};
 
   /**
    * @param  {string} imageFilename
@@ -527,7 +526,7 @@ export function ImageViewer(gl, globalView) {
 
   this.imageFromPoint = function (tf, p) {
     const imagePos = libGlMatrix.vec2.create();
-    const refPos = libGlMatrix.vec2.create();
+    // const refPos = libGlMatrix.vec2.create();
     const imageSize = libGlMatrix.vec2.create();
 
     let selectedImage = null;

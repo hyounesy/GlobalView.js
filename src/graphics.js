@@ -88,7 +88,8 @@ export function Shader(gl, vSh, fSh, debug) {
         }
       };
     }
-    return debug ? i => libUtility.consoleLog(`Passing value to unused uniform ${uniformString}`) : null;
+    return debug ? i =>
+      libUtility.consoleLog(`Passing value  ${i} to unused uniform ${uniformString}`) : null;
   };
   this.u1f = function (uniformString) {
     this.bind();
@@ -102,7 +103,8 @@ export function Shader(gl, vSh, fSh, debug) {
         }
       };
     }
-    return debug ? f => libUtility.consoleLog(`Passing value to unused uniform ${uniformString}`) : null;
+    return debug ? f =>
+      libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
   };
   this.u2f = function (uniformString) {
     this.bind();
@@ -116,7 +118,8 @@ export function Shader(gl, vSh, fSh, debug) {
         }
       };
     }
-    return debug ? f => libUtility.consoleLog(`Passing value to unused uniform ${uniformString}`) : null;
+    return debug ? f =>
+      libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
   };
   this.u2x2f = function (uniformString) {
     this.bind();
@@ -130,7 +133,8 @@ export function Shader(gl, vSh, fSh, debug) {
         }
       };
     }
-    return debug ? f => libUtility.consoleLog(`Passing value to unused uniform ${uniformString}`) : null;
+    return debug ? f =>
+      libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
   };
   this.u3f = function (uniformString) {
     this.bind();
@@ -144,7 +148,8 @@ export function Shader(gl, vSh, fSh, debug) {
         }
       };
     }
-    return debug ? f => libUtility.consoleLog(`Passing value to unused uniform ${uniformString}`) : null;
+    return debug ? f =>
+      libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
   };
   this.u4f = function (uniformString) {
     this.bind();
@@ -158,7 +163,8 @@ export function Shader(gl, vSh, fSh, debug) {
         }
       };
     }
-    return debug ? f => libUtility.consoleLog(`Passing value to unused uniform ${uniformString}`) : null;
+    return debug ? f =>
+      libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
   };
   this.u1fv = function (uniformString) {
     this.bind();
@@ -172,7 +178,8 @@ export function Shader(gl, vSh, fSh, debug) {
         }
       };
     }
-    return debug ? f => libUtility.consoleLog(`Passing value to unused uniform ${uniformString}`) : null;
+    return debug ? f =>
+      libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
   };
   this.u4fv = function (uniformString) {
     this.bind();
@@ -186,7 +193,8 @@ export function Shader(gl, vSh, fSh, debug) {
         }
       };
     }
-    return debug ? f => libUtility.consoleLog(`Passing value to unused uniform ${uniformString}`) : null;
+    return debug ? f =>
+      libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
   };
   this.u4x4f = function (uniformString) {
     this.bind();
@@ -200,7 +208,8 @@ export function Shader(gl, vSh, fSh, debug) {
         }
       };
     }
-    return debug ? f => libUtility.consoleLog(`Passing value to unused uniform ${uniformString}`) : null;
+    return debug ? f =>
+      libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
   };
 
   this.getAttribLocation = function (attributeName) {
@@ -273,63 +282,63 @@ export function Mesh(
   let ndim;
 
   this.reset = function (
-    positions,
-    normals, tangents, binormals, texcoords,
-    indices, _primitivetype, _ndim,
+    _positions,
+    _normals, _tangents, _binormals, _texcoords,
+    _indices, __primitivetype, __ndim,
   ) {
-    ndim = _ndim || 3;
-    primitivetype = _primitivetype;
-    numvertices = Math.floor(positions.length / ndim);
+    ndim = __ndim || 3;
+    primitivetype = __primitivetype;
+    numvertices = Math.floor(_positions.length / ndim);
     numindices = 0;
 
     if (!posbuffer) {
       posbuffer = gl.createBuffer();
     }
     gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
-    if (normals) {
+    gl.bufferData(gl.ARRAY_BUFFER, _positions, gl.STATIC_DRAW);
+    if (_normals) {
       if (!nmlbuffer) {
         nmlbuffer = gl.createBuffer();
       }
       gl.bindBuffer(gl.ARRAY_BUFFER, nmlbuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, normals, gl.STATIC_DRAW);
+      gl.bufferData(gl.ARRAY_BUFFER, _normals, gl.STATIC_DRAW);
     } else if (!nmlbuffer) {
       gl.deleteBuffer(nmlbuffer);
     }
-    if (tangents) {
+    if (_tangents) {
       if (!tgtbuffer) {
         tgtbuffer = gl.createBuffer();
       }
       gl.bindBuffer(gl.ARRAY_BUFFER, tgtbuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, tangents, gl.STATIC_DRAW);
+      gl.bufferData(gl.ARRAY_BUFFER, _tangents, gl.STATIC_DRAW);
     } else if (!tgtbuffer) {
       gl.deleteBuffer(tgtbuffer);
     }
-    if (binormals) {
+    if (_binormals) {
       if (!bnmbuffer) {
         bnmbuffer = gl.createBuffer();
       }
       gl.bindBuffer(gl.ARRAY_BUFFER, bnmbuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, binormals, gl.STATIC_DRAW);
+      gl.bufferData(gl.ARRAY_BUFFER, _binormals, gl.STATIC_DRAW);
     } else if (!bnmbuffer) {
       gl.deleteBuffer(bnmbuffer);
     }
-    if (texcoords) {
+    if (_texcoords) {
       if (!texcoordbuffer) {
         texcoordbuffer = gl.createBuffer();
       }
       gl.bindBuffer(gl.ARRAY_BUFFER, texcoordbuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, texcoords, gl.STATIC_DRAW);
+      gl.bufferData(gl.ARRAY_BUFFER, _texcoords, gl.STATIC_DRAW);
     } else if (!texcoordbuffer) {
       gl.deleteBuffer(texcoordbuffer);
     }
-    if (indices) {
+    if (_indices) {
       if (!idxbuffer) {
         idxbuffer = gl.createBuffer();
       }
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxbuffer);
-      gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
-      numindices = indices.length;
+      gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, _indices, gl.STATIC_DRAW);
+      numindices = _indices.length;
       if (typeof primitivetype === 'undefined') {
         primitivetype = gl.TRIANGLES;
       } // Default primitive type for indexed geometry is TRIANGLES

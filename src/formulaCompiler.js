@@ -209,7 +209,7 @@ export const FormulaCompiler = {
     function buildAST() {
       const scope = symbolTypes || {};
 
-      function prefixOpAST(op) {
+      function prefixOpAST(op) { // eslint-disable-line no-unused-vars
         if (!libUtility.isString(curTok)) {
           return error(`Expected variable after prefix operator '${op}'`);
         }
@@ -385,7 +385,7 @@ export const FormulaCompiler = {
         if (!args) {
           return null;
         }
-        const numArgs = args.type.length;
+        // const numArgs = args.type.length;
 
         // Create function signature from function name and argument FormulaCompiler.types
         const argTypeNames = args.type.map(type => type.name).join(', ');
@@ -412,7 +412,7 @@ export const FormulaCompiler = {
 
         let code = [];
         const typeList = [];
-        let len = 1;
+        // let len = 1;
         while (true) { // eslint-disable-line no-constant-condition
           const expr = exprAST();
           if (!expr) {
@@ -429,7 +429,7 @@ export const FormulaCompiler = {
           if (!getTok()) {
             return null;
           } // Eat ','
-          len += 1;
+          // len += 1;
         }
         if (!getTok()) {
           return null;
@@ -639,7 +639,7 @@ FormulaCompiler.types.vec3.members = {
   z: { index: 2, type: FormulaCompiler.types.float },
 };
 
-function verboseTest(formula, symbols, symbolTypes) {
+function verboseTest(formula, symbols, symbolTypes) { // eslint-disable-line no-unused-vars
   const code = FormulaCompiler.compile(formula, symbolTypes || {});
 
   libUtility.consoleLog(`formula: ${formula}`);
@@ -653,7 +653,7 @@ function verboseTest(formula, symbols, symbolTypes) {
   }
 }
 
-function verify(formula, result) {
+function verify(formula, result) { // eslint-disable-line no-unused-vars
   const code = FormulaCompiler.compile(formula);
   if (libUtility.isString(code)) {
     libUtility.consoleLog("Formula '{0}' failed with error '{1}'".format(formula, code));
@@ -683,6 +683,7 @@ function verify(formula, result) {
   return true;
 }
 
+// eslint-disable-next-line no-unused-vars
 function benchmark(nIter, javascriptCode, formulaCode, evalCode) {
   let sum;
   let tStart;

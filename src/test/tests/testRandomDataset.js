@@ -7,7 +7,9 @@ export default function testRandomDataSet(div, ondone) {
   seedrandom('1337', { global: true });
   const plot = new globalView.GlobalView(div, null);
   this.getPlot = () => plot;
-  const data = new globalView.RandomDataset(1000, 3, (dataset) => {
+
+  // eslint-disable-next-line no-new
+  new globalView.RandomDataset(1000, 3, (dataset) => {
     plot.load(dataset, 0, 1, 2, 2);
 
     setTimeout(() => {

@@ -284,13 +284,13 @@ export function CoordinateSystem(gl, globalView) {
     axes[d].label = label;
   };
 
-  this.setDataset = function (dataset, options) {};
-  this.onInputChanged = function (activeInputs, animatedInputs, options) {};
+  this.setDataset = function (/* dataset, options */) {};
+  this.onInputChanged = function (/* activeInputs, animatedInputs, options */) {};
   this.onOptionsChanged = function (options) {
     axes[0].tickLength = TICK_LENGTH + (options.showXAxisHistogram ? options.histogramHeight : 0);
     axes[1].tickLength = TICK_LENGTH + (options.showYAxisHistogram ? options.histogramHeight : 0);
   };
-  this.onPlotBoundsChanged = function (plotBounds) {
+  this.onPlotBoundsChanged = function (/* plotBounds */) {
     for (let i = 0; i < 2; i += 1) {
       if (axes[i].values === null) {
         this.setNumericRange(i, axes[i].minimum, axes[i].maximum, true);
@@ -353,7 +353,7 @@ export function CoordinateSystem(gl, globalView) {
         };
       }
       default:
-        return null;
+        break;
     }
     return null;
   };

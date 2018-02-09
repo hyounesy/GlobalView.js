@@ -3,7 +3,7 @@ const libShaders = require('./shaders.js');
 const libAlgorithm = require('./algorithm.js');
 const libColormap = require('./colormap.js');
 const libGlMatrix = require('gl-matrix');
-const libUtility = require('./utility.js');
+// const libUtility = require('./utility.js');
 
 /**
  * A class drawing histograms for x-, y- and color axes to
@@ -14,7 +14,7 @@ const libUtility = require('./utility.js');
  * @param {Object} gl // {WebGLRenderingContext}
  * @param {Object} globalView // {GlobalView}
  */
-export function HistogramViewer(gl, globalView) {
+export function HistogramViewer(gl, globalView) { // eslint-disable-line no-unused-vars
   const sdrLine =
     new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
   sdrLine.color = sdrLine.u4f('color');
@@ -240,22 +240,22 @@ export function HistogramViewer(gl, globalView) {
     }
   };
 
-  this.setDataset = function (_dataset, options) {
+  this.setDataset = function (_dataset /* , options */) {
     dataset = _dataset;
     recreateHistograms();
   };
 
-  this.onOptionsChanged = function (_options, recompileShader) {
+  this.onOptionsChanged = function (_options /* , recompileShader */) {
     options = _options;
     recreateHistograms();
   };
 
-  this.onInputChanged = function (_activeInputs, animatedInputs, options) {
+  this.onInputChanged = function (_activeInputs /* , animatedInputs, options */) {
     activeInputs = _activeInputs;
     recreateHistograms();
   };
 
-  this.onPlotBoundsChanged = function (plotBounds) {};
+  this.onPlotBoundsChanged = function (/* plotBounds */) {};
 
   function recreateHistograms() {
     if (dataset && options.histogramHeight > 0) {
@@ -271,16 +271,17 @@ export function HistogramViewer(gl, globalView) {
       }
     }
   }
-  function createHistogram(pAxis, dataset, d, numBins) {
+
+  function createHistogram(pAxis, pDataset, d, numBins) {
     const axis = pAxis;
-    if (d < 0 || d >= dataset.dataVectors.length) {
+    if (d < 0 || d >= pDataset.dataVectors.length) {
       return;
     } // Validate inputs
     if (axis.histogram && axis.histogram.width === numBins && axis.d === d) {
       return;
     } // Requested histogram already exists
 
-    axis.histogram = libAlgorithm.computeHistogram(dataset, axis.d = d, numBins);
+    axis.histogram = libAlgorithm.computeHistogram(pDataset, axis.d = d, numBins);
     libAlgorithm.addTransformFunctions(axis.histogram);
     // libUtility.consoleLog(axis.histogram);
 

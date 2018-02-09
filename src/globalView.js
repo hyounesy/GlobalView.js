@@ -29,7 +29,7 @@ const ND = 4; // Number of dimensions
  * requireRedraw: boolean,
  * requireRecompile: boolean
  * }} */
-let OptionDescription;
+let OptionDescription; // eslint-disable-line no-unused-vars
 
 /**
  * @summary A fast scatterplot rendered with WebGL
@@ -99,10 +99,10 @@ export function GlobalView(div, startupOptions) {
    * @summary Apply div foreground- and background colors to the plot
    */
   this.updateColorSchema = function () {
-    const divStyle = window.getComputedStyle(div);
-    gl.backColor = divStyle.backgroundColor === 'transparent' ?
-      [0, 0, 0, 0] : libUtility.rgbStringToFloatArray(divStyle.backgroundColor);
-    gl.foreColor = libUtility.rgbStringToFloatArray(gl.foreColorString = divStyle.color);
+    const vDivStyle = window.getComputedStyle(div);
+    gl.backColor = vDivStyle.backgroundColor === 'transparent' ?
+      [0, 0, 0, 0] : libUtility.rgbStringToFloatArray(vDivStyle.backgroundColor);
+    gl.foreColor = libUtility.rgbStringToFloatArray(gl.foreColorString = vDivStyle.color);
     gl.clearColor(...gl.backColor);
     // histogramViewer.updateColorSchema();
     coordSys.updateColorSchema();
@@ -120,8 +120,8 @@ export function GlobalView(div, startupOptions) {
    * @summary Apply div font to the plot
    */
   this.updateFont = function () {
-    const divStyle = window.getComputedStyle(div);
-    trc.setFont(`${divStyle.fontSize} ${divStyle.fontFamily}`);
+    const vDivStyle = window.getComputedStyle(div);
+    trc.setFont(`${vDivStyle.fontSize} ${vDivStyle.fontFamily}`);
     this.invalidate();
   };
 
@@ -2383,7 +2383,7 @@ export function GlobalView(div, startupOptions) {
       onmousemove(event);
     }
   }.bind(this));
-  canvas.onmouseleave = function (event) {
+  canvas.onmouseleave = function (/* event */) {
     if (mouseOverImage != null && imageDragImages.indexOf(mouseOverImage) === -1) {
       mouseOverImage.highlighted = false;
       this.invalidate();

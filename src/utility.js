@@ -105,7 +105,8 @@ if (!String.prototype.format) {
    * Source: http://stackoverflow.com/a/4673436
    * @param {...*} args
    */
-  String.prototype.format = function (args) { // eslint-disable-line no-extend-native
+  // eslint-disable-next-line no-extend-native, no-unused-vars
+  String.prototype.format = function (args) {
     const varArgs = arguments; // eslint-disable-line prefer-rest-params
     return this.replace(/{(\d+)}/g, function (match, number) {
       return typeof varArgs[number] !== 'undefined' ? varArgs[number] : match;
@@ -118,7 +119,7 @@ if (!String.prototype.format) {
    * @param {string} mismatch
    * @param {...*} args
    */
-// eslint-disable-next-line no-extend-native
+// eslint-disable-next-line no-extend-native, no-unused-vars
 String.prototype.format2 = function (pattern, mismatch, args) {
   const varArgs = arguments; // eslint-disable-line prefer-rest-params
   return this.replace(pattern, function (match, strNumber) {
@@ -153,7 +154,7 @@ export function makeCloneable(obj) {
 }
 
 
-function getScript(id) {
+export function getScript(id) {
   const shaderScript = document.getElementById(id);
   if (!shaderScript) {
     return null;
@@ -409,7 +410,7 @@ export function hsv2rgb(hsv) {
     return [hsv[2], hsv[2], hsv[2]];
   }
   let hh;
-  let out;
+  // let out;
 
   hh = hsv[0];
   if (hh >= 1.0) {
@@ -599,30 +600,30 @@ export function ForwardList(value) {
   this.value = value;
   this.next = null;
 
-  this.push = function (value) {
+  this.push = function (val) {
     // Pushes to front
     const newnode = new ForwardList(this.value);
     newnode.next = this.next;
     this.next = newnode;
-    this.value = value;
+    this.value = val;
   };
-  this.pushBack = function (value) {
+  this.pushBack = function (val) {
     let back = this;
     while (back.next !== null) {
       back = back.next;
     }
-    const newnode = new ForwardList(value);
+    const newnode = new ForwardList(val);
     back.next = newnode;
   };
-  this.sortedPush = function (value) {
-    if (value <= this.value) {
-      this.push(value);
+  this.sortedPush = function (val) {
+    if (val <= this.value) {
+      this.push(val);
     } else {
       let node = this;
-      while (node.next !== null && node.next.value < value) {
+      while (node.next !== null && node.next.value < val) {
         node = node.next;
       }
-      const newnode = new ForwardList(value);
+      const newnode = new ForwardList(val);
       newnode.next = node.next;
       node.next = newnode;
     }

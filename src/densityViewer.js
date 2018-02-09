@@ -222,12 +222,12 @@ export function DensityViewer(gl, globalView) {
     }
   };
 
-  this.setDataset = function (_dataset, options) {
+  this.setDataset = function (_dataset /* , options */) {
     dataset = _dataset;
   };
-  this.onInputChanged = function (activeInputs, animatedInputs, options) {};
-  this.onOptionsChanged = function (options) {};
-  this.onPlotBoundsChanged = function (plotBounds) {};
+  this.onInputChanged = function (/* activeInputs, animatedInputs, options */) {};
+  this.onOptionsChanged = function (/* options */) {};
+  this.onPlotBoundsChanged = function (/* plotBounds */) {};
 
   this.updateImages = function (images, d0, d1) {
     const densityMap = dataset.requestDensityMap(d0, d1, undefined, undefined);
@@ -237,8 +237,8 @@ export function DensityViewer(gl, globalView) {
 
     const width = densityMap.width;
     const height = densityMap.height;
-    const densityScale = densityMap.scale;
-    const densityOffset = -densityMap.offset;
+    // const densityScale = densityMap.scale;
+    // const densityOffset = -densityMap.offset;
 
     const xMin = 0;
     const xMax = width;
@@ -290,9 +290,9 @@ export function DensityViewer(gl, globalView) {
           const x = sampleX + dir[0];
           const y = sampleY + dir[1];
           if (x >= xMin && x < xMax && y >= yMin && y < yMax) {
-            const density = densityMap[(y * width) + x];
-            if (density < lowestDensity) {
-              lowestDensity = density;
+            const dDensity = densityMap[(y * width) + x];
+            if (dDensity < lowestDensity) {
+              lowestDensity = dDensity;
               bestDir = dir;
             }
           }

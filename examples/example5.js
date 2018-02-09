@@ -120,7 +120,7 @@ function addAllEventListeners() {
   });
 }
 
-function cmdSelectAllOnClick(sender) {
+function cmdSelectAllOnClick(/* sender */) {
   const elements = document.querySelectorAll("input[type='checkbox']");
   for (let i = 0; i < elements.length; i += 1) {
     if (elements[i].checked === false) {
@@ -130,7 +130,7 @@ function cmdSelectAllOnClick(sender) {
   }
 }
 
-function cmdDeselectAllOnClick(sender) {
+function cmdDeselectAllOnClick(/* sender */) {
   const elements = document.querySelectorAll("input[type='checkbox']");
   for (let i = 0; i < elements.length; i += 1) {
     if (elements[i].checked === true) {

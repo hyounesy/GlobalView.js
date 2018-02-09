@@ -3,7 +3,8 @@ const globalView = require('../../../dist/global-view.js');
 function testCustomOptions(div, options, ondone, timeout = 500) {
   const plot = new globalView.GlobalView(div, options);
 
-  const data = new globalView.CsvDataset('tests/datasets/iris.data', {}, (dataset) => {
+  // eslint-disable-next-line no-new
+  new globalView.CsvDataset('tests/datasets/iris.data', {}, (dataset) => {
     plot.load(dataset, 0, 1, 4, 1);
 
     setTimeout(() => {

@@ -11,8 +11,6 @@ const COLUMN_NAMES = [
   'Apical proximity (unitless)',
 ];
 
-let plots = null;
-
 domready(function () {
   const PLOT_SIZE = 400;
   const FONT_SIZE = 8;
@@ -53,7 +51,8 @@ domready(function () {
     const ndim = Math.min(2, dataset.dataVectors.length - 1);
     const subPlotWidth = PLOT_SIZE / ndim;
     const subPlotHeight = subPlotWidth;
-    plots = Array.create(ndim * ndim, function (d) {
+    // const plots =
+    Array.create(ndim * ndim, function (d) {
       let x = d % ndim;
       let y = Math.floor(d / ndim);
 

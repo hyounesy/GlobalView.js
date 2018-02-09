@@ -551,7 +551,8 @@ export function computeDensityMap(histogram, options) {
       }
     }
   }
-  const t2 = tok(); // t2 = Measured runtime
+
+  // const t2 = tok(); // t2 = Measured runtime
   // libUtility.consoleLog("Actual runtime: " + t2 + "s");
 
   // Free precomputed gaussian scales
@@ -894,7 +895,7 @@ export function findRepresentativePointsND(dataset, densityMap, numPointsToRetur
  * @return {Array<number>} An array of up to k point indices of characteristic points
  */
 export function findRepresentativePointsND2(dataset, densityMap, numPointsToReturn) {
-  k = Math.min(numPointsToReturn, dataset.length);
+  const k = Math.min(numPointsToReturn, dataset.length);
   let dist = 0.2;
   let representativePoints;
   // eslint-disable-next-line no-cond-assign
@@ -1143,7 +1144,7 @@ export function findClosePointOfLowDensityDescend(
   densityMap, minDistX, minDistY,
 ) {
   const data = dataset.fdata;
-  const n = dataset.length;
+  // const n = dataset.length;
   const nc = dataset.numColumns;
   const s0 = 1 / (dataset.columns[d0].maximum - dataset.columns[d0].minimum);
   const o0 = -dataset.columns[d0].minimum * s0;
@@ -1188,7 +1189,7 @@ export function findClosePointOfLowDensityDescend(
         y: Math.max(yMin, Math.min(yMax - 1, Math.floor(p1))),
       };
     },
-    isGoalState(state) {
+    isGoalState(/* state */) {
       maxIterations -= 1;
       return maxIterations === 0;
     },
@@ -1240,7 +1241,7 @@ export function findClosePointOfLowDensityDescend(
  */
 export function findClosePointOfLowDensityNDDescend(dataset, p, densityMap, minDist) {
   const data = dataset.fdata;
-  const n = dataset.length;
+  // const n = dataset.length;
   const nc = dataset.numColumns;
   const size = densityMap[0][0].width;
   let densityScale = densityMap[0][0].scale;
@@ -1283,17 +1284,17 @@ export function findClosePointOfLowDensityNDDescend(dataset, p, densityMap, minD
     }
   } while (i !== a.length);
 
-  const computePenalty = function (p) {
+  const computePenalty = function (pty) {
     let sqDensity = 0.0;
     for (let d0 = 0; d0 < nc; d0 += 1) {
       for (let d1 = d0 + 1; d1 < nc; d1 += 1) {
         sqDensity += (densityOffset +
-          (densityMap[d0][d1 - d0 - 1].data[(p[d1] * size) + p[d0]] * densityScale)) ** 2;
+          (densityMap[d0][d1 - d0 - 1].data[(pty[d1] * size) + pty[d0]] * densityScale)) ** 2;
       }
     }
-    const sqDist = p.reduce(function (a, p, pi) {
-      const dp = Math.abs(p - start[pi]);
-      return a + (dp > minDistSize ?
+    const sqDist = pty.reduce(function (ax, pt, pi) {
+      const dp = Math.abs(pt - start[pi]);
+      return ax + (dp > minDistSize ?
         (dp - minDistSize) ** 2 :
         (minDistSize - dp) ** 2);
     });
@@ -1310,20 +1311,20 @@ export function findClosePointOfLowDensityNDDescend(dataset, p, densityMap, minD
       }
       return { p: startArray };
     },
-    isGoalState(state) {
+    isGoalState(/* state */) {
       maxIterations -= 1;
       return maxIterations === 0;
     },
     forEachSuccessor(state, onSuccessor) {
       actions.forEach(function (action) {
-        const p = new Float32Array(nc);
+        const pa = new Float32Array(nc);
         for (let c = 0; c < nc; c += 1) {
-          p[c] = state.p[c] + action[c];
-          if (p[c] < min || p[c] >= max) {
+          pa[c] = state.p[c] + action[c];
+          if (pa[c] < min || pa[c] >= max) {
             return;
           }
         }
-        const newState = { p, penalty: computePenalty(p) };
+        const newState = { pa, penalty: computePenalty(pa) };
         if (newState.penalty < bestState.penalty) {
           // && p.every(function(pp, pi)
           // { return pp < start[pi] - minDist || pp > start[pi] + minDist; })
@@ -1648,7 +1649,7 @@ export function computeClusterMap(densityMap, d0, d1, options) {
       const neighbor = neighborQueue.shift();
       let x = neighbor.x;
       let y = neighbor.y;
-      const d = neighbor.d;
+      // const d = neighbor.d;
       const id = neighbor.c;
       x -= 1;
       if (x !== -1) {

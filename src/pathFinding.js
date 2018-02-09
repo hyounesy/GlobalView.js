@@ -43,7 +43,7 @@ export function DepthFirstSearch(problem) {
   }
 }
 
-function BreadthFirstSearch(problem) {
+export function BreadthFirstSearch(problem) {
   let fringe = [];
   const closed = {};
 
@@ -141,7 +141,7 @@ export function SimpleUniformCostSearch(problem) {
   }
 }
 
-export function SimpleAStarSearch(problem, heuristic) {
+export function SimpleAStarSearch(problem) {
   let fringe = new libUtility.PriorityQueue('cost');
   const closed = {};
 
