@@ -11,4 +11,7 @@ module.exports = {
     "XMLHttpRequest": true,
     "FileReader": true,
   },
+  "rules": {
+    'no-use-before-define': ['error', { functions: false, classes: true, variables: true }], // allow functions
+  },
 };

@@ -22,7 +22,8 @@ domready(function () {
     showColormap: false,
     pointSize: 3,
     pointOpacity: 0.6,
-    pointColor: ['#A6CEE3', '#B2DF8A', '#33A02C', '#FB9A99', '#FDBF6F', '#FF7F00', '#CAB2D6', '#6A3D9A', '#FFFF99', '#4D61BF'],
+    pointColor: ['#A6CEE3', '#B2DF8A', '#33A02C', '#FB9A99', '#FDBF6F',
+      '#FF7F00', '#CAB2D6', '#6A3D9A', '#FFFF99', '#4D61BF'],
     thumbnailSize: 16,
   };
   const NUM_THUMBNAILS = 16;
@@ -35,8 +36,10 @@ domready(function () {
   divPlots.style.fontSize = FONT_SIZE;
   document.body.appendChild(divPlots);
 
-  const csvPath = 'datasets/AICS_Cell-feature-analysis_v1.5.csv'; // 'http://homepage.univie.ac.at/a0929188/GlobalView/AICS_Cell-feature-analysis_v1.5.csv"
-  const imagesPath = 'datasets/AICS_Cell-feature-analysis_v1.5_images/'; // 'http://homepage.univie.ac.at/a0929188/GlobalView/images/"
+  // 'http://homepage.univie.ac.at/a0929188/GlobalView/AICS_Cell-feature-analysis_v1.5.csv"
+  const csvPath = 'datasets/AICS_Cell-feature-analysis_v1.5.csv';
+  // 'http://homepage.univie.ac.at/a0929188/GlobalView/images/"
+  const imagesPath = 'datasets/AICS_Cell-feature-analysis_v1.5_images/';
 
   new globalView.CsvDataset(csvPath, { // eslint-disable-line no-new
     hasHeader: true,
@@ -44,21 +47,29 @@ domready(function () {
     columnLabels: COLUMN_NAMES,
     imageFilenames: data => `${imagesPath + data[1]}.png`,
   }, function (dataset) {
-    const ndim = Math.min(2, dataset.dataVectors.length - 1); // -1 ... Adjust number of dataVectors, since we don't plot dataVectors[0] (tagged protein)
+    // -1 ... Adjust number of dataVectors, since we don't plot dataVectors[0] (tagged protein)
+    const ndim = Math.min(2, dataset.dataVectors.length - 1);
     const subPlotWidth = PLOT_SIZE / ndim;
     const subPlotHeight = subPlotWidth;
     plots = Array.create(ndim * ndim, function (d) {
       let x = d % ndim;
       let y = Math.floor(d / ndim);
 
-      OPTIONS.padding = [y * subPlotHeight, (ndim - x - 1) * subPlotWidth, (ndim - y - 1) * subPlotHeight, x * subPlotWidth];
+      OPTIONS.padding = [y * subPlotHeight,
+        (ndim - x - 1) * subPlotWidth,
+        (ndim - y - 1) * subPlotHeight,
+        x * subPlotWidth];
 
       // Adjust indices, since we don't plot dataVectors[0] (tagged protein)
       x += 1;
       y += 1;
 
-      const thumbnailWidth = (OPTIONS.thumbnailSize * (dataset.dataVectors[x].maximum - dataset.dataVectors[x].minimum)) / (PLOT_SIZE - OPTIONS.padding[1] - OPTIONS.padding[3]);
-      const thumbnailHeight = (OPTIONS.thumbnailSize * (dataset.dataVectors[y].maximum - dataset.dataVectors[y].minimum)) / (PLOT_SIZE - OPTIONS.padding[0] - OPTIONS.padding[2]);
+      const thumbnailWidth = (OPTIONS.thumbnailSize *
+        (dataset.dataVectors[x].maximum - dataset.dataVectors[x].minimum)) /
+      (PLOT_SIZE - OPTIONS.padding[1] - OPTIONS.padding[3]);
+      const thumbnailHeight = (OPTIONS.thumbnailSize *
+        (dataset.dataVectors[y].maximum - dataset.dataVectors[y].minimum)) /
+      (PLOT_SIZE - OPTIONS.padding[0] - OPTIONS.padding[2]);
       globalView.consoleLog(thumbnailWidth, thumbnailHeight);
 
       const plot = new globalView.GlobalView(divPlots, OPTIONS);

@@ -89,7 +89,8 @@ export function UniformCostSearch(problem) {
     problem.forEachSuccessor(node.state, function (successor, successor_cost) {
       const successor_hash = problem.computeHash(successor);
       const varSuccessor = closed[successor_hash];
-      if (libUtility.isUndefined(varSuccessor) || node.cost + successor_cost < varSuccessor.prevCost) {
+      if (libUtility.isUndefined(varSuccessor) ||
+        node.cost + successor_cost < varSuccessor.prevCost) {
         fringe.push({ state: successor, cost: node.cost + successor_cost });
         closed[successor_hash] = { state: successor, prevCost: node.cost + successor_cost };
       }

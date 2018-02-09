@@ -255,7 +255,11 @@ export function validateGLSL(gl, code) {
  * @param {number=} _primitivetype = gl.TRIANGLE_STRIP
  * @param {number=} _ndim = 3
  */
-export function Mesh(_gl, positions, normals, tangents, binormals, texcoords, indices, _primitivetype, _ndim) {
+export function Mesh(
+  _gl,
+  positions, normals, tangents, binormals,
+  texcoords, indices, _primitivetype, _ndim,
+) {
   const gl = _gl;
   let posbuffer;
   let nmlbuffer;
@@ -268,7 +272,11 @@ export function Mesh(_gl, positions, normals, tangents, binormals, texcoords, in
   let numindices;
   let ndim;
 
-  this.reset = function (positions, normals, tangents, binormals, texcoords, indices, _primitivetype, _ndim) {
+  this.reset = function (
+    positions,
+    normals, tangents, binormals, texcoords,
+    indices, _primitivetype, _ndim,
+  ) {
     ndim = _ndim || 3;
     primitivetype = _primitivetype;
     numvertices = Math.floor(positions.length / ndim);

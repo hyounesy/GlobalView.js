@@ -310,7 +310,8 @@ export function Dataset() {
         });
       } else if (!libUtility.isUndefined(densityMap.pending)) {
         // If densityMapsArray[d0][d1] is currently being computed asynchronously
-        if (densityMap.old && (!options || libAlgorithm.DensityMapOptions.equals(densityMap.old.options, options))) {
+        if (densityMap.old &&
+          (!options || libAlgorithm.DensityMapOptions.equals(densityMap.old.options, options))) {
           // If the deprecated densityMap satisfies our requested options
           ondone(/** @type {DensityMap} */(densityMap.old));
         } else {
@@ -417,7 +418,8 @@ export function Dataset() {
 
         this.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
           // Execute an asynchronous worker that computes clusterMapsArray[d0][d1]
-          const p = new Parallel([libUtility.makeCloneable(densityMap), d0, d1, new libAlgorithm.ClusterMapOptions(options)], { evalPath: 'eval.js' });
+          const p = new Parallel([libUtility.makeCloneable(densityMap), d0, d1,
+            new libAlgorithm.ClusterMapOptions(options)], { evalPath: 'eval.js' });
           p.require(libAlgorithm.computeClusterMap);
           p.require(libUtility.ForwardList);
           p.require(libUtility.PriorityQueue);
@@ -437,7 +439,8 @@ export function Dataset() {
         });
       } else if (!libUtility.isUndefined(clusterMap.pending)) {
         // If clusterMapsArray[d0][d1] is currently being computed asynchronously
-        if (clusterMap.old && (!options || libAlgorithm.ClusterMapOptions.equals(clusterMap.old.options, options))) {
+        if (clusterMap.old &&
+          (!options || libAlgorithm.ClusterMapOptions.equals(clusterMap.old.options, options))) {
           // If the deprecated clusterMap satisfies our requested options
           ondone(/** @type {ClusterMap} */(clusterMap.old));
         } else {
@@ -512,7 +515,9 @@ export function Dataset() {
 
         if (column.values) {
           // If column is qualitative
-          fdata_inflated[(i_inflated * nc) + c] = sample = Math.max(0, Math.min(column.values.length - 1, Math.round(sample)));
+          fdata_inflated[(i_inflated * nc) + c] =
+          sample =
+            Math.max(0, Math.min(column.values.length - 1, Math.round(sample)));
           data_inflated[(i_inflated * nc) + c] = column.values[sample];
         } else {
           // If column is numeric
@@ -643,7 +648,8 @@ export function RandomDataset(n, nc, onload) {
 const CSV_DATASET_OPTIONS = {
   /** When true, tries to infer other options based on the structure of the dataset (slow). */
   autoDetect: {
-    description: 'When true, tries to infer other options based on the structure of the dataset (slow).',
+    description: 'When true, tries to infer other options ' +
+                 'based on the structure of the dataset (slow).',
     default: false,
     valid: [true, false],
   },
@@ -662,16 +668,20 @@ const CSV_DATASET_OPTIONS = {
     valid: null,
   },
 
-  /** An array of column labels, or a function that takes the column index as input and returns the column label. */
+  /** An array of column labels, or a function that takes the column index
+   *  as input and returns the column label. */
   columnLabels: {
-    description: 'An array of column labels, or a function that takes the column index as input and returns the column label.',
+    description: 'An array of column labels, or a function that takes the ' +
+                 'column index as input and returns the column label.',
     default: null,
     valid: null,
   },
 
-  /** An array of image URLs, or a function that takes a row of data and the row index as input and returns a URL to an image of the data point. */
+  /** An array of image URLs, or a function that takes a row of data and the row index as
+   *  input and returns a URL to an image of the data point. */
   imageFilenames: {
-    description: 'An array of image URLs, or a function that takes a row of data and the row index as input and returns a URL to an image of the data point.',
+    description: 'An array of image URLs, or a function that takes a row of data ' +
+                 'and the row index as input and returns a URL to an image of the data point.',
     default: null,
     valid: null,
   },
@@ -706,7 +716,8 @@ export function CsvDataset(file, options, onload) {
     // Validate value
     const value = varOptions[option];
     if ((optionDefinition.valid && optionDefinition.valid.indexOf(value) === -1) ||
-      (optionDefinition.validRange && (value < optionDefinition.validRange[0] || value > optionDefinition.validRange[1]))) {
+      (optionDefinition.validRange &&
+        (value < optionDefinition.validRange[0] || value > optionDefinition.validRange[1]))) {
       libUtility.consoleWarn(`CsvDataset warning: Invalid value for option ${option}: ${value}`);
       delete varOptions[option];
       continue; // eslint-disable-line no-continue
@@ -775,7 +786,9 @@ export function CsvDataset(file, options, onload) {
       }
     } else if (libUtility.isArray(varOptions.columnLabels)) {
       if (varOptions.columnLabels.length !== nc) {
-        libUtility.consoleWarn(`CsvDataset warning: Number of provided column labels (${varOptions.columnLabels.length}) differs from number of data columns in the dataset (${nc})`);
+        libUtility.consoleWarn(`CsvDataset warning: Number of provided column labels (${
+          varOptions.columnLabels.length
+        }) differs from number of data columns in the dataset (${nc})`);
         columnLabels = null;
       } else {
         columnLabels = varOptions.columnLabels;
@@ -820,7 +833,8 @@ export function CsvDataset(file, options, onload) {
 
       let valueList = null;
       if (!isNumeric) {
-        // Loop through all values of column c again, generating a value map -> value, fvalue, min, max
+        // Loop through all values of column c again,
+        // generating a value map -> value, fvalue, min, max
         valueList = [];
         const valueMap = {};
         let valueIdx = 0;

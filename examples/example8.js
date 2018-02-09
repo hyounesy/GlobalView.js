@@ -23,14 +23,45 @@ domready(function () {
   cbColumnS = document.getElementById('cbColumnS');
 
   const DATASETS = [
-    { name: '10 random points', create: () => new globalView.RandomDataset(10, 3, dataset_onLoad) },
-    { name: '100 random points', create: () => new globalView.RandomDataset(100, 3, dataset_onLoad) },
-    { name: '1.000 random points', create: () => new globalView.RandomDataset(1000, 3, dataset_onLoad) },
-    { name: '10.000 random points', create: () => new globalView.RandomDataset(10000, 3, dataset_onLoad) },
-    { name: '100.000 random points', create: () => new globalView.RandomDataset(100000, 3, dataset_onLoad) },
-    { name: '1.000.000 random points', create: () => new globalView.RandomDataset(1000000, 3, dataset_onLoad) },
-    { name: '10.000.000 random points', create: () => new globalView.RandomDataset(10000000, 3, dataset_onLoad) },
-    { name: 'iris', url: 'datasets/iris.data', create: () => new globalView.CsvDataset('datasets/iris.data', { columnLabels: ['Sepal Length [cm]', 'Sepal Width [cm]', 'Petal Length [cm]', 'Petal Width [cm]', 'Class'] }, dataset_onLoad) },
+    {
+      name: '10 random points',
+      create: () => new globalView.RandomDataset(10, 3, dataset_onLoad),
+    },
+    {
+      name: '100 random points',
+      create: () => new globalView.RandomDataset(100, 3, dataset_onLoad),
+    },
+    {
+      name: '1.000 random points',
+      create: () => new globalView.RandomDataset(1000, 3, dataset_onLoad),
+    },
+    {
+      name: '10.000 random points',
+      create: () => new globalView.RandomDataset(10000, 3, dataset_onLoad),
+    },
+    {
+      name: '100.000 random points',
+      create: () => new globalView.RandomDataset(100000, 3, dataset_onLoad),
+    },
+    {
+      name: '1.000.000 random points',
+      create: () => new globalView.RandomDataset(1000000, 3, dataset_onLoad),
+    },
+    {
+      name: '10.000.000 random points',
+      create: () => new globalView.RandomDataset(10000000, 3, dataset_onLoad),
+    },
+    {
+      name: 'iris',
+      url: 'datasets/iris.data',
+      create: () => new globalView.CsvDataset(
+        'datasets/iris.data', {
+          columnLabels: ['Sepal Length [cm]',
+            'Sepal Width [cm]', 'Petal Length [cm]', 'Petal Width [cm]', 'Class'],
+        },
+        dataset_onLoad,
+      ),
+    },
     {
       name: 'allencell',
       url: 'datasets/AICS_Cell-feature-analysis_v1.5.csv',
@@ -42,9 +73,45 @@ domready(function () {
         },
       }, dataset_onLoad),
     },
-    // {name: "allencell x2", url: "datasets/AICS_Cell-feature-analysis_v1.5_x2.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x2.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
-    // {name: "allencell x10", url: "datasets/AICS_Cell-feature-analysis_v1.5_x10.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x10.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
-    // {name: "allencell x100", url: "datasets/AICS_Cell-feature-analysis_v1.5_x100.csv", create: () => new CsvDataset("datasets/AICS_Cell-feature-analysis_v1.5_x100.csv", {hasHeader: true, nameColumn: 1, imageFilenames: function(data) { return "datasets/AICS_Cell-feature-analysis_v1.5_images/" + data[1] + ".png"; }}, dataset_onLoad)},
+    /*
+    {
+      name: 'allencell x2',
+      url: 'datasets/AICS_Cell-feature-analysis_v1.5_x2.csv',
+      create: () => new CsvDataset(
+        'datasets/AICS_Cell-feature-analysis_v1.5_x2.csv',
+        {
+          hasHeader: true,
+          nameColumn: 1,
+          imageFilenames(data) {
+            return `datasets/AICS_Cell-feature-analysis_v1.5_images/${data[1]}.png`;
+          },
+        },
+        dataset_onLoad,
+      ),
+    },
+    {
+      name: 'allencell x10',
+      url: 'datasets/AICS_Cell-feature-analysis_v1.5_x10.csv',
+      create: () => new CsvDataset('datasets/AICS_Cell-feature-analysis_v1.5_x10.csv', {
+        hasHeader: true,
+        nameColumn: 1,
+        imageFilenames(data) {
+          return `datasets/AICS_Cell-feature-analysis_v1.5_images/${ data[1]}.png`;
+        },
+      }, dataset_onLoad),
+    },
+    {
+      name: 'allencell x100',
+      url: 'datasets/AICS_Cell-feature-analysis_v1.5_x100.csv',
+      create: () => new CsvDataset('datasets/AICS_Cell-feature-analysis_v1.5_x100.csv', {
+        hasHeader: true,
+        nameColumn: 1,
+        imageFilenames(data) {
+          return `datasets/AICS_Cell-feature-analysis_v1.5_images/${data[1]}.png`;
+        },
+      }, dataset_onLoad),
+    },
+    */
   ];
 
   const divGlobalView = document.getElementById('divGlobalView');
@@ -59,7 +126,7 @@ domready(function () {
     const event = pEvent;
     switch (event.button) {
       // On left mouse button: Enable point selection and dragging events.
-      //                       If control button is pressed, initiate view dragging, else, enable lasso selection
+      // If control button is pressed, initiate view dragging, else, enable lasso selection
       case 0:
         event.pointSelection = true;
         event.pointDragging = true;
@@ -274,13 +341,33 @@ function dataset_onLoad(_dataset) {
   const activeColumnY = globalView.readIntCookie('activeColumnY');
   const activeColumnC = globalView.readIntCookie('activeColumnC');
   const activeColumnS = globalView.readIntCookie('activeColumnS');
-  cbColumnX.selectedIndex = Math.max(0, Math.min(dataset.numColumns - 1, activeColumnX !== null && activeColumnX < dataset.numColumns ? activeColumnX : 0));
-  cbColumnY.selectedIndex = Math.max(0, Math.min(dataset.numColumns - 1, activeColumnY !== null && activeColumnY < dataset.numColumns ? activeColumnY : 1));
-  cbColumnC.selectedIndex = Math.max(0, Math.min(dataset.numColumns - 1, activeColumnC !== null && activeColumnC < dataset.numColumns ? activeColumnC : 2));
-  cbColumnS.selectedIndex = Math.max(0, Math.min(dataset.numColumns - 1, activeColumnS !== null && activeColumnS < dataset.numColumns ? activeColumnS : 3));
+  cbColumnX.selectedIndex = Math.max(0, Math.min(
+    dataset.numColumns - 1,
+    activeColumnX !== null && activeColumnX < dataset.numColumns ?
+      activeColumnX : 0,
+  ));
+  cbColumnY.selectedIndex = Math.max(0, Math.min(
+    dataset.numColumns - 1,
+    activeColumnY !== null && activeColumnY < dataset.numColumns ?
+      activeColumnY : 1,
+  ));
+  cbColumnC.selectedIndex = Math.max(0, Math.min(
+    dataset.numColumns - 1,
+    activeColumnC !== null && activeColumnC < dataset.numColumns ?
+      activeColumnC : 2,
+  ));
+  cbColumnS.selectedIndex = Math.max(0, Math.min(
+    dataset.numColumns - 1,
+    activeColumnS !== null && activeColumnS < dataset.numColumns ?
+      activeColumnS : 3,
+  ));
 
   // Show dataset
-  plot.load(dataset, cbColumnX.selectedIndex, cbColumnY.selectedIndex, cbColumnC.selectedIndex, cbColumnS.selectedIndex);
+  plot.load(
+    dataset,
+    cbColumnX.selectedIndex, cbColumnY.selectedIndex,
+    cbColumnC.selectedIndex, cbColumnS.selectedIndex,
+  );
 }
 function cbColumnX_onChange() {
   globalView.createCookie('activeColumnX', cbColumnX.selectedIndex);
@@ -361,14 +448,19 @@ function requestVariance(variance, fast) {
   }
 
   densityMapOptions.gaussScale = variance;
-  dataset.requestDensityMap(plot.getActiveColumn(0), plot.getActiveColumn(1), fast ? 64 : null, densityMapOptions, function (densityMap) {
-    if (densityMapOptions.gaussScale === variance) {
-      plot.invalidate();
-      if (fast) {
-        requestVariance(variance, densityMap.options.gaussScale !== variance);
+  dataset.requestDensityMap(
+    plot.getActiveColumn(0), plot.getActiveColumn(1),
+    fast ? 64 : null,
+    densityMapOptions,
+    function (densityMap) {
+      if (densityMapOptions.gaussScale === variance) {
+        plot.invalidate();
+        if (fast) {
+          requestVariance(variance, densityMap.options.gaussScale !== variance);
+        }
       }
-    }
-  });
+    },
+  );
 }
 
 String.prototype.replaceAll = function (oldstr, newstr) {

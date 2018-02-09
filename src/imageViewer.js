@@ -129,10 +129,12 @@ function Thumbnail(globalView) {
  * @param {Object} globalView // {GlobalView}
  */
 export function ImageViewer(gl, globalView) {
-  const sdrImage = new libGraphics.Shader(gl, libShaders.Shaders.vsTextured, libShaders.Shaders.fsTextured);
+  const sdrImage =
+    new libGraphics.Shader(gl, libShaders.Shaders.vsTextured, libShaders.Shaders.fsTextured);
   sdrImage.matWorldViewProj = sdrImage.u4x4f('matWorldViewProj');
 
-  const sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
+  const sdrLine =
+    new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
   sdrLine.color = sdrLine.u4f('color');
   sdrLine.color(...gl.foreColor);
   sdrLine.matWorldViewProj = sdrLine.u4x4f('matWorldViewProj');
@@ -194,6 +196,11 @@ export function ImageViewer(gl, globalView) {
 
   const PixelAlignX = x => ((Math.floor((x * gl.width) / 2.0) + 0.5) * 2.0) / gl.width;
   const PixelAlignY = y => ((Math.floor((y * gl.height) / 2.0) + 0.5) * 2.0) / gl.height;
+  let options = {};
+  let defaultImageBorderWidth = 1;
+  let defaultImageBorderColor = gl.foreColor;
+  let defaultImageLineColor = gl.foreColor;
+  let defaultImageLabelColor = gl.backColor;
 
   this.render = function (flipY, tf) {
     if (images.length === 0) {
@@ -283,7 +290,8 @@ export function ImageViewer(gl, globalView) {
 
       // var normalizedImagePos = vec2.create();
       // tf.transformPos(normalizedImagePos, image.imagePos);
-      // if (normalizedImagePos[0] < 0.0 || normalizedImagePos[0] >= 1.0 || normalizedImagePos[1] < 0.0 || normalizedImagePos[1] >= 1.0)
+      // if (normalizedImagePos[0] < 0.0 || normalizedImagePos[0] >= 1.0 ||
+      //    normalizedImagePos[1] < 0.0 || normalizedImagePos[1] >= 1.0)
       //  return;
 
       tf.transformPos(imagePos, image.imagePos);
@@ -292,12 +300,20 @@ export function ImageViewer(gl, globalView) {
       tf.transformNml2(imageSize, image.imageSize);
       const w = image.tex.image.width;
       const h = image.tex.image.height;
-      // imageSize[0] *= 2 / gl.width; imageSize[1] *= 2 / gl.height; // Transform imageSize from normalized space to device space
+      // Transform imageSize from normalized space to device space
+      // imageSize[0] *= 2 / gl.width; imageSize[1] *= 2 / gl.height;
       let scale;
-      if (Math.max(imageSize[0], (imageSize[0] * h) / w, 1.0) < Math.max((imageSize[1] * w) / h, imageSize[1])) {
-        scale = [(2 * Math.floor(imageSize[0])) / gl.width, (2 * Math.floor((imageSize[0] * h) / w)) / gl.height, 1];
+      if (Math.max(imageSize[0], (imageSize[0] * h) / w, 1.0) <
+          Math.max((imageSize[1] * w) / h, imageSize[1])) {
+        scale = [
+          (2 * Math.floor(imageSize[0])) / gl.width,
+          (2 * Math.floor((imageSize[0] * h) / w)) / gl.height,
+          1];
       } else {
-        scale = [(2 * Math.floor((imageSize[1] * w) / h)) / gl.width, (2 * Math.floor(imageSize[1])) / gl.height, 1];
+        scale = [
+          (2 * Math.floor((imageSize[1] * w) / h)) / gl.width,
+          (2 * Math.floor(imageSize[1])) / gl.height,
+          1];
       }
 
       const borderWidth = image.borderWidth ? image.borderWidth : defaultImageBorderWidth;
@@ -311,9 +327,13 @@ export function ImageViewer(gl, globalView) {
           libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
         }
         imagePos[0] = PixelAlignX(imagePos[0]);
-        libGlMatrix.mat4.translate(mattrans, mattrans, [imagePos[0], PixelAlignY(imagePos[1]), 0.0]);
+        libGlMatrix.mat4.translate(
+          mattrans, mattrans,
+          [imagePos[0], PixelAlignY(imagePos[1]), 0.0],
+        );
         libGlMatrix.mat4.scale(mattrans, mattrans, scale);
-        libGlMatrix.mat4.translate(mattrans, mattrans, image.imageAnchor); // Move anchor to imageAnchor
+        // Move anchor to imageAnchor
+        libGlMatrix.mat4.translate(mattrans, mattrans, image.imageAnchor);
         sdrLine.matWorldViewProj(mattrans);
         sdrLine.color(...image.borderColor ? image.borderColor : defaultImageBorderColor);
         meshQuad.draw();
@@ -330,7 +350,8 @@ export function ImageViewer(gl, globalView) {
       imagePos[0] = PixelAlignX(imagePos[0]);
       libGlMatrix.mat4.translate(mattrans, mattrans, [imagePos[0], PixelAlignY(imagePos[1]), 0.0]);
       libGlMatrix.mat4.scale(mattrans, mattrans, scale);
-      libGlMatrix.mat4.translate(mattrans, mattrans, image.imageAnchor); // Move anchor to imageAnchor
+      // Move anchor to imageAnchor
+      libGlMatrix.mat4.translate(mattrans, mattrans, image.imageAnchor);
       sdrImage.matWorldViewProj(mattrans);
       meshQuad.draw();
 
@@ -340,15 +361,21 @@ export function ImageViewer(gl, globalView) {
         if (flipY === true) {
           libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
         }
-        imagePos[0] += image.imageAnchor[0] * scale[0]; // Move stripe position depending on image anchor
-        imagePos[1] += image.imageAnchor[1] * scale[1]; // Move stripe position depending on image anchor
+        // Move stripe position depending on image anchor
+        imagePos[0] += image.imageAnchor[0] * scale[0];
+        // Move stripe position depending on image anchor
+        imagePos[1] += image.imageAnchor[1] * scale[1];
 
-        libGlMatrix.mat4.translate(mattrans, mattrans, [imagePos[0], PixelAlignY(imagePos[1]), 0.0]);
+        libGlMatrix.mat4.translate(
+          mattrans, mattrans,
+          [imagePos[0], PixelAlignY(imagePos[1]), 0.0],
+        );
         scale[1] = (2 * LABEL_HEIGHT) / gl.height;
         scale[1] = PixelAlignY(scale[1]);
         // scale[0] += 2 / gl.width; // Widen by 1 pixel
         libGlMatrix.mat4.scale(mattrans, mattrans, scale);
-        libGlMatrix.mat4.translate(mattrans, mattrans, [-0.0, -1.0, 0.0]); // Move anchor to top of stripe
+        // Move anchor to top of stripe
+        libGlMatrix.mat4.translate(mattrans, mattrans, [-0.0, -1.0, 0.0]);
         sdrLine.matWorldViewProj(mattrans);
 
         let imageLabelColor = defaultImageLabelColor;
@@ -365,10 +392,17 @@ export function ImageViewer(gl, globalView) {
         meshLineQuad.bind(sdrLine, null);
         meshLineQuad.draw();
 
-        imagePos[0] += (1.0 * scale[0]) - ((LABEL_TEXT_PADDING * 2) / gl.width); // Right-align label (right-padding = 4)
-        imagePos[1] -= (LABEL_TEXT_PADDING * 2) / gl.height; // Right-align label (top-padding = 5)
+        // Right-align label (right-padding = 4)
+        imagePos[0] += (1.0 * scale[0]) - ((LABEL_TEXT_PADDING * 2) / gl.width);
+        // Right-align label (top-padding = 5)
+        imagePos[1] -= (LABEL_TEXT_PADDING * 2) / gl.height;
         imagePos[1] = PixelAlignY(imagePos[1]);
-        gl.drawText(label, (gl.width * (1 + imagePos[0])) / 2, (gl.height * (1 - imagePos[1])) / 2, 'topright');
+        gl.drawText(
+          label,
+          (gl.width * (1 + imagePos[0])) / 2,
+          (gl.height * (1 - imagePos[1])) / 2,
+          'topright',
+        );
         label += 1;
       }
     });
@@ -376,19 +410,20 @@ export function ImageViewer(gl, globalView) {
     // gl.enable(gl.SCISSOR_TEST);
   };
 
-  let options = {};
-  let defaultImageBorderWidth = 1;
-  let defaultImageBorderColor = gl.foreColor;
-  let defaultImageLineColor = gl.foreColor;
-  let defaultImageLabelColor = gl.backColor;
   this.setDataset = function (dataset, options) {};
   this.onInputChanged = function (activeInputs, animatedInputs, options) {};
   this.onOptionsChanged = function (_options) {
     options = _options;
     defaultImageBorderWidth = options.thumbnailBorderWidth;
-    defaultImageBorderColor = options.thumbnailBorderColor ? new Float32Array(libColormap.parseColor(options.thumbnailBorderColor)).map(c => c / 255.0) : gl.foreColor;
-    defaultImageLineColor = options.thumbnailLineColor ? new Float32Array(libColormap.parseColor(options.thumbnailLineColor)).map(c => c / 255.0) : gl.foreColor;
-    defaultImageLabelColor = options.thumbnailLabelColor ? new Float32Array(libColormap.parseColor(options.thumbnailLabelColor)).map(c => c / 255.0) : gl.backColor;
+    defaultImageBorderColor = options.thumbnailBorderColor ?
+      new Float32Array(libColormap.parseColor(options.thumbnailBorderColor)).map(c => c / 255.0) :
+      gl.foreColor;
+    defaultImageLineColor = options.thumbnailLineColor ?
+      new Float32Array(libColormap.parseColor(options.thumbnailLineColor)).map(c => c / 255.0) :
+      gl.foreColor;
+    defaultImageLabelColor = options.thumbnailLabelColor ?
+      new Float32Array(libColormap.parseColor(options.thumbnailLabelColor)).map(c => c / 255.0) :
+      gl.backColor;
   };
   this.onPlotBoundsChanged = function (plotBounds) {};
 
@@ -451,7 +486,9 @@ export function ImageViewer(gl, globalView) {
             tf.transformPos(c, images[j].imagePos);
             tf.transformPos(d, images[j].refPos);
 
-            if (libGlMatrix.vec2.sqrDist(a, b) + libGlMatrix.vec2.sqrDist(c, d) > libGlMatrix.vec2.sqrDist(a, d) + libGlMatrix.vec2.sqrDist(c, b) && !libAlgorithm.linesIntersect(a, d, c, b)) {
+            if (libGlMatrix.vec2.sqrDist(a, b) + libGlMatrix.vec2.sqrDist(c, d) >
+                libGlMatrix.vec2.sqrDist(a, d) + libGlMatrix.vec2.sqrDist(c, b) &&
+              !libAlgorithm.linesIntersect(a, d, c, b)) {
             // libUtility.consoleLog("exchange {0} - {1}".format(i, j));
               const tmp = images[j].imagePos;
               images[j].imagePos = images[i].imagePos;
@@ -501,10 +538,15 @@ export function ImageViewer(gl, globalView) {
       const w = image.tex.image.width;
       const h = image.tex.image.height;
       let size;
-      if (Math.max(imageSize[0], (imageSize[0] * h) / w, 1.0) < Math.max((imageSize[1] * w) / h, imageSize[1])) {
-        size = [(Math.floor(imageSize[0]) * 2) / gl.width, (Math.floor((imageSize[0] * h) / w) * 2) / gl.height, 1];
+      if (Math.max(imageSize[0], (imageSize[0] * h) / w, 1.0) <
+          Math.max((imageSize[1] * w) / h, imageSize[1])) {
+        size = [(Math.floor(imageSize[0]) * 2) / gl.width,
+          (Math.floor((imageSize[0] * h) / w) * 2) / gl.height,
+          1];
       } else {
-        size = [(Math.floor((imageSize[1] * w) / h) * 2) / gl.width, (Math.floor(imageSize[1]) * 2) / gl.height, 1];
+        size = [(Math.floor((imageSize[1] * w) / h) * 2) / gl.width,
+          (Math.floor(imageSize[1]) * 2) / gl.height,
+          1];
       }
       const imageBounds = [
         imagePos[0] + ((image.imageAnchor[0]) * size[0]),

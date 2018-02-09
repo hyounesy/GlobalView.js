@@ -62,7 +62,11 @@ export function isNumber(x) {
 
 export function isObject(x) {
   const t = typeof x;
-  return t !== 'undefined' && t !== 'function' && t !== 'string' && t !== 'number' && Object.prototype.toString.call(x) !== '[object Array]';
+  return t !== 'undefined' &&
+    t !== 'function' &&
+    t !== 'string' &&
+    t !== 'number' &&
+    Object.prototype.toString.call(x) !== '[object Array]';
 }
 export function isCloneable(x) {
   return !(isFunction(x) || x instanceof WebGLTexture); // TODO: Add more
@@ -88,10 +92,12 @@ Array.create = function (n, func) {
   return array;
 };
 Array.prototype.minIndex = function () {
-  return this.reduce((smallestIndex, currentValue, currentIndex, arr) => currentValue < arr[smallestIndex] ? currentIndex : smallestIndex, 0);
+  return this.reduce((smallestIndex, currentValue, currentIndex, arr) =>
+    currentValue < arr[smallestIndex] ? currentIndex : smallestIndex, 0);
 };
 Array.prototype.maxIndex = function () {
-  return this.reduce((smallestIndex, currentValue, currentIndex, arr) => currentValue > arr[smallestIndex] ? currentIndex : smallestIndex, 0);
+  return this.reduce((smallestIndex, currentValue, currentIndex, arr) =>
+    currentValue > arr[smallestIndex] ? currentIndex : smallestIndex, 0);
 };
 
 if (!String.prototype.format) {
@@ -340,7 +346,11 @@ export function rgbStringToFloatArray(rgbstr) {
 /* eslint-disable no-bitwise */
 
 export function i24ToFloatArray(clr) {
-  return [((clr >> 16) & 0xFF) / 255.0, ((clr >> 8) & 0xFF) / 255.0, ((clr >> 0) & 0xFF) / 255.0, 1.0];
+  return [
+    ((clr >> 16) & 0xFF) / 255.0,
+    ((clr >> 8) & 0xFF) / 255.0,
+    ((clr >> 0) & 0xFF) / 255.0,
+    1.0];
 }
 
 export function F32toI24(floats, bounds) {
@@ -700,7 +710,8 @@ export function PriorityQueue(priorityProperty) {
     return data.shift();
   };
 }
-/* var queue = new PriorityQueue('p');
+/*
+var queue = new PriorityQueue('p');
 queue.push({str: 'high', p: 9});
 queue.push({str: 'low', p: 1});
 queue.push({str: 'medium-low', p: 3});
@@ -709,7 +720,8 @@ queue.push({str: 'medium-low-2', p: 3});
 queue.push({str: 'medium-high', p: 7});
 queue.push({str: 'very-high', p: 15});
 while (queue.length)
-  consoleLog(queue.shift()); */
+  consoleLog(queue.shift());
+*/
 
 
 /**
@@ -718,10 +730,12 @@ while (queue.length)
  * @export
  */
 export function HashSet(onchanged) {
-  /** A dictionary of all values in the hash set @type {!Object<number, boolean>} */ let hash = {};
-  /** The number of values in this hash set @type {number} */ this.length = 0;
-  /** A callback to be raised whenever values have been added or deleted @public @type {function()} */ this.onchanged = isFunction(onchanged) ? onchanged : function () {};
-
+  /** A dictionary of all values in the hash set @type {!Object<number, boolean>} */
+  let hash = {};
+  /** The number of values in this hash set @type {number} */
+  this.length = 0;
+  /** callback to be raised whenever values have been added or deleted @public @type {function()} */
+  this.onchanged = isFunction(onchanged) ? onchanged : function () {};
 
   /**
    * Add a single value into the hash set
@@ -734,7 +748,6 @@ export function HashSet(onchanged) {
       this.onchanged();
     }
   };
-
 
   /**
    * Add an iterable list of values into the hash set
@@ -757,7 +770,6 @@ export function HashSet(onchanged) {
     }
   };
 
-
   /**
    * Reset the hash set to only contain the given value
    * @param  {number} value
@@ -770,7 +782,6 @@ export function HashSet(onchanged) {
       this.onchanged();
     }
   };
-
 
   /**
    * Reset the hash set to only contain the given iterable list of values
@@ -801,7 +812,6 @@ export function HashSet(onchanged) {
     }
   };
 
-
   /**
    * Reset the hash set to only contain numbers 0 through n - 1
    * @param  {number} n The number of values to set
@@ -818,7 +828,6 @@ export function HashSet(onchanged) {
     this.onchanged();
   };
 
-
   /**
    * Remove the given value from the hash set
    * @param  {number} value The value to remove
@@ -830,7 +839,6 @@ export function HashSet(onchanged) {
       this.onchanged();
     }
   };
-
 
   /**
    * Remove the given iterable list of values from the hash set
@@ -853,14 +861,12 @@ export function HashSet(onchanged) {
     }
   };
 
-
   /**
    * @return {boolean} True, if the hash set doesn't contain any values
    */
   this.isempty = function fIsEmpty() {
     return this.length === 0;
   };
-
 
   /**
    * Resets the hash set to an empty set
@@ -872,7 +878,6 @@ export function HashSet(onchanged) {
       this.onchanged();
     }
   };
-
 
   /**
    * Calls the given function once for each value in the hash set
@@ -888,7 +893,6 @@ export function HashSet(onchanged) {
     // if (badOrder !== 0) consoleLog('bad order: ' + badOrder + ' times');
   };
 
-
   /**
    * @return  {Uint32Array} A sorted array of all values in the hash set
    */
@@ -896,14 +900,12 @@ export function HashSet(onchanged) {
     return new Uint32Array(Object.keys(hash).map(Number));
   };
 
-
   /**
    * @return  {number} The number of values in the hash set
    */
   this.size = function fSize() {
     return this.length;
   };
-
 
   /**
    * @param  {number} value

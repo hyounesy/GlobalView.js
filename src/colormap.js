@@ -43,7 +43,8 @@ export function Colormap(gl, globalView) {
   const TICK_LENGTH = 6; // [pixel]
   const NUM_TICKS = 10;
 
-  const sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
+  const sdrLine =
+    new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
   sdrLine.color = sdrLine.u4f('color');
   sdrLine.color(...gl.foreColor);
   sdrLine.matWorldViewProj = sdrLine.u4x4f('matWorldViewProj');
@@ -105,7 +106,13 @@ export function Colormap(gl, globalView) {
   ]));
 
   const axis = {
-    minimum: 0, maximum: 100, values: null, tickOffset: 0, tickDistance: 10, tickCount: 11, tickLength: TICK_LENGTH,
+    minimum: 0,
+    maximum: 100,
+    values: null,
+    tickOffset: 0,
+    tickDistance: 10,
+    tickCount: 11,
+    tickLength: TICK_LENGTH,
   };
 
   this.visible = true;
@@ -129,7 +136,10 @@ export function Colormap(gl, globalView) {
       [((2 * (plotBounds.x + plotBounds.width + 0.5)) / gl.width) - 1,
         ((2 * (plotBounds.y + 0.5)) / gl.height) - 1, 0],
     ); // 0.5 ... center inside pixel
-    libGlMatrix.mat4.scale(mattrans, mattrans, [(2 * COLORMAP_WIDTH) / gl.width, (2 * plotBounds.height) / gl.height, 1]);
+    libGlMatrix.mat4.scale(
+      mattrans, mattrans,
+      [(2 * COLORMAP_WIDTH) / gl.width, (2 * plotBounds.height) / gl.height, 1],
+    );
     sdrColormap.matWorldViewProj(mattrans);
     meshQuad.draw();
 
@@ -154,7 +164,10 @@ export function Colormap(gl, globalView) {
       [((2 * (plotBounds.x + plotBounds.width + COLORMAP_WIDTH + 0.5)) / gl.width) - 1,
         ((2 * (plotBounds.y + 0.5)) / gl.height) - 1, 0],
     ); // 0.5 ... center inside pixel
-    libGlMatrix.mat4.scale(mattrans, mattrans, [(2 * axis.tickLength) / gl.width, (2 * plotBounds.height) / gl.height, 1]);
+    libGlMatrix.mat4.scale(
+      mattrans, mattrans,
+      [(2 * axis.tickLength) / gl.width, (2 * plotBounds.height) / gl.height, 1],
+    );
     sdrLine.matWorldViewProj(mattrans);
     meshLine.draw();
     libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, 1.0, 0.0]);
@@ -172,21 +185,33 @@ export function Colormap(gl, globalView) {
 
       const tickLabel = axis.values ? axis.values[y] : y.toPrecision(6) / 1;
       tickLabel_left = Math.max(tickLabel_left, gl.measureTextWidth(tickLabel));
-      gl.drawText(tickLabel, plotBounds.x + plotBounds.width + COLORMAP_WIDTH + axis.tickLength + 2, gl.height - plotBounds.y - (plotBounds.height * tickPos), 'middleleft');
+      gl.drawText(
+        tickLabel,
+        plotBounds.x + plotBounds.width + COLORMAP_WIDTH + axis.tickLength + 2,
+        gl.height - plotBounds.y - (plotBounds.height * tickPos),
+        'middleleft',
+      );
     }
-    tickLabel_left = Math.ceil(plotBounds.x + plotBounds.width + COLORMAP_WIDTH + axis.tickLength + 10 + tickLabel_left);
+    tickLabel_left = Math.ceil(plotBounds.x +
+      plotBounds.width + COLORMAP_WIDTH +
+      axis.tickLength + 10 + tickLabel_left);
 
     // >>> Draw axis label
 
     if (axis.label) {
-      gl.drawText(axis.label, tickLabel_left, gl.height - plotBounds.y - (plotBounds.height / 2), 'topcenter', -Math.PI / 2);
+      gl.drawText(
+        axis.label, tickLabel_left, gl.height - plotBounds.y - (plotBounds.height / 2),
+        'topcenter', -Math.PI / 2,
+      );
     }
   };
 
   function checkOverlap() {
-    const MIN_TICK_LABEL_DISTANCE = gl.measureTextWidth('  '); // Minimum distance between tick labels in pixel
+    // Minimum distance between tick labels in pixel
+    const MIN_TICK_LABEL_DISTANCE = gl.measureTextWidth('  ');
     const plotBounds = globalView.getPlotBounds();
-    return (plotBounds.height * axis.tickDistance) / (axis.maximum - axis.minimum) >= gl.measureTextHeight() + MIN_TICK_LABEL_DISTANCE;
+    return (plotBounds.height * axis.tickDistance) / (axis.maximum - axis.minimum) >=
+            gl.measureTextHeight() + MIN_TICK_LABEL_DISTANCE;
   }
 
   /**
@@ -205,7 +230,8 @@ export function Colormap(gl, globalView) {
         axis.tickCount = Math.floor((maximum - axis.tickOffset) / axis.tickDistance) + 1;
       } else {
         axis.tickDistance = (maximum - minimum) / numTicks;
-        let exp = Math.ceil(Math.log(axis.tickDistance) / Math.log(10)); // Compute power-of-10 just above tickDistance -> pow(10, exp)
+        // Compute power-of-10 just above tickDistance -> pow(10, exp)
+        let exp = Math.ceil(Math.log(axis.tickDistance) / Math.log(10));
 
         // Try less aggressive rounding in each iteration until break condition is met
         for (let i = 0; i < 10; i += 1) {
@@ -213,7 +239,8 @@ export function Colormap(gl, globalView) {
           axis.tickDistance = (maximum - minimum) / numTicks;
           const base = Math.pow(10, exp);
           exp -= 1;
-          axis.tickDistance = Math.round(axis.tickDistance / base) * base; // Round tickDistance to base
+          // Round tickDistance to base
+          axis.tickDistance = Math.round(axis.tickDistance / base) * base;
           axis.tickOffset = Math.ceil(minimum / axis.tickDistance) * axis.tickDistance;
           axis.tickCount = Math.floor((maximum - axis.tickOffset) / axis.tickDistance) + 1;
           if (axis.tickCount >= numTicks - 2 && axis.tickCount <= numTicks + 2) {
@@ -238,7 +265,10 @@ export function Colormap(gl, globalView) {
 
     axis.tickDistance = 1;
     axis.tickOffset = Math.max(0, Math.ceil(minimum / axis.tickDistance) * axis.tickDistance);
-    axis.tickCount = Math.min(values.length - axis.tickOffset, Math.floor(((maximum - axis.tickOffset) + 1) / axis.tickDistance));
+    axis.tickCount = Math.min(
+      values.length - axis.tickOffset,
+      Math.floor(((maximum - axis.tickOffset) + 1) / axis.tickDistance),
+    );
   };
 
   this.setLabel = function (label) {

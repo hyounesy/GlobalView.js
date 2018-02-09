@@ -2,6 +2,7 @@ const globalView = require('../dist/global-view.js');
 const domready = require('domready');
 
 domready(function () {
+  let tStart;
   const preResults = document.getElementById('preResults');
   const measureTime = function (phase, iterations) {
     const tEnd = performance.now();
@@ -17,8 +18,8 @@ domready(function () {
     }
     tStart = performance.now();
   };
-  let tStart = performance.now();
 
+  tStart = performance.now();
   const plot = new globalView.GlobalView(document.getElementById('divGlobalView'), {
     pointSize: 1,
     pointOpacity: 1,

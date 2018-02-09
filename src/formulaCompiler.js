@@ -219,7 +219,8 @@ export const FormulaCompiler = {
         while (true) { // eslint-disable-line no-constant-condition
           const tokPrec = getOperatorPrecedence(curTok);
 
-          // If this is an operator that binds at least as tightly as the current binop, consume it, otherwise return lhs
+          // If this is an operator that binds at least as tightly as the current binop,
+          // consume it, otherwise return lhs
           if (tokPrec < exprPrec) {
             return lhs;
           }
@@ -237,7 +238,8 @@ export const FormulaCompiler = {
               return null;
             }
 
-            // If binOp binds less tightly with rhs than the operator after rhs, let the pending operator take rhs as its lhs.
+            // If binOp binds less tightly with rhs than the operator after rhs,
+            // let the pending operator take rhs as its lhs.
             const nextPrec = getOperatorPrecedence(curTok);
             if (tokPrec < nextPrec) {
               rhs = bineryOpAST(tokPrec + 1, rhs);
@@ -246,13 +248,15 @@ export const FormulaCompiler = {
               }
             }
 
-            // Create operator function signature from operator name and argument FormulaCompiler.types
+            // Create operator function signature from operator name
+            // and argument FormulaCompiler.types
             const funcSignature = `${lhs.type.name} ${binOp} ${rhs.type.name}`;
 
             // Lookup operator function and return type
             const returnType = functionsReturnTypes[funcSignature];
             if (libUtility.isUndefined(returnType)) {
-              return error(`Undefined operator ${binOp} on FormulaCompiler.types ${lhs.type.name} and ${rhs.type.name}`);
+              return error(`Undefined operator ${binOp} on FormulaCompiler.types` +
+                           ` ${lhs.type.name} and ${rhs.type.name}`);
             }
 
             // Merge lhs/rhs.
@@ -429,11 +433,16 @@ export const FormulaCompiler = {
         } // Eat termTok
         return { code, type: typeList };
       }
+
       function primaryAST() {
         switch (curTok) {
-          case 'identifier': return identifierAndPostAST();
-          case 'float': case 'int': return numberAST();
-          default: return error("unknown token '{0}' when expecting an expression".format(curTok));
+          case 'identifier':
+            return identifierAndPostAST();
+          case 'float':
+          case 'int':
+            return numberAST();
+          default:
+            return error("unknown token '{0}' when expecting an expression".format(curTok));
         /* case (int)Lexer.Token.tok_int: return ParseIntExpr();
         case (int)Lexer.Token.tok_float: return ParseFloatExpr();
         case (int)Lexer.Token.tok_string: return ParseStringExpr();
@@ -447,14 +456,16 @@ export const FormulaCompiler = {
           if (!getTok()) return null; // eat '++'
           VAR = ParseIdentifierExpr();
           if (VAR == null) return null;
-          if (!(VAR is VariableExprAST || VAR is IndexExprAST)) return Error("Expected variable after prefix increment operator");
+          if (!(VAR is VariableExprAST || VAR is IndexExprAST))
+            return Error("Expected variable after prefix increment operator");
           return new PrefixIncrementExprAST(new Segment(ppBegin, VAR.source.end), VAR);
         case (int)Lexer.Token.tok_mm:
           Position mmBegin = getTokenStartPosition();
           if (!getTok()) return null; // eat '--'
           VAR = ParseIdentifierExpr();
           if (VAR == null) return null;
-          if (!(VAR is VariableExprAST || VAR is IndexExprAST)) return Error("Expected variable after prefix decrement operator");
+          if (!(VAR is VariableExprAST || VAR is IndexExprAST))
+            return Error("Expected variable after prefix decrement operator");
           return new PrefixDecrementExprAST(new Segment(mmBegin, VAR.source.end), VAR); */
         }
       }
@@ -644,7 +655,9 @@ function verify(formula, result) {
     const computedResult = FormulaCompiler.run(code, new Array(16), {});
 
     let match;
-    if (libUtility.isArray(result) && libUtility.isArray(computedResult) && result.length === computedResult.length) {
+    if (libUtility.isArray(result) &&
+      libUtility.isArray(computedResult) &&
+      result.length === computedResult.length) {
       match = true;
       for (let i = 0; i < result.length; i += 1) {
         if (computedResult[i] !== result[i]) {
@@ -657,7 +670,8 @@ function verify(formula, result) {
     }
 
     if (!match) {
-      libUtility.consoleLog("Formula '{0}' returned '{1}', instead of '{2}'".format(formula, computedResult, result));
+      libUtility.consoleLog("Formula '{0}' returned '{1}', instead of '{2}'"
+        .format(formula, computedResult, result));
     }
   }
   return true;

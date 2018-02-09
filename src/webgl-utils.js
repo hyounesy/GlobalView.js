@@ -96,7 +96,8 @@ export function WebGLUtils() {
      * tag to an error message with the correct links for WebGL.
      * @param {HTMLCanvasElement} canvas The canvas element to create a context from.
      * @param {*=} opt_attribs Any creation attributes you want to pass in.
-     * @param {function(string)=} opt_onErrorFunc A function to call if there is an error during creation.
+     * @param {function(string)=} opt_onErrorFunc A function to call if there
+     *        is an error during creation.
      * @return {WebGLRenderingContext} The created context.
      */
   const setupWebGL = function (canvas, opt_attribs, opt_onErrorFunc) {
@@ -165,7 +166,10 @@ const window_requestAnimFrame = (function () {
           window.mozRequestAnimationFrame ||
           window.oRequestAnimationFrame ||
           window.msRequestAnimationFrame ||
-          function (/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
+          function (
+            /* function FrameRequestCallback */ callback,
+            /* DOMElement Element */ element,
+          ) {
             window.setTimeout(callback, 1000 / 60);
           };
 }());
@@ -176,6 +180,7 @@ const window_requestAnimFrame = (function () {
  */
 export function requestAnimFrame(callback) {
   // Initially tried exporting window_requestAnimFrame directly, but got "Illegal Invocation".
-  // probably related to this: https://stackoverflow.com/questions/10743596/why-are-certain-function-calls-termed-illegal-invocations-in-javascript
+  // probably related to this:
+  // https://stackoverflow.com/questions/10743596/why-are-certain-function-calls-termed-illegal-invocations-in-javascript
   window_requestAnimFrame(callback);
 }

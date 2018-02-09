@@ -14,7 +14,8 @@ export function CoordinateSystem(gl, globalView) {
   const TICK_LENGTH = 6; // [pixel]
   const NUM_TICKS = 10;
 
-  const sdrLine = new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
+  const sdrLine =
+    new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
   sdrLine.color = sdrLine.u4f('color');
   sdrLine.color(...gl.foreColor);
   sdrLine.matWorldViewProj = sdrLine.u4x4f('matWorldViewProj');
@@ -31,10 +32,22 @@ export function CoordinateSystem(gl, globalView) {
 
   const axes = [
     {
-      minimum: 0, maximum: 100, values: null, tickOffset: 0, tickDistance: 10, tickCount: 11, tickLength: TICK_LENGTH,
+      minimum: 0,
+      maximum: 100,
+      values: null,
+      tickOffset: 0,
+      tickDistance: 10,
+      tickCount: 11,
+      tickLength: TICK_LENGTH,
     },
     {
-      minimum: 0, maximum: 100, values: null, tickOffset: 0, tickDistance: 10, tickCount: 11, tickLength: TICK_LENGTH,
+      minimum: 0,
+      maximum: 100,
+      values: null,
+      tickOffset: 0,
+      tickDistance: 10,
+      tickCount: 11,
+      tickLength: TICK_LENGTH,
     },
   ];
 
@@ -225,7 +238,8 @@ export function CoordinateSystem(gl, globalView) {
         axis.tickCount = Math.floor((maximum - axis.tickOffset) / axis.tickDistance) + 1;
       } else {
         axis.tickDistance = (maximum - minimum) / numTicks;
-        let exp = Math.ceil(Math.log(axis.tickDistance) / Math.log(10)); // Compute power-of-10 just above tickDistance -> pow(10, exp)
+        // Compute power-of-10 just above tickDistance -> pow(10, exp)
+        let exp = Math.ceil(Math.log(axis.tickDistance) / Math.log(10));
 
         // Try less aggressive rounding in each iteration until break condition is met
         for (let i = 0; i < 10; i += 1) {
@@ -233,7 +247,8 @@ export function CoordinateSystem(gl, globalView) {
           axis.tickDistance = (maximum - minimum) / numTicks;
           const base = Math.pow(10, exp);
           exp -= 1;
-          axis.tickDistance = Math.round(axis.tickDistance / base) * base; // Round tickDistance to base
+          // Round tickDistance to base
+          axis.tickDistance = Math.round(axis.tickDistance / base) * base;
           axis.tickOffset = Math.ceil(minimum / axis.tickDistance) * axis.tickDistance;
           axis.tickCount = Math.floor((maximum - axis.tickOffset) / axis.tickDistance) + 1;
           if (axis.tickCount >= numTicks - 2 && axis.tickCount <= numTicks + 2) {
@@ -288,14 +303,20 @@ export function CoordinateSystem(gl, globalView) {
     if (this.visible[0]) {
       const halfTextWidth = gl.measureTextWidth(axes[0].label) / 2;
       const plotCenter = plotBounds.x + (plotBounds.width / 2);
-      if (p[0] >= plotCenter - halfTextWidth && p[0] < plotCenter + halfTextWidth && p[1] >= xTickLabel_top && p[1] <= xTickLabel_top + gl.measureTextHeight() + 2) {
+      if (p[0] >= plotCenter - halfTextWidth &&
+        p[0] < plotCenter + halfTextWidth &&
+        p[1] >= xTickLabel_top &&
+        p[1] <= xTickLabel_top + gl.measureTextHeight() + 2) {
         return 0;
       }
     }
     if (this.visible[1]) {
       const halfTextWidth = gl.measureTextWidth(axes[1].label) / 2;
       const plotCenter = gl.height - plotBounds.y - (plotBounds.height / 2);
-      if (p[0] >= yTickLabel_left - gl.measureTextHeight() && p[0] <= yTickLabel_left + 2 && p[1] >= plotCenter - halfTextWidth && p[1] < plotCenter + halfTextWidth) {
+      if (p[0] >= yTickLabel_left - gl.measureTextHeight() &&
+        p[0] <= yTickLabel_left + 2 &&
+        p[1] >= plotCenter - halfTextWidth &&
+        p[1] < plotCenter + halfTextWidth) {
         return 1;
       }
     }
@@ -310,7 +331,10 @@ export function CoordinateSystem(gl, globalView) {
         const halfTextWidth = gl.measureTextWidth(axes[0].label) / 2;
         const plotCenter = plotBounds.x + (plotBounds.width / 2);
         return {
-          l: plotCenter - halfTextWidth, r: plotCenter + halfTextWidth, t: xTickLabel_top, b: xTickLabel_top + gl.measureTextHeight() + 2,
+          l: plotCenter - halfTextWidth,
+          r: plotCenter + halfTextWidth,
+          t: xTickLabel_top,
+          b: xTickLabel_top + gl.measureTextHeight() + 2,
         };
       }
 
@@ -321,7 +345,10 @@ export function CoordinateSystem(gl, globalView) {
         const halfTextWidth = gl.measureTextWidth(axes[1].label) / 2;
         const plotCenter = gl.height - plotBounds.y - (plotBounds.height / 2);
         return {
-          l: yTickLabel_left - gl.measureTextHeight(), r: yTickLabel_left + 2, t: plotCenter - halfTextWidth, b: plotCenter + halfTextWidth,
+          l: yTickLabel_left - gl.measureTextHeight(),
+          r: yTickLabel_left + 2,
+          t: plotCenter - halfTextWidth,
+          b: plotCenter + halfTextWidth,
         };
       }
     }

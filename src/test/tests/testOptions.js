@@ -19,7 +19,10 @@ export function testOptionPointSize(div, ondone) {
 }
 
 export function testOptionPointColor(div, ondone) {
-  const plot = testCustomOptions(div, { pointColor: ['#F25', 'green', [40, 60, 230, 255]] }, ondone);
+  const plot = testCustomOptions(
+    div, { pointColor: ['#F25', 'green', [40, 60, 230, 255]] },
+    ondone,
+  );
   this.getPlot = () => plot;
 }
 
@@ -39,7 +42,11 @@ export function testOptionPointDensity(div, ondone) {
 }
 
 export function testOptionPointClusters(div, ondone) {
-  const plot = testCustomOptions(div, { showPointClusters: true, pointClusterThreshold: 0.2 }, ondone, 5000);
+  const plot = testCustomOptions(
+    div,
+    { showPointClusters: true, pointClusterThreshold: 0.2 },
+    ondone, 5000,
+  );
   this.getPlot = () => plot;
 }
 

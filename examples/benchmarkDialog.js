@@ -1,4 +1,5 @@
 const globalView = require('../dist/global-view.js');
+
 let plot = null;
 export default function BenchmarkDialog(paramPlot) {
   plot = paramPlot;
@@ -216,7 +217,8 @@ export default function BenchmarkDialog(paramPlot) {
     let o = 0;
     option = getKeyByIndex(benchmarkOptionIndices, o);
     // eslint-disable-next-line no-cond-assign
-    while (option !== null && (benchmarkOptionIndices[option] += 1) === benchmarkOptions[option].length) {
+    while (option !== null &&
+      (benchmarkOptionIndices[option] += 1) === benchmarkOptions[option].length) {
       benchmarkOptionIndices[option] = 0;
       option = getKeyByIndex(benchmarkOptionIndices, (o += 1));
     }

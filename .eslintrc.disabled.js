@@ -113,8 +113,9 @@ module.exports = {
         "no-compare-neg-zero": 0,               // disallow comparing against -0
         // disallow assignment in conditional expressions
         'no-cond-assign': ['error', 'always'],
-        "no-console": 0,                        // disallow the use of console
-        "no-constant-condition": 0,             // disallow constant expressions in conditions
+        "no-console": 'error',                        // disallow the use of console
+        // disallow use of constant expressions in conditions
+        'no-constant-condition': 'error',
         "no-control-regex": 0,                  // disallow control characters in regular expressions
         "no-debugger": 0,                       // disallow the use of debugger
         "no-dupe-args": 0,                      // disallow duplicate arguments in function definitions
@@ -158,7 +159,7 @@ module.exports = {
         'dot-notation': ['error', { allowKeywords: true }],        // enforce dot notation whenever possible
         "eqeqeq": ["error", "always", {"null": "ignore"}],                            // require the use of === and !==
         "guard-for-in": 0,                      // require for-in loops to include an if statement
-        "no-alert": 0,                          // disallow the use of alert, confirm, and prompt
+        "no-alert": 'error',                          // disallow the use of alert, confirm, and prompt
         "no-caller": 0,                         // disallow the use of arguments.caller or arguments.callee
         "no-case-declarations": 0,              // disallow lexical declarations in case clauses
         "no-div-regex": 0,                      // disallow division operators explicitly at the beginning of regular expressions
@@ -172,7 +173,8 @@ module.exports = {
         "no-extend-native": 0,                  // disallow extending native types
         "no-extra-bind": 0,                     // disallow unnecessary calls to .bind()
         "no-extra-label": 0,                    // disallow unnecessary labels
-        "no-fallthrough": 0,                    // disallow fallthrough of case statements
+        // disallow fallthrough of case statements
+        'no-fallthrough': 'error',
         "no-floating-decimal": 0,               // disallow leading or trailing decimal points in numeric literals
         "no-global-assign": 0,                  // disallow assignments to native objects or read-only global variables
         "no-implicit-coercion": 0,              // disallow shorthand type conversions
@@ -259,7 +261,8 @@ module.exports = {
         "no-undef-init": 0,                     // disallow initializing variables to undefined
         "no-undefined": 0,                      // disallow the use of undefined as an identifier
         "no-unused-vars": 0,                    // disallow unused variables
-        "no-use-before-define": 0,              // disallow the use of variables before they are defined
+        // disallow use of variables before they are defined
+        'no-use-before-define': ['error', { functions: false, classes: true, variables: true }],
 
 
         //////// Node.js and CommonJS ////////
@@ -330,7 +333,15 @@ module.exports = {
         "lines-around-comment": 0,              // require empty lines around comments
         "lines-between-class-members": 0,       // require or disallow an empty line between class members
         "max-depth": 0,                         // enforce a maximum depth that blocks can be nested
-        "max-len": 0,                           // enforce a maximum line length
+        // specify the maximum length of a line in your program
+        // http://eslint.org/docs/rules/max-len
+        'max-len': ['error', 100, 2, {
+          ignoreUrls: true,
+          ignoreComments: false,
+          ignoreRegExpLiterals: true,
+          ignoreStrings: true,
+          ignoreTemplateLiterals: true,
+        }],
         "max-lines": 0,                         // enforce a maximum number of lines per file
         "max-nested-callbacks": 0,              // enforce a maximum depth that callbacks can be nested
         "max-params": 0,                        // enforce a maximum number of parameters in function definitions
@@ -343,7 +354,9 @@ module.exports = {
         "newline-per-chained-call": 0,          // require a newline after each call in a method chain
         "no-array-constructor": 0,              // disallow Array constructors
         "no-bitwise": 'error',                        // disallow bitwise operators
-        "no-continue": 0,                       // disallow continue statements
+        // disallow use of the continue statement
+        // http://eslint.org/docs/rules/no-continue
+        'no-continue': 'error',
         "no-inline-comments": 0,                // disallow inline comments after code
         "no-lonely-if": 0,                      // disallow if statements as the only statement in else blocks
         'no-mixed-operators': ['error', {
@@ -361,7 +374,7 @@ module.exports = {
         // disallow multiple empty lines and only one newline at the end
         'no-multiple-empty-lines': ['error', { max: 2, maxEOF: 1 }],
         "no-negated-condition": 0,              // disallow negated conditions
-        "no-nested-ternary": 0,                 // disallow nested ternary expressions
+        "no-nested-ternary": 'error',                 // disallow nested ternary expressions
         "no-new-object": 0,                     // disallow Object constructors
         'no-plusplus': 'error',                 // disallow the unary operators ++ and --
         "no-restricted-syntax": 0,              // disallow specified syntax
