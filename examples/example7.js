@@ -11,7 +11,7 @@ const COLUMN_NAMES = [
   'Apical proximity (unitless)',
 ];
 
-domready(function () {
+domready(() => {
   const PLOT_SIZE = 400;
   const FONT_SIZE = 8;
   const PLOT_PADDING = [8, 8, 40, 40];
@@ -46,49 +46,49 @@ domready(function () {
     nameColumn: 1,
     columnLabels: COLUMN_NAMES,
     imageFilenames: data => `${imagesPath + data[1]}.png`,
-  }, function (dataset) {
+  }, ((dataset) => {
     // -1 ... Adjust number of dataVectors, since we don't plot dataVectors[0] (tagged protein)
-    const ndim = Math.min(2, dataset.dataVectors.length - 1);
-    const subPlotWidth = PLOT_SIZE / ndim;
-    const subPlotHeight = subPlotWidth;
-    // const plots =
-    Array.create(ndim * ndim, function (d) {
-      let x = d % ndim;
-      let y = Math.floor(d / ndim);
+      const ndim = Math.min(2, dataset.dataVectors.length - 1);
+      const subPlotWidth = PLOT_SIZE / ndim;
+      const subPlotHeight = subPlotWidth;
+      // const plots =
+      Array.create(ndim * ndim, (d) => {
+        let x = d % ndim;
+        let y = Math.floor(d / ndim);
 
-      OPTIONS.padding = [y * subPlotHeight,
-        (ndim - x - 1) * subPlotWidth,
-        (ndim - y - 1) * subPlotHeight,
-        x * subPlotWidth];
+        OPTIONS.padding = [y * subPlotHeight,
+          (ndim - x - 1) * subPlotWidth,
+          (ndim - y - 1) * subPlotHeight,
+          x * subPlotWidth];
 
-      // Adjust indices, since we don't plot dataVectors[0] (tagged protein)
-      x += 1;
-      y += 1;
+        // Adjust indices, since we don't plot dataVectors[0] (tagged protein)
+        x += 1;
+        y += 1;
 
-      const thumbnailWidth = (OPTIONS.thumbnailSize *
+        const thumbnailWidth = (OPTIONS.thumbnailSize *
         (dataset.dataVectors[x].maximum - dataset.dataVectors[x].minimum)) /
       (PLOT_SIZE - OPTIONS.padding[1] - OPTIONS.padding[3]);
-      const thumbnailHeight = (OPTIONS.thumbnailSize *
+        const thumbnailHeight = (OPTIONS.thumbnailSize *
         (dataset.dataVectors[y].maximum - dataset.dataVectors[y].minimum)) /
       (PLOT_SIZE - OPTIONS.padding[0] - OPTIONS.padding[2]);
-      globalView.consoleLog(thumbnailWidth, thumbnailHeight);
+        globalView.consoleLog(thumbnailWidth, thumbnailHeight);
 
-      const plot = new globalView.GlobalView(divPlots, OPTIONS);
-      plot.load(dataset, x, y, 0, 0);
-      plot.zoomRect({
-        l: dataset.dataVectors[x].minimum - thumbnailWidth,
-        r: dataset.dataVectors[x].maximum + thumbnailWidth,
-        t: dataset.dataVectors[y].minimum - thumbnailHeight,
-        b: dataset.dataVectors[y].maximum + thumbnailHeight,
+        const plot = new globalView.GlobalView(divPlots, OPTIONS);
+        plot.load(dataset, x, y, 0, 0);
+        plot.zoomRect({
+          l: dataset.dataVectors[x].minimum - thumbnailWidth,
+          r: dataset.dataVectors[x].maximum + thumbnailWidth,
+          t: dataset.dataVectors[y].minimum - thumbnailHeight,
+          b: dataset.dataVectors[y].maximum + thumbnailHeight,
+        });
+        plot.selectedPoints = plot.createPointSet('red', 1);
+
+        plot.getCharacteristicPoints(NUM_THUMBNAILS, DENSITY_RATIO, (characteristicPoints) => {
+          plot.selectedPoints.assign(characteristicPoints);
+          plot.showImages_lowDensity(plot.selectedPoints);
+        });
+
+        return plot;
       });
-      plot.selectedPoints = plot.createPointSet('red', 1);
-
-      plot.getCharacteristicPoints(NUM_THUMBNAILS, DENSITY_RATIO, function (characteristicPoints) {
-        plot.selectedPoints.assign(characteristicPoints);
-        plot.showImages_lowDensity(plot.selectedPoints);
-      });
-
-      return plot;
-    });
-  });
+    }));
 });

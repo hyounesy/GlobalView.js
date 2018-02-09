@@ -25,7 +25,7 @@ const COLUMN_HINTS = [
 let plot;
 const pointsByProtein = {};
 
-domready(function () {
+domready(() => {
   plot = new globalView.GlobalView(document.getElementById('divPlot'), {
     pointShape: 'Circle',
     pointSize: 8,
@@ -49,10 +49,10 @@ domready(function () {
       columnLabels: COLUMN_NAMES,
       imageFilenames: data => `${imagesPath + data[1]}.png`,
     },
-    function (pDataset) {
+    ((pDataset) => {
       const dataset = pDataset;
       plot.load(dataset, 2, 4, 0, 3);
-      plot.getCharacteristicPoints(8, 1, function (characteristicPoints) {
+      plot.getCharacteristicPoints(8, 1, (characteristicPoints) => {
         plot.referencePoints.assign(characteristicPoints);
         plot.showImages(plot.referencePoints, 'lowDensity');
       });
@@ -70,52 +70,52 @@ domready(function () {
       for (let i = 0; i < COLUMN_HINTS.length; i += 1) {
         dataset.dataVectors[i].hint = COLUMN_HINTS[i];
       }
-    },
+    }),
   );
   addAllEventListeners();
 });
 
 function addAllEventListeners() {
-  document.getElementById('cmdSelectAll').addEventListener('click', function () {
+  document.getElementById('cmdSelectAll').addEventListener('click', () => {
     cmdSelectAllOnClick(document.getElementById('cmdSelectAll'));
   });
-  document.getElementById('cmdDeselectAll').addEventListener('click', function () {
+  document.getElementById('cmdDeselectAll').addEventListener('click', () => {
     cmdDeselectAllOnClick(document.getElementById('cmdDeselectAll'));
   });
-  document.getElementById('Tom20').addEventListener('change', function () {
+  document.getElementById('Tom20').addEventListener('change', () => {
     cbProteinOnChange(document.getElementById('Tom20'));
   });
-  document.getElementById('Alpha tubulin').addEventListener('change', function () {
+  document.getElementById('Alpha tubulin').addEventListener('change', () => {
     cbProteinOnChange(document.getElementById('Alpha tubulin'));
   });
-  document.getElementById('Sec61 beta').addEventListener('change', function () {
+  document.getElementById('Sec61 beta').addEventListener('change', () => {
     cbProteinOnChange(document.getElementById('Sec61 beta'));
   });
-  document.getElementById('Alpha actinin').addEventListener('change', function () {
+  document.getElementById('Alpha actinin').addEventListener('change', () => {
     cbProteinOnChange(document.getElementById('Alpha actinin'));
   });
-  document.getElementById('Desmoplakin').addEventListener('change', function () {
+  document.getElementById('Desmoplakin').addEventListener('change', () => {
     cbProteinOnChange(document.getElementById('Desmoplakin'));
   });
-  document.getElementById('Lamin B1').addEventListener('change', function () {
+  document.getElementById('Lamin B1').addEventListener('change', () => {
     cbProteinOnChange(document.getElementById('Lamin B1'));
   });
-  document.getElementById('Fibrillarin').addEventListener('change', function () {
+  document.getElementById('Fibrillarin').addEventListener('change', () => {
     cbProteinOnChange(document.getElementById('Fibrillarin'));
   });
-  document.getElementById('Beta actin').addEventListener('change', function () {
+  document.getElementById('Beta actin').addEventListener('change', () => {
     cbProteinOnChange(document.getElementById('Beta actin'));
   });
-  document.getElementById('ZO1').addEventListener('change', function () {
+  document.getElementById('ZO1').addEventListener('change', () => {
     cbProteinOnChange(document.getElementById('ZO1'));
   });
-  document.getElementById('Myosin IIB').addEventListener('change', function () {
+  document.getElementById('Myosin IIB').addEventListener('change', () => {
     cbProteinOnChange(document.getElementById('Myosin IIB'));
   });
-  document.getElementById('cbXAxis').addEventListener('change', function () {
+  document.getElementById('cbXAxis').addEventListener('change', () => {
     cbXAxisOnChange(document.getElementById('cbXAxis'));
   });
-  document.getElementById('cbYAxis').addEventListener('change', function () {
+  document.getElementById('cbYAxis').addEventListener('change', () => {
     cbYAxisOnChange(document.getElementById('cbYAxis'));
   });
 }

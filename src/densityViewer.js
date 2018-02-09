@@ -51,7 +51,7 @@ export function DensityViewer(gl, globalView) {
       dataset.requestClusterMap(
         globalView.getActiveColumn(0),
         globalView.getActiveColumn(1),
-        clusterMapOptions, function () {
+        clusterMapOptions, () => {
           globalView.invalidate();
         },
       ); // Request clusterMap and redraw once it's computed
@@ -155,7 +155,7 @@ export function DensityViewer(gl, globalView) {
         sdrClusterMap.matTexCoordTransform(new Float32Array(d0 > d1 ? [0, 1, 1, 0] : [1, 0, 0, 1]));
         meshQuad.draw();
       } else { // If clusterMap isn't ready yet
-        dataset.requestClusterMap(d0, d1, clusterMapOptions, function () {
+        dataset.requestClusterMap(d0, d1, clusterMapOptions, () => {
           globalView.invalidate();
         });
       } // Request clusterMap and redraw once it's computed
@@ -215,7 +215,7 @@ export function DensityViewer(gl, globalView) {
         sdrDensityMap.color(gl.foreColor[0], gl.foreColor[1], gl.foreColor[2]);
         meshQuad.draw();
       } else { // If densityMap isn't ready yet
-        dataset.requestDensityMap(d0, d1, undefined, undefined, function () {
+        dataset.requestDensityMap(d0, d1, undefined, undefined, () => {
           globalView.invalidate();
         });
       } // Request densityMap and redraw once it's computed
@@ -245,7 +245,7 @@ export function DensityViewer(gl, globalView) {
     const yMin = 0;
     const yMax = height;
 
-    const bodies = images.map(function (image) {
+    const bodies = images.map((image) => {
       const x = densityMap.transformX(image.imagePos[d0]);
       const y = densityMap.transformY(image.imagePos[d1]);
       const rx = densityMap.transformX(image.refPos[d0]);
@@ -286,7 +286,7 @@ export function DensityViewer(gl, globalView) {
       let bestDir = null;
       let lowestDensity = density;
       [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]]
-        .forEach(function (dir) {
+        .forEach((dir) => {
           const x = sampleX + dir[0];
           const y = sampleY + dir[1];
           if (x >= xMin && x < xMax && y >= yMin && y < yMax) {

@@ -416,7 +416,7 @@ export function Dataset() {
         // of functions to execute when it is ready
         clusterMapsArray[d0][d1] = { pending: [ondone] };
 
-        this.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
+        this.requestDensityMap(d0, d1, undefined, undefined, (densityMap) => {
           // Execute an asynchronous worker that computes clusterMapsArray[d0][d1]
           const p = new Parallel([libUtility.makeCloneable(densityMap), d0, d1,
             new libAlgorithm.ClusterMapOptions(options)], { evalPath: 'eval.js' });

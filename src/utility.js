@@ -108,9 +108,7 @@ if (!String.prototype.format) {
   // eslint-disable-next-line no-extend-native, no-unused-vars
   String.prototype.format = function (args) {
     const varArgs = arguments; // eslint-disable-line prefer-rest-params
-    return this.replace(/{(\d+)}/g, function (match, number) {
-      return typeof varArgs[number] !== 'undefined' ? varArgs[number] : match;
-    });
+    return this.replace(/{(\d+)}/g, (match, number) => (typeof varArgs[number] !== 'undefined' ? varArgs[number] : match));
   };
 }
 /**
@@ -122,7 +120,7 @@ if (!String.prototype.format) {
 // eslint-disable-next-line no-extend-native, no-unused-vars
 String.prototype.format2 = function (pattern, mismatch, args) {
   const varArgs = arguments; // eslint-disable-line prefer-rest-params
-  return this.replace(pattern, function (match, strNumber) {
+  return this.replace(pattern, (match, strNumber) => {
     const number = Number.parseInt(strNumber, 10) + 2;
     return typeof varArgs[number] !== 'undefined' ? varArgs[number] : mismatch;
   });
@@ -324,9 +322,7 @@ export function hexToRgb(pHex) {
   // Source: https://stackoverflow.com/a/5624139
   // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
   const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-  const hex = pHex.replace(shorthandRegex, function (m, r, g, b) {
-    return r + r + g + g + b + b;
-  });
+  const hex = pHex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
 
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result ? {
@@ -360,7 +356,7 @@ export function F32toI24(floats, bounds) {
   let i = 0;
   const voffset = -bounds[0];
   const vscale = 0xFFFFFE / (bounds[1] - bounds[0]);
-  floats.forEach(function (pValue) {
+  floats.forEach((pValue) => {
     let value = pValue;
     value += voffset;
     value *= vscale;
@@ -759,7 +755,7 @@ export function HashSet(onchanged) {
     // var t = performance.now();
     let invalidate = false;
     const self = this;
-    values.forEach(function (value) {
+    values.forEach((value) => {
       if (hash[value] !== true) {
         hash[value] = true;
         self.length += 1;
@@ -798,7 +794,7 @@ export function HashSet(onchanged) {
     // var t = performance.now();
     const newHash = {};
     let identical = (values.length === this.length);
-    values.forEach(function (value) {
+    values.forEach((value) => {
       if (identical && hash[value] !== true) {
         identical = false;
       }

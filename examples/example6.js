@@ -6,7 +6,7 @@ function EmptyDataset(n) {
   this.length = n;
 }
 
-domready(function () {
+domready(() => {
   const plot = new globalView.GlobalView(document.getElementById('divGlobalView'), {
     pointSize: 1.5,
     pointColor: 'white',

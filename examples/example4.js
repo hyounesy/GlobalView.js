@@ -1,7 +1,7 @@
 const globalView = require('../dist/global-view.js');
 const domready = require('domready');
 
-domready(function () {
+domready(() => {
   let tStart;
   const preResults = document.getElementById('preResults');
   const measureTime = function (phase, iterations) {
@@ -28,9 +28,9 @@ domready(function () {
   });
   measureTime('Initialization', 1);
 
-  new globalView.RandomDataset(1e6, 2, function (dataset) { // eslint-disable-line no-new
+  new globalView.RandomDataset(1e6, 2, ((dataset) => { // eslint-disable-line no-new
     plot.load(dataset, 0, 1, 1, 1);
-  });
+  }));
   measureTime('Random dataset generation', 1);
 
   let frames = 0;

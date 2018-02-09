@@ -14,7 +14,7 @@ export function DepthFirstSearch(problem) {
   closed[problem.computeHash(node.state)] = node.state;
 
   while (true) { // eslint-disable-line no-constant-condition
-    problem.forEachSuccessor(node.state, function (successor) { // eslint-disable-line no-loop-func
+    problem.forEachSuccessor(node.state, (successor) => { // eslint-disable-line no-loop-func
       // Test for goal state (before-push)
       if (problem.isGoalState(successor)) {
         // Goal found
@@ -56,7 +56,7 @@ export function BreadthFirstSearch(problem) {
 
   while (true) { // eslint-disable-line no-constant-condition
     // eslint-disable-next-line no-loop-func
-    problem.forEachSuccessor(node.state, function (successor) {
+    problem.forEachSuccessor(node.state, (successor) => {
       const successorHash = problem.computeHash(successor);
       if (libUtility.isUndefined(closed[successorHash])) {
         fringe.push({ state: successor });
@@ -88,7 +88,7 @@ export function UniformCostSearch(problem) {
 
   while (true) { // eslint-disable-line no-constant-condition
     // eslint-disable-next-line no-loop-func
-    problem.forEachSuccessor(node.state, function (successor, successorCost) {
+    problem.forEachSuccessor(node.state, (successor, successorCost) => {
       const successorHash = problem.computeHash(successor);
       const varSuccessor = closed[successorHash];
       if (libUtility.isUndefined(varSuccessor) ||
@@ -122,7 +122,7 @@ export function SimpleUniformCostSearch(problem) {
 
   while (true) { // eslint-disable-line no-constant-condition
     // eslint-disable-next-line no-loop-func
-    problem.forEachSuccessor(node.state, function (successor, successorCost) {
+    problem.forEachSuccessor(node.state, (successor, successorCost) => {
       const successorHash = problem.computeHash(successor);
       if (libUtility.isUndefined(closed[successorHash])) {
         fringe.push({ state: successor, cost: successorCost });
@@ -156,7 +156,7 @@ export function SimpleAStarSearch(problem) {
 
   while (true) { // eslint-disable-line no-constant-condition
     // eslint-disable-next-line no-loop-func
-    problem.forEachSuccessor(node.state, function (successor, successorCost) {
+    problem.forEachSuccessor(node.state, (successor, successorCost) => {
       const h = problem.heuristic(successor);
       const g = successorCost;
       if (CHECK_CONSISTENCY && g + h < node.f) {
@@ -192,7 +192,7 @@ export function SimpleGreedySearch(problem) {
   while (true) { // eslint-disable-line no-constant-condition
     cheapestSuccessor = null;
     // eslint-disable-next-line no-loop-func
-    problem.forEachSuccessor(state, function (successor, successorCost) {
+    problem.forEachSuccessor(state, (successor, successorCost) => {
       if (successorCost < cheapestCost) {
         cheapestCost = successorCost;
         cheapestSuccessor = successor;

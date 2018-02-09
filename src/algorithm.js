@@ -702,9 +702,7 @@ export function findRepresentativePoints(dataset, d0, d1, densityMap, k, dist, t
 
   // Create indices sorted by density
   const indices = Array.from(pointDensities.keys());
-  indices.sort(function (idxA, idxB) {
-    return pointDensities[idxA] - pointDensities[idxB];
-  });
+  indices.sort((idxA, idxB) => pointDensities[idxA] - pointDensities[idxB]);
 
   /* // If k >= n, all points are representative
   if (k >= n)
@@ -738,7 +736,7 @@ export function findRepresentativePoints(dataset, d0, d1, densityMap, k, dist, t
     const di0 = densityMap.transformX(v0.getValue(di)) / densityMap.width;
     const di1 = densityMap.transformY(v1.getValue(di)) / densityMap.height;
 
-    if (representativePoints.every(function (p) {
+    if (representativePoints.every((p) => {
       const p0 = densityMap.transformX(v0.getValue(p)) / densityMap.width;
       const p1 = densityMap.transformY(v1.getValue(p)) / densityMap.height;
       return ((p0 - di0) ** 2) + ((p1 - di1) ** 2) > sqDist;
@@ -837,9 +835,7 @@ export function findRepresentativePointsND(dataset, densityMap, numPointsToRetur
 
   // Create indices sorted by density
   const indices = Array.from(pointDensities.keys());
-  indices.sort(function (idxA, idxB) {
-    return pointDensities[idxA] - pointDensities[idxB];
-  });
+  indices.sort((idxA, idxB) => pointDensities[idxA] - pointDensities[idxB]);
 
   /* // If k >= n, all points are representative
   if (k >= n)
@@ -866,7 +862,7 @@ export function findRepresentativePointsND(dataset, densityMap, numPointsToRetur
       p[c] = data[(di * nc) + c] * scales[c];
     }
 
-    if (representativePoints.every(function (r) {
+    if (representativePoints.every((r) => {
       for (let c = 0; c < nc; c += 1) {
         dpsq[c] = ((data[(r * nc) + c] * scales[c]) - p[c]) ** 2;
       }
@@ -1081,7 +1077,7 @@ export function markPointsInStencilMap(
   }
   const stencil = varStencilMap.data;
 
-  points.forEach(function (p) {
+  points.forEach((p) => {
     const p0 = Math.floor(densityMap.transformX(v0.getValue(p)));
     const p1 = Math.floor(densityMap.transformY(v1.getValue(p)));
     const imgxmin = Math.max(xmin, p0 - minDMDistX);
@@ -1195,7 +1191,7 @@ export function findClosePointOfLowDensityDescend(
     },
     forEachSuccessor(state, onSuccessor) {
       [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]]
-        .forEach(function (action) {
+        .forEach((action) => {
           const x = state.x + action[0];
           const y = state.y + action[1];
           if (x >= xMin && x < xMax && y >= yMin && y < yMax) {
@@ -1271,9 +1267,7 @@ export function findClosePointOfLowDensityNDDescend(dataset, p, densityMap, minD
     a[c] = -1;
   }
   do {
-    if (!a.every(function (aa) {
-      return aa === 0;
-    })) {
+    if (!a.every(aa => aa === 0)) {
       actions.push(a.slice());
     }
     i = 0;
@@ -1292,7 +1286,7 @@ export function findClosePointOfLowDensityNDDescend(dataset, p, densityMap, minD
           (densityMap[d0][d1 - d0 - 1].data[(pty[d1] * size) + pty[d0]] * densityScale)) ** 2;
       }
     }
-    const sqDist = pty.reduce(function (ax, pt, pi) {
+    const sqDist = pty.reduce((ax, pt, pi) => {
       const dp = Math.abs(pt - start[pi]);
       return ax + (dp > minDistSize ?
         (dp - minDistSize) ** 2 :
@@ -1316,7 +1310,7 @@ export function findClosePointOfLowDensityNDDescend(dataset, p, densityMap, minD
       return maxIterations === 0;
     },
     forEachSuccessor(state, onSuccessor) {
-      actions.forEach(function (action) {
+      actions.forEach((action) => {
         const pa = new Float32Array(nc);
         for (let c = 0; c < nc; c += 1) {
           pa[c] = state.p[c] + action[c];
@@ -1592,7 +1586,7 @@ export function computeClusterMap(densityMap, d0, d1, options) {
     if (clusters[i] === null) {
       clusters[i] = 0;
     } else if (clusters[i] instanceof ForwardList) {
-      clusters[i].forEach(function (id) { // eslint-disable-line no-loop-func
+      clusters[i].forEach((id) => { // eslint-disable-line no-loop-func
         clusters[id - 1] = clusterId;
       });
       clusterId += 1;

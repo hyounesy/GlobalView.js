@@ -118,7 +118,7 @@ export function WebGLUtils() {
     optOnError = optOnError || handleCreationError;
 
     if (canvas.addEventListener) {
-      canvas.addEventListener('webglcontextcreationerror', function (event) {
+      canvas.addEventListener('webglcontextcreationerror', (event) => {
         optOnError(event.statusMessage);
       }, false);
     }

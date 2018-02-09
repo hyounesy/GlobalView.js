@@ -15,7 +15,7 @@ let cbColumnY;
 let cbColumnC;
 let cbColumnS;
 
-domready(function () {
+domready(() => {
   cbDataset = document.getElementById('cbDataset');
   cbColumnX = document.getElementById('cbColumnX');
   cbColumnY = document.getElementById('cbColumnY');
@@ -175,7 +175,7 @@ domready(function () {
   document.onkeyup = handleKeyUp;
 
   // Fill cbDataset
-  DATASETS.forEach(function (vDataset) {
+  DATASETS.forEach((vDataset) => {
     if (typeof vDataset.url === 'undefined') {
       const option = document.createElement('option');
       option.text = vDataset.name;
@@ -190,7 +190,7 @@ domready(function () {
         cbDatasetOnChange(); // Load even if cookie isn't set
       }
     } else {
-      globalView.urlExists(vDataset.url, function () {
+      globalView.urlExists(vDataset.url, () => {
         const option = document.createElement('option');
         option.text = vDataset.name;
         option.createDataset = vDataset.create;
@@ -213,65 +213,65 @@ addAllEventListeners();
 function addAllEventListeners() {
   window.addEventListener('resize', onResize);
 
-  document.getElementById('cbDataset').addEventListener('change', function () {
+  document.getElementById('cbDataset').addEventListener('change', () => {
     cbDatasetOnChange();
   });
-  document.getElementById('cbColumnX').addEventListener('change', function () {
+  document.getElementById('cbColumnX').addEventListener('change', () => {
     cbColumnXOnChange();
   });
-  document.getElementById('cbColumnY').addEventListener('change', function () {
+  document.getElementById('cbColumnY').addEventListener('change', () => {
     cbColumnYOnChange();
   });
-  document.getElementById('cbColumnC').addEventListener('change', function () {
+  document.getElementById('cbColumnC').addEventListener('change', () => {
     cbColumnCOnChange();
   });
-  document.getElementById('cbColumnS').addEventListener('change', function () {
+  document.getElementById('cbColumnS').addEventListener('change', () => {
     cbColumnSOnChange();
   });
-  document.getElementById('cbRenderStyle').addEventListener('change', function () {
+  document.getElementById('cbRenderStyle').addEventListener('change', () => {
     cbRenderStyleOnChange(document.getElementById('cbRenderStyle'));
   });
-  document.getElementById('cbTransparency').addEventListener('change', function () {
+  document.getElementById('cbTransparency').addEventListener('change', () => {
     cbTransparencyOnChange(document.getElementById('cbTransparency'));
   });
-  document.getElementById('cbPointShape').addEventListener('change', function () {
+  document.getElementById('cbPointShape').addEventListener('change', () => {
     cbPointShapeOnChange(document.getElementById('cbPointShape'));
   });
-  document.getElementById('rPointSize').addEventListener('input', function () {
+  document.getElementById('rPointSize').addEventListener('input', () => {
     rPointSizeOnChange(document.getElementById('rPointSize'));
   });
-  document.getElementById('rPointOpacity').addEventListener('input', function () {
+  document.getElementById('rPointOpacity').addEventListener('input', () => {
     rPointOpacityOnChange(document.getElementById('rPointOpacity'));
   });
-  document.getElementById('cbShowDensity').addEventListener('change', function () {
+  document.getElementById('cbShowDensity').addEventListener('change', () => {
     cbShowDensityOnChange(document.getElementById('cbShowDensity'));
   });
-  document.getElementById('cbShowClusters').addEventListener('change', function () {
+  document.getElementById('cbShowClusters').addEventListener('change', () => {
     cbShowClustersOnChange(document.getElementById('cbShowClusters'));
   });
-  document.getElementById('cbShowHistograms').addEventListener('change', function () {
+  document.getElementById('cbShowHistograms').addEventListener('change', () => {
     cbShowHistogramsOnChange(document.getElementById('cbShowHistograms'));
   });
-  document.getElementById('rVariance').addEventListener('input', function () {
+  document.getElementById('rVariance').addEventListener('input', () => {
     rVarianceOnChange(document.getElementById('rVariance'));
   });
-  document.getElementById('rNumBins').addEventListener('input', function () {
+  document.getElementById('rNumBins').addEventListener('input', () => {
     rNumBinsOnChange(document.getElementById('rNumBins'));
   });
-  document.getElementById('cmdRunBenchmark').addEventListener('click', function () {
+  document.getElementById('cmdRunBenchmark').addEventListener('click', () => {
     cmdRunBenchmarkOnClick(document.getElementById('cmdRunBenchmark'));
   });
   // document.getElementById("cbThumbnailPositioning") // ???
-  document.getElementById('rNumThumbnails').addEventListener('input', function () {
+  document.getElementById('rNumThumbnails').addEventListener('input', () => {
     rNumThumbnailsOnChange(document.getElementById('rNumThumbnails'));
   });
-  document.getElementById('rDensityRatio').addEventListener('input', function () {
+  document.getElementById('rDensityRatio').addEventListener('input', () => {
     rDensityRatioOnChange(document.getElementById('rDensityRatio'));
   });
-  document.getElementById('cmdShowData2D').addEventListener('click', function () {
+  document.getElementById('cmdShowData2D').addEventListener('click', () => {
     cmdShowData2DOnClick(document.getElementById('cmdShowData2D'));
   });
-  document.getElementById('cbLabelThumbnails').addEventListener('change', function () {
+  document.getElementById('cbLabelThumbnails').addEventListener('change', () => {
     cbLabelThumbnailsOnChange(document.getElementById('cbLabelThumbnails'));
   });
 }
@@ -463,7 +463,7 @@ function requestVariance(variance, fast) {
     plot.getActiveColumn(0), plot.getActiveColumn(1),
     fast ? 64 : null,
     densityMapOptions,
-    function (densityMap) {
+    (densityMap) => {
       if (densityMapOptions.gaussScale === variance) {
         plot.invalidate();
         if (fast) {
@@ -510,7 +510,7 @@ function rDensityRatioOnChange(sender) {
 }
 function cmdShowData2DOnClick(/* sender */) {
   plot.clearThumbnails();
-  plot.getCharacteristicPoints(numThumbnails, densityRatio, function (characteristicPoints) {
+  plot.getCharacteristicPoints(numThumbnails, densityRatio, (characteristicPoints) => {
     plot.selectedPoints.assign(characteristicPoints);
     plot.showImages(plot.selectedPoints, document.getElementById('cbThumbnailPositioning').value);
   });

@@ -215,7 +215,7 @@ export function ImageViewer(gl, globalView) {
     if (options.labelThumbnails) {
       // Draw labels at image.refPos
       let label = 1;
-      images.forEach(function (image) {
+      images.forEach((image) => {
         if (image.imagePos === image.refPos) {
           return;
         }
@@ -257,7 +257,7 @@ export function ImageViewer(gl, globalView) {
       // Draw lines between image.imagePos and image.refPos
       sdrLine.bind();
       meshLine.bind(sdrLine, null);
-      images.forEach(function (image) {
+      images.forEach((image) => {
         if (!image.imagePos || image.imagePos === image.refPos) {
           return;
         }
@@ -282,7 +282,7 @@ export function ImageViewer(gl, globalView) {
 
     sdrImage.bind();
     let label = 1;
-    images.forEach(function (image) {
+    images.forEach((image) => {
       if (!image.imagePos) {
         return;
       }
@@ -450,7 +450,7 @@ export function ImageViewer(gl, globalView) {
     }
 
     const newImage = new Thumbnail(globalView);
-    newImage.tex = libGraphics.LoadTexture(gl, imageFilename, function () {
+    newImage.tex = libGraphics.LoadTexture(gl, imageFilename, () => {
       globalView.invalidate();
     });
     newImage.imagePos = imagePos;
@@ -530,7 +530,7 @@ export function ImageViewer(gl, globalView) {
     const imageSize = libGlMatrix.vec2.create();
 
     let selectedImage = null;
-    images.forEach(function (image) {
+    images.forEach((image) => {
       if (!image.imagePos) {
         return;
       }

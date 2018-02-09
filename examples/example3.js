@@ -3,7 +3,7 @@ const domready = require('domready');
 
 let plot;
 
-domready(function () {
+domready(() => {
   plot = new globalView.GlobalView(document.getElementById('divGlobalView'), {
     pointShape: 'Custom',
     pointSize: 15,
@@ -21,12 +21,12 @@ domready(function () {
   // eslint-disable-next-line no-new
   new globalView.CsvDataset('datasets/iris.data', {
     columnLabels: ['Sepal Length [cm]', 'Sepal Width [cm]', 'Petal Length [cm]', 'Petal Width [cm]', 'Class'],
-  }, function (dataset) {
-    plot.load(dataset, 0, 1, 4, 1);
-  });
+  }, ((dataset) => {
+      plot.load(dataset, 0, 1, 4, 1);
+    }));
 
   const rangeNumLeafs = document.getElementById('rangeNumLeafs');
-  rangeNumLeafs.addEventListener('input', function () {
+  rangeNumLeafs.addEventListener('input', () => {
     rangeNumLeafsOninput(rangeNumLeafs);
   }, false);
   rangeNumLeafsOninput(rangeNumLeafs);

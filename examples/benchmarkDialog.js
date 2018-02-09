@@ -261,7 +261,7 @@ export default function BenchmarkDialog(paramPlot) {
     if (SAVE_SCREENSHOTS) {
       zip.file('benchmark.csv', $.csv.fromArrays(csv));
 
-      zip.generateAsync({ type: 'base64' }).then(function (base64) {
+      zip.generateAsync({ type: 'base64' }).then((base64) => {
         globalView.download('benchmark.zip', `data:application/zip;base64,${base64}`);
       });
     } else {

@@ -58,7 +58,7 @@ export function PointViewer(gl, globalView) {
         let startIndex = 0;
         let lastIndex = -1;
         let count = 0;
-        this.forEach(function (index) {
+        this.forEach((index) => {
           if (index === lastIndex + 1) {
             count += 1;
           } else {
@@ -136,7 +136,7 @@ export function PointViewer(gl, globalView) {
     meshDataPoints.sdr.scales.apply(meshDataPoints.sdr, tf.getScales());
     meshDataPoints.sdr.animatedScales.apply(meshDataPoints.sdr, tf.getAnimatedScales());
     meshDataPoints.sdr.flipY(flipY ? 1 : 0);
-    pointSets.forEach(function (pointSet) {
+    pointSets.forEach((pointSet) => {
       meshDataPoints.sdr.pointOpacity(pointSet.opacity ? pointSet.opacity : varPointOpacity);
       pointSet.render(pointSet.colormap ? pointSet.colormap : colormapTexture);
     });
@@ -147,7 +147,7 @@ export function PointViewer(gl, globalView) {
       meshDataPoints.sdrLine.scales.apply(meshDataPoints.sdrLine, tf.getScales());
       meshDataPoints.sdrLine.animatedScales.apply(meshDataPoints.sdrLine, tf.getAnimatedScales());
       meshDataPoints.sdrLine.flipY(flipY ? 1 : 0);
-      pointSets.forEach(function (pointSet) {
+      pointSets.forEach((pointSet) => {
         meshDataPoints.sdrLine.pointOpacity(pointSet.opacity ?
           pointSet.opacity :
           Math.max(0.1, varPointOpacity / 2.0));

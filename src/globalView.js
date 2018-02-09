@@ -142,9 +142,7 @@ export function GlobalView(div, startupOptions) {
 
   let dataset = null;
   let activeInputs = Array.create(ND, -1);
-  const animatedInputs = Array.create(ND, function () {
-    return { target: null, f: 0 };
-  });
+  const animatedInputs = Array.create(ND, () => ({ target: null, f: 0 }));
 
   this.points = pointViewer.points;
   pointViewer.representativePoints = pointViewer.createPointSet([0, 255, 0, 255], 1);
@@ -232,7 +230,7 @@ export function GlobalView(div, startupOptions) {
       }
     }
     if (SIMULATE_LOW_FPS) {
-      setTimeout(function () {
+      setTimeout(() => {
         globalView.invalidate();
       }, 100);
     } else if (ENABLE_CONTINUOUS_RENDERING) {
@@ -1269,7 +1267,7 @@ export function GlobalView(div, startupOptions) {
     }
     let d0 = activeInputs[0];
     let d1 = activeInputs[1];
-    dataset.requestDensityMap(d0, d1, undefined, undefined, function (densityMap) {
+    dataset.requestDensityMap(d0, d1, undefined, undefined, (densityMap) => {
       if (d1 < d0) {
         // Swap d0 <-> d1
         const temp = d0;
@@ -1291,7 +1289,7 @@ export function GlobalView(div, startupOptions) {
   this.clearThumbnails = function () {
     // Clear stencil maps
     if (dataset) {
-      dataset.iterateDensityMaps(function (densityMap) {
+      dataset.iterateDensityMaps((densityMap) => {
         if (densityMap.stencilMap && densityMap.stencilMap.data) {
           for (let i = 0, stencilMap = densityMap.stencilMap.data, len = stencilMap.length;
             i < len; i += 1) {
@@ -1311,7 +1309,7 @@ export function GlobalView(div, startupOptions) {
 
     let d0 = activeInputs[0];
     let d1 = activeInputs[1];
-    dataset.requestDensityMap(d0, d1, undefined, undefined, function (pDensityMap) {
+    dataset.requestDensityMap(d0, d1, undefined, undefined, (pDensityMap) => {
       const densityMap = pDensityMap;
       if (d1 < d0) {
         // Swap d0 <-> d1
@@ -1330,7 +1328,7 @@ export function GlobalView(div, startupOptions) {
         d0, d1, densityMap, 16, 0.3,
       ));
       if (dataset.imageFilenames) {
-        pointViewer.representativePoints.forEach(function (r) {
+        pointViewer.representativePoints.forEach((r) => {
           if (dataset.imageFilenames[r]) {
             const dataPos = dataset.dataVectors.map(v => v.getValue(r));
             const imagePos = dataPos.slice(0);
@@ -1365,7 +1363,7 @@ export function GlobalView(div, startupOptions) {
       // dataset.requestDensityMap(d0, d1, undefined, undefined,
       // function(densityMap) { libUtility.consoleLog(densityMap); });
 
-      dataset.requestDensityMap(d0, d1, undefined, undefined, function (pDensityMap) {
+      dataset.requestDensityMap(d0, d1, undefined, undefined, (pDensityMap) => {
         const densityMap = pDensityMap;
         let imageWidth = (0.6 * options.thumbnailSize) / gl.width;
         let imageHeight = ((0.6 * options.thumbnailSize) + libImageViewer.getLabelHeight()) /
@@ -1426,7 +1424,7 @@ export function GlobalView(div, startupOptions) {
     if (dataset.imageFilenames) {
       let d0 = activeInputs[0];
       let d1 = activeInputs[1];
-      dataset.requestDensityMap(d0, d1, undefined, undefined, function (pDensityMap) {
+      dataset.requestDensityMap(d0, d1, undefined, undefined, (pDensityMap) => {
         const densityMap = pDensityMap;
         let imageWidth = (0.6 * options.thumbnailSize) / gl.width;
         let imageHeight = ((0.6 * options.thumbnailSize) + libImageViewer.getLabelHeight()) /
@@ -1471,7 +1469,7 @@ export function GlobalView(div, startupOptions) {
    * @param  {Array<number>} points List of indices of datapoints to show
    */
   this.showImages_none = function (points) {
-    points.forEach(function (p) {
+    points.forEach((p) => {
       const dataPos = dataset.dataVectors.map(v => v.getValue(p));
       imageViewer.showImage(dataset.imageFilenames[p], p, dataPos);
     });
@@ -1518,7 +1516,7 @@ export function GlobalView(div, startupOptions) {
 
     // Computed expected value (= mean) of points -> E
     const E = [0, 0];
-    points.forEach(function (p) {
+    points.forEach((p) => {
       E[0] += dataset.dataVectors[d0].getValue(p);
       E[1] += dataset.dataVectors[d1].getValue(p);
     });
@@ -1527,7 +1525,7 @@ export function GlobalView(div, startupOptions) {
 
     // Compute covariance matrix of points -> cov [symetrical 2D matrix]
     const cov = [0, 0, 0];
-    points.forEach(function (p) {
+    points.forEach((p) => {
       const x0 = (dataset.dataVectors[d0].getValue(p) * scales[0]) - E[0];
       const x1 = (dataset.dataVectors[d1].getValue(p) * scales[1]) - E[1];
       cov[0] += x0 * x0;
@@ -1623,7 +1621,7 @@ export function GlobalView(div, startupOptions) {
     let dest;
     const v0 = dataset.dataVectors[activeInputs[0]];
     const v1 = dataset.dataVectors[activeInputs[1]];
-    points.forEach(function (p) {
+    points.forEach((p) => {
       if (!dataset.imageFilenames[p]) {
         return;
       }
@@ -1725,7 +1723,7 @@ export function GlobalView(div, startupOptions) {
     }
 
     let idx = 0;
-    points.forEach(function (p) {
+    points.forEach((p) => {
       if (!dataset.imageFilenames[p]) {
         return;
       }
@@ -1969,14 +1967,14 @@ export function GlobalView(div, startupOptions) {
    * @type {onThumbnailSelectionChangedCallback}
    */
   this.onThumbnailSelectionChanged = null;
-  libUtility.addKeyDownHandler(function (event) {
+  libUtility.addKeyDownHandler((event) => {
     if (event.keyCode === CTRL) {
       ctrlPressed = true;
     } else if (event.keyCode === 16) {
       shiftPressed = true;
     }
   });
-  libUtility.addKeyUpHandler(function (event) {
+  libUtility.addKeyUpHandler((event) => {
     if (event.which === CTRL) {
       ctrlPressed = false;
     } else if (event.keyCode === 16) {
@@ -2069,7 +2067,7 @@ export function GlobalView(div, startupOptions) {
     const sqscl1 = tf.getScale(1) * tf.getScale(1);
     const v0 = dataset.dataVectors[activeInputs[0]];
     const v1 = dataset.dataVectors[activeInputs[1]];
-    pointViewer.points.forEach(function (i) {
+    pointViewer.points.forEach((i) => {
       sqDist =
         (sqscl0 * ((p[0] - v0.getValue(i)) ** 2)) +
         (sqscl1 * ((p[1] - v1.getValue(i)) ** 2));
@@ -2208,7 +2206,7 @@ export function GlobalView(div, startupOptions) {
         imageDelta,
         libGlMatrix.vec2.subtract(imageDelta, p, imageDragStartPos),
       );
-      imageDragImages.forEach(function (image) {
+      imageDragImages.forEach((image) => {
         image.imagePos[activeInputs[0]] += imageDelta[0]; // eslint-disable-line no-param-reassign
         image.imagePos[activeInputs[1]] += imageDelta[1]; // eslint-disable-line no-param-reassign
       });
@@ -2247,7 +2245,7 @@ export function GlobalView(div, startupOptions) {
     const sqscl1 = tf.getScale(1) * tf.getScale(1);
     const v0 = dataset.dataVectors[d0];
     const v1 = dataset.dataVectors[d1];
-    pointViewer.points.forEach(function (i) {
+    pointViewer.points.forEach((i) => {
       sqDist =
         (sqscl0 * ((p[0] - v0.getValue(i)) ** 2)) +
         (sqscl1 * ((p[1] - v1.getValue(i)) ** 2));
@@ -2282,7 +2280,7 @@ export function GlobalView(div, startupOptions) {
       }
     }
   }.bind(this));
-  libUtility.addMouseUpHandler(function (event) {
+  libUtility.addMouseUpHandler((event) => {
     if (tf === null || offscreenRendering !== null ||
       (event.target !== canvas && pointDragDownPos === null &&
         viewDragStartPos === null && mouseRect === null)) {
@@ -2321,7 +2319,7 @@ export function GlobalView(div, startupOptions) {
         const selection = [];
         const v0 = dataset.dataVectors[activeInputs[0]];
         const v1 = dataset.dataVectors[activeInputs[1]];
-        pointViewer.points.forEach(function (i) {
+        pointViewer.points.forEach((i) => {
           const px = v0.getValue(i);
           const py = v1.getValue(i);
           if (libAlgorithm.pointInsidePolygon([px, py], mousePolygon)) {
@@ -2365,7 +2363,7 @@ export function GlobalView(div, startupOptions) {
         const selection = [];
         const v0 = dataset.dataVectors[activeInputs[0]];
         const v1 = dataset.dataVectors[activeInputs[1]];
-        pointViewer.points.forEach(function (i) {
+        pointViewer.points.forEach((i) => {
           px = v0.getValue(i);
           py = v1.getValue(i);
           if (px >= mouseRect.l && px < mouseRect.r && py >= mouseRect.t && py < mouseRect.b) {
@@ -2382,7 +2380,7 @@ export function GlobalView(div, startupOptions) {
       this.invalidate();
       onmousemove(event);
     }
-  }.bind(this));
+  });
   canvas.onmouseleave = function (/* event */) {
     if (mouseOverImage != null && imageDragImages.indexOf(mouseOverImage) === -1) {
       mouseOverImage.highlighted = false;
@@ -2398,7 +2396,7 @@ export function GlobalView(div, startupOptions) {
       this.onMouseOverDatapoint(dataset, mouseOverDatapoint = -1);
     }
   }.bind(this);
-  libUtility.addMouseWheelHandler(function (event) {
+  libUtility.addMouseWheelHandler((event) => {
     if (event.target !== canvas || !options.enableScrolling) {
       return;
     }
