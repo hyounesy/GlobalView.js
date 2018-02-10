@@ -486,7 +486,7 @@ export function Dataset() {
     const n = this.length;
     const nInflated = Math.floor(factor * n);
     const nc = this.numColumns;
-    if (isNaN(nInflated) || nInflated <= n) {
+    if (Number.isNaN(nInflated) || nInflated <= n) {
       return;
     }
     const fdata = this.fdata;
@@ -700,13 +700,14 @@ export function CsvDataset(file, options, onload) {
   const varOptions = options;
 
   // Validate options
+  // eslint-disable-next-line no-restricted-syntax
   for (const option in varOptions) {
-    if (!varOptions.hasOwnProperty(option)) {
+    if (!Object.prototype.hasOwnProperty.call(varOptions, option)) {
       continue; // eslint-disable-line no-continue
     }
 
     // Validate option
-    if (!CSV_DATASET_OPTIONS.hasOwnProperty(option)) {
+    if (!Object.prototype.hasOwnProperty.call(CSV_DATASET_OPTIONS, option)) {
       libUtility.consoleWarn(`CsvDataset warning: Unsupported option: ${option}`);
       continue; // eslint-disable-line no-continue
     }
@@ -733,8 +734,8 @@ export function CsvDataset(file, options, onload) {
         // Assume no-header by default
         varOptions.hasHeader = false;
 
-        const firstRowOnlyStrings = data[0].every(value => isNaN(parseData(value)));
-        const secondRowHasNumbers = data[1].some(value => !isNaN(parseData(value)));
+        const firstRowOnlyStrings = data[0].every(value => Number.isNaN(parseData(value)));
+        const secondRowHasNumbers = data[1].some(value => !Number.isNaN(parseData(value)));
 
         // If the first row consists of only string values, but the second row
         // has at least one numeric value, we can assume the first row is a header
@@ -751,7 +752,7 @@ export function CsvDataset(file, options, onload) {
         for (let c = 0; c < data[0].length; c += 1) {
           const valueMap = {};
           if (data.every((row) => {
-            if (row.length > c && isNaN(parseData(row[c])) && !(row[c] in valueMap)) {
+            if (row.length > c && Number.isNaN(parseData(row[c])) && !(row[c] in valueMap)) {
               valueMap[row[c]] = true;
               return true;
             }
@@ -819,7 +820,7 @@ export function CsvDataset(file, options, onload) {
 
         const value = data[i][c];
         const fvalue = parseData(value);
-        if (isNaN(fvalue)) {
+        if (Number.isNaN(fvalue)) {
           isNumeric = false;
           break;
         }

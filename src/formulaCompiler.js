@@ -1,5 +1,6 @@
 const libUtility = require('./utility.js');
 
+// eslint-disable-next-line import/prefer-default-export
 export const FormulaCompiler = {
   compile(formula, symbolTypes) {
     /* // Parse case-insensitive

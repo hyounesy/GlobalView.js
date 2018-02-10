@@ -12,6 +12,7 @@ const libGlMatrix = require('gl-matrix');
  * @param {Object} gl // {WebGLRenderingContext}
  * @param {Object} globalView // {GlobalView}
  */
+// eslint-disable-next-line import/prefer-default-export
 export function PointViewer(gl, globalView) {
   let varDataset;
   let meshDataPoints = null;

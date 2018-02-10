@@ -133,16 +133,17 @@ export function makeCloneable(obj) {
   } // Return obj as is
 
   // Check all properties of obj
-  for (let prop in obj) {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const prop in obj) {
     if (!isCloneable(obj[prop])) {
     // If obj has at least on non-cloneable property
     // Create a new object and clone all cloneable properties into that new object
       const objSubset = {};
-      for (prop in obj) {
-        if (isCloneable(obj[prop])) {
-          objSubset[prop] = obj[prop];
+      Object.keys(obj).forEach((p) => {
+        if (isCloneable(obj[p])) {
+          objSubset[p] = obj[p];
         }
-      }
+      });
       return objSubset;
     }
   }
@@ -405,10 +406,8 @@ export function hsv2rgb(hsv) {
   if (hsv[1] <= 0.000001) {
     return [hsv[2], hsv[2], hsv[2]];
   }
-  let hh;
-  // let out;
 
-  hh = hsv[0];
+  let hh = hsv[0];
   if (hh >= 1.0) {
     hh = 0.0;
   }
@@ -517,12 +516,12 @@ export function readCookie(name) {
 export function readFloatCookie(name) {
   let cookie = readCookie(name);
   cookie = Number.parseFloat(cookie);
-  return isNaN(cookie) ? null : cookie;
+  return Number.isNaN(cookie) ? null : cookie;
 }
 export function readIntCookie(name) {
   let cookie = readCookie(name);
   cookie = Number.parseInt(cookie, 10);
-  return isNaN(cookie) ? null : cookie;
+  return Number.isNaN(cookie) ? null : cookie;
 }
 export function eraseCookie(name) {
   // Source: http://www.quirksmode.org/js/cookies.html
@@ -883,13 +882,11 @@ export function HashSet(onchanged) {
    */
   this.forEach = function (callback) {
     // var last = Number.MIN_SAFE_INTEGER, badOrder = 0;
-    for (let value in hash) {
-      if (Object.prototype.hasOwnProperty.call(hash, value)) {
-        value = Number.parseInt(value, 10);
-        // if (value < last) {badOrder += 1; last = value;}
-        callback(value);
-      }
-    }
+    Object.keys(hash).forEach((value) => {
+      const numValue = Number.parseInt(value, 10);
+      // if (value < last) {badOrder += 1; last = value;}
+      callback(numValue);
+    });
     // if (badOrder !== 0) consoleLog('bad order: ' + badOrder + ' times');
   };
 

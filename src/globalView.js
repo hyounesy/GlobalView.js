@@ -36,6 +36,7 @@ let OptionDescription; // eslint-disable-line no-unused-vars
  * @constructor
  * @export
  */
+// eslint-disable-next-line import/prefer-default-export
 export function GlobalView(div, startupOptions) {
   const globalView = this;
   if (!(this instanceof GlobalView)) {
@@ -925,7 +926,7 @@ export function GlobalView(div, startupOptions) {
    */
   this.setOption = function (option, value) {
     // Validate option
-    if (!OPTIONS.hasOwnProperty(option)) {
+    if (!Object.prototype.hasOwnProperty.call(OPTIONS, option)) {
       libUtility.consoleWarn(`GlobalView warning: Unsupported option: ${option}`);
       return;
     }
@@ -958,13 +959,14 @@ export function GlobalView(div, startupOptions) {
   this.setOptions = function (newOptions) {
     let requireRecompile = false;
     let requireRedraw = false;
+    // eslint-disable-next-line no-restricted-syntax
     for (const option in newOptions) {
-      if (!newOptions.hasOwnProperty(option)) {
+      if (!Object.prototype.hasOwnProperty.call(newOptions, option)) {
         continue; // eslint-disable-line no-continue
       }
 
       // Validate option
-      if (!OPTIONS.hasOwnProperty(option)) {
+      if (!Object.prototype.hasOwnProperty.call(OPTIONS, option)) {
         libUtility.consoleWarn(`GlobalView warning: Unsupported option: ${option}`);
         continue; // eslint-disable-line no-continue
       }
@@ -1003,7 +1005,7 @@ export function GlobalView(div, startupOptions) {
    */
   this.setDefaultOption = function (option) {
     // Validate option
-    if (!OPTIONS.hasOwnProperty(option)) {
+    if (!Object.prototype.hasOwnProperty.call(OPTIONS, option)) {
       libUtility.consoleWarn(`GlobalView warning: Unsupported option: ${option}`);
       return;
     }
@@ -1017,11 +1019,9 @@ export function GlobalView(div, startupOptions) {
    */
   this.setDefaultOptions = function () {
     const defaultOptions = {};
-    for (const option in OPTIONS) {
-      if (OPTIONS.hasOwnProperty(option)) {
-        defaultOptions[option] = OPTIONS[option].default;
-      }
-    }
+    Object.keys(OPTIONS).forEach((option) => {
+      defaultOptions[option] = OPTIONS[option].default;
+    });
     this.setOptions(defaultOptions);
   };
 
@@ -1033,7 +1033,7 @@ export function GlobalView(div, startupOptions) {
    */
   this.validateOption = function (option, value) {
     // Validate option
-    if (!OPTIONS.hasOwnProperty(option)) {
+    if (!Object.prototype.hasOwnProperty.call(OPTIONS, option)) {
       return `Unsupported option: ${option}`;
     }
     const optionDefinition = OPTIONS[option];
@@ -1059,13 +1059,14 @@ export function GlobalView(div, startupOptions) {
    */
   this.validateOptions = function (newOptions) {
     const errors = [];
+    // eslint-disable-next-line no-restricted-syntax
     for (const option in newOptions) {
-      if (!newOptions.hasOwnProperty(option)) {
+      if (!Object.prototype.hasOwnProperty.call(newOptions, option)) {
         continue; // eslint-disable-line no-continue
       }
 
       // Validate option
-      if (!OPTIONS.hasOwnProperty(option)) {
+      if (!Object.prototype.hasOwnProperty.call(OPTIONS, option)) {
         errors.push(`Unsupported option: ${option}`);
         continue; // eslint-disable-line no-continue
       }
@@ -2353,10 +2354,12 @@ export function GlobalView(div, startupOptions) {
         // Transform mouseRect from device coordinates to dataset coordinates
         let p = new Float32Array([mouseRect.l, mouseRect.t]);
         tf.deviceCoordToDatasetCoord(p, p);
-        mouseRect.l = p[0]; mouseRect.t = p[1];
+        mouseRect.l = p[0];
+        mouseRect.t = p[1];
         p = new Float32Array([mouseRect.r, mouseRect.b]);
         tf.deviceCoordToDatasetCoord(p, p);
-        mouseRect.r = p[0]; mouseRect.b = p[1];
+        mouseRect.r = p[0];
+        mouseRect.b = p[1];
 
         let px;
         let py;

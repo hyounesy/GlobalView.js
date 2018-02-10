@@ -14,7 +14,8 @@ const libGlMatrix = require('gl-matrix');
  * @param {Object} gl // {WebGLRenderingContext}
  * @param {Object} globalView // {GlobalView}
  */
-export function HistogramViewer(gl, globalView) { // eslint-disable-line no-unused-vars
+// eslint-disable-next-line import/prefer-default-export, no-unused-vars
+export function HistogramViewer(gl, globalView) {
   const sdrLine =
     new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
   sdrLine.color = sdrLine.u4f('color');

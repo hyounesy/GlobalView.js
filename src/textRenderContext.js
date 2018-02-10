@@ -6,6 +6,7 @@
  * @param {Object} glContext // {WebGLRenderingContext}
  * @param {HTMLCanvasElement} canvas
  */
+// eslint-disable-next-line import/prefer-default-export
 export function TextRenderContext(glContext, canvas) {
   const gl = glContext;
   let textCanvas = document.createElement('canvas');

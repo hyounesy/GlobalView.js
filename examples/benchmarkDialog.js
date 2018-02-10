@@ -75,7 +75,7 @@ export default function BenchmarkDialog(paramPlot) {
     N: Array.create(601, i => Math.floor(10 ** (3 + (i / 200)))),
   };
 
-  const SECONDS_PER_BENCHMARK = 10;// 1;
+  const SECONDS_PER_BENCHMARK = 2;// 10;
   const SAVE_SCREENSHOTS = false;
   let zip;
   let csv;
@@ -97,7 +97,7 @@ export default function BenchmarkDialog(paramPlot) {
 
     // Set default options
     const allElements = document.getElementsByTagName('*');
-    for (const i in allElements) {
+    Object.keys(allElements).forEach((i) => {
       if (allElements[i].className === 'option') {
         if (allElements[i].onchange) {
           allElements[i].onchange(allElements[i]);
@@ -105,17 +105,14 @@ export default function BenchmarkDialog(paramPlot) {
           allElements[i].oninput(allElements[i]);
         }
       }
-    }
+    });
 
     numBenchmarks = 1;
     benchmarkCounter = 0;
-    let option;
 
-    for (option in benchmarkOptions) {
-      if (benchmarkOptions.hasOwnProperty(option)) {
-        numBenchmarks *= benchmarkOptions[option].length;
-      }
-    }
+    Object.keys(benchmarkOptions).forEach((option) => {
+      numBenchmarks *= benchmarkOptions[option].length;
+    });
 
     if (SAVE_SCREENSHOTS) {
       // JSZip is included from a cdn in the html
@@ -123,20 +120,16 @@ export default function BenchmarkDialog(paramPlot) {
     }
 
     const csvHeader = ['fps', 'options'];
-    for (option in benchmarkOptions) {
-      if (benchmarkOptions.hasOwnProperty(option)) {
-        csvHeader.push(`${option}`);
-      }
-    }
+    Object.keys(benchmarkOptions).forEach((option) => {
+      csvHeader.push(`${option}`);
+    });
     csv = [csvHeader];
 
     n = -1;
     benchmarkOptionIndices = {};
-    for (option in benchmarkOptions) {
-      if (benchmarkOptions.hasOwnProperty(option)) {
-        benchmarkOptionIndices[option] = 0;
-      }
-    }
+    Object.keys(benchmarkOptions).forEach((option) => {
+      benchmarkOptionIndices[option] = 0;
+    });
 
     reportHeader(csvHeader);
 
@@ -149,12 +142,9 @@ export default function BenchmarkDialog(paramPlot) {
 
   function startBenchmarkPass() {
     currentOptions = {};
-    let option;
-    for (option in benchmarkOptions) {
-      if (benchmarkOptions.hasOwnProperty(option)) {
-        currentOptions[option] = benchmarkOptions[option][benchmarkOptionIndices[option]];
-      }
-    }
+    Object.keys(benchmarkOptions).forEach((option) => {
+      currentOptions[option] = benchmarkOptions[option][benchmarkOptionIndices[option]];
+    });
 
 
     // <<<<<<<<<< START RUN BENCHMARK >>>>>>>>>>
@@ -197,18 +187,16 @@ export default function BenchmarkDialog(paramPlot) {
     const fps = frames / time;
     let name = JSON.stringify(currentOptions).replaceAll('"', "'");
     const csvRow = [fps, name];
-    let option;
-    for (option in currentOptions) {
-      if (currentOptions.hasOwnProperty(option)) {
-        csvRow.push(currentOptions[option]);
-      }
-    }
+    Object.keys(currentOptions).forEach((option) => {
+      csvRow.push(currentOptions[option]);
+    });
     csv.push(csvRow);
 
     if (SAVE_SCREENSHOTS) {
       let image = plot.saveOffscreenBuffer();
       image = image.substr(image.indexOf('base64,') + 'base64,'.length); // Convert base64-dataURL to base64
-      name = name.replace('{', '').replace('}', '').replaceAll("'", '').replaceAll(',', ', ');
+      name = name.replace('{', '').replace('}', '').replaceAll("'", '').replaceAll(',', ', ')
+        .replaceAll(':', '-');
       zip.file(`${name}.png`, image, { base64: true });
     }
 
@@ -217,7 +205,7 @@ export default function BenchmarkDialog(paramPlot) {
     const getKeyByIndex = function (map, index) {
       let idx = index;
       let key;
-      for (key in map) { // eslint-disable-line guard-for-in
+      for (key in map) { // eslint-disable-line guard-for-in, no-restricted-syntax
         idx -= 1;
         if (idx === -1) {
           return key;
@@ -227,7 +215,7 @@ export default function BenchmarkDialog(paramPlot) {
     };
 
     let o = 0;
-    option = getKeyByIndex(benchmarkOptionIndices, o);
+    let option = getKeyByIndex(benchmarkOptionIndices, o);
     // eslint-disable-next-line no-cond-assign
     while (option !== null &&
       (benchmarkOptionIndices[option] += 1) === benchmarkOptions[option].length) {

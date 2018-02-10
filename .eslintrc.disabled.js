@@ -139,7 +139,9 @@ module.exports = {
         "no-invalid-regexp": 0,                 // disallow invalid regular expression strings in RegExp constructors
         "no-irregular-whitespace": 0,           // disallow irregular whitespace outside of strings and comments
         "no-obj-calls": 0,                      // disallow calling global object properties as functions
-        "no-prototype-builtins": 0,             // disallow calling some Object.prototype methods directly on objects
+        // disallow use of Object.prototypes builtins directly
+        // http://eslint.org/docs/rules/no-prototype-builtins
+        'no-prototype-builtins': 'error',
         "no-regex-spaces": 0,                   // disallow multiple spaces in regular expressions
         "no-sparse-arrays": 0,                  // disallow sparse arrays
         "no-template-curly-in-string": 0,       // disallow template literal placeholder syntax in regular strings
@@ -435,7 +437,27 @@ module.exports = {
         "no-nested-ternary": 'error',                 // disallow nested ternary expressions
         "no-new-object": 0,                     // disallow Object constructors
         'no-plusplus': 'error',                 // disallow the unary operators ++ and --
-        "no-restricted-syntax": 0,              // disallow specified syntax
+        // disallow certain syntax forms
+        // http://eslint.org/docs/rules/no-restricted-syntax
+        'no-restricted-syntax': [
+          'error',
+          {
+            selector: 'ForInStatement',
+            message: 'for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array.',
+          },
+          {
+            selector: 'ForOfStatement',
+            message: 'iterators/generators require regenerator-runtime, which is too heavyweight for this guide to allow them. Separately, loops should be avoided in favor of array iterations.',
+          },
+          {
+            selector: 'LabeledStatement',
+            message: 'Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand.',
+          },
+          {
+            selector: 'WithStatement',
+            message: '`with` is disallowed in strict mode because it makes code impossible to predict and optimize.',
+          },
+        ],
         "no-tabs": 2,                           // disallow all tabs
         "no-ternary": 0,                        // disallow ternary operators
         "no-trailing-spaces": 2,                // disallow trailing whitespace at the end of lines
@@ -533,12 +555,30 @@ module.exports = {
           ignoreConstructors: false,
           avoidQuotes: true,
         }],
-        "prefer-arrow-callback": 0,             // require using arrow functions for callbacks
+        // suggest using arrow functions as callbacks
+        'prefer-arrow-callback': ['error', {
+          allowNamedFunctions: false,
+          allowUnboundThis: true,
+        }],
         'prefer-const': ['error', {
           destructuring: 'any',
           ignoreReadBeforeAssign: true,
-        }],                                     // require const declarations for variables that are never reassigned after declared
-        "prefer-destructuring": 0,              // require destructuring from arrays and/or objects
+        }],                                     
+        // require const declarations for variables that are never reassigned after declared
+        // Prefer destructuring from arrays and objects
+        // http://eslint.org/docs/rules/prefer-destructuring
+        'prefer-destructuring': ['error', {
+          VariableDeclarator: {
+            array: false,
+            object: true,
+          },
+          AssignmentExpression: {
+            array: true,
+            object: true,
+          },
+        }, {
+          enforceForRenamedProperties: false,
+        }],
         "prefer-numeric-literals": 0,           // disallow parseInt() and Number.parseInt() in favor of binary, octal, and hexadecimal literals
         "prefer-rest-params": 'error',                // require rest parameters instead of arguments
         "prefer-spread": 'error',                     // require spread operators instead of .apply()
@@ -551,6 +591,180 @@ module.exports = {
         "yield-star-spacing": 0                 // require or disallow spacing around the * in yield* expressions
 
 
-    }
+        // Static analysis:
 
+        // ensure imports point to files/modules that can be resolved
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-unresolved.md
+        'import/no-unresolved': ['error', { commonjs: true, caseSensitive: true }],
+
+        // ensure named imports coupled with named exports
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/named.md#when-not-to-use-it
+        'import/named': 'off',
+
+        // ensure default import coupled with default export
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/default.md#when-not-to-use-it
+        'import/default': 'off',
+
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/namespace.md
+        'import/namespace': 'off',
+
+        // Helpful warnings:
+
+        // disallow invalid exports, e.g. multiple defaults
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/export.md
+        'import/export': 'error',
+
+        // do not allow a default import name to match a named export
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-named-as-default.md
+        'import/no-named-as-default': 'error',
+
+        // warn on accessing default export property names that are also named exports
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-named-as-default-member.md
+        'import/no-named-as-default-member': 'error',
+
+        // disallow use of jsdoc-marked-deprecated imports
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-deprecated.md
+        'import/no-deprecated': 'off',
+
+        // Forbid the use of extraneous packages
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-extraneous-dependencies.md
+        // paths are treated both as absolute paths, and relative to process.cwd()
+        'import/no-extraneous-dependencies': ['error', {
+          devDependencies: [
+            'test/**', // tape, common npm pattern
+            'tests/**', // also common npm pattern
+            'spec/**', // mocha, rspec-like pattern
+            '**/__tests__/**', // jest pattern
+            'test.{js,jsx}', // repos with a single test file
+            'test-*.{js,jsx}', // repos with multiple top-level test files
+            '**/*.{test,spec}.{js,jsx}', // tests where the extension denotes that it is a test
+            '**/jest.config.js', // jest config
+            '**/webpack.config.js', // webpack config
+            '**/webpack.config.*.js', // webpack config
+            '**/rollup.config.js', // rollup config
+            '**/rollup.config.*.js', // rollup config
+            '**/gulpfile.js', // gulp config
+            '**/gulpfile.*.js', // gulp config
+            '**/Gruntfile{,.js}', // grunt config
+            '**/protractor.conf.js', // protractor config
+            '**/protractor.conf.*.js', // protractor config
+          ],
+          optionalDependencies: false,
+        }],
+
+        // Forbid mutable exports
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-mutable-exports.md
+        'import/no-mutable-exports': 'error',
+
+        // Module systems:
+
+        // disallow require()
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-commonjs.md
+        'import/no-commonjs': 'off',
+
+        // disallow AMD require/define
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-amd.md
+        'import/no-amd': 'error',
+
+        // No Node.js builtin modules
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-nodejs-modules.md
+        // TODO: enable?
+        'import/no-nodejs-modules': 'off',
+
+        // Style guide:
+
+        // disallow non-import statements appearing before import statements
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/first.md
+        'import/first': ['error', 'absolute-first'],
+
+        // disallow non-import statements appearing before import statements
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/imports-first.md
+        // deprecated: use `import/first`
+        'import/imports-first': 'off',
+
+        // disallow duplicate imports
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-duplicates.md
+        'import/no-duplicates': 'error',
+
+        // disallow namespace imports
+        // TODO: enable?
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-namespace.md
+        'import/no-namespace': 'off',
+
+        // Ensure consistent use of file extension within the import path
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/extensions.md
+        'import/extensions': ['error', 'always', {
+          js: 'never',
+          jsx: 'never',
+        }],
+
+        // Enforce a convention in module import order
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/order.md
+        // TODO: enable?
+        'import/order': ['off', {
+          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+          'newlines-between': 'never',
+        }],
+
+        // Require a newline after the last import/require in a group
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/newline-after-import.md
+        'import/newline-after-import': 'error',
+
+        // Require modules with a single export to use a default export
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/prefer-default-export.md
+        'import/prefer-default-export': 'error',
+
+        // Restrict which files can be imported in a given folder
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-restricted-paths.md
+        'import/no-restricted-paths': 'off',
+
+        // Forbid modules to have too many dependencies
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/max-dependencies.md
+        'import/max-dependencies': ['off', { max: 10 }],
+
+        // Forbid import of modules using absolute paths
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-absolute-path.md
+        'import/no-absolute-path': 'error',
+
+        // Forbid require() calls with expressions
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-dynamic-require.md
+        'import/no-dynamic-require': 'error',
+
+        // prevent importing the submodules of other modules
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-internal-modules.md
+        'import/no-internal-modules': ['off', {
+          allow: [],
+        }],
+
+        // Warn if a module could be mistakenly parsed as a script by a consumer
+        // leveraging Unambiguous JavaScript Grammar
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/unambiguous.md
+        // this should not be enabled until this proposal has at least been *presented* to TC39.
+        // At the moment, it's not a thing.
+        'import/unambiguous': 'off',
+
+        // Forbid Webpack loader syntax in imports
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-webpack-loader-syntax.md
+        'import/no-webpack-loader-syntax': 'error',
+
+        // Prevent unassigned imports
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-unassigned-import.md
+        // importing for side effects is perfectly acceptable, if you need side effects.
+        'import/no-unassigned-import': 'off',
+
+        // Prevent importing the default as if it were named
+        // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-named-default.md
+        'import/no-named-default': 'error',
+
+        // Reports if a module's default export is unnamed
+        // https://github.com/benmosher/eslint-plugin-import/blob/d9b712ac7fd1fddc391f7b234827925c160d956f/docs/rules/no-anonymous-default-export.md
+        'import/no-anonymous-default-export': ['off', {
+          allowArray: false,
+          allowArrowFunction: false,
+          allowAnonymousClass: false,
+          allowAnonymousFunction: false,
+          allowLiteral: false,
+          allowObject: false,
+        }],
+    }
 }

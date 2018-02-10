@@ -12,6 +12,7 @@ const libUtility = require('./utility.js');
  * @param {Object} gl // {WebGLRenderingContext}
  * @param {Object} globalView // {GlobalView}
  */
+// eslint-disable-next-line import/prefer-default-export
 export function DensityViewer(gl, globalView) {
   const sdrDensityMap =
     new libGraphics.Shader(gl, libShaders.Shaders.vsTextured2, libShaders.Shaders.fsViewDensityMap);

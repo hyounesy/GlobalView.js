@@ -21,5 +21,6 @@ module.exports = {
   "rules": {
     'no-use-before-define': ['error', { functions: false, classes: true, variables: true }], // allow functions 
     'func-names': 0, // instead of warn
+    'prefer-destructuring': 0, // there is still a lot of debate over this rule. 
   },
 };
