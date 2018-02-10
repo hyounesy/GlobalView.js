@@ -134,116 +134,10 @@
 
         
             
-<h4 class="name" id="'clearThumbnails'"><span class="type-signature"></span>'clearThumbnails'<span class="type-signature"></span></h4>
+<h4 class="name" id="getImages"><span class="type-signature"></span>getImages<span class="type-signature"></span></h4>
 
 
-<p class="summary"><p>Remove all thumbnails from the plot</p></p>
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="'showData2D'"><span class="type-signature"></span>'showData2D'<span class="type-signature"></span></h4>
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="~options"><span class="type-signature">(inner) </span>options<span class="type-signature"></span></h4>
-
+<p class="summary"><p>Get an array of all images of the plot</p></p>
 
 
 
@@ -298,7 +192,8 @@
 <h4 class="name" id="~OPTIONS"><span class="type-signature">(inner, constant) </span>OPTIONS<span class="type-signature"> :<a href="global.html#OptionDescription">OptionDescription</a></span></h4>
 
 
-<p class="summary"><p>A map of valid options with option descriptions, validation functions and flags about side effects</p></p>
+<p class="summary"><p>A map of valid options with option descriptions,
+         validation functions and flags about side effects</p></p>
 
 
 
@@ -360,7 +255,8 @@
 
             
 
-            <td class="description last"><p>The space around the drawing area in the form [top, right, bottom, left]. X-axis, y-axis and colormap are drawn within padding space.</p></td>
+            <td class="description last"><p>The space around the drawing area in the form [top, right, bottom, left].
+X-axis, y-axis and colormap are drawn within padding space.</p></td>
         </tr>
 
     
@@ -452,7 +348,8 @@
 
             
 
-            <td class="description last"><p>When enabled, the canvas is continuously rerendered at up to 60 frames per second. Keep this setting disabled to save processing resources.</p></td>
+            <td class="description last"><p>When enabled, the canvas is continuously rerendered at up to 60 frames per second.
+ Keep this setting disabled to save processing resources.</p></td>
         </tr>
 
     
@@ -475,7 +372,8 @@
 
             
 
-            <td class="description last"><p>Enables/disables blending in WebGL. Whenever using any kind of transparency, this setting should be kept enabled.</p></td>
+            <td class="description last"><p>Enables/disables blending in WebGL. Whenever using any kind of transparency,
+this setting should be kept enabled.</p></td>
         </tr>
 
     
@@ -498,7 +396,8 @@
 
             
 
-            <td class="description last"><p>When enabled, draws an image into the background, that shows density of points. (can be combined with 'showPointClusters')</p></td>
+            <td class="description last"><p>When enabled, draws an image into the background, that shows density of points.
+(can be combined with 'showPointClusters')</p></td>
         </tr>
 
     
@@ -521,7 +420,8 @@
 
             
 
-            <td class="description last"><p>When enabled, draws an image into the background, that shows colored clusters of points. (can be combined with 'showPointDensity')</p></td>
+            <td class="description last"><p>When enabled, draws an image into the background, that shows colored clusters of points.
+(can be combined with 'showPointDensity')</p></td>
         </tr>
 
     
@@ -705,7 +605,8 @@
 
             
 
-            <td class="description last"><p>When 'pointShape' is set to 'Custom', this defines a GLSL function given vec2 p, that returns opacity in the range [0.0 ... 1.0] at location p.</p></td>
+            <td class="description last"><p>When 'pointShape' is set to 'Custom', this defines a GLSL function given vec2 p,
+that returns opacity in the range [0.0 ... 1.0] at location p.</p></td>
         </tr>
 
     
@@ -751,7 +652,8 @@
 
             
 
-            <td class="description last"><p>Controls the visibility of data points in the scatterplot between 0 (invisible) and 1 (fully opaque).</p></td>
+            <td class="description last"><p>Controls the visibility of data points in the scatterplot between
+ 0 (invisible) and 1 (fully opaque).</p></td>
         </tr>
 
     
@@ -774,7 +676,8 @@
 
             
 
-            <td class="description last"><p>Controls the color of data points in the scatterplot. Valid values are an array of bytes in RGBA order or a colormap name.</p></td>
+            <td class="description last"><p>Controls the color of data points in the scatterplot.
+Valid values are an array of bytes in RGBA order or a colormap name.</p></td>
         </tr>
 
     
@@ -798,6 +701,104 @@
             
 
             <td class="description last"><p>Controls the width/height of thumbnails in the scatterplot (in pixels).</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>thumbnailBorderWidth</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#OptionDescription">OptionDescription</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Controls the width of thumbnail borders in the scatterplot.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>thumbnailBorderColor</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#OptionDescription">OptionDescription</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Controls the color of thumbnail borders in the scatterplot.
+Valid values are an array of bytes in RGBA order, a color name or 'null'.
+If set to 'null', the CSS foreground color will be used.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>thumbnailLineColor</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#OptionDescription">OptionDescription</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Controls the color of thumbnail line in the scatterplot.
+Valid values are an array of bytes in RGBA order, a color name or 'null'.
+If set to 'null', the CSS foreground color will be used.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>thumbnailLabelColor</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#OptionDescription">OptionDescription</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Controls the color of thumbnail labels in the scatterplot.
+Valid values are an array of bytes in RGBA order, a color name or 'null'.
+If set to 'null', the CSS background color will be used.</p></td>
         </tr>
 
     
@@ -872,7 +873,60 @@
 
         
             
-<h4 class="name" id="~viewers"><span class="type-signature">(inner) </span>viewers<span class="type-signature"> :Array.&lt;<a href="Viewer.html">Viewer</a>></span></h4>
+<h4 class="name" id="~options"><span class="type-signature">(inner, constant) </span>options<span class="type-signature"></span></h4>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~viewers"><span class="type-signature">(inner, constant) </span>viewers<span class="type-signature"> :Array.&lt;<a href="Viewer.html">Viewer</a>></span></h4>
 
 
 
@@ -1083,13 +1137,15 @@
 <h4 class="name" id="onMouseOverAxisLabel"><span class="type-signature"></span>onMouseOverAxisLabel<span class="type-signature"> :<a href="global.html#onMouseOverAxisLabelCallback">onMouseOverAxisLabelCallback</a></span></h4>
 
 
-<p class="summary"><p>Event handler that gets fired everytime the mouse cursor enters the boundaries of an axis label</p></p>
+<p class="summary"><p>Event handler that gets fired everytime the mouse cursor
+         enters the boundaries of an axis label</p></p>
 
 
 
 <div class="description">
     <p>There is no mouse-leave event for axis labels.
-When the mouse cursor leaves an axis label, this event is raised with <code>dataVector == labelRect == null</code>.</p>
+When the mouse cursor leaves an axis label, this event is raised with
+<code>dataVector == labelRect == null</code>.</p>
 </div>
 
 
@@ -1153,13 +1209,15 @@ When the mouse cursor leaves an axis label, this event is raised with <code>data
 <h4 class="name" id="onMouseOverDatapoint"><span class="type-signature"></span>onMouseOverDatapoint<span class="type-signature"> :<a href="global.html#onMouseOverDatapointCallback">onMouseOverDatapointCallback</a></span></h4>
 
 
-<p class="summary"><p>Event handler that gets fired everytime the mouse cursor enters the boundaries of a datapoint</p></p>
+<p class="summary"><p>Event handler that gets fired everytime
+         the mouse cursor enters the boundaries of a datapoint</p></p>
 
 
 
 <div class="description">
     <p>There is no mouse-leave event for datapoints.
-When the mouse cursor leaves a datapoint, this event is raised with <code>mouseOverDatapoint == -1</code>.</p>
+When the mouse cursor leaves a datapoint,
+this event is raised with <code>mouseOverDatapoint == -1</code>.</p>
 </div>
 
 
@@ -1288,10 +1346,158 @@ When the mouse cursor leaves a datapoint, this event is raised with <code>mouseO
 
 
         
+            
+<h4 class="name" id="onThumbnailSelectionChanged"><span class="type-signature"></span>onThumbnailSelectionChanged<span class="type-signature"> :<a href="global.html#onThumbnailSelectionChangedCallback">onThumbnailSelectionChangedCallback</a></span></h4>
+
+
+<p class="summary"><p>Event handler that gets fired everytime the collection of selected images is altered</p></p>
+
+
+
+<div class="description">
+    <p>When the selection is cleared, this event is raised with <code>selection == []</code>.</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><a href="global.html#onThumbnailSelectionChangedCallback">onThumbnailSelectionChangedCallback</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
     
 
     
         <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="clearThumbnails"><span class="type-signature"></span>clearThumbnails<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+    <p class="summary"><p>Remove all thumbnails from the plot</p></p>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         
             
@@ -1549,7 +1755,8 @@ When the mouse cursor leaves a datapoint, this event is raised with <code>mouseO
 
             
 
-            <td class="description last"><p>Event handler, called after characteristic points have been found</p></td>
+            <td class="description last"><p>Event handler,
+       called after characteristic points have been found</p></td>
         </tr>
 
     
@@ -1862,7 +2069,7 @@ When the mouse cursor leaves a datapoint, this event is raised with <code>mouseO
     
 
     
-    <h4 class="name" id="highlightImage"><span class="type-signature"></span>highlightImage<span class="signature">(index)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="highlightImage"><span class="type-signature"></span>highlightImage<span class="signature">(image)</span><span class="type-signature"></span></h4>
     
 
     
@@ -1908,12 +2115,15 @@ When the mouse cursor leaves a datapoint, this event is raised with <code>mouseO
 
         <tr>
             
-                <td class="name"><code>index</code></td>
+                <td class="name"><code>image</code></td>
             
 
             <td class="type">
             
                 
+<span class="param-type"><a href="Thumbnail.html">Thumbnail</a></span>
+|
+
 <span class="param-type">number</span>
 
 
@@ -1924,7 +2134,7 @@ When the mouse cursor leaves a datapoint, this event is raised with <code>mouseO
 
             
 
-            <td class="description last"><p>Index of the image to show</p></td>
+            <td class="description last"><p>Image or index of image to show</p></td>
         </tr>
 
     
@@ -1952,6 +2162,8 @@ When the mouse cursor leaves a datapoint, this event is raised with <code>mouseO
 
     
 
+    
+        <dt class="important tag-deprecated">Deprecated:</dt><dd><ul class="dummy"><li>Set image.labelColor manually</li></ul></dd>
     
 
     
@@ -3037,6 +3249,83 @@ When the mouse cursor leaves a datapoint, this event is raised with <code>mouseO
     
     </tbody>
 </table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="showData2D"><span class="type-signature"></span>showData2D<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4328,7 +4617,8 @@ When the mouse cursor leaves a datapoint, this event is raised with <code>mouseO
 
 
 <div class="description">
-    <p>Call this method after updating the parent div's color or background-color styles in order for the changes to be applied to the rendering pipeline.</p>
+    <p>Call this method after updating the parent div's color or background-color styles
+in order for the changes to be applied to the rendering pipeline.</p>
 </div>
 
 
@@ -4411,7 +4701,8 @@ When the mouse cursor leaves a datapoint, this event is raised with <code>mouseO
 
 
 <div class="description">
-    <p>Call this method after updating the parent div's font style in order for the changes to be applied to the rendering pipeline.</p>
+    <p>Call this method after updating the parent div's font style
+in order for the changes to be applied to the rendering pipeline.</p>
 </div>
 
 
@@ -5109,13 +5400,13 @@ When the mouse cursor leaves a datapoint, this event is raised with <code>mouseO
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClusterMapOptions.html">ClusterMapOptions</a></li><li><a href="CsvDataset.html">CsvDataset</a></li><li><a href="Dataset.html">Dataset</a></li><li><a href="DataVector.html">DataVector</a></li><li><a href="DensityMapOptions.html">DensityMapOptions</a></li><li><a href="GlobalView.html">GlobalView</a></li><li><a href="HashSet.html">HashSet</a></li><li><a href="RandomDataset.html">RandomDataset</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CSV_DATASET_OPTIONS">CSV_DATASET_OPTIONS</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClusterMapOptions.html">ClusterMapOptions</a></li><li><a href="CsvDataset.html">CsvDataset</a></li><li><a href="Dataset.html">Dataset</a></li><li><a href="DataVector.html">DataVector</a></li><li><a href="DensityMapOptions.html">DensityMapOptions</a></li><li><a href="GlobalView.html">GlobalView</a></li><li><a href="HashSet.html">HashSet</a></li><li><a href="RandomDataset.html">RandomDataset</a></li><li><a href="Thumbnail.html">Thumbnail</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CSV_DATASET_OPTIONS">CSV_DATASET_OPTIONS</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Mon Aug 14 2017 12:40:28 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Feb 09 2018 23:00:37 GMT-0800 (PST)
 </footer>
 
 <script> prettyPrint(); </script>
