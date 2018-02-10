@@ -1,10 +1,10 @@
-const globalView = require('../../dist/global-view.js');
+const globalView = require('../../../dist/global-view.js');
 const $ = require('jquery');
-const domready = require('domready'); // eslint-disable-line import/no-extraneous-dependencies
 const JSZip = require('jszip');
 const FileSaver = require('file-saver');
-const allTests = require('./allTests').default;
+const allTests = require('./all').default;
 const pixelmatch = require('pixelmatch'); // eslint-disable-line import/no-extraneous-dependencies
+const domready = require('domready'); // eslint-disable-line import/no-extraneous-dependencies
 
 function urlToBase64(dataUrl) {
   // remove the png or jpg header
@@ -153,7 +153,7 @@ domready(() => {
         divCurrent.append($('<img></img>').attr('src', testImageUrl));
         test.getPlot().disableOffscreenRendering();
 
-        const expectedImageUrl = `tests/expected/${testResult.name}.png`;
+        const expectedImageUrl = `expected/${testResult.name}.png`;
         getImageDataFromUrl(expectedImageUrl, (expectedImageData) => {
           divExpected.append($('<img></img>').attr('src', expectedImageUrl));
           getImageDataFromUrl(testImageUrl, (testImageData) => {

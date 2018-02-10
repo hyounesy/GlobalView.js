@@ -5,7 +5,7 @@ export default function testCsvDataSet(div, ondone) {
   this.getPlot = () => plot;
 
   // eslint-disable-next-line no-new
-  new globalView.CsvDataset('tests/datasets/iris.data', {
+  new globalView.CsvDataset('datasets/iris.data', {
     columnLabels: ['Sepal Length [cm]', 'Sepal Width [cm]', 'Petal Length [cm]', 'Petal Width [cm]', 'Class'],
   }, (dataset) => {
     const columnX = 0;

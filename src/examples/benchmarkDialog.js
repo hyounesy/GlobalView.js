@@ -1,4 +1,4 @@
-const globalView = require('../dist/global-view.js');
+const globalView = require('../../dist/global-view.js');
 
 let plot = null;
 export default function BenchmarkDialog(paramPlot) {

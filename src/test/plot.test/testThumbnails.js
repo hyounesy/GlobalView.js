@@ -5,9 +5,9 @@ export default function testThumbnails(div, ondone) {
   this.getPlot = () => plot;
 
   // eslint-disable-next-line no-new
-  new globalView.CsvDataset('tests/datasets/iris.data', {
+  new globalView.CsvDataset('datasets/iris.data', {
     columnLabels: ['Sepal Length [cm]', 'Sepal Width [cm]', 'Petal Length [cm]', 'Petal Width [cm]', 'Class'],
-    imageFilenames: point => `tests/datasets/${point[4]}.png`,
+    imageFilenames: point => `datasets/${point[4]}.png`,
   }, (dataset) => {
     const columnX = 0;
     const columnY = 1;

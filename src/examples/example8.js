@@ -1,4 +1,4 @@
-const globalView = require('../dist/global-view.js');
+const globalView = require('../../dist/global-view.js');
 const domready = require('domready'); // eslint-disable-line import/no-extraneous-dependencies
 const BenchmarkDialog = require('./benchmarkDialog').default;
 

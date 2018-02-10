@@ -8,7 +8,7 @@ export default function testCustomPointShape(div, ondone) {
   this.getPlot = () => plot;
 
   // eslint-disable-next-line no-new
-  new globalView.CsvDataset('tests/datasets/iris.data', {}, (dataset) => {
+  new globalView.CsvDataset('datasets/iris.data', {}, (dataset) => {
     plot.load(dataset, 0, 1, 4, 1);
     const numLeafs = 5;
     plot.setOption('customPointShape', `{ float r = length(p), f = sin(0.5 * ${numLeafs}.0 * atan(p.x, p.y)); return pow(clamp(abs(f) - r, 0.0, 1.0), 0.5); }`);

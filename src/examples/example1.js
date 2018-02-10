@@ -1,4 +1,4 @@
-const globalView = require('../dist/global-view.js');
+const globalView = require('../../dist/global-view.js');
 
 const plot = new globalView.GlobalView(document.querySelector('#divGlobalView'), null);
 // const data =

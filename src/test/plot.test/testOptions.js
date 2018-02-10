@@ -4,7 +4,7 @@ function testCustomOptions(div, options, ondone, timeout = 500) {
   const plot = new globalView.GlobalView(div, options);
 
   // eslint-disable-next-line no-new
-  new globalView.CsvDataset('tests/datasets/iris.data', {}, (dataset) => {
+  new globalView.CsvDataset('datasets/iris.data', {}, (dataset) => {
     plot.load(dataset, 0, 1, 4, 1);
 
     setTimeout(() => {
