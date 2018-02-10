@@ -1,8 +1,5 @@
-// const globalView = require('../lib/globalView.js');
-const domready = require('domready');
-// const libDataset = require("../lib/dataset.js");
-
 const globalView = require('../dist/global-view.js');
+const domready = require('domready'); // eslint-disable-line import/no-extraneous-dependencies
 
 const COLUMN_NAMES = [
   'Tagged Protein',

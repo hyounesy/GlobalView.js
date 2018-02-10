@@ -1,11 +1,10 @@
 const globalView = require('../../dist/global-view.js');
 const $ = require('jquery');
-const domready = require('domready');
+const domready = require('domready'); // eslint-disable-line import/no-extraneous-dependencies
 const JSZip = require('jszip');
 const FileSaver = require('file-saver');
 const allTests = require('./allTests').default;
-// eslint-disable-next-line import/no-extraneous-dependencies
-const pixelmatch = require('pixelmatch');
+const pixelmatch = require('pixelmatch'); // eslint-disable-line import/no-extraneous-dependencies
 
 function urlToBase64(dataUrl) {
   // remove the png or jpg header

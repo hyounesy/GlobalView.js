@@ -1,5 +1,5 @@
 const globalView = require('../dist/global-view.js');
-const domready = require('domready');
+const domready = require('domready'); // eslint-disable-line import/no-extraneous-dependencies
 
 function EmptyDataset(n) {
   globalView.Dataset.call(this);

@@ -12,39 +12,11 @@ module.exports = {
     'example8.min': './examples/example8.js',
   },
   devtool: 'inline-source-map',
+  devServer: {
+    contentBase: './examples',
+  },
   output: {
-    path: p.join(__dirname, '../bin'),
+    path: p.join(__dirname, './bin'),
     filename: '[name].js',
   },
 };
-
-
-/*
-const p = require('path');
-const webpack = require('webpack');
-module.exports = {
-  entry: {
-    'example1.bundle': './examples/example1.js',
-    'example1.min': './examples/example1.js',
-    //'example2.min': './examples/example2.js',
-  },
-  output: {
-    path: path.join(__dirname, 'examples'),
-    filename: '[name].js',
-  },
-  plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      include: /\.min\.js$/,
-      minimize: true,
-    }),
-  ],
-  resolve: {
-    alias: {
-      'global-view': p.join(__dirname, 'dist/global-view.js'),
-    },
-  },
-  externals: [
-    'child_process',
-  ],
-};
-*/
