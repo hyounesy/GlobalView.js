@@ -3,7 +3,8 @@ const libGraphics = require('./graphics.js');
 const libShaders = require('./shaders.js');
 const libGlMatrix = require('gl-matrix');
 
-export const COLORMAP_WIDTH = 10; // [pixel]
+const COLORMAP_WIDTH = 10; // [pixel]
+let availableColorMaps = null;
 
 // http://base64online.org/encode
 // http://textmechanic.co/Line-Length-Breaker.html
@@ -27,93 +28,108 @@ const imageRainbow =
   '0wjlfCJeRzDQr1mS3rg3GcsjvF4uzPUcd6qVwTi+UB4KhYn9myPhjHJ6t5j6Bgn9myPhjHJSIiP3thWH' +
   'cGKpqFAAAAAElFTkSuQmCC';
 
-let colormaps = {};
-
 /**
  * A class holding the active colormap for the global view.
  * This class also draws a color axis to the right of the scatter plot.
- * @constructor
- * @package
- * @implements {Viewer}
- * @param {Object} gl // {WebGLRenderingContext}
- * @param {Object} globalView // {GlobalView}
  */
-export function Colormap(gl, globalView) {
-  const TICK_LENGTH = 6; // [pixel]
-  const NUM_TICKS = 10;
+export class Colormap {
+  /**
+   * @constructor
+   * @package
+   * @implements {Viewer}
+   * @param {WebGLRenderingContext} gl webgl render context
+   * @param {GlobalView} plot  GlobalView plot
+   */
+  constructor(gl, plot) {
+    this.gl = gl;
+    this.plot = plot;
 
-  const sdrLine =
-    new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
-  sdrLine.color = sdrLine.u4f('color');
-  sdrLine.color(...gl.foreColor);
-  sdrLine.matWorldViewProj = sdrLine.u4x4f('matWorldViewProj');
-  this.updateColorSchema = function () {
-    sdrLine.color(...gl.foreColor);
-  };
+    this.TICK_LENGTH = 6; // [pixel]
+    this.NUM_TICKS = 10;
 
-  const sdrColormap = new libGraphics.Shader(
-    gl, libShaders.Shaders.vsTextured,
-    libShaders.Shaders.fsTextured1D,
-  );
-  sdrColormap.matWorldViewProj = sdrColormap.u4x4f('matWorldViewProj');
-  colormaps = {
-    exhue: libGraphics.LoadTexture(gl, imageExhue, () => {
-      globalView.invalidate();
-    }), // function() { setTimeout(function() { globalView.invalidate(); }, 1000); }),
-    rainbow: libGraphics.LoadTexture(gl, imageRainbow, () => {
-      globalView.invalidate();
-    }), // function() { setTimeout(function() { globalView.invalidate(); }, 1000); }),
-    2: libGraphics.LoadTextureFromByteArray(
-      gl,
-      new Uint8Array([255, 0, 0, 255, 0, 255, 0, 255]),
-      2, 1,
-    ),
-  };
+    this.sdrLine =
+      new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
+    this.sdrLine.color = this.sdrLine.u4f('color');
+    this.sdrLine.color(...gl.foreColor);
+    this.sdrLine.matWorldViewProj = this.sdrLine.u4x4f('matWorldViewProj');
 
-  let texColormap = colormaps.exhue;
+    this.sdrColormap = new libGraphics.Shader(
+      gl, libShaders.Shaders.vsTextured,
+      libShaders.Shaders.fsTextured1D,
+    );
+    this.sdrColormap.matWorldViewProj = this.sdrColormap.u4x4f('matWorldViewProj');
+    availableColorMaps = {
+      exhue: libGraphics.LoadTexture(gl, imageExhue, () => {
+        this.plot.invalidate();
+      }),
+      rainbow: libGraphics.LoadTexture(gl, imageRainbow, () => {
+        this.plot.invalidate();
+      }),
+      2: libGraphics.LoadTextureFromByteArray(
+        gl,
+        new Uint8Array([255, 0, 0, 255, 0, 255, 0, 255]),
+        2, 1,
+      ),
+    };
 
-  // Create a 2D line mesh
-  const meshLine = new libGraphics.Mesh(gl, new Float32Array([
-    // Positions
-    0, 0, 0,
-    1, 0, 0,
-  ]), null, null, null, null, null, gl.LINES);
+    this.texColormap = availableColorMaps.exhue;
 
-  // Create a 2D line quad mesh
-  const meshLineQuad = new libGraphics.Mesh(gl, new Float32Array([
-    // Positions
-    0, 0, 0,
-    1, 0, 0,
-    1, 1, 0,
-    0, 1, 0,
-  ]), null, null, null, null, null, gl.LINE_LOOP);
+    // Create a 2D line mesh
+    this.meshLine = new libGraphics.Mesh(gl, new Float32Array([
+      // Positions
+      0, 0, 0,
+      1, 0, 0,
+    ]), null, null, null, null, null, gl.LINES);
 
-  // Create a 2D quad mesh
-  const meshQuad = new libGraphics.Mesh(gl, new Float32Array([
-    // Positions
-    0, 1, 0,
-    0, 0, 0,
-    1, 1, 0,
-    1, 0, 0,
-  ]), null, null, null, new Float32Array([
-    // Texture coordinates
-    0, 1,
-    0, 0,
-    1, 1,
-    1, 0,
-  ]));
+    // Create a 2D line quad mesh
+    this.meshLineQuad = new libGraphics.Mesh(gl, new Float32Array([
+      // Positions
+      0, 0, 0,
+      1, 0, 0,
+      1, 1, 0,
+      0, 1, 0,
+    ]), null, null, null, null, null, gl.LINE_LOOP);
 
-  const axis = {
-    minimum: 0,
-    maximum: 100,
-    values: null,
-    tickOffset: 0,
-    tickDistance: 10,
-    tickCount: 11,
-    tickLength: TICK_LENGTH,
-  };
+    // Create a 2D quad mesh
+    this.meshQuad = new libGraphics.Mesh(gl, new Float32Array([
+      // Positions
+      0, 1, 0,
+      0, 0, 0,
+      1, 1, 0,
+      1, 0, 0,
+    ]), null, null, null, new Float32Array([
+      // Texture coordinates
+      0, 1,
+      0, 0,
+      1, 1,
+      1, 0,
+    ]));
 
-  this.visible = true;
+    this.axis = {
+      minimum: 0,
+      maximum: 100,
+      values: null,
+      tickOffset: 0,
+      tickDistance: 10,
+      tickCount: 11,
+      tickLength: this.TICK_LENGTH,
+    };
+
+    this.visible = true;
+
+    this.pointColor = null;
+
+    this.setDataset = (/* dataset, options */) => {};
+    this.onInputChanged = (/* activeInputs, animatedInputs, options */) => {};
+  }
+
+  static getAvailableColorMaps() {
+    return availableColorMaps;
+  }
+  updateColorSchema() {
+    this.sdrLine.color(...this.gl.foreColor);
+  }
+
   /**
    * Draws the colormap
    * @param {boolean} flipY
@@ -123,15 +139,15 @@ export function Colormap(gl, globalView) {
    * @param {Object} plotBounds.width -
    * @param {Object} plotBounds.height -
    */
-  this.render = function (flipY, plotBounds) {
+  render(flipY, plotBounds) {
     if (!this.visible) {
       return;
     }
 
     // >>> Draw colormap
 
-    sdrColormap.bind();
-    meshQuad.bind(sdrColormap, texColormap);
+    this.sdrColormap.bind();
+    this.meshQuad.bind(this.sdrColormap, this.texColormap);
 
     const mattrans = libGlMatrix.mat4.create();
     libGlMatrix.mat4.identity(mattrans);
@@ -140,23 +156,23 @@ export function Colormap(gl, globalView) {
     }
     libGlMatrix.mat4.translate(
       mattrans, mattrans,
-      [((2 * (plotBounds.x + plotBounds.width + 0.5)) / gl.width) - 1,
-        ((2 * (plotBounds.y + 0.5)) / gl.height) - 1, 0],
+      [((2 * (plotBounds.x + plotBounds.width + 0.5)) / this.gl.width) - 1,
+        ((2 * (plotBounds.y + 0.5)) / this.gl.height) - 1, 0],
     ); // 0.5 ... center inside pixel
     libGlMatrix.mat4.scale(
       mattrans, mattrans,
-      [(2 * COLORMAP_WIDTH) / gl.width, (2 * plotBounds.height) / gl.height, 1],
+      [(2 * COLORMAP_WIDTH) / this.gl.width, (2 * plotBounds.height) / this.gl.height, 1],
     );
-    sdrColormap.matWorldViewProj(mattrans);
-    meshQuad.draw();
+    this.sdrColormap.matWorldViewProj(mattrans);
+    this.meshQuad.draw();
 
     // >>> Draw borders
 
-    sdrLine.bind();
-    meshLineQuad.bind(sdrLine, null);
+    this.sdrLine.bind();
+    this.meshLineQuad.bind(this.sdrLine, null);
 
-    sdrLine.matWorldViewProj(mattrans);
-    meshLineQuad.draw();
+    this.sdrLine.matWorldViewProj(mattrans);
+    this.meshLineQuad.draw();
 
     // >>> Draw ticks and tick labels
 
@@ -168,58 +184,58 @@ export function Colormap(gl, globalView) {
     }
     libGlMatrix.mat4.translate(
       mattrans, mattrans,
-      [((2 * (plotBounds.x + plotBounds.width + COLORMAP_WIDTH + 0.5)) / gl.width) - 1,
-        ((2 * (plotBounds.y + 0.5)) / gl.height) - 1, 0],
+      [((2 * (plotBounds.x + plotBounds.width + COLORMAP_WIDTH + 0.5)) / this.gl.width) - 1,
+        ((2 * (plotBounds.y + 0.5)) / this.gl.height) - 1, 0],
     ); // 0.5 ... center inside pixel
     libGlMatrix.mat4.scale(
       mattrans, mattrans,
-      [(2 * axis.tickLength) / gl.width, (2 * plotBounds.height) / gl.height, 1],
+      [(2 * this.axis.tickLength) / this.gl.width, (2 * plotBounds.height) / this.gl.height, 1],
     );
-    sdrLine.matWorldViewProj(mattrans);
-    meshLine.draw();
+    this.sdrLine.matWorldViewProj(mattrans);
+    this.meshLine.draw();
     libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, 1.0, 0.0]);
-    sdrLine.matWorldViewProj(mattrans);
-    meshLine.draw();
+    this.sdrLine.matWorldViewProj(mattrans);
+    this.meshLine.draw();
     libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -1.0, 0.0]);
 
-    for (let i = 0; i < axis.tickCount; i += 1) {
-      const y = axis.tickOffset + (i * axis.tickDistance);
-      const tickPos = (y - axis.minimum) / (axis.maximum - axis.minimum);
+    for (let i = 0; i < this.axis.tickCount; i += 1) {
+      const y = this.axis.tickOffset + (i * this.axis.tickDistance);
+      const tickPos = (y - this.axis.minimum) / (this.axis.maximum - this.axis.minimum);
 
       libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, tickPos, 0.0]);
-      sdrLine.matWorldViewProj(mattrans);
-      meshLine.draw();
+      this.sdrLine.matWorldViewProj(mattrans);
+      this.meshLine.draw();
       libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -tickPos, 0.0]);
 
-      const tickLabel = axis.values ? axis.values[y] : y.toPrecision(6) / 1;
-      tickLabelLeft = Math.max(tickLabelLeft, gl.measureTextWidth(tickLabel));
-      gl.drawText(
+      const tickLabel = this.axis.values ? this.axis.values[y] : y.toPrecision(6) / 1;
+      tickLabelLeft = Math.max(tickLabelLeft, this.gl.measureTextWidth(tickLabel));
+      this.gl.drawText(
         tickLabel,
-        plotBounds.x + plotBounds.width + COLORMAP_WIDTH + axis.tickLength + 2,
-        gl.height - plotBounds.y - (plotBounds.height * tickPos),
+        plotBounds.x + plotBounds.width + COLORMAP_WIDTH + this.axis.tickLength + 2,
+        this.gl.height - plotBounds.y - (plotBounds.height * tickPos),
         'middleleft',
       );
     }
     tickLabelLeft = Math.ceil(plotBounds.x +
       plotBounds.width + COLORMAP_WIDTH +
-      axis.tickLength + 10 + tickLabelLeft);
+      this.axis.tickLength + 10 + tickLabelLeft);
 
     // >>> Draw axis label
 
-    if (axis.label) {
-      gl.drawText(
-        axis.label, tickLabelLeft, gl.height - plotBounds.y - (plotBounds.height / 2),
+    if (this.axis.label) {
+      this.gl.drawText(
+        this.axis.label, tickLabelLeft, this.gl.height - plotBounds.y - (plotBounds.height / 2),
         'topcenter', -Math.PI / 2,
       );
     }
-  };
+  }
 
-  function checkOverlap() {
+  checkOverlap() {
     // Minimum distance between tick labels in pixel
-    const MIN_TICK_LABEL_DISTANCE = gl.measureTextWidth('  ');
-    const plotBounds = globalView.getPlotBounds();
-    return (plotBounds.height * axis.tickDistance) / (axis.maximum - axis.minimum) >=
-            gl.measureTextHeight() + MIN_TICK_LABEL_DISTANCE;
+    const MIN_TICK_LABEL_DISTANCE = this.gl.measureTextWidth('  ');
+    const plotBounds = this.plot.getPlotBounds();
+    return (plotBounds.height * this.axis.tickDistance) / (this.axis.maximum - this.axis.minimum) >=
+      this.gl.measureTextHeight() + MIN_TICK_LABEL_DISTANCE;
   }
 
   /**
@@ -228,42 +244,53 @@ export function Colormap(gl, globalView) {
    * @param  {number} maximum
    * @param  {boolean=} changeTickDistance=true
    */
-  this.setNumericRange = function (minimum, maximum, changeTickDistance) {
-    axis.minimum = minimum;
-    axis.maximum = maximum;
-    axis.values = null;
+  setNumericRange(minimum, maximum, changeTickDistance) {
+    this.axis.minimum = minimum;
+    this.axis.maximum = maximum;
+    this.axis.values = null;
 
-    for (let numTicks = NUM_TICKS; numTicks >= 0; numTicks -= 1) {
+    for (let numTicks = this.NUM_TICKS; numTicks >= 0; numTicks -= 1) {
       if (changeTickDistance === false) {
-        axis.tickOffset = Math.ceil(minimum / axis.tickDistance) * axis.tickDistance;
-        axis.tickCount = Math.floor((maximum - axis.tickOffset) / axis.tickDistance) + 1;
+        this.axis.tickOffset = Math.ceil(minimum / this.axis.tickDistance) *
+          this.axis.tickDistance;
+        this.axis.tickCount = Math.floor((maximum - this.axis.tickOffset) /
+          this.axis.tickDistance) + 1;
       } else {
-        axis.tickDistance = (maximum - minimum) / numTicks;
+        this.axis.tickDistance = (maximum - minimum) / numTicks;
         // Compute power-of-10 just above tickDistance -> pow(10, exp)
-        let exp = Math.ceil(Math.log(axis.tickDistance) / Math.log(10));
+        let exp = Math.ceil(Math.log(this.axis.tickDistance) / Math.log(10));
 
         // Try less aggressive rounding in each iteration until break condition is met
         for (let i = 0; i < 10; i += 1) {
           // Maximum 10 iterations
-          axis.tickDistance = (maximum - minimum) / numTicks;
+          this.axis.tickDistance = (maximum - minimum) / numTicks;
           const base = (10 ** exp);
           exp -= 1;
           // Round tickDistance to base
-          axis.tickDistance = Math.round(axis.tickDistance / base) * base;
-          axis.tickOffset = Math.ceil(minimum / axis.tickDistance) * axis.tickDistance;
-          axis.tickCount = Math.floor((maximum - axis.tickOffset) / axis.tickDistance) + 1;
-          if (axis.tickCount >= numTicks - 2 && axis.tickCount <= numTicks + 2) {
+          this.axis.tickDistance = Math.round(this.axis.tickDistance / base) * base;
+          this.axis.tickOffset = Math.ceil(minimum / this.axis.tickDistance) *
+            this.axis.tickDistance;
+          this.axis.tickCount = Math.floor((maximum - this.axis.tickOffset) /
+            this.axis.tickDistance) + 1;
+          if (this.axis.tickCount >= numTicks - 2 && this.axis.tickCount <= numTicks + 2) {
             // Condition: numTicks - 2 <= tickCount <= numTicks + 2
             break;
           }
         }
       }
 
-      if (checkOverlap()) {
+      if (this.checkOverlap()) {
         break;
       }
     }
-  };
+  }
+
+  /**
+   * Returns the colormap width in pixels
+   */
+  static getWidth() {
+    return COLORMAP_WIDTH;
+  }
 
   /**
    * Sets color map axis by specifying an enumerated labels for tick values
@@ -271,66 +298,65 @@ export function Colormap(gl, globalView) {
    * @param {number} rangeMax  axis range maximum
    * @param {Object.<number, string>} values tick labels
    */
-  this.setEnumRange = function (rangeMin, rangeMax, values) {
+  setEnumRange(rangeMin, rangeMax, values) {
     const minimum = rangeMin - 0.5; // 0.5 ... Move to center of value-bin
     const maximum = rangeMax - 0.5; // 0.5 ... Move to center of value-bin
-    axis.minimum = minimum;
-    axis.maximum = maximum;
-    axis.values = values;
+    this.axis.minimum = minimum;
+    this.axis.maximum = maximum;
+    this.axis.values = values;
 
-    axis.tickDistance = 1;
-    axis.tickOffset = Math.max(0, Math.ceil(minimum / axis.tickDistance) * axis.tickDistance);
-    axis.tickCount = Math.min(
-      values.length - axis.tickOffset,
-      Math.floor(((maximum - axis.tickOffset) + 1) / axis.tickDistance),
+    this.axis.tickDistance = 1;
+    this.axis.tickOffset = Math.max(0, Math.ceil(minimum / this.axis.tickDistance)
+      * this.axis.tickDistance);
+    this.axis.tickCount = Math.min(
+      values.length - this.axis.tickOffset,
+      Math.floor(((maximum - this.axis.tickOffset) + 1) / this.axis.tickDistance),
     );
-  };
+  }
 
   /**
    * Sets the axis label
    * @param {string} label
    */
-  this.setLabel = function (label) {
-    axis.label = label;
-  };
+  setLabel(label) {
+    this.axis.label = label;
+  }
 
-  let pointColor = null;
-  this.setDataset = function (/* dataset, options */) {};
-  this.onInputChanged = function (/* activeInputs, animatedInputs, options */) {};
-  this.onOptionsChanged = function (options) {
-    axis.tickLength = TICK_LENGTH + (options.showColormapHistogram ? options.histogramHeight : 0);
-    if (options.pointColor !== pointColor) {
-      pointColor = options.pointColor;
-      if (pointColor === null) {
-        texColormap = colormaps.exhue;
-      } else if (colormaps[pointColor]) {
-        texColormap = colormaps[pointColor];
+  onOptionsChanged(options) {
+    this.axis.tickLength = this.TICK_LENGTH +
+      (options.showColormapHistogram ? options.histogramHeight : 0);
+    if (options.pointColor !== this.pointColor) {
+      this.pointColor = options.pointColor;
+      if (this.pointColor === null) {
+        this.texColormap = Colormap.getAvailableColorMaps().exhue;
+      } else if (Colormap.getAvailableColorMaps()[this.pointColor]) {
+        this.texColormap = Colormap.getAvailableColorMaps()[this.pointColor];
       } else {
-        const c = parseColormap(pointColor);
+        const c = parseColormap(this.pointColor);
         if (c) {
-          texColormap = libGraphics.LoadTextureFromByteArray(gl, c, c.length / 4, 1);
+          this.texColormap = libGraphics.LoadTextureFromByteArray(this.gl, c, c.length / 4, 1);
         }
       }
     }
-  };
+  }
 
   /** Eventhandler: recompute the axis ranges */
-  this.onPlotBoundsChanged = function (/* plotBounds */) {
-    if (axis.values === null) {
-      this.setNumericRange(axis.minimum, axis.maximum, true);
+  onPlotBoundsChanged(/* plotBounds */) {
+    if (this.axis.values === null) {
+      this.setNumericRange(this.axis.minimum, this.axis.maximum, true);
     } else {
-      this.setEnumRange(axis.minimum + 0.5, axis.maximum + 0.5, axis.values);
+      this.setEnumRange(this.axis.minimum + 0.5, this.axis.maximum + 0.5, this.axis.values);
     }
-  };
+  }
 
   /** Returns the texture used for the colormap */
-  this.getTexture = function () {
-    return texColormap;
-  };
+  getTexture() {
+    return this.texColormap;
+  }
 
-  this.free = function () {
-    meshLine.free();
-  };
+  free() {
+    this.meshLine.free();
+  }
 }
 
 /**
@@ -384,7 +410,7 @@ export function parseColor(color) {
 
 /**
  * validates the colormap parameters
- * @param {(string|number[4])} colormap either the color map name or an array.
+ * @param {(string|number[])} colormap either the color map name or an array.
  * Colormap array length must be multiple of 4 and contain numbers between 0 and 255.
  * @returns {(boolean|string)} true of a valid color map, otherwise the string error message
  */
@@ -393,7 +419,7 @@ export function validateColormap(colormap) {
     return true;
   }
   if (libUtility.isString(colormap)) {
-    if (colormaps[colormap]) {
+    if (Colormap.getAvailableColorMaps()[colormap]) {
       return true;
     }
     return validateColor(colormap);
@@ -428,7 +454,7 @@ export function validateColormap(colormap) {
 
 /**
  * Parses the colormap and returns an array of Uint8Array
- * @param {(string|number[4])} colormap either the color map name or an array.
+ * @param {(string|number[])} colormap either the color map name or an array.
  * Colormap array length must be multiple of 4 and contain numbers between 0 and 255.
  * @returns {Uint8Array} Colormap colors as an array of size [colormapLength * 4]
  */

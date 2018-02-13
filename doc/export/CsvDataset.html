@@ -30,6 +30,8 @@
     
         <h2><span class="attribs"><span class="type-signature"></span></span>CsvDataset<span class="signature">(file, options, onload)</span><span class="type-signature"></span></h2>
         
+            <div class="class-description"><p>A dataset constructed from a CSV table</p></div>
+        
     
 </header>
 
@@ -39,6 +41,8 @@
         
 
     
+    <h2>Constructor</h2>
+    
 
     
     <h4 class="name" id="CsvDataset"><span class="type-signature"></span>new CsvDataset<span class="signature">(file, options, onload)</span><span class="type-signature"></span></h4>
@@ -47,10 +51,6 @@
     
 
 
-
-<div class="description">
-    <p>A dataset constructed from a CSV table</p>
-</div>
 
 
 
@@ -245,6 +245,74 @@
 
         
             
+<h4 class="name" id="clusterMapsArray"><span class="type-signature"></span>clusterMapsArray<span class="type-signature"> :Array.&lt;Array.&lt;Object>></span></h4>
+
+
+
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Array.&lt;Array.&lt;Object>></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Dataset.html#clusterMapsArray">Dataset#clusterMapsArray</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
 <h4 class="name" id="columns"><span class="type-signature"></span>columns<span class="type-signature"> :Object</span></h4>
 
 
@@ -327,7 +395,8 @@
 <div class="description">
     <p>The data matrix isn't limited to numeric data.
 Categorical columns are stored as strings.
-<a href="Dataset.html#dataVectors">Dataset#dataVectors</a> access the numeric version of this matrix (<a href="Dataset.html#fdata">Dataset#fdata</a>).
+<a href="Dataset.html#dataVectors">Dataset#dataVectors</a> access the numeric version of
+this matrix (<a href="Dataset.html#fdata">Dataset#fdata</a>).
 It is of size <a href="Dataset.html#numColumns">Dataset#numColumns</a> by <a href="Dataset.html#length">Dataset#length</a>.</p>
 </div>
 
@@ -437,6 +506,74 @@ zero or more columns from the <a href="Dataset.html#fdata">Dataset#fdata</a> tab
     <dt class="inherited-from">Inherited From:</dt>
     <dd class="inherited-from"><ul class="dummy"><li>
         <a href="Dataset.html#dataVectors">Dataset#dataVectors</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="densityMapsArray"><span class="type-signature"></span>densityMapsArray<span class="type-signature"> :Array.&lt;Array.&lt;Object>></span></h4>
+
+
+
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Array.&lt;Array.&lt;Object>></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Dataset.html#densityMapsArray">Dataset#densityMapsArray</a>
     </li></ul></dd>
     
 
@@ -851,7 +988,7 @@ Categorical columns are stored as 0-based indices.</p>
     
 
     
-    <h4 class="name" id="isDensityMapReady"><span class="type-signature"></span>isDensityMapReady<span class="signature">(dim0<span class="signature-attributes">non-null</span>, dim1<span class="signature-attributes">non-null</span>)</span><span class="type-signature"> &rarr; (non-null) {boolean}</span></h4>
+    <h4 class="name" id="isClusterMapReady"><span class="type-signature"></span>isClusterMapReady<span class="signature">(dim0<span class="signature-attributes">non-null</span>, dim1<span class="signature-attributes">non-null</span>)</span><span class="type-signature"> &rarr; (non-null) {boolean}</span></h4>
     
 
     
@@ -859,8 +996,8 @@ Categorical columns are stored as 0-based indices.</p>
 
 
 <div class="description">
-    <p>Checks if a density map on dimensions d0 and d1 is available.
-Hint: d0 and d1 can't be identical. The order of d0 and d1 is ignored.</p>
+    <p>Checks if a cluster map on dimensions dim0 and dim1 is available.
+Hint: dim0 and dim1 can't be identical. The order of dim0 and dim1 is ignored.</p>
 </div>
 
 
@@ -912,7 +1049,7 @@ Hint: d0 and d1 can't be identical. The order of d0 and d1 is ignored.</p>
 
             
 
-            <td class="description last"></td>
+            <td class="description last"><p>1st dimension index</p></td>
         </tr>
 
     
@@ -935,7 +1072,188 @@ Hint: d0 and d1 can't be identical. The order of d0 and d1 is ignored.</p>
 
             
 
-            <td class="description last"></td>
+            <td class="description last"><p>2nd dimension index</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Dataset.html#isClusterMapReady">Dataset#isClusterMapReady</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>True, if a clustermap for dimensions d0, d1 has been computed</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="isDensityMapReady"><span class="type-signature"></span>isDensityMapReady<span class="signature">(dim0<span class="signature-attributes">non-null</span>, dim1<span class="signature-attributes">non-null</span>)</span><span class="type-signature"> &rarr; (non-null) {boolean}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Checks if a density map on dimensions dim0 and dim1 is available.
+Hint: dim0 and dim1 can't be identical. The order of d0 and d1 is ignored.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>dim0</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>1st dimension index</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>dim1</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>2nd dimension index</p></td>
         </tr>
 
     
@@ -1167,11 +1485,258 @@ Hint: d0 and d1 can't be identical. The order of d0 and d1 is ignored.</p>
     
 
     
-    <h4 class="name" id="requestDensityMap"><span class="type-signature"></span>requestDensityMap<span class="signature">(dim0<span class="signature-attributes">non-null</span>, dim1<span class="signature-attributes">non-null</span>, size<span class="signature-attributes">opt</span>, options<span class="signature-attributes">opt</span>, ondone<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {DensityMap}</span></h4>
+    <h4 class="name" id="requestClusterMap"><span class="type-signature"></span>requestClusterMap<span class="signature">(dim0<span class="signature-attributes">non-null</span>, dim1<span class="signature-attributes">non-null</span>, options<span class="signature-attributes">opt</span>, ondone<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
-    <p class="summary"><p>Returns a density map for dimensions d0 and d1.</p></p>
+
+
+
+<div class="description">
+    <p>This function returns a cluster map for the given dimensions.
+If the cluster map doesn't exist it is computed.
+When a function is passed to ondone, the cluster map is computed by a background worker,
+otherwise it is computed on the current thread.
+After the worker has finished all ondone events for calls to this function are fired.
+Hint: dim0 and dim1 can't be identical. The order of dim0 and dim1 is ignored.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>dim0</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>1st dimension index</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>dim1</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>2nd dimension index</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ClusterMapOptions.html">ClusterMapOptions</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ondone</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>A function to be called when the cluster map is ready</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Dataset.html#requestClusterMap">Dataset#requestClusterMap</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="requestDensityMap"><span class="type-signature"></span>requestDensityMap<span class="signature">(dim0<span class="signature-attributes">non-null</span>, dim1<span class="signature-attributes">non-null</span>, size<span class="signature-attributes">opt</span>, options<span class="signature-attributes">opt</span>, ondone<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="DensityMap.html">DensityMap</a>}</span></h4>
+    
+
+    
+    <p class="summary"><p>Returns a density map for dimensions dim0 and dim1.</p></p>
     
 
 
@@ -1182,7 +1747,7 @@ If the density map doesn't exist it is computed.
 When a function is passed to ondone, the density map is computed by a background worker,
 otherwise it is computed on the current thread.
 After the worker has finished all ondone events for calls to this function are fired.
-Hint: d0 and d1 can't be identical. The order of d0 and d1 is ignored.</p>
+Hint: dim0 and dim1 can't be identical. The order of dim0 and dim1 is ignored.</p>
 </div>
 
 
@@ -1250,7 +1815,7 @@ Hint: d0 and d1 can't be identical. The order of d0 and d1 is ignored.</p>
                 </td>
             
 
-            <td class="description last"></td>
+            <td class="description last"><p>1st dimension index</p></td>
         </tr>
 
     
@@ -1285,7 +1850,7 @@ Hint: d0 and d1 can't be identical. The order of d0 and d1 is ignored.</p>
                 </td>
             
 
-            <td class="description last"></td>
+            <td class="description last"><p>2nd dimension index</p></td>
         </tr>
 
     
@@ -1473,13 +2038,226 @@ Hint: d0 and d1 can't be identical. The order of d0 and d1 is ignored.</p>
     </dt>
     <dd>
         
-<span class="param-type">DensityMap</span>
+<span class="param-type"><a href="DensityMap.html">DensityMap</a></span>
 
 
     </dd>
 </dl>
 
     
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="save"><span class="type-signature"></span>save<span class="signature">(filename, nameColumnIndex<span class="signature-attributes">opt</span>, nameColumnLabel<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Saves the dataset to a csv file and triggers downloading the file.
+When nameColumnIndex and nameColumnLabel are specified, row names are saved as a new column
+at the specified column index and with the specified label.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>filename</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>filename for the created csv files</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>nameColumnIndex</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>index for the generated name column</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>nameColumnLabel</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>label for the generated name column</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Dataset.html#save">Dataset#save</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1501,13 +2279,13 @@ Hint: d0 and d1 can't be identical. The order of d0 and d1 is ignored.</p>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClusterMapOptions.html">ClusterMapOptions</a></li><li><a href="CsvDataset.html">CsvDataset</a></li><li><a href="Dataset.html">Dataset</a></li><li><a href="DataVector.html">DataVector</a></li><li><a href="DensityMapOptions.html">DensityMapOptions</a></li><li><a href="GlobalView.html">GlobalView</a></li><li><a href="HashSet.html">HashSet</a></li><li><a href="RandomDataset.html">RandomDataset</a></li><li><a href="Thumbnail.html">Thumbnail</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CSV_DATASET_OPTIONS">CSV_DATASET_OPTIONS</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClusterMap.html">ClusterMap</a></li><li><a href="ClusterMapOptions.html">ClusterMapOptions</a></li><li><a href="Colormap.html">Colormap</a></li><li><a href="CoordinateSystem.html">CoordinateSystem</a></li><li><a href="CsvDataset.html">CsvDataset</a></li><li><a href="Dataset.html">Dataset</a></li><li><a href="DataVector.html">DataVector</a></li><li><a href="DensityMap.html">DensityMap</a></li><li><a href="DensityMapOptions.html">DensityMapOptions</a></li><li><a href="GlobalView.html">GlobalView</a></li><li><a href="HashSet.html">HashSet</a></li><li><a href="RandomDataset.html">RandomDataset</a></li><li><a href="Thumbnail.html">Thumbnail</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CSV_DATASET_OPTIONS">CSV_DATASET_OPTIONS</a></li><li><a href="global.html#generateColumnName">generateColumnName</a></li><li><a href="global.html#parseColor">parseColor</a></li><li><a href="global.html#parseColormap">parseColormap</a></li><li><a href="global.html#validateColor">validateColor</a></li><li><a href="global.html#validateColormap">validateColormap</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Feb 09 2018 23:00:37 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Feb 13 2018 14:47:59 GMT-0800 (PST)
 </footer>
 
 <script> prettyPrint(); </script>

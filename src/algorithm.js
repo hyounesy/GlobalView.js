@@ -1,184 +1,208 @@
 const libUtility = require('./utility.js');
 const libPathFinding = require('./pathFinding.js');
 
-export function addTransformFunctions(cls) {
-  const varCls = cls;
-  varCls.transformX = function (x) {
-    return (varCls.transform[0] * x) + varCls.transform[1];
-  };
-  varCls.transformY = function (y) {
-    return (varCls.transform[2] * y) + varCls.transform[3];
-  };
-  varCls.invTransformX = function (x) {
-    return (x - varCls.transform[1]) / varCls.transform[0];
-  };
-  varCls.invTransformY = function (y) {
-    return (y - varCls.transform[3]) / varCls.transform[2];
-  };
-}
-
 /**
- * @constructor
- * @package
- * @param {Object} obj A density map object
+ * Represents a density map.
  */
-export function DensityMap(obj) {
-  this.data = obj.data;
-  this.width = obj.width;
-  this.height = obj.height;
-  this.minimum = obj.minimum;
-  this.maximum = obj.maximum;
-  this.scale = obj.scale;
-  this.offset = obj.offset;
-  this.transform = obj.transform;
-  this.options = obj.options;
-  this.transformX = function (x) {
+export class DensityMap {
+  /**
+   * @constructor
+   * @package
+   * @param {Object} obj A density map object
+   */
+  constructor(obj) {
+    this.data = obj.data;
+    this.width = obj.width;
+    this.height = obj.height;
+    this.minimum = obj.minimum;
+    this.maximum = obj.maximum;
+    this.scale = obj.scale;
+    this.offset = obj.offset;
+    this.transform = obj.transform;
+    this.options = obj.options;
+  }
+  transformX(x) {
     return (this.transform[0] * x) + this.transform[1];
-  };
-  this.transformY = function (y) {
+  }
+
+  transformY(y) {
     return (this.transform[2] * y) + this.transform[3];
-  };
-  this.invTransformX = function (x) {
+  }
+
+  invTransformX(x) {
     return (x - this.transform[1]) / this.transform[0];
-  };
-  this.invTransformY = function (y) {
+  }
+
+  invTransformY(y) {
     return (y - this.transform[3]) / this.transform[2];
-  };
+  }
 }
 
 /**
  * @summary Options to the {@link algorithm#computeDensityMap|computeDensityMap()} function
- * @constructor
- * @export
- * @param {DensityMapOptions=} source If not null, creates a copy of source
  */
-export function DensityMapOptions(source) {
-  if (source) {
-    // Copy constructor
-    this.maxExpectedRuntime = source.maxExpectedRuntime;
-    this.cutoffIntensity = source.cutoffIntensity;
-    this.gaussScale = source.gaussScale;
-    this.logScale = source.logScale;
-    this.inflateToFit = source.inflateToFit;
-    this.shrinkToFit = source.shrinkToFit;
-  } else {
-    // Default constructor
-    // Initial density map size (affected by maxExpectedRuntime, inflateToFit and shrinkToFit)
-    /**
-     * @alias maxExpectedRuntime
-     * @memberof DensityMapOptions
-     * @summary If the estimated runtime for computing the density map (in seconds)
-     *          is higher than maxExpectedRuntime, the density map size is reduced
-     * @type {number}
-     * @default
-     */
-    this.maxExpectedRuntime = 1.0;
-    /**
-     * @alias cutoffIntensity
-     * @memberof DensityMapOptions
-     * @summary Densities below cutoffIntensity aren't computed
-     * @type {number}
-     * @default
-     */
-    this.cutoffIntensity = 0.001;
-    /**
-     * @alias gaussScale
-     * @memberof DensityMapOptions
-     * @summary Relative variance (variance normalized by density map size)
-     * @type {number}
-     * @default
-     */
-    this.gaussScale = 1000;
-    /**
-     * @alias logScale
-     * @memberof DensityMapOptions
-     * @summary When true, computes log-densities
-     * @type {boolean}
-     * @default
-     */
-    this.logScale = true;
-    /**
-     * @alias inflateToFit
-     * @memberof DensityMapOptions
-     * @summary When true, increases density map size to fit the full density map
-     * @type {boolean}
-     * @default
-     */
-    this.inflateToFit = true;
-    /**
-     * @alias shrinkToFit
-     * @memberof DensityMapOptions
-     * @summary When true, decreases density map size to the area of non-zero densities
-     *          plus a zero-density border of 1 pixel thickness
-     * @type {boolean}
-     * @default
-     */
-    this.shrinkToFit = true;
+export class DensityMapOptions {
+  /**
+   * @constructor
+   * @export
+   * @param {DensityMapOptions=} source If not null, creates a copy of source
+   */
+  constructor(source) {
+    if (source) {
+      // Copy constructor
+      this.maxExpectedRuntime = source.maxExpectedRuntime;
+      this.cutoffIntensity = source.cutoffIntensity;
+      this.gaussScale = source.gaussScale;
+      this.logScale = source.logScale;
+      this.inflateToFit = source.inflateToFit;
+      this.shrinkToFit = source.shrinkToFit;
+    } else {
+      // Default constructor
+      // Initial density map size (affected by maxExpectedRuntime, inflateToFit and shrinkToFit)
+      /**
+       * @alias maxExpectedRuntime
+       * @memberof DensityMapOptions
+       * @summary If the estimated runtime for computing the density map (in seconds)
+       *          is higher than maxExpectedRuntime, the density map size is reduced
+       * @type {number}
+       * @default
+       */
+      this.maxExpectedRuntime = 1.0;
+      /**
+       * @alias cutoffIntensity
+       * @memberof DensityMapOptions
+       * @summary Densities below cutoffIntensity aren't computed
+       * @type {number}
+       * @default
+       */
+      this.cutoffIntensity = 0.001;
+      /**
+       * @alias gaussScale
+       * @memberof DensityMapOptions
+       * @summary Relative variance (variance normalized by density map size)
+       * @type {number}
+       * @default
+       */
+      this.gaussScale = 1000;
+      /**
+       * @alias logScale
+       * @memberof DensityMapOptions
+       * @summary When true, computes log-densities
+       * @type {boolean}
+       * @default
+       */
+      this.logScale = true;
+      /**
+       * @alias inflateToFit
+       * @memberof DensityMapOptions
+       * @summary When true, increases density map size to fit the full density map
+       * @type {boolean}
+       * @default
+       */
+      this.inflateToFit = true;
+      /**
+       * @alias shrinkToFit
+       * @memberof DensityMapOptions
+       * @summary When true, decreases density map size to the area of non-zero densities
+       *          plus a zero-density border of 1 pixel thickness
+       * @type {boolean}
+       * @default
+       */
+      this.shrinkToFit = true;
+    }
+  }
+
+  /**
+   * checks if two DensityMapOptions objects are similar
+   * @param {DensityMapOptions} optionsA first DensityMapOptions object to compare
+   * @param {DensityMapOptions} optionsB second DensityMapOptions object to compare
+   */
+  static equals(optionsA, optionsB) {
+    return optionsA.maxExpectedRuntime === optionsB.maxExpectedRuntime &&
+           optionsA.cutoffIntensity === optionsB.cutoffIntensity &&
+           optionsA.gaussScale === optionsB.gaussScale &&
+           optionsA.logScale === optionsB.logScale &&
+           optionsA.inflateToFit === optionsB.inflateToFit &&
+           optionsA.shrinkToFit === optionsB.shrinkToFit;
   }
 }
 
-DensityMapOptions.equals = (optionsA, optionsB) =>
-  optionsA.maxExpectedRuntime === optionsB.maxExpectedRuntime &&
-  optionsA.cutoffIntensity === optionsB.cutoffIntensity &&
-  optionsA.gaussScale === optionsB.gaussScale &&
-  optionsA.logScale === optionsB.logScale &&
-  optionsA.inflateToFit === optionsB.inflateToFit &&
-  optionsA.shrinkToFit === optionsB.shrinkToFit;
-
 /**
- * @constructor
- * @package
- * @param {Object} obj A cluster map object
+ * Represents a cluster map
  */
-export function ClusterMap(obj) {
-  this.data = obj.data;
-  this.densities = obj.densities;
-  this.minDensities = obj.minDensities;
-  this.threshold = obj.threshold;
-  this.numClusters = obj.numClusters;
-  this.width = obj.width;
-  this.height = obj.height;
-  this.transform = obj.transform;
-  this.transformX = function (x) {
+export class ClusterMap {
+  /**
+   * @constructor
+   * @package
+   * @param {Object} obj A cluster map object
+   */
+  constructor(obj) {
+    this.data = obj.data;
+    this.densities = obj.densities;
+    this.minDensities = obj.minDensities;
+    this.threshold = obj.threshold;
+    this.numClusters = obj.numClusters;
+    this.width = obj.width;
+    this.height = obj.height;
+    this.transform = obj.transform;
+  }
+
+  transformX(x) {
     return (this.transform[0] * x) + this.transform[1];
-  };
-  this.transformY = function (y) {
+  }
+
+  transformY(y) {
     return (this.transform[2] * y) + this.transform[3];
-  };
-  this.invTransformX = function (x) {
+  }
+
+  invTransformX(x) {
     return (x - this.transform[1]) / this.transform[0];
-  };
-  this.invTransformY = function (y) {
+  }
+
+  invTransformY(y) {
     return (y - this.transform[3]) / this.transform[2];
-  };
+  }
 }
 
 /**
  * @summary Options to the {@link algorithm#computeClusterMap|computeClusterMap()} function
- * @constructor
- * @export
- * @param {ClusterMapOptions=} source If not null, creates a copy of source
  */
-export function ClusterMapOptions(source) {
-  if (source) {
-    this.densityMap = source.densityMap;
-    this.threshold = source.threshold;
-  } else {
-    this.densityMap = null;
-    /**
-     * @alias threshold
-     * @memberof ClusterMapOptions
-     * @summary Densities below threshold * maximum-density are considered outliers
-     * @type {number}
-     * @default
-     */
-    this.threshold = 0.1;
+export class ClusterMapOptions {
+  /**
+   * @constructor
+   * @export
+   * @param {ClusterMapOptions=} source If not null, creates a copy of source
+   */
+  constructor(source) {
+    if (source) {
+      this.densityMap = source.densityMap;
+      this.threshold = source.threshold;
+    } else {
+      this.densityMap = null;
+      /**
+       * @alias threshold
+       * @memberof ClusterMapOptions
+       * @summary Densities below threshold * maximum-density are considered outliers
+       * @type {number}
+       * @default
+       */
+      this.threshold = 0.1;
+    }
+  }
+
+  /**
+   * checks if two ClusterMapOptions objects are similar
+   * @param {ClusterMapOptions} optionsA first ClusterMapOptions object to compare
+   * @param {ClusterMapOptions} optionsB second ClusterMapOptions object to compare
+   */
+  static ClusterMapOptions(optionsA, optionsB) {
+    return DensityMapOptions.equals(
+      optionsA.densityMap.options,
+      optionsB.densityMap.options,
+    ) && optionsA.threshold === optionsB.threshold;
   }
 }
 
-ClusterMapOptions.equals = (a, b) =>
-  DensityMapOptions.equals(a.densityMap.options, b.densityMap.options) &&
-  a.threshold === b.threshold;
 
 /**
  * Compute a histogram of all points in the dataset over dimension d

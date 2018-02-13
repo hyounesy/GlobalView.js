@@ -205,7 +205,7 @@ export function HistogramViewer(gl, globalView) {
       }
       libGlMatrix.mat4.translate(
         mattrans, mattrans,
-        [((2 * (plotBounds.x + plotBounds.width + libColormap.COLORMAP_WIDTH + 0.5 + 64)) /
+        [((2 * (plotBounds.x + plotBounds.width + libColormap.Colormap.getWidth() + 0.5 + 64)) /
           gl.width) - 1,
         ((2 * (plotBounds.y + 0.5)) / gl.height) - 1, 0],
       ); // 0.5 ... center inside pixel
@@ -220,7 +220,7 @@ export function HistogramViewer(gl, globalView) {
       }
       libGlMatrix.mat4.translate(
         mattrans, mattrans,
-        [((2 * (plotBounds.x + plotBounds.width + libColormap.COLORMAP_WIDTH + 0.5)) /
+        [((2 * (plotBounds.x + plotBounds.width + libColormap.Colormap.getWidth() + 0.5)) /
           gl.width) - 1,
         pos[2] + ((0.5 * 2) / gl.height), 0.0],
       ); // 0.5 ... center inside pixel
@@ -283,8 +283,19 @@ export function HistogramViewer(gl, globalView) {
     } // Requested histogram already exists
 
     axis.histogram = libAlgorithm.computeHistogram(pDataset, axis.d = d, numBins);
-    libAlgorithm.addTransformFunctions(axis.histogram);
-    // libUtility.consoleLog(axis.histogram);
+    // Add 2D transformation functions
+    axis.histogram.transformX = function (x) {
+      return (axis.histogram.transform[0] * x) + axis.histogram.transform[1];
+    };
+    axis.histogram.transformY = function (y) {
+      return (axis.histogram.transform[2] * y) + axis.histogram.transform[3];
+    };
+    axis.histogram.invTransformX = function (x) {
+      return (x - axis.histogram.transform[1]) / axis.histogram.transform[0];
+    };
+    axis.histogram.invTransformY = function (y) {
+      return (y - axis.histogram.transform[3]) / axis.histogram.transform[2];
+    };
 
     let positions = new Float32Array((6 * numBins) * 3);
     const v3Set = function (pi, x, y) {

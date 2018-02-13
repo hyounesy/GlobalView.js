@@ -35,176 +35,172 @@ const $ = require('jquery');
 window.jQuery = $;
 require('jquery-csv');
 
-/* alternative: add the following to webpack.config.js (https://github.com/fronteed/icheck/issues/322):
-plugins: [
-  new webpack.ProvidePlugin({
-    $: "jquery",
-    jQuery: "jquery"
-  })
-]
-*/
-
 /**
  * A vector of data values inside the dataset.
  * The source of a data vector can be either a column in the dataset's data table or a formula.
  * The length of the vector is fixed by the dataset.
  * The DataVector class doesn't store actual values, it only defines
  * functions to read from the dataset.
- * @constructor
- * @export
- * @param {Dataset} dataset The underlying dataset
- * @param {number|string} source Either a column index into the dataset, or a formula
  */
-export function DataVector(dataset, source) {
-  const nc = dataset.numColumns;
+export class DataVector {
+  /**
+   * @constructor
+   * @export
+   * @param {Dataset} dataset The underlying dataset
+   * @param {number|string} source Either a column index into the dataset, or a formula
+   */
+  constructor(dataset, source) {
+    this.dataset = dataset;
+    this.isSourceNumeric = false;
+    if (libUtility.isNumber(source)) {
+      this.isSourceNumeric = true;
+      this.columnIndex = Math.round(source);
+      this.getValueCode = `c${this.columnIndex}`;
+      const column = dataset.columns[this.columnIndex];
+      this.minimum = column.minimum;
+      this.maximum = column.maximum;
+      this.offset = -column.minimum * (this.scale = 1 / (column.maximum - column.minimum));
+      this.values = column.values;
+      this.label = column.label;
+    } else {
+      this.stack = new Array(16);
+      const globalTypes = {
+        n: libFormulaCompiler.FormulaCompiler.types.float,
+        PI: libFormulaCompiler.FormulaCompiler.types.float,
+        i: libFormulaCompiler.FormulaCompiler.types.float,
+      };
+      for (let c = 0; c &lt; this.dataset.numColumns; c += 1) {
+        globalTypes[`c${c}`] = libFormulaCompiler.FormulaCompiler.types.float;
+      }
+      this.globals = {
+        n: dataset.length,
+        PI: Math.PI,
+      };
 
-  if (libUtility.isNumber(source)) {
-    const c = Math.round(source);
-    this.getValue = function fGetValue(i) {
-      // return Math.log(dataset.fdata[i * nc + c]);
-      return dataset.fdata[(i * nc) + c];
-    };
+      this.code = libFormulaCompiler.FormulaCompiler.compile(`${source};`, globalTypes);
+      if (libUtility.isString(this.code)) {
+        libUtility.consoleError("GlobalView error: Error while parsing data vector formula '{0}'".format(source));
+        libUtility.consoleError(`                  ${this.code}`);
+        return;
+      }
+      const formula = source;
+      this.getValueCode = formula;
 
-    // this.getValueCode = "log(c{0})".format(c);
-    this.getValueCode = `c${c}`;// "{" + c + "}";
-
-    const column = dataset.columns[c];
-    this.minimum = column.minimum;
-    this.maximum = column.maximum;
-    this.offset = -column.minimum * (this.scale = 1 / (column.maximum - column.minimum));
-    this.values = column.values;
-    this.label = column.label;
-  } else {
-    const stack = new Array(16);
-    const globalTypes = {
-      n: libFormulaCompiler.FormulaCompiler.types.float,
-      PI: libFormulaCompiler.FormulaCompiler.types.float,
-      i: libFormulaCompiler.FormulaCompiler.types.float,
-    };
-    for (let c = 0; c &lt; nc; c += 1) {
-      globalTypes[`c${c}`] = libFormulaCompiler.FormulaCompiler.types.float;
-    }
-    const globals = {
-      n: dataset.length,
-      PI: Math.PI,
-    };
-
-    const code = libFormulaCompiler.FormulaCompiler.compile(`${source};`, globalTypes);
-    if (libUtility.isString(code)) {
-      libUtility.consoleError("GlobalView error: Error while parsing data vector formula '{0}'".format(source));
-      libUtility.consoleError(`                  ${code}`);
-      return;
-    }
-    const formula = source;
-    this.getValueCode = formula;
-
-    this.getValue = function fGetValue(i) {
-      globals.i = i; // ?! debug?
-      for (let c = 0; c &lt; nc; c += 1) {
-        globals[`c${c}`] = dataset.fdata[(i * nc) + c];
+      this.minimum = Number.MAX_VALUE;
+      this.maximum = Number.MIN_VALUE;
+      for (let i = 0, n = dataset.length; i &lt; n; i += 1) {
+        const value = this.getValue(i);
+        this.minimum = Math.min(this.minimum, value);
+        this.maximum = Math.max(this.maximum, value);
       }
 
-      return libFormulaCompiler.FormulaCompiler.run(code, stack, globals);
-    };
+      this.scale = this.maximum - this.minimum;
+      if (this.scale > -1e-5 &amp;&amp; this.scale &lt; 1e-5) {
+        this.offset = 0.5 - (0.5 * (this.minimum + this.maximum) * (this.scale = 0.5));
+      } else {
+        this.offset = -this.minimum * (this.scale = 1 / this.scale);
+      }
+      this.values = null;
+      this.label = formula;
+    }
+  }
 
-    this.minimum = Number.MAX_VALUE;
-    this.maximum = Number.MIN_VALUE;
-    for (let i = 0, n = dataset.length; i &lt; n; i += 1) {
-      const value = this.getValue(i);
-      this.minimum = Math.min(this.minimum, value);
-      this.maximum = Math.max(this.maximum, value);
+  getValue(i) {
+    if (this.isSourceNumeric) {
+      return this.dataset.fdata[(i * this.dataset.numColumns) + this.columnIndex];
     }
-    // libUtility.consoleLog([this.minimum, this.maximum]);
-    this.scale = this.maximum - this.minimum;
-    if (this.scale > -1e-5 &amp;&amp; this.scale &lt; 1e-5) {
-      this.offset = 0.5 - (0.5 * (this.minimum + this.maximum) * (this.scale = 0.5));
-    } else {
-      this.offset = -this.minimum * (this.scale = 1 / this.scale);
+    this.globals.i = i; // ?! debug?
+    for (let c = 0; c &lt; this.dataset.numColumns; c += 1) {
+      this.globals[`c${c}`] = this.dataset.fdata[(i * this.dataset.numColumns) + c];
     }
-    this.values = null;
-    this.label = formula;
+
+    return libFormulaCompiler.FormulaCompiler.run(this.code, this.stack, this.globals);
   }
 }
-
 /**
  * A dataset template for the GlobalView scatter plot framework
- * @abstract
- * @constructor
- * @export
  */
-export function Dataset() {
+export class Dataset {
   /**
-   * @summary Number of columns in the {@link Dataset#data} table
-   * @type {number}
+   * @abstract
+   * @constructor
+   * @export
    */
-  this.numColumns = 0;
-  /**
-   * Note: Each dataVector has exactly 'length' elements
-   * @summary Number of rows in the {@link Dataset#data} table
-   * @type {number}
-   */
-  this.length = 0;
-  /**
-   * @summary Metadata about one column of data in the {@link Dataset#data} table
-   * @type {Object}
-   * @deprecated Use {@link Dataset#dataVectors} for access to metadata instead
-   */
-  this.columns = [];
-  /**
-   * An input dimension to the plot.
-   * A data vector doesn't physically contain data.
-   * Instead it holds meta data and a transfer function that produces data based on
-   * zero or more columns from the {@link Dataset#fdata} table
-   * @summary A logical vector of data
-   * @type {Array&lt;DataVector>}
-   */
-  this.dataVectors = [];
-  /**
-   * The data matrix isn't limited to numeric data.
-   * Categorical columns are stored as strings.
-   * {@link Dataset#dataVectors} access the numeric version of this matrix ({@link Dataset#fdata}).
-   * It is of size {@link Dataset#numColumns} by {@link Dataset#length}.
-   * @summary A matrix of data
-   * @type {Float32Array|Array}
-   */
-  this.data = [];
-  /**
-   * This matrix is the numeric version of {@link Dataset#data}.
-   * Categorical columns are stored as 0-based indices.
-   * @summary A matrix of numeric data for the {@link Dataset#dataVectors}
-   * @type {Float32Array}
-   */
-  this.fdata = new Float32Array(0);
-  /**
-   * This vector is of length {@link Dataset#length}.
-   * @summary A vector of data point names
-   * @type {Array&lt;string>}
-   */
-  this.names = null;
-  /**
-   * This vector is of length {@link Dataset#length}.
-   * @summary A vector of data point image URLs.
-   * @type {Array&lt;string>}
-   */
-  this.imageFilenames = null;
+  constructor() {
+    /**
+     * @summary Number of columns in the {@link Dataset#data} table
+     * @type {number}
+     */
+    this.numColumns = 0;
+    /**
+     * Note: Each dataVector has exactly 'length' elements
+     * @summary Number of rows in the {@link Dataset#data} table
+     * @type {number}
+     */
+    this.length = 0;
+    /**
+     * @summary Metadata about one column of data in the {@link Dataset#data} table
+     * @type {Object}
+     * @deprecated Use {@link Dataset#dataVectors} for access to metadata instead
+     */
+    this.columns = [];
+    /**
+     * An input dimension to the plot.
+     * A data vector doesn't physically contain data.
+     * Instead it holds meta data and a transfer function that produces data based on
+     * zero or more columns from the {@link Dataset#fdata} table
+     * @summary A logical vector of data
+     * @type {Array&lt;DataVector>}
+     */
+    this.dataVectors = [];
+    /**
+     * The data matrix isn't limited to numeric data.
+     * Categorical columns are stored as strings.
+     * {@link Dataset#dataVectors} access the numeric version of
+     * this matrix ({@link Dataset#fdata}).
+     * It is of size {@link Dataset#numColumns} by {@link Dataset#length}.
+     * @summary A matrix of data
+     * @type {Float32Array|Array}
+     */
+    this.data = [];
+    /**
+     * This matrix is the numeric version of {@link Dataset#data}.
+     * Categorical columns are stored as 0-based indices.
+     * @summary A matrix of numeric data for the {@link Dataset#dataVectors}
+     * @type {Float32Array}
+     */
+    this.fdata = new Float32Array(0);
+    /**
+     * This vector is of length {@link Dataset#length}.
+     * @summary A vector of data point names
+     * @type {Array&lt;string>}
+     */
+    this.names = null;
+    /**
+     * This vector is of length {@link Dataset#length}.
+     * @summary A vector of data point image URLs.
+     * @type {Array&lt;string>}
+     */
+    this.imageFilenames = null;
+
+    /**
+     * @type {Array&lt;Array&lt;Object>>}
+     */
+    this.densityMapsArray = [];
+    /**
+     * @type {Array&lt;Array&lt;Object>>}
+    */
+    this.clusterMapsArray = [];
+  }
 
   /**
-   * @type {Array&lt;Array&lt;Object>>}
+   * Checks if a density map on dimensions dim0 and dim1 is available.
+   * Hint: dim0 and dim1 can't be identical. The order of d0 and d1 is ignored.
+   * @param  {!number} dim0 1st dimension index
+   * @param  {!number} dim1 2nd dimension index
+   * @return {!boolean} True, if a densitymap for dimensions d0, d1 has been computed
    */
-  const densityMapsArray = [];
-  /**
-   * @type {Array&lt;Array&lt;Object>>}
-  */
-  const clusterMapsArray = [];
-
-  /**
-   * Checks if a density map on dimensions d0 and d1 is available.
-   * Hint: d0 and d1 can't be identical. The order of d0 and d1 is ignored.
-   * @param  {number!} dim0
-   * @param  {number!} dim1
-   * @return {boolean!} True, if a densitymap for dimensions d0, d1 has been computed
-   */
-  this.isDensityMapReady = function fIsDensityMapReady(dim0, dim1) {
+  isDensityMapReady(dim0, dim1) {
     let d0 = dim0;
     let d1 = dim1;
     // Validate inputs
@@ -223,24 +219,25 @@ export function Dataset() {
       d1 = temp;
     }
 
-    return densityMapsArray.length > d0 &amp;&amp;
-      densityMapsArray[d0].length > d1 &amp;&amp; densityMapsArray[d0][d1] &amp;&amp;
-      (libUtility.isUndefined(densityMapsArray[d0][d1].pending) || densityMapsArray[d0][d1].old);
-  };
+    return this.densityMapsArray.length > d0 &amp;&amp;
+    this.densityMapsArray[d0].length > d1 &amp;&amp; this.densityMapsArray[d0][d1] &amp;&amp;
+      (libUtility.isUndefined(this.densityMapsArray[d0][d1].pending) ||
+                              this.densityMapsArray[d0][d1].old);
+  }
 
   /**
    * Calls the given function for each computed density map
    * @param  {function(DensityMap!)!} callback
    */
-  this.iterateDensityMaps = function fIterateDensityMaps(callback) {
-    densityMapsArray.forEach((densityMaps) => {
+  iterateDensityMaps(callback) {
+    this.densityMapsArray.forEach((densityMaps) => {
       densityMaps.forEach((densityMap) => {
         if (densityMap &amp;&amp; (libUtility.isUndefined(densityMap.pending) || densityMap.old)) {
           callback(densityMap.old || densityMap);
         }
       });
     });
-  };
+  }
 
   /**
    * This function returns a density map for the given dimensions.
@@ -248,22 +245,23 @@ export function Dataset() {
    * When a function is passed to ondone, the density map is computed by a background worker,
    * otherwise it is computed on the current thread.
    * After the worker has finished all ondone events for calls to this function are fired.
-   * Hint: d0 and d1 can't be identical. The order of d0 and d1 is ignored.
-   * @summary Returns a density map for dimensions d0 and d1.
-   * @param  {!number} dim0
-   * @param  {!number} dim1
+   * Hint: dim0 and dim1 can't be identical. The order of dim0 and dim1 is ignored.
+   * @summary Returns a density map for dimensions dim0 and dim1.
+   * @param  {!number} dim0 1st dimension index
+   * @param  {!number} dim1 2nd dimension index
    * @param  {number=} size=1024 The width and height of the density map
    * @param  {DensityMapOptions=} options
    * @param  {function(DensityMap)=} ondone A function to be called when the density map is ready
    * @return {DensityMap}
    */
-  this.requestDensityMap = function fRequestDensityMap(dim0, dim1, mapSize, options, ondone) {
+  requestDensityMap(dim0, dim1, mapSize, options, ondone) {
     let d0 = dim0;
     let d1 = dim1;
     let size = mapSize;
     // Validate inputs
     if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) {
-      libUtility.consoleWarn('GlobalView warning: Requesting density map for dimensions {0}, {1} on a dataset with only {2} data vectors'.format(d0, d1, this.dataVectors.length));
+      libUtility.consoleWarn(('GlobalView warning: Requesting density map for dimensions {0}, {1} on a dataset with only {2} data vectors')
+        .format(d0, d1, this.dataVectors.length));
       return null;
     }
     // Firefox tends to crash with Parallel.js
@@ -280,13 +278,13 @@ export function Dataset() {
       d1 = temp;
     }
 
-    while (densityMapsArray.length &lt;= d0) {
-      densityMapsArray.push([]);
+    while (this.densityMapsArray.length &lt;= d0) {
+      this.densityMapsArray.push([]);
     }
-    while (densityMapsArray[d0].length &lt;= d1) {
-      densityMapsArray[d0].push(null);
+    while (this.densityMapsArray[d0].length &lt;= d1) {
+      this.densityMapsArray[d0].push(null);
     }
-    let densityMap = densityMapsArray[d0][d1];
+    let densityMap = this.densityMapsArray[d0][d1];
 
     if (!size) {
       size = 1024;
@@ -304,7 +302,7 @@ export function Dataset() {
         // If densityMapsArray[d0][d1] isn't computed or being computed yet
         // While we compute densityMapsArray[d0][d1], replace it with an array
         // of functions to execute when it is ready
-        densityMapsArray[d0][d1] = { pending: [ondone], old: densityMapsArray[d0][d1] };
+        this.densityMapsArray[d0][d1] = { pending: [ondone], old: this.densityMapsArray[d0][d1] };
 
         // Compute histogram synchronously
         let histogram = libAlgorithm.computeHistogram2D(this, d0, d1, size, size);
@@ -322,13 +320,15 @@ export function Dataset() {
           histogram = null;
 
           // Set densityMapsArray[d0][d1]
-          densityMapsArray[d0][d1].old = null;
-          const pending = densityMapsArray[d0][d1].pending;
-          densityMapsArray[d0][d1] = computedDensityMap;
+          this.densityMapsArray[d0][d1].old = null;
+          const pending = this.densityMapsArray[d0][d1].pending;
+          this.densityMapsArray[d0][d1] = computedDensityMap;
 
-          if (clusterMapsArray.length > d0 &amp;&amp; clusterMapsArray[d0].length > d1 &amp;&amp;
-            clusterMapsArray[d0][d1] &amp;&amp; libUtility.isUndefined(clusterMapsArray[d0][d1].pending)) {
-            clusterMapsArray[d0][d1] = null;
+          if (this.clusterMapsArray.length > d0 &amp;&amp;
+              this.clusterMapsArray[d0].length > d1 &amp;&amp;
+              this.clusterMapsArray[d0][d1] &amp;&amp;
+              libUtility.isUndefined(this.clusterMapsArray[d0][d1].pending)) {
+            this.clusterMapsArray[d0][d1] = null;
           }
 
           // Execute queued 'ondone' functions
@@ -353,30 +353,35 @@ export function Dataset() {
     }
     if (!densityMap) {
       // If densityMapsArray[d0][d1] isn't computed or being computed yet
-      // var tStart = performance.now();
       let histogram = libAlgorithm.computeHistogram2D(this, d0, d1, size, size);
       densityMap = new libAlgorithm.DensityMap(libAlgorithm.computeDensityMap(
         histogram,
         new libAlgorithm.DensityMapOptions(options),
       ));
-      densityMapsArray[d0][d1] = densityMap;
+      this.densityMapsArray[d0][d1] = densityMap;
       histogram = null; // Free histogram
-      // libUtility.consoleLog(performance.now() - tStart + "ms");
     } else if (densityMap.old &amp;&amp;
         (!options || libAlgorithm.DensityMapOptions.equals(densityMap.old.options, options))) {
       // If the deprecated densityMap satisfies our requested options
       densityMap = densityMap.old;
     } else {
-      while (!libUtility.isUndefined(densityMapsArray[d0][d1].pending)) { /* empty */ }
+      while (!libUtility.isUndefined(this.densityMapsArray[d0][d1].pending)) { /* empty */ }
     } // Wait while densityMapsArray[d0][d1] is being computed asynchronously
 
     if (libUtility.isFunction(ondone)) {
       ondone(/** @type {DensityMap} */(densityMap));
     }
     return /** @type {DensityMap} */(densityMap);
-  };
+  }
 
-  this.isClusterMapReady = function fIsClusterMapReady(dim0, dim1) {
+  /**
+   * Checks if a cluster map on dimensions dim0 and dim1 is available.
+   * Hint: dim0 and dim1 can't be identical. The order of dim0 and dim1 is ignored.
+   * @param  {!number} dim0 1st dimension index
+   * @param  {!number} dim1 2nd dimension index
+   * @return {!boolean} True, if a clustermap for dimensions d0, d1 has been computed
+   */
+  isClusterMapReady(dim0, dim1) {
     let d0 = dim0;
     let d1 = dim1;
     // Validate inputs
@@ -395,12 +400,26 @@ export function Dataset() {
       d1 = temp;
     }
 
-    return clusterMapsArray.length > d0 &amp;&amp; clusterMapsArray[d0].length > d1 &amp;&amp;
-      clusterMapsArray[d0][d1] &amp;&amp;
-      (libUtility.isUndefined(clusterMapsArray[d0][d1].pending) || clusterMapsArray[d0][d1].old);
-  };
+    return this.clusterMapsArray.length > d0 &amp;&amp;
+           this.clusterMapsArray[d0].length > d1 &amp;&amp;
+           this.clusterMapsArray[d0][d1] &amp;&amp;
+           (libUtility.isUndefined(this.clusterMapsArray[d0][d1].pending) ||
+                                   this.clusterMapsArray[d0][d1].old);
+  }
 
-  this.requestClusterMap = function fRequestClusterMap(dim0, dim1, options, ondone) {
+  /**
+   * This function returns a cluster map for the given dimensions.
+   * If the cluster map doesn't exist it is computed.
+   * When a function is passed to ondone, the cluster map is computed by a background worker,
+   * otherwise it is computed on the current thread.
+   * After the worker has finished all ondone events for calls to this function are fired.
+   * Hint: dim0 and dim1 can't be identical. The order of dim0 and dim1 is ignored.
+   * @param  {!number} dim0 1st dimension index
+   * @param  {!number} dim1 2nd dimension index
+   * @param  {ClusterMapOptions=} options
+   * @param  {function(ClusterMap)=} ondone A function to be called when the cluster map is ready
+   */
+  requestClusterMap(dim0, dim1, options, ondone) {
     let d0 = dim0;
     let d1 = dim1;
     // Validate inputs
@@ -422,13 +441,13 @@ export function Dataset() {
       d1 = temp;
     }
 
-    while (clusterMapsArray.length &lt;= d0) {
-      clusterMapsArray.push([]);
+    while (this.clusterMapsArray.length &lt;= d0) {
+      this.clusterMapsArray.push([]);
     }
-    while (clusterMapsArray[d0].length &lt;= d1) {
-      clusterMapsArray[d0].push(null);
+    while (this.clusterMapsArray[d0].length &lt;= d1) {
+      this.clusterMapsArray[d0].push(null);
     }
-    let clusterMap = clusterMapsArray[d0][d1];
+    let clusterMap = this.clusterMapsArray[d0][d1];
 
     if (clusterMap &amp;&amp; options &amp;&amp; clusterMap.options &amp;&amp;
       !libAlgorithm.ClusterMapOptions.equals(options, clusterMap.options)) {
@@ -442,7 +461,7 @@ export function Dataset() {
         // If clusterMapsArray[d0][d1] isn't computed or being computed yet
         // While we compute clusterMapsArray[d0][d1], replace it with an array
         // of functions to execute when it is ready
-        clusterMapsArray[d0][d1] = { pending: [ondone] };
+        this.clusterMapsArray[d0][d1] = { pending: [ondone] };
 
         this.requestDensityMap(d0, d1, undefined, undefined, (densityMap) => {
           // Execute an asynchronous worker that computes clusterMapsArray[d0][d1]
@@ -456,8 +475,8 @@ export function Dataset() {
           p.spawn(params => computeClusterMap.apply(null, params)).then((pClusterMap) => {
             const computedClusterMap = new libAlgorithm.ClusterMap(pClusterMap);
             // Set clusterMapsArray[d0][d1]
-            const pending = clusterMapsArray[d0][d1].pending;
-            clusterMapsArray[d0][d1] = computedClusterMap;
+            const pending = this.clusterMapsArray[d0][d1].pending;
+            this.clusterMapsArray[d0][d1] = computedClusterMap;
 
             // Execute queued 'ondone' functions
             pending.forEach((ondoneFunc) => {
@@ -488,10 +507,10 @@ export function Dataset() {
             densityMap, d0, d1,
             new libAlgorithm.ClusterMapOptions(options),
           ));
-          clusterMapsArray[d0][d1] = clusterMap;
+          this.clusterMapsArray[d0][d1] = clusterMap;
           // libUtility.consoleLog(performance.now() - tStart + "ms");
         } else {
-          clusterMapsArray[d0][d1] = null;
+          this.clusterMapsArray[d0][d1] = null;
           clusterMap = null;
         }
       } else if (clusterMap.old &amp;&amp;
@@ -508,82 +527,17 @@ export function Dataset() {
       return clusterMap;
     }
     return null;
-  };
+  }
 
-  this.inflate = function fInflate(factor, densityMapChain) {
-    const n = this.length;
-    const nInflated = Math.floor(factor * n);
-    const nc = this.numColumns;
-    if (Number.isNaN(nInflated) || nInflated &lt;= n) {
-      return;
-    }
-    const fdata = this.fdata;
-    const fdataInflated = new Float32Array(nInflated * nc);
-    const data = this.data;
-    const dataInflated = new Array(nInflated * nc);
-
-    for (let i = 0, len = n * nc; i &lt; len; i += 1) {
-      fdataInflated[i] = fdata[i];
-    }
-    for (let i = 0, len = n * nc; i &lt; len; i += 1) {
-      dataInflated[i] = data[i];
-    }
-
-    let column;
-    let samples;
-    let sample;
-    const sampleScale = 1 / densityMapChain[0].size;
-    for (let iInflated = n; iInflated &lt; nInflated; iInflated += 1) {
-      // i = iInflated % n;
-
-      samples = libAlgorithm.sampleDensityMapChain(densityMapChain);
-      for (let c = 0; c &lt; nc; c += 1) {
-        column = this.columns[c];
-        sample = column.minimum + ((column.maximum - column.minimum) * samples[c] * sampleScale);
-
-        if (column.values) {
-          // If column is qualitative
-          sample = Math.max(0, Math.min(column.values.length - 1, Math.round(sample)));
-          fdataInflated[(iInflated * nc) + c] = sample;
-          dataInflated[(iInflated * nc) + c] = column.values[sample];
-        } else {
-          // If column is numeric
-          fdataInflated[(iInflated * nc) + c] = sample;
-          dataInflated[(iInflated * nc) + c] = sample;
-        }
-      }
-    }
-    this.fdata = fdataInflated;
-    this.data = dataInflated;
-
-    if (this.names !== null) {
-      const names = /** @type {Array&lt;string>} */ (this.names);
-      const namesInflated = new Array(nInflated);
-      for (let i = 0, len = n; i &lt; len; i += 1) {
-        namesInflated[i] = names[i];
-      }
-      for (let index = 0, iInflated = n; iInflated &lt; nInflated; iInflated += 1) {
-        namesInflated[iInflated] = `generated datapoint ${index += 1}`;
-      }
-      this.names = namesInflated;
-    }
-
-    if (this.imageFilenames !== null) {
-      const imageFilenames = /** @type {Array&lt;string>} */ (this.imageFilenames);
-      const imageFilenamesInflated = new Array(nInflated);
-      for (let i = 0, len = n; i &lt; len; i += 1) {
-        imageFilenamesInflated[i] = imageFilenames[i];
-      }
-      for (let iInflated = n; iInflated &lt; nInflated; iInflated += 1) {
-        imageFilenamesInflated[iInflated] = imageFilenames[iInflated % n];
-      }
-      this.imageFilenames = imageFilenamesInflated;
-    }
-
-    this.length = nInflated;
-  };
-
-  this.save = function fSave(filename, nameColumnIndex, nameColumnLabel) {
+  /**
+   * Saves the dataset to a csv file and triggers downloading the file.
+   * When nameColumnIndex and nameColumnLabel are specified, row names are saved as a new column
+   * at the specified column index and with the specified label.
+   * @param {string} filename filename for the created csv files
+   * @param {number} [nameColumnIndex] index for the generated name column
+   * @param {string} [nameColumnLabel] label for the generated name column
+   */
+  save(filename, nameColumnIndex, nameColumnLabel) {
     let nameColumn = nameColumnIndex;
     const nc = this.numColumns;
     let csvNumCols;
@@ -624,52 +578,55 @@ export function Dataset() {
     }
 
     libUtility.download(filename, `data:text/csv;charset=utf-8,${encodeURIComponent($.csv.fromArrays(csv))}`);
-  };
+  }
 }
 
 
 // >>> Random dataset
 
 /**
- * A randomly generated dataset
+ * Creates a randomly generated dataset
  * @extends {Dataset}
- * @constructor
- * @export
- * @param {number} n Number of rows (points) of the dataset
- * @param {number} nc Number of columns (dimensions) of the dataset
- * @param {function(Dataset)} onload Event handler, called after the dataset was created
  */
-export function RandomDataset(n, nc, onload) {
-  Dataset.call(this);
+export class RandomDataset extends Dataset {
+  /**
+   * @constructor
+   * @export
+   * @param {number} numRows Number of rows (points) of the dataset
+   * @param {number} numCols Number of columns (dimensions) of the dataset
+   * @param {function(Dataset)} onload Event handler, called after the dataset was created
+   */
+  constructor(numRows, numCols, onload) {
+    super();
 
-  this.numColumns = nc;
-  this.length = n;
-  for (let i = 0; i &lt; nc; i += 1) {
-    this.columns.push({ minimum: 0, maximum: 1, label: generateColumnName(i, nc) });
-    this.dataVectors.push(new DataVector(this, i));
-  }
+    this.numColumns = numCols;
+    this.length = numRows;
+    for (let i = 0; i &lt; numCols; i += 1) {
+      this.columns.push({ minimum: 0, maximum: 1, label: generateColumnName(i, numCols) });
+      this.dataVectors.push(new DataVector(this, i));
+    }
 
-  const nnc = n * nc;
-  this.fdata = new Float32Array(nnc);
-  for (let i = 0; i &lt; nnc; i += 1) {
-    this.fdata[i] = Math.random();
-  }
-  this.data = this.fdata;
+    const nnc = numRows * numCols;
+    this.fdata = new Float32Array(nnc);
+    for (let i = 0; i &lt; nnc; i += 1) {
+      this.fdata[i] = Math.random();
+    }
+    this.data = this.fdata;
 
-  if (onload) {
-    onload(this);
+    if (onload) {
+      onload(this);
+    }
   }
 }
-
 // >>> CSV dataset
 
 /**
  * A map of valid options for CSV datasets with option descriptions and validation functions
  * @const
  * @enum {{
- * description: string,
- * default: *,
- * valid: Array
+ *  description: string,
+ *  default: *,
+ *  valid: Array
  * }}
 */
 const CSV_DATASET_OPTIONS = {
@@ -717,50 +674,76 @@ const CSV_DATASET_OPTIONS = {
 /**
  * A dataset constructed from a CSV table
  * @extends {Dataset}
- * @constructor
- * @export
- * @param {string|Blob} file File or URL of file, containing the CSV-formatted dataset
- * @param {Object} options
- * @param {function(Dataset)} onload Event handler, called after the dataset was created
  */
-export function CsvDataset(file, options, onload) {
-  Dataset.call(this);
-  const varOptions = options;
+export class CsvDataset extends Dataset {
+  /**
+   * @constructor
+   * @export
+   * @param {string|Blob} file File or URL of file, containing the CSV-formatted dataset
+   * @param {Object} options
+   * @param {function(Dataset)} onload Event handler, called after the dataset was created
+   */
+  constructor(file, options, onload) {
+    super();
 
-  // Validate options
-  // eslint-disable-next-line no-restricted-syntax
-  for (const option in varOptions) {
-    if (!Object.prototype.hasOwnProperty.call(varOptions, option)) {
-      continue; // eslint-disable-line no-continue
+    this.onloadCallback = onload;
+    this.varOptions = options;
+
+    // Validate options
+    // eslint-disable-next-line no-restricted-syntax
+    for (const option in this.varOptions) {
+      if (!Object.prototype.hasOwnProperty.call(this.varOptions, option)) {
+        continue; // eslint-disable-line no-continue
+      }
+
+      // Validate option
+      if (!Object.prototype.hasOwnProperty.call(CSV_DATASET_OPTIONS, option)) {
+        libUtility.consoleWarn(`CsvDataset warning: Unsupported option: ${option}`);
+        continue; // eslint-disable-line no-continue
+      }
+      const optionDefinition = CSV_DATASET_OPTIONS[option];
+
+      // Validate value
+      const value = this.varOptions[option];
+      if ((optionDefinition.valid &amp;&amp; optionDefinition.valid.indexOf(value) === -1) ||
+        (optionDefinition.validRange &amp;&amp;
+          (value &lt; optionDefinition.validRange[0] || value > optionDefinition.validRange[1]))) {
+        libUtility.consoleWarn(`CsvDataset warning: Invalid value for option ${option}: ${value}`);
+        delete this.varOptions[option];
+        continue; // eslint-disable-line no-continue
+      }
     }
 
-    // Validate option
-    if (!Object.prototype.hasOwnProperty.call(CSV_DATASET_OPTIONS, option)) {
-      libUtility.consoleWarn(`CsvDataset warning: Unsupported option: ${option}`);
-      continue; // eslint-disable-line no-continue
-    }
-    const optionDefinition = CSV_DATASET_OPTIONS[option];
-
-    // Validate value
-    const value = varOptions[option];
-    if ((optionDefinition.valid &amp;&amp; optionDefinition.valid.indexOf(value) === -1) ||
-      (optionDefinition.validRange &amp;&amp;
-        (value &lt; optionDefinition.validRange[0] || value > optionDefinition.validRange[1]))) {
-      libUtility.consoleWarn(`CsvDataset warning: Invalid value for option ${option}: ${value}`);
-      delete varOptions[option];
-      continue; // eslint-disable-line no-continue
+    const dataset = this;
+    if (libUtility.isString(file)) {
+      // $.get(file, parseCsv, "text");
+      const request = new XMLHttpRequest();
+      request.onreadystatechange = function fOnReadyStateChange() {
+        if (this.readyState === 4 &amp;&amp; this.status === 200) {
+          dataset.parseCsv(this.responseText);
+        }
+      };
+      request.open('GET', /** @type {string} */(file), true);
+      request.overrideMimeType('text/csv; charset=utf8');
+      request.send();
+    } else {
+      const reader = new FileReader();
+      reader.onload = (/* event */) => {
+        dataset.parseCsv(reader.result);
+      };
+      reader.readAsText(/** @type {!Blob} */(file));
     }
   }
 
-  // Load csv file
-  const dataset = this;
-  const parseCsv = function fParseCsv(csv) {
+  parseCsv(csv) {
+    // Load csv file
+    const dataset = this;
     const data = $.csv.toArrays(csv);
 
-    if (varOptions.autoDetect) {
-      if (libUtility.isUndefined(varOptions.hasHeader)) {
+    if (this.varOptions.autoDetect) {
+      if (libUtility.isUndefined(this.varOptions.hasHeader)) {
         // Assume no-header by default
-        varOptions.hasHeader = false;
+        this.varOptions.hasHeader = false;
 
         const firstRowOnlyStrings = data[0].every(value => Number.isNaN(parseData(value)));
         const secondRowHasNumbers = data[1].some(value => !Number.isNaN(parseData(value)));
@@ -768,13 +751,13 @@ export function CsvDataset(file, options, onload) {
         // If the first row consists of only string values, but the second row
         // has at least one numeric value, we can assume the first row is a header
         if (firstRowOnlyStrings &amp;&amp; secondRowHasNumbers) {
-          varOptions.hasHeader = true;
+          this.varOptions.hasHeader = true;
         }
-        libUtility.consoleLog(`Assuming hasHeader = ${varOptions.hasHeader}`);
+        libUtility.consoleLog(`Assuming hasHeader = ${this.varOptions.hasHeader}`);
       }
-      if (libUtility.isUndefined(varOptions.nameColumn)) {
+      if (libUtility.isUndefined(this.varOptions.nameColumn)) {
         // Assume no name column by default
-        varOptions.nameColumn = null;
+        this.varOptions.nameColumn = null;
 
         // If any row consists of only unique strings, we can assume it contains data point names
         for (let c = 0; c &lt; data[0].length; c += 1) {
@@ -786,40 +769,40 @@ export function CsvDataset(file, options, onload) {
             }
             return false;
           })) {
-            varOptions.nameColumn = c;
+            this.varOptions.nameColumn = c;
             break;
           }
         }
-        libUtility.consoleLog(`Assuming nameColumn = ${varOptions.nameColumn}`);
+        libUtility.consoleLog(`Assuming nameColumn = ${this.varOptions.nameColumn}`);
       }
     }
 
 
     let n = data.length;
-    const nc = data[0].length - (varOptions.nameColumn ? 1 : 0);
-    const firstRow = (varOptions.hasHeader ? 1 : 0);
+    const nc = data[0].length - (this.varOptions.nameColumn ? 1 : 0);
+    const firstRow = (this.varOptions.hasHeader ? 1 : 0);
     dataset.numColumns = nc;
 
     // Generate column labels
     let columnLabels;
-    if (libUtility.isFunction(varOptions.columnLabels)) {
+    if (libUtility.isFunction(this.varOptions.columnLabels)) {
       columnLabels = new Array(n);
       for (let c = 0, ci = 0; c &lt; data[0].length; c += 1, ci += 1) {
-        if (c === varOptions.nameColumn) {
+        if (c === this.varOptions.nameColumn) {
           ci -= 1;
           continue; // eslint-disable-line no-continue
         }
 
-        columnLabels[ci] = varOptions.columnLabels(c);
+        columnLabels[ci] = this.varOptions.columnLabels(c);
       }
-    } else if (libUtility.isArray(varOptions.columnLabels)) {
-      if (varOptions.columnLabels.length !== nc) {
+    } else if (libUtility.isArray(this.varOptions.columnLabels)) {
+      if (this.varOptions.columnLabels.length !== nc) {
         libUtility.consoleWarn(`CsvDataset warning: Number of provided column labels (${
-          varOptions.columnLabels.length
+          this.varOptions.columnLabels.length
         }) differs from number of data columns in the dataset (${nc})`);
         columnLabels = null;
       } else {
-        columnLabels = varOptions.columnLabels;
+        columnLabels = this.varOptions.columnLabels;
       }
     } else {
       columnLabels = null;
@@ -830,7 +813,7 @@ export function CsvDataset(file, options, onload) {
     let i;
     let di;
     for (let c = 0, ci = 0; c &lt; data[0].length; c += 1, ci += 1) {
-      if (c === varOptions.nameColumn) {
+      if (c === this.varOptions.nameColumn) {
         ci -= 1;
         continue; // eslint-disable-line no-continue
       }
@@ -897,7 +880,7 @@ export function CsvDataset(file, options, onload) {
       let theLabel;
       if (columnLabels) {
         theLabel = columnLabels[ci];
-      } else if (varOptions.hasHeader) {
+      } else if (this.varOptions.hasHeader) {
         theLabel = data[0][c];
       } else {
         theLabel = generateColumnName(ci, nc);
@@ -939,10 +922,10 @@ export function CsvDataset(file, options, onload) {
     dataset.length = n;
 
     // Extract data point names
-    if (varOptions.nameColumn) {
+    if (this.varOptions.nameColumn) {
       dataset.names = new Array(n);
       const names = dataset.names;
-      const nameColumn = varOptions.nameColumn;
+      const nameColumn = this.varOptions.nameColumn;
       for (i = firstRow, di = 0; i &lt; data.length; i += 1, di += 1) {
         // Skip blank lines
         if (data[i].length === 1 &amp;&amp; data[i][0] === '') {
@@ -957,7 +940,7 @@ export function CsvDataset(file, options, onload) {
     }
 
     // Generate image filenames
-    if (libUtility.isFunction(varOptions.imageFilenames)) {
+    if (libUtility.isFunction(this.varOptions.imageFilenames)) {
       dataset.imageFilenames = new Array(n);
       for (i = firstRow, di = 0; i &lt; data.length; i += 1, di += 1) {
         // Skip blank lines
@@ -966,56 +949,45 @@ export function CsvDataset(file, options, onload) {
           continue; // eslint-disable-line no-continue
         }
 
-        dataset.imageFilenames[di] = varOptions.imageFilenames(data[i], i);
+        dataset.imageFilenames[di] = this.varOptions.imageFilenames(data[i], i);
       }
-    } else if (libUtility.isArray(varOptions.imageFilenames)) {
-      if (varOptions.imageFilenames.length !== n) {
-        libUtility.consoleWarn(`CsvDataset warning: Number of provided image filenames (${varOptions.imageFilenames.length}) differs from number of data points (${n})`);
+    } else if (libUtility.isArray(this.varOptions.imageFilenames)) {
+      if (this.varOptions.imageFilenames.length !== n) {
+        libUtility.consoleWarn(`CsvDataset warning: Number of provided image filenames (${this.varOptions.imageFilenames.length}) differs from number of data points (${n})`);
         dataset.imageFilenames = null;
       } else {
-        dataset.imageFilenames = varOptions.imageFilenames;
+        dataset.imageFilenames = this.varOptions.imageFilenames;
       }
     } else {
       dataset.imageFilenames = null;
     }
 
     // Notify success
-    if (onload) {
-      onload(dataset);
+    if (this.onloadCallback) {
+      this.onloadCallback(dataset);
     }
-  };
-
-
-  if (libUtility.isString(file)) {
-    // $.get(file, parseCsv, "text");
-    const request = new XMLHttpRequest();
-    request.onreadystatechange = function fOnReadyStateChange() {
-      if (this.readyState === 4 &amp;&amp; this.status === 200) {
-        parseCsv(this.responseText);
-      }
-    };
-    request.open('GET', /** @type {string} */(file), true);
-    request.overrideMimeType('text/csv; charset=utf8');
-    request.send();
-  } else {
-    const reader = new FileReader();
-    reader.onload = (/* event */) => {
-      parseCsv(reader.result);
-    };
-    reader.readAsText(/** @type {!Blob} */(file));
   }
 }
 
 // >>> Helper functions
 
-function generateColumnName(i, nc) {
+/**
+ * Creates an auto-generated column name.
+ * When numColumns is &lt;= 4, the names will be x, y, z, and w.
+ * When numColumns is &lt;= 26, the names will be A, B, ... Z.
+ * For larger numColumns, the names will be c1, c2, ...
+ * @param {number} columnIndex The index of the column to generate the name for.
+ *                             Should be less than numColumns
+ * @param {number} numColumns Total number of columns.
+ */
+function generateColumnName(columnIndex, numColumns) {
   const XYZW = ['x', 'y', 'z', 'w'];
-  if (nc &lt;= XYZW.length) {
-    return XYZW[i]; // x, y, z, w
-  } else if (nc &lt;= 26) {
-    return String.fromCharCode(65 + i); // A, B, C, ...
+  if (numColumns &lt;= XYZW.length &amp;&amp; columnIndex &lt;= XYZW.length) {
+    return XYZW[columnIndex]; // x, y, z, w
+  } else if (numColumns &lt;= 26 &amp;&amp; columnIndex &lt;= 26) {
+    return String.fromCharCode(65 + columnIndex); // A, B, C, ...
   }
-  return `c${i + 1}`; // c1, c2, c3, ...
+  return `c${columnIndex + 1}`; // c1, c2, c3, ...
 }
 
 function parseData(input) {
@@ -1031,13 +1003,13 @@ function parseData(input) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClusterMap.html">ClusterMap</a></li><li><a href="ClusterMapOptions.html">ClusterMapOptions</a></li><li><a href="CoordinateSystem.html">CoordinateSystem</a></li><li><a href="CsvDataset.html">CsvDataset</a></li><li><a href="Dataset.html">Dataset</a></li><li><a href="DataVector.html">DataVector</a></li><li><a href="DensityMap.html">DensityMap</a></li><li><a href="DensityMapOptions.html">DensityMapOptions</a></li><li><a href="DensityViewer.html">DensityViewer</a></li><li><a href="ForwardList.html">ForwardList</a></li><li><a href="GlobalView.html">GlobalView</a></li><li><a href="GlobalView-Transform.html">Transform</a></li><li><a href="HashSet.html">HashSet</a></li><li><a href="HistogramViewer.html">HistogramViewer</a></li><li><a href="imageExhue.html">imageExhue</a></li><li><a href="ImageViewer.html">ImageViewer</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="PointViewer.html">PointViewer</a></li><li><a href="PointViewer-DataMesh.html">DataMesh</a></li><li><a href="PointViewer-PointGroup.html">PointGroup</a></li><li><a href="PriorityQueue.html">PriorityQueue</a></li><li><a href="RandomDataset.html">RandomDataset</a></li><li><a href="Shader.html">Shader</a></li><li><a href="Thumbnail.html">Thumbnail</a></li></ul><h3>Namespaces</h3><ul><li><a href="Shaders.html">Shaders</a></li></ul><h3>Interfaces</h3><ul><li><a href="Viewer.html">Viewer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#computeClusterMap">computeClusterMap</a></li><li><a href="global.html#computeDensityMap">computeDensityMap</a></li><li><a href="global.html#computeDensityMapND">computeDensityMapND</a></li><li><a href="global.html#computeHistogram">computeHistogram</a></li><li><a href="global.html#computeHistogram2D">computeHistogram2D</a></li><li><a href="global.html#CSV_DATASET_OPTIONS">CSV_DATASET_OPTIONS</a></li><li><a href="global.html#downloadDensityMap">downloadDensityMap</a></li><li><a href="global.html#downloadStencilMap">downloadStencilMap</a></li><li><a href="global.html#findClosePointOfLowDensity">findClosePointOfLowDensity</a></li><li><a href="global.html#findClosePointOfLowDensityDescend">findClosePointOfLowDensityDescend</a></li><li><a href="global.html#findClosePointOfLowDensityNDDescend">findClosePointOfLowDensityNDDescend</a></li><li><a href="global.html#findRepresentativePoints">findRepresentativePoints</a></li><li><a href="global.html#findRepresentativePoints2">findRepresentativePoints2</a></li><li><a href="global.html#findRepresentativePointsND">findRepresentativePointsND</a></li><li><a href="global.html#findRepresentativePointsND2">findRepresentativePointsND2</a></li><li><a href="global.html#linesIntersect">linesIntersect</a></li><li><a href="global.html#markPointsInStencilMap">markPointsInStencilMap</a></li><li><a href="global.html#pointInsidePolygon">pointInsidePolygon</a></li><li><a href="global.html#sampleDensityMap">sampleDensityMap</a></li><li><a href="global.html#sampleDensityMapChain">sampleDensityMapChain</a></li><li><a href="global.html#sampleDensityMapColumn">sampleDensityMapColumn</a></li><li><a href="global.html#sampleDensityMapRow">sampleDensityMapRow</a></li><li><a href="global.html#vectorLineIntersection2D">vectorLineIntersection2D</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClusterMap.html">ClusterMap</a></li><li><a href="ClusterMapOptions.html">ClusterMapOptions</a></li><li><a href="Colormap.html">Colormap</a></li><li><a href="CoordinateSystem.html">CoordinateSystem</a></li><li><a href="CsvDataset.html">CsvDataset</a></li><li><a href="Dataset.html">Dataset</a></li><li><a href="DataVector.html">DataVector</a></li><li><a href="DensityMap.html">DensityMap</a></li><li><a href="DensityMapOptions.html">DensityMapOptions</a></li><li><a href="DensityViewer.html">DensityViewer</a></li><li><a href="ForwardList.html">ForwardList</a></li><li><a href="GlobalView.html">GlobalView</a></li><li><a href="GlobalView-Transform.html">Transform</a></li><li><a href="HashSet.html">HashSet</a></li><li><a href="HistogramViewer.html">HistogramViewer</a></li><li><a href="ImageViewer.html">ImageViewer</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="PointViewer.html">PointViewer</a></li><li><a href="PointViewer-DataMesh.html">DataMesh</a></li><li><a href="PointViewer-PointGroup.html">PointGroup</a></li><li><a href="PriorityQueue.html">PriorityQueue</a></li><li><a href="RandomDataset.html">RandomDataset</a></li><li><a href="Shader.html">Shader</a></li><li><a href="Thumbnail.html">Thumbnail</a></li></ul><h3>Namespaces</h3><ul><li><a href="Shaders.html">Shaders</a></li></ul><h3>Interfaces</h3><ul><li><a href="Viewer.html">Viewer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#computeClusterMap">computeClusterMap</a></li><li><a href="global.html#computeDensityMap">computeDensityMap</a></li><li><a href="global.html#computeDensityMapND">computeDensityMapND</a></li><li><a href="global.html#computeHistogram">computeHistogram</a></li><li><a href="global.html#computeHistogram2D">computeHistogram2D</a></li><li><a href="global.html#CSV_DATASET_OPTIONS">CSV_DATASET_OPTIONS</a></li><li><a href="global.html#downloadDensityMap">downloadDensityMap</a></li><li><a href="global.html#downloadStencilMap">downloadStencilMap</a></li><li><a href="global.html#findClosePointOfLowDensity">findClosePointOfLowDensity</a></li><li><a href="global.html#findClosePointOfLowDensityDescend">findClosePointOfLowDensityDescend</a></li><li><a href="global.html#findClosePointOfLowDensityNDDescend">findClosePointOfLowDensityNDDescend</a></li><li><a href="global.html#findRepresentativePoints">findRepresentativePoints</a></li><li><a href="global.html#findRepresentativePoints2">findRepresentativePoints2</a></li><li><a href="global.html#findRepresentativePointsND">findRepresentativePointsND</a></li><li><a href="global.html#findRepresentativePointsND2">findRepresentativePointsND2</a></li><li><a href="global.html#generateColumnName">generateColumnName</a></li><li><a href="global.html#linesIntersect">linesIntersect</a></li><li><a href="global.html#markPointsInStencilMap">markPointsInStencilMap</a></li><li><a href="global.html#parseColor">parseColor</a></li><li><a href="global.html#parseColormap">parseColormap</a></li><li><a href="global.html#pointInsidePolygon">pointInsidePolygon</a></li><li><a href="global.html#sampleDensityMap">sampleDensityMap</a></li><li><a href="global.html#sampleDensityMapChain">sampleDensityMapChain</a></li><li><a href="global.html#sampleDensityMapColumn">sampleDensityMapColumn</a></li><li><a href="global.html#sampleDensityMapRow">sampleDensityMapRow</a></li><li><a href="global.html#validateColor">validateColor</a></li><li><a href="global.html#validateColormap">validateColormap</a></li><li><a href="global.html#vectorLineIntersection2D">vectorLineIntersection2D</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Feb 09 2018 23:00:39 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Feb 13 2018 14:48:02 GMT-0800 (PST)
 </footer>
 
 <script> prettyPrint(); </script>

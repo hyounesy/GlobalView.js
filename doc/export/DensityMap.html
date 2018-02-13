@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: DataVector</title>
+    <title>JSDoc: Class: DensityMap</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: DataVector</h1>
+    <h1 class="page-title">Class: DensityMap</h1>
 
     
 
@@ -28,13 +28,9 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>DataVector<span class="signature">(dataset, source)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>DensityMap<span class="signature">(obj)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description"><p>A vector of data values inside the dataset.
-The source of a data vector can be either a column in the dataset's data table or a formula.
-The length of the vector is fixed by the dataset.
-The DataVector class doesn't store actual values, it only defines
-functions to read from the dataset.</p></div>
+            <div class="class-description"><p>Represents a density map.</p></div>
         
     
 </header>
@@ -49,7 +45,7 @@ functions to read from the dataset.</p></div>
     
 
     
-    <h4 class="name" id="DataVector"><span class="type-signature"></span>new DataVector<span class="signature">(dataset, source)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="DensityMap"><span class="type-signature"></span>new DensityMap<span class="signature">(obj)</span><span class="type-signature"></span></h4>
     
 
     
@@ -89,13 +85,13 @@ functions to read from the dataset.</p></div>
 
         <tr>
             
-                <td class="name"><code>dataset</code></td>
+                <td class="name"><code>obj</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="Dataset.html">Dataset</a></span>
+<span class="param-type">Object</span>
 
 
             
@@ -105,33 +101,7 @@ functions to read from the dataset.</p></div>
 
             
 
-            <td class="description last"><p>The underlying dataset</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>source</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-|
-
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Either a column index into the dataset, or a formula</p></td>
+            <td class="description last"><p>A density map object</p></td>
         </tr>
 
     
