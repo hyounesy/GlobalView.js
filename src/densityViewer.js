@@ -20,8 +20,6 @@ export function DensityViewer(gl, globalView) {
   sdrDensityMap.matTexCoordTransform = sdrDensityMap.u2x2f('matTexCoordTransform');
   sdrDensityMap.scale = sdrDensityMap.u1f('scale');
   sdrDensityMap.color = sdrDensityMap.u3f('color');
-  // var colormap =
-  //  libGraphics.LoadTexture(gl, "cmDensityMap.png", function() { globalView.invalidate(); });
 
   const sdrClusterMap =
     new libGraphics.Shader(gl, libShaders.Shaders.vsTextured2, libShaders.Shaders.fsTextured);
@@ -69,8 +67,8 @@ export function DensityViewer(gl, globalView) {
 
     if (this.showClusterMap) {
       if (dataset && dataset.isClusterMapReady(d0, d1)) {
-        // If clusterMap is ready
-        // Retrieve clusterMap synchronously (since we already know it's ready)
+        // If clusterMap is ready Retrieve clusterMap synchronously
+        // (since we already know it's ready)
         const clusterMap = dataset.requestClusterMap(d0, d1, clusterMapOptions);
         if (clusterMap.width === 0 || clusterMap.height === 0) {
           return;
@@ -92,14 +90,6 @@ export function DensityViewer(gl, globalView) {
               rgba[(4 * i) + 2] = 0;
               rgba[(4 * i) + 3] = 0;
             } else {
-              // Use random RGB color (deprecated)
-              /* var clr = [Math.sin(c += 1) * 10000,
-                            Math.sin(c += 1) * 10000,
-                            Math.sin(c += 1) * 10000];
-              clr[0] -= Math.floor(clr[0]);
-              clr[1] -= Math.floor(clr[1]);
-              clr[2] -= Math.floor(clr[2]); */
-
               // Use evenly spaced hues
               c -= 1; // c -= 1 ... ID to index
               let d = densityMap ?
@@ -109,7 +99,7 @@ export function DensityViewer(gl, globalView) {
               if (d < 0.0) {
                 d = 0.0;
               }
-              c = (c + 0.5) / clusterMap.n; // +0.5 ... Use off-hues
+              c = (c + 0.5) / clusterMap.numClusters; // +0.5 ... Use off-hues
               if (c > 1) {
                 c -= 1;
               }
@@ -123,8 +113,6 @@ export function DensityViewer(gl, globalView) {
               rgba[(4 * i) + 3] = Math.floor(d * 255);
             }
           }
-          // libUtility.download("clustermap.png",
-          //    libUtility.imageUrlFromBytes(rgba, clusterMap.width, clusterMap.height));
           texture =
             libGraphics.LoadTextureFromByteArray(gl, rgba, clusterMap.width, clusterMap.height);
           if (this.showDensityMap) {
@@ -162,26 +150,13 @@ export function DensityViewer(gl, globalView) {
       } // Request clusterMap and redraw once it's computed
     } else if (this.showDensityMap) {
       if (dataset && dataset.isDensityMapReady(d0, d1)) {
-        // If densityMap is ready
-        // Retrieve densityMap synchronously (since we already know it's ready)
+        // If densityMap is ready retrieve densityMap synchronously
+        // (since we already know it's ready)
         const densityMap =
         /** @type {DensityMap} */(dataset.requestDensityMap(d0, d1, undefined, undefined));
         if (densityMap.width === 0 || densityMap.height === 0) {
           return;
         }
-
-        /*
-        libUtility.download(
-          'densityMap.png',
-          libUtility.imageUrlFromBytes(
-            libUtility.F32toI24flipY(
-              densityMap.data,
-              [densityMap.minimum, densityMap.maximum], densityMap.width, densityMap.height,
-            ),
-            densityMap.width, densityMap.height,
-          ),
-        );
-        */
 
         // Create texture if it wasn't already created
         if (!densityMap.texture) {
@@ -212,7 +187,6 @@ export function DensityViewer(gl, globalView) {
 
         sdrDensityMap.matTexCoordTransform(new Float32Array(d0 > d1 ? [0, 1, 1, 0] : [1, 0, 0, 1]));
         sdrDensityMap.scale(1 / densityMap.maximum);
-        // sdrDensityMap.scale(0.5);
         sdrDensityMap.color(gl.foreColor[0], gl.foreColor[1], gl.foreColor[2]);
         meshQuad.draw();
       } else { // If densityMap isn't ready yet
@@ -238,9 +212,6 @@ export function DensityViewer(gl, globalView) {
 
     const width = densityMap.width;
     const height = densityMap.height;
-    // const densityScale = densityMap.scale;
-    // const densityOffset = -densityMap.offset;
-
     const xMin = 0;
     const xMax = width;
     const yMin = 0;
@@ -269,7 +240,6 @@ export function DensityViewer(gl, globalView) {
       if (dist < minDist) {
         dist -= minDist;
         const F = -minDistMagnitude * dist;
-        // if (dx < 1e-4 && dy < 1e-4) dx += 1e-4;
         body.fx += F * dx;
         body.fy += F * dy;
       } else if (dist > maxDist) {

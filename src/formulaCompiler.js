@@ -3,8 +3,8 @@ const libUtility = require('./utility.js');
 // eslint-disable-next-line import/prefer-default-export
 export const FormulaCompiler = {
   compile(formula, symbolTypes) {
-    /* // Parse case-insensitive
-    formula = formula.toLowerCase(); */
+    // Enable next line to make parsing case-insensitive
+    // formula = formula.toLowerCase();
 
     // Error handler
     let err = null;
@@ -20,6 +20,7 @@ export const FormulaCompiler = {
       y: FormulaCompiler.types.float,
       z: FormulaCompiler.types.float,
     };
+
     /**
      * An enum, mapping function signatures to return types
      * @enum {Object}
@@ -46,7 +47,10 @@ export const FormulaCompiler = {
       'asin(float)': FormulaCompiler.types.float,
       'acos(float)': FormulaCompiler.types.float,
       'atan(float)': FormulaCompiler.types.float,
-      /* 'pow': FormulaCompiler.types.float,
+      'min(float, float)': FormulaCompiler.types.float,
+      'max(float, float)': FormulaCompiler.types.float,
+      /* // future implementations:
+      'pow': FormulaCompiler.types.float,
       'exp': FormulaCompiler.types.float,
       'log': FormulaCompiler.types.float,
       'exp2': FormulaCompiler.types.float,
@@ -58,10 +62,8 @@ export const FormulaCompiler = {
       'floor': FormulaCompiler.types.float,
       'ceil': FormulaCompiler.types.float,
       'fract': FormulaCompiler.types.float,
-      'mod': FormulaCompiler.types.float, */
-      'min(float, float)': FormulaCompiler.types.float,
-      'max(float, float)': FormulaCompiler.types.float,
-      /* 'clamp': FormulaCompiler.types.float,
+      'mod': FormulaCompiler.types.float,
+      'clamp': FormulaCompiler.types.float,
       'mix': FormulaCompiler.types.float,
       'step': FormulaCompiler.types.float,
       'smoothstep': FormulaCompiler.types.float,
@@ -447,7 +449,9 @@ export const FormulaCompiler = {
             return numberAST();
           default:
             return error("unknown token '{0}' when expecting an expression".format(curTok));
-        /* case (int)Lexer.Token.tok_int: return ParseIntExpr();
+        /*
+        // future implementations:
+        case (int)Lexer.Token.tok_int: return ParseIntExpr();
         case (int)Lexer.Token.tok_float: return ParseFloatExpr();
         case (int)Lexer.Token.tok_string: return ParseStringExpr();
         case (int)Lexer.Token.tok_bool: return ParseBooleanExpr();
@@ -556,7 +560,10 @@ export const FormulaCompiler = {
         case 'asin(float)': stack[SP - 1] = Math.asin(stack[SP - 1]); break;
         case 'acos(float)': stack[SP - 1] = Math.acos(stack[SP - 1]); break;
         case 'atan(float)': stack[SP - 1] = Math.atan(stack[SP - 1]); break;
+        case 'min(float, float)': stack[SP - 2] = Math.min(stack[SP - 2], stack[SP -= 1]); break;
+        case 'max(float, float)': stack[SP - 2] = Math.max(stack[SP - 2], stack[SP -= 1]); break;
         /*
+        // future implementations:
         case 'pow': FormulaCompiler.types.float,
         case 'exp': FormulaCompiler.types.float,
         case 'log': FormulaCompiler.types.float,
@@ -570,10 +577,6 @@ export const FormulaCompiler = {
         case 'ceil': FormulaCompiler.types.float,
         case 'fract': FormulaCompiler.types.float,
         case 'mod': FormulaCompiler.types.float,
-        */
-        case 'min(float, float)': stack[SP - 2] = Math.min(stack[SP - 2], stack[SP -= 1]); break;
-        case 'max(float, float)': stack[SP - 2] = Math.max(stack[SP - 2], stack[SP -= 1]); break;
-        /*
         case 'clamp': FormulaCompiler.types.float,
         case 'mix': FormulaCompiler.types.float,
         case 'step': FormulaCompiler.types.float,
@@ -743,7 +746,8 @@ function benchmark(nIter, javascriptCode, formulaCode, evalCode) {
 
 // verboseTest("vec3 a = vec3(1, 2, 3);");
 
-/* verify("1 + 6 * 2;", 13);
+/*
+verify("1 + 6 * 2;", 13);
 verify("max(1, 2);", 2);
 verify("max(1 + 6, 2 * 3);", 7);
 verify("float a = 123; a += 5; a;", 128);

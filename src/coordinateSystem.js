@@ -56,6 +56,16 @@ export function CoordinateSystem(gl, globalView) {
   /** @type {number} */ let yTickLabelLeft = 0;
 
   this.visible = [true, true];
+
+  /**
+   * Draw the axis
+   * @param {boolean} flipY
+   * @param {Object} plotBounds -
+   * @param {number} plotBounds.x -
+   * @param {number} plotBounds.y -
+   * @param {number} plotBounds.width -
+   * @param {number} plotBounds.height -
+   */
   this.render = function (flipY, plotBounds) {
     const mattrans = libGlMatrix.mat4.create();
 
@@ -187,7 +197,8 @@ export function CoordinateSystem(gl, globalView) {
   };
 
   function checkOverlap(d) {
-    const MIN_TICK_LABEL_DISTANCE = gl.measureTextWidth('  '); // Minimum distance between tick labels in pixel
+    // Minimum distance between tick labels in pixel
+    const MIN_TICK_LABEL_DISTANCE = gl.measureTextWidth('  ');
     let axis;
     let plotBounds;
     let overlap;
@@ -223,36 +234,37 @@ export function CoordinateSystem(gl, globalView) {
   }
 
   /**
-   * @param  {number} d
-   * @param  {number} minimum
-   * @param  {number} maximum
+   * Sets the numerical axis range for a dimension
+   * @param  {number} dim dimension index
+   * @param  {number} rangeMin axis range minimum
+   * @param  {number} rangeMax axis range maximum
    * @param  {boolean=} changeTickDistance=true
    */
-  this.setNumericRange = function (d, minimum, maximum, changeTickDistance) {
-    const axis = axes[d];
-    axis.minimum = minimum;
-    axis.maximum = maximum;
+  this.setNumericRange = function (dim, rangeMin, rangeMax, changeTickDistance) {
+    const axis = axes[dim];
+    axis.minimum = rangeMin;
+    axis.maximum = rangeMax;
     axis.values = null;
 
     for (let numTicks = NUM_TICKS; numTicks >= 0; numTicks -= 1) {
       if (changeTickDistance === false) {
-        axis.tickOffset = Math.ceil(minimum / axis.tickDistance) * axis.tickDistance;
-        axis.tickCount = Math.floor((maximum - axis.tickOffset) / axis.tickDistance) + 1;
+        axis.tickOffset = Math.ceil(rangeMin / axis.tickDistance) * axis.tickDistance;
+        axis.tickCount = Math.floor((rangeMax - axis.tickOffset) / axis.tickDistance) + 1;
       } else {
-        axis.tickDistance = (maximum - minimum) / numTicks;
+        axis.tickDistance = (rangeMax - rangeMin) / numTicks;
         // Compute power-of-10 just above tickDistance -> pow(10, exp)
         let exp = Math.ceil(Math.log(axis.tickDistance) / Math.log(10));
 
         // Try less aggressive rounding in each iteration until break condition is met
         for (let i = 0; i < 10; i += 1) {
           // Maximum 10 iterations
-          axis.tickDistance = (maximum - minimum) / numTicks;
+          axis.tickDistance = (rangeMax - rangeMin) / numTicks;
           const base = (10 ** exp);
           exp -= 1;
           // Round tickDistance to base
           axis.tickDistance = Math.round(axis.tickDistance / base) * base;
-          axis.tickOffset = Math.ceil(minimum / axis.tickDistance) * axis.tickDistance;
-          axis.tickCount = Math.floor((maximum - axis.tickOffset) / axis.tickDistance) + 1;
+          axis.tickOffset = Math.ceil(rangeMin / axis.tickDistance) * axis.tickDistance;
+          axis.tickCount = Math.floor((rangeMax - axis.tickOffset) / axis.tickDistance) + 1;
           if (axis.tickCount >= numTicks - 2 && axis.tickCount <= numTicks + 2) {
             // Condition: numTicks - 2 <= tickCount <= numTicks + 2
             break;
@@ -260,14 +272,21 @@ export function CoordinateSystem(gl, globalView) {
         }
       }
 
-      if (checkOverlap(d)) {
+      if (checkOverlap(dim)) {
         break;
       }
     }
   };
 
-  this.setEnumRange = function (d, rangeMin, rangeMax, values) {
-    const axis = axes[d];
+  /**
+   * Sets the numerical axis range for a dimension
+   * @param  {number} dim dimension index
+   * @param  {number} rangeMin axis range minimum
+   * @param  {number} rangeMax axis range maximum
+   * @param {Object.<number, string>} values tick labels
+   */
+  this.setEnumRange = function (dim, rangeMin, rangeMax, values) {
+    const axis = axes[dim];
     const minimum = rangeMin - 0.5; // 0.5 ... Move to center of value-bin
     const maximum = rangeMax - 0.5; // 0.5 ... Move to center of value-bin
     axis.minimum = minimum;
@@ -301,31 +320,54 @@ export function CoordinateSystem(gl, globalView) {
     }
   };
 
-  this.labelFromPoint = function (plotBounds, p) {
+  /**
+   * Checks if a point in inside one of the axis labels and returns the axis
+   * @param {Object} plotBounds
+   * @param {number} plotBounds.x
+   * @param {number} plotBounds.y
+   * @param {number} plotBounds.width
+   * @param {number} plotBounds.height
+   * @param {number[]} point point to check: [px, py]
+   * @returns 0 for x-axis, 1 for y axis, null if the point was not inside any of the axis labels,
+   *          or if the axis was invisible.
+   */
+  this.labelFromPoint = function (plotBounds, point) {
     if (this.visible[0]) {
       const halfTextWidth = gl.measureTextWidth(axes[0].label) / 2;
       const plotCenter = plotBounds.x + (plotBounds.width / 2);
-      if (p[0] >= plotCenter - halfTextWidth &&
-        p[0] < plotCenter + halfTextWidth &&
-        p[1] >= xTickLabelTop &&
-        p[1] <= xTickLabelTop + gl.measureTextHeight() + 2) {
+      if (point[0] >= plotCenter - halfTextWidth &&
+        point[0] < plotCenter + halfTextWidth &&
+        point[1] >= xTickLabelTop &&
+        point[1] <= xTickLabelTop + gl.measureTextHeight() + 2) {
         return 0;
       }
     }
     if (this.visible[1]) {
       const halfTextWidth = gl.measureTextWidth(axes[1].label) / 2;
       const plotCenter = gl.height - plotBounds.y - (plotBounds.height / 2);
-      if (p[0] >= yTickLabelLeft - gl.measureTextHeight() &&
-        p[0] <= yTickLabelLeft + 2 &&
-        p[1] >= plotCenter - halfTextWidth &&
-        p[1] < plotCenter + halfTextWidth) {
+      if (point[0] >= yTickLabelLeft - gl.measureTextHeight() &&
+        point[0] <= yTickLabelLeft + 2 &&
+        point[1] >= plotCenter - halfTextWidth &&
+        point[1] < plotCenter + halfTextWidth) {
         return 1;
       }
     }
     return null;
   };
-  this.getLabelBounds = function (plotBounds, d) {
-    switch (d) {
+
+  /**
+   * Returns the rectangular bounds of one of the axis
+   * @param {Object} plotBounds -
+   * @param {number} plotBounds.x -
+   * @param {number} plotBounds.y -
+   * @param {number} plotBounds.width -
+   * @param {number} plotBounds.height -
+   * @param {number} axis - 0 for x-axis and 1 for y-axis
+   * @return {Object<string, number>} label bounds {l: left, r: right, t: top, b: bottom}.
+   * null if the axis is invisible or an incorrect axis was specified.
+   */
+  this.getLabelBounds = function (plotBounds, axis) {
+    switch (axis) {
       case 0: {
         if (!this.visible[0]) {
           return null;

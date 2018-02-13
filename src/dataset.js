@@ -7,15 +7,6 @@ const $ = require('jquery');
 window.jQuery = $;
 require('jquery-csv');
 
-/* alternative: add the following to webpack.config.js (https://github.com/fronteed/icheck/issues/322):
-plugins: [
-  new webpack.ProvidePlugin({
-    $: "jquery",
-    jQuery: "jquery"
-  })
-]
-*/
-
 /**
  * A vector of data values inside the dataset.
  * The source of a data vector can be either a column in the dataset's data table or a formula.
@@ -33,12 +24,10 @@ export function DataVector(dataset, source) {
   if (libUtility.isNumber(source)) {
     const c = Math.round(source);
     this.getValue = function fGetValue(i) {
-      // return Math.log(dataset.fdata[i * nc + c]);
       return dataset.fdata[(i * nc) + c];
     };
 
-    // this.getValueCode = "log(c{0})".format(c);
-    this.getValueCode = `c${c}`;// "{" + c + "}";
+    this.getValueCode = `c${c}`;
 
     const column = dataset.columns[c];
     this.minimum = column.minimum;
@@ -86,7 +75,7 @@ export function DataVector(dataset, source) {
       this.minimum = Math.min(this.minimum, value);
       this.maximum = Math.max(this.maximum, value);
     }
-    // libUtility.consoleLog([this.minimum, this.maximum]);
+
     this.scale = this.maximum - this.minimum;
     if (this.scale > -1e-5 && this.scale < 1e-5) {
       this.offset = 0.5 - (0.5 * (this.minimum + this.maximum) * (this.scale = 0.5));
@@ -170,11 +159,11 @@ export function Dataset() {
   const clusterMapsArray = [];
 
   /**
-   * Checks if a density map on dimensions d0 and d1 is available.
-   * Hint: d0 and d1 can't be identical. The order of d0 and d1 is ignored.
-   * @param  {number!} dim0
-   * @param  {number!} dim1
-   * @return {boolean!} True, if a densitymap for dimensions d0, d1 has been computed
+   * Checks if a density map on dimensions dim0 and dim1 is available.
+   * Hint: dim0 and dim1 can't be identical. The order of d0 and d1 is ignored.
+   * @param  {!number} dim0 1st dimension index
+   * @param  {!number} dim1 2nd dimension index
+   * @return {!boolean} True, if a densitymap for dimensions d0, d1 has been computed
    */
   this.isDensityMapReady = function fIsDensityMapReady(dim0, dim1) {
     let d0 = dim0;
@@ -220,10 +209,10 @@ export function Dataset() {
    * When a function is passed to ondone, the density map is computed by a background worker,
    * otherwise it is computed on the current thread.
    * After the worker has finished all ondone events for calls to this function are fired.
-   * Hint: d0 and d1 can't be identical. The order of d0 and d1 is ignored.
-   * @summary Returns a density map for dimensions d0 and d1.
-   * @param  {!number} dim0
-   * @param  {!number} dim1
+   * Hint: dim0 and dim1 can't be identical. The order of dim0 and dim1 is ignored.
+   * @summary Returns a density map for dimensions dim0 and dim1.
+   * @param  {!number} dim0 1st dimension index
+   * @param  {!number} dim1 2nd dimension index
    * @param  {number=} size=1024 The width and height of the density map
    * @param  {DensityMapOptions=} options
    * @param  {function(DensityMap)=} ondone A function to be called when the density map is ready
@@ -235,7 +224,8 @@ export function Dataset() {
     let size = mapSize;
     // Validate inputs
     if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) {
-      libUtility.consoleWarn('GlobalView warning: Requesting density map for dimensions {0}, {1} on a dataset with only {2} data vectors'.format(d0, d1, this.dataVectors.length));
+      libUtility.consoleWarn(('GlobalView warning: Requesting density map for dimensions {0}, {1} on a dataset with only {2} data vectors')
+        .format(d0, d1, this.dataVectors.length));
       return null;
     }
     // Firefox tends to crash with Parallel.js
@@ -325,7 +315,6 @@ export function Dataset() {
     }
     if (!densityMap) {
       // If densityMapsArray[d0][d1] isn't computed or being computed yet
-      // var tStart = performance.now();
       let histogram = libAlgorithm.computeHistogram2D(this, d0, d1, size, size);
       densityMap = new libAlgorithm.DensityMap(libAlgorithm.computeDensityMap(
         histogram,
@@ -333,7 +322,6 @@ export function Dataset() {
       ));
       densityMapsArray[d0][d1] = densityMap;
       histogram = null; // Free histogram
-      // libUtility.consoleLog(performance.now() - tStart + "ms");
     } else if (densityMap.old &&
         (!options || libAlgorithm.DensityMapOptions.equals(densityMap.old.options, options))) {
       // If the deprecated densityMap satisfies our requested options
@@ -348,6 +336,13 @@ export function Dataset() {
     return /** @type {DensityMap} */(densityMap);
   };
 
+  /**
+   * Checks if a cluster map on dimensions dim0 and dim1 is available.
+   * Hint: dim0 and dim1 can't be identical. The order of dim0 and dim1 is ignored.
+   * @param  {!number} dim0 1st dimension index
+   * @param  {!number} dim1 2nd dimension index
+   * @return {!boolean} True, if a clustermap for dimensions d0, d1 has been computed
+   */
   this.isClusterMapReady = function fIsClusterMapReady(dim0, dim1) {
     let d0 = dim0;
     let d1 = dim1;
@@ -372,6 +367,18 @@ export function Dataset() {
       (libUtility.isUndefined(clusterMapsArray[d0][d1].pending) || clusterMapsArray[d0][d1].old);
   };
 
+  /**
+   * This function returns a cluster map for the given dimensions.
+   * If the cluster map doesn't exist it is computed.
+   * When a function is passed to ondone, the cluster map is computed by a background worker,
+   * otherwise it is computed on the current thread.
+   * After the worker has finished all ondone events for calls to this function are fired.
+   * Hint: dim0 and dim1 can't be identical. The order of dim0 and dim1 is ignored.
+   * @param  {!number} dim0 1st dimension index
+   * @param  {!number} dim1 2nd dimension index
+   * @param  {ClusterMapOptions=} options
+   * @param  {function(ClusterMap)=} ondone A function to be called when the cluster map is ready
+   */
   this.requestClusterMap = function fRequestClusterMap(dim0, dim1, options, ondone) {
     let d0 = dim0;
     let d1 = dim1;
@@ -482,79 +489,14 @@ export function Dataset() {
     return null;
   };
 
-  this.inflate = function fInflate(factor, densityMapChain) {
-    const n = this.length;
-    const nInflated = Math.floor(factor * n);
-    const nc = this.numColumns;
-    if (Number.isNaN(nInflated) || nInflated <= n) {
-      return;
-    }
-    const fdata = this.fdata;
-    const fdataInflated = new Float32Array(nInflated * nc);
-    const data = this.data;
-    const dataInflated = new Array(nInflated * nc);
-
-    for (let i = 0, len = n * nc; i < len; i += 1) {
-      fdataInflated[i] = fdata[i];
-    }
-    for (let i = 0, len = n * nc; i < len; i += 1) {
-      dataInflated[i] = data[i];
-    }
-
-    let column;
-    let samples;
-    let sample;
-    const sampleScale = 1 / densityMapChain[0].size;
-    for (let iInflated = n; iInflated < nInflated; iInflated += 1) {
-      // i = iInflated % n;
-
-      samples = libAlgorithm.sampleDensityMapChain(densityMapChain);
-      for (let c = 0; c < nc; c += 1) {
-        column = this.columns[c];
-        sample = column.minimum + ((column.maximum - column.minimum) * samples[c] * sampleScale);
-
-        if (column.values) {
-          // If column is qualitative
-          sample = Math.max(0, Math.min(column.values.length - 1, Math.round(sample)));
-          fdataInflated[(iInflated * nc) + c] = sample;
-          dataInflated[(iInflated * nc) + c] = column.values[sample];
-        } else {
-          // If column is numeric
-          fdataInflated[(iInflated * nc) + c] = sample;
-          dataInflated[(iInflated * nc) + c] = sample;
-        }
-      }
-    }
-    this.fdata = fdataInflated;
-    this.data = dataInflated;
-
-    if (this.names !== null) {
-      const names = /** @type {Array<string>} */ (this.names);
-      const namesInflated = new Array(nInflated);
-      for (let i = 0, len = n; i < len; i += 1) {
-        namesInflated[i] = names[i];
-      }
-      for (let index = 0, iInflated = n; iInflated < nInflated; iInflated += 1) {
-        namesInflated[iInflated] = `generated datapoint ${index += 1}`;
-      }
-      this.names = namesInflated;
-    }
-
-    if (this.imageFilenames !== null) {
-      const imageFilenames = /** @type {Array<string>} */ (this.imageFilenames);
-      const imageFilenamesInflated = new Array(nInflated);
-      for (let i = 0, len = n; i < len; i += 1) {
-        imageFilenamesInflated[i] = imageFilenames[i];
-      }
-      for (let iInflated = n; iInflated < nInflated; iInflated += 1) {
-        imageFilenamesInflated[iInflated] = imageFilenames[iInflated % n];
-      }
-      this.imageFilenames = imageFilenamesInflated;
-    }
-
-    this.length = nInflated;
-  };
-
+  /**
+   * Saves the dataset to a csv file and triggers downloading the file.
+   * When nameColumnIndex and nameColumnLabel are specified, row names are saved as a new column
+   * at the specified column index and with the specified label.
+   * @param {string} filename filename for the created csv files
+   * @param {number} [nameColumnIndex] index for the generated name column
+   * @param {string} [nameColumnLabel] label for the generated name column
+   */
   this.save = function fSave(filename, nameColumnIndex, nameColumnLabel) {
     let nameColumn = nameColumnIndex;
     const nc = this.numColumns;
@@ -599,29 +541,28 @@ export function Dataset() {
   };
 }
 
-
 // >>> Random dataset
 
 /**
- * A randomly generated dataset
+ * Creates a randomly generated dataset
  * @extends {Dataset}
  * @constructor
  * @export
- * @param {number} n Number of rows (points) of the dataset
- * @param {number} nc Number of columns (dimensions) of the dataset
+ * @param {number} numRows Number of rows (points) of the dataset
+ * @param {number} numCols Number of columns (dimensions) of the dataset
  * @param {function(Dataset)} onload Event handler, called after the dataset was created
  */
-export function RandomDataset(n, nc, onload) {
+export function RandomDataset(numRows, numCols, onload) {
   Dataset.call(this);
 
-  this.numColumns = nc;
-  this.length = n;
-  for (let i = 0; i < nc; i += 1) {
-    this.columns.push({ minimum: 0, maximum: 1, label: generateColumnName(i, nc) });
+  this.numColumns = numCols;
+  this.length = numRows;
+  for (let i = 0; i < numCols; i += 1) {
+    this.columns.push({ minimum: 0, maximum: 1, label: generateColumnName(i, numCols) });
     this.dataVectors.push(new DataVector(this, i));
   }
 
-  const nnc = n * nc;
+  const nnc = numRows * numCols;
   this.fdata = new Float32Array(nnc);
   for (let i = 0; i < nnc; i += 1) {
     this.fdata[i] = Math.random();
@@ -639,9 +580,9 @@ export function RandomDataset(n, nc, onload) {
  * A map of valid options for CSV datasets with option descriptions and validation functions
  * @const
  * @enum {{
- * description: string,
- * default: *,
- * valid: Array
+ *  description: string,
+ *  default: *,
+ *  valid: Array
  * }}
 */
 const CSV_DATASET_OPTIONS = {
@@ -980,14 +921,23 @@ export function CsvDataset(file, options, onload) {
 
 // >>> Helper functions
 
-function generateColumnName(i, nc) {
+/**
+ * Creates an auto-generated column name.
+ * When numColumns is <= 4, the names will be x, y, z, and w.
+ * When numColumns is <= 26, the names will be A, B, ... Z.
+ * For larger numColumns, the names will be c1, c2, ...
+ * @param {number} columnIndex The index of the column to generate the name for.
+ *                             Should be less than numColumns
+ * @param {number} numColumns Total number of columns.
+ */
+function generateColumnName(columnIndex, numColumns) {
   const XYZW = ['x', 'y', 'z', 'w'];
-  if (nc <= XYZW.length) {
-    return XYZW[i]; // x, y, z, w
-  } else if (nc <= 26) {
-    return String.fromCharCode(65 + i); // A, B, C, ...
+  if (numColumns <= XYZW.length && columnIndex <= XYZW.length) {
+    return XYZW[columnIndex]; // x, y, z, w
+  } else if (numColumns <= 26 && columnIndex <= 26) {
+    return String.fromCharCode(65 + columnIndex); // A, B, C, ...
   }
-  return `c${i + 1}`; // c1, c2, c3, ...
+  return `c${columnIndex + 1}`; // c1, c2, c3, ...
 }
 
 function parseData(input) {

@@ -5,16 +5,6 @@ const libGlMatrix = require('gl-matrix');
 
 export const COLORMAP_WIDTH = 10; // [pixel]
 
-/**
- * A class holding the active colormap for the global view.
- * This class also draws a color axis to the right of the scatter plot.
- * @constructor
- * @package
- * @implements {Viewer}
- * @param {Object} gl // {WebGLRenderingContext}
- * @param {Object} globalView // {GlobalView}
- */
-
 // http://base64online.org/encode
 // http://textmechanic.co/Line-Length-Breaker.html
 const imageExhue =
@@ -39,6 +29,15 @@ const imageRainbow =
 
 let colormaps = {};
 
+/**
+ * A class holding the active colormap for the global view.
+ * This class also draws a color axis to the right of the scatter plot.
+ * @constructor
+ * @package
+ * @implements {Viewer}
+ * @param {Object} gl // {WebGLRenderingContext}
+ * @param {Object} globalView // {GlobalView}
+ */
 export function Colormap(gl, globalView) {
   const TICK_LENGTH = 6; // [pixel]
   const NUM_TICKS = 10;
@@ -70,8 +69,7 @@ export function Colormap(gl, globalView) {
       2, 1,
     ),
   };
-  // not used:
-  // this.builtinColormaps = ['exhue', 'rainbow'];
+
   let texColormap = colormaps.exhue;
 
   // Create a 2D line mesh
@@ -116,6 +114,15 @@ export function Colormap(gl, globalView) {
   };
 
   this.visible = true;
+  /**
+   * Draws the colormap
+   * @param {boolean} flipY
+   * @param {Object} plotBounds -
+   * @param {Object} plotBounds.x -
+   * @param {Object} plotBounds.y -
+   * @param {Object} plotBounds.width -
+   * @param {Object} plotBounds.height -
+   */
   this.render = function (flipY, plotBounds) {
     if (!this.visible) {
       return;
@@ -174,6 +181,7 @@ export function Colormap(gl, globalView) {
     sdrLine.matWorldViewProj(mattrans);
     meshLine.draw();
     libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -1.0, 0.0]);
+
     for (let i = 0; i < axis.tickCount; i += 1) {
       const y = axis.tickOffset + (i * axis.tickDistance);
       const tickPos = (y - axis.minimum) / (axis.maximum - axis.minimum);
@@ -215,6 +223,7 @@ export function Colormap(gl, globalView) {
   }
 
   /**
+   * Sets the color map axis by specifying a numeric range
    * @param  {number} minimum
    * @param  {number} maximum
    * @param  {boolean=} changeTickDistance=true
@@ -256,6 +265,12 @@ export function Colormap(gl, globalView) {
     }
   };
 
+  /**
+   * Sets color map axis by specifying an enumerated labels for tick values
+   * @param {number} rangeMin  axis range minimum
+   * @param {number} rangeMax  axis range maximum
+   * @param {Object.<number, string>} values tick labels
+   */
   this.setEnumRange = function (rangeMin, rangeMax, values) {
     const minimum = rangeMin - 0.5; // 0.5 ... Move to center of value-bin
     const maximum = rangeMax - 0.5; // 0.5 ... Move to center of value-bin
@@ -271,6 +286,10 @@ export function Colormap(gl, globalView) {
     );
   };
 
+  /**
+   * Sets the axis label
+   * @param {string} label
+   */
   this.setLabel = function (label) {
     axis.label = label;
   };
@@ -294,6 +313,8 @@ export function Colormap(gl, globalView) {
       }
     }
   };
+
+  /** Eventhandler: recompute the axis ranges */
   this.onPlotBoundsChanged = function (/* plotBounds */) {
     if (axis.values === null) {
       this.setNumericRange(axis.minimum, axis.maximum, true);
@@ -302,6 +323,7 @@ export function Colormap(gl, globalView) {
     }
   };
 
+  /** Returns the texture used for the colormap */
   this.getTexture = function () {
     return texColormap;
   };
@@ -311,6 +333,11 @@ export function Colormap(gl, globalView) {
   };
 }
 
+/**
+ * Checks if the specified parameter is a valid color
+ * @param {(string|number[])} color
+ * @returns {(boolean|string)} true of a valid color, otherwise the string error message
+ */
 export function validateColor(color) {
   if (libUtility.isString(color)) {
     if (!libUtility.isUndefined(libUtility.colorNameToHex(color))) {
@@ -336,6 +363,11 @@ export function validateColor(color) {
   return `Unknown color ${color}`;
 }
 
+/**
+ * Converts color parameter to a Uint8Array [r, g, b, a]
+ * @param {(string|number[])} color
+ * @returns {Uint8Array} Unit8Array of length 4: [r, g, b, a]
+ */
 export function parseColor(color) {
   if (libUtility.isString(color)) {
     const hex = libUtility.colorNameToHex(color);
@@ -350,6 +382,12 @@ export function parseColor(color) {
   return null;
 }
 
+/**
+ * validates the colormap parameters
+ * @param {(string|number[4])} colormap either the color map name or an array.
+ * Colormap array length must be multiple of 4 and contain numbers between 0 and 255.
+ * @returns {(boolean|string)} true of a valid color map, otherwise the string error message
+ */
 export function validateColormap(colormap) {
   if (colormap === null) {
     return true;
@@ -388,6 +426,12 @@ export function validateColormap(colormap) {
   return `Unknown colormap ${colormap}`;
 }
 
+/**
+ * Parses the colormap and returns an array of Uint8Array
+ * @param {(string|number[4])} colormap either the color map name or an array.
+ * Colormap array length must be multiple of 4 and contain numbers between 0 and 255.
+ * @returns {Uint8Array} Colormap colors as an array of size [colormapLength * 4]
+ */
 export function parseColormap(colormap) {
   if (libUtility.isString(colormap)) {
     return parseColor(colormap);
