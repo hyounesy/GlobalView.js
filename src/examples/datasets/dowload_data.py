@@ -27,16 +27,19 @@ for csvFilename in csvFilenames:
     downloadIfNotExists(csvURL, csvFilename)
 
     imageNames = set()
+    imagesDirectory = './AICS_Cell-feature-analysis_v1.5_images/'
 
     with open(csvFilename, 'rt') as csvfile:
         print('Procesing', csvFilename)
         csvreader = csv.reader(csvfile, delimiter=',')
         next(csvreader, None)  # skip the headers
+        if not os.path.exists(imagesDirectory):
+            os.makedirs(imagesDirectory)
         for row in csvreader:
             imageName = row[1];
             if imageName not in imageNames:
                 # imageName = imageName.replace(' ', '%20')
                 # imageNames.add(imageName)
                 imageURL = "http://homepage.univie.ac.at/a0929188/GlobalView/images/" + imageName + '.png'
-                imageFilename = './AICS_Cell-feature-analysis_v1.5_images/' + imageName + '.png'
+                imageFilename = imagesDirectory + imageName + '.png'
                 downloadIfNotExists(imageURL, imageFilename)
