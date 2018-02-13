@@ -1,10 +1,5 @@
 const globalView = require('../../../dist/global-view.js');
 
-function EmptyDataset(n) {
-  globalView.Dataset.call(this);
-  this.length = n;
-}
-
 export default function testFormula(div, ondone) {
   const plot = new globalView.GlobalView(div, {
     pointSize: 1.5,
@@ -12,6 +7,14 @@ export default function testFormula(div, ondone) {
     showColormap: false,
   });
   this.getPlot = () => plot;
+
+  class EmptyDataset extends globalView.Dataset {
+    constructor(n) {
+      super();
+      this.length = n;
+    }
+  }
+
   const dataset = new EmptyDataset(10000);
   dataset.dataVectors.push(new globalView.DataVector(dataset, 'i'));
   dataset.dataVectors.push(new globalView.DataVector(dataset, 'sin(i * 8.0 * PI / n)'));
