@@ -32,883 +32,1464 @@ const ND = 4; // Number of dimensions
 let OptionDescription; // eslint-disable-line no-unused-vars
 
 /**
+ * A class containing variables and functions for transforming data vectors into device space
+ */
+export class Transform {
+  /**
+   * @constructor
+   * @package
+   * @param {*} plot GlobalView plot
+   */
+  constructor(plot) {
+    this.plot = plot;
+    this.dataset = plot.dataset;
+    this.activeInputs = plot.activeInputs;
+    this.animatedInputs = plot.animatedInputs;
+    this.plotBounds = plot.plotBounds;
+    this.gl = plot.gl;
+
+    this.offsets = new Float32Array(ND);
+    this.scales = new Float32Array(ND);
+    this.animatedScales = new Float32Array(ND);
+    this.invalid = false;
+  }
+
+  // Setter methods
+
+  setFromMinMax(d, minimum, maximum) {
+    this.dataset.dataVectors[d].scale = maximum - minimum;
+    if (this.dataset.dataVectors[d].scale > -1e-5 && this.dataset.dataVectors[d].scale < 1e-5) {
+      this.dataset.dataVectors[d].offset =
+        0.5 - (0.5 * (minimum + maximum) * (this.dataset.dataVectors[d].scale = 0.5));
+    } else {
+      this.dataset.dataVectors[d].offset =
+        -minimum * (this.dataset.dataVectors[d].scale = 1 / this.dataset.dataVectors[d].scale);
+    }
+    this.invalid = true;
+
+    if (d === this.activeInputs[0]) {
+      this.plot.updateCoorinateSystem(0, this.activeInputs[0]);
+    }
+    if (d === this.activeInputs[1]) {
+      this.plot.updateCoorinateSystem(1, this.activeInputs[1]);
+    }
+    if (d === this.activeInputs[2]) {
+      this.plot.updateColormap(this.activeInputs[2]);
+    }
+    if (d === this.activeInputs[0] || d === this.activeInputs[1] || d === this.activeInputs[2]) {
+      this.plot.invalidate();
+    }
+  }
+
+  translate(d, distance) {
+    this.dataset.dataVectors[d].offset += distance * this.dataset.dataVectors[d].scale;
+    this.invalid = true;
+
+    if (d === this.activeInputs[0]) {
+      this.plot.updateCoorinateSystem(0, this.activeInputs[0], false);
+    }
+    if (d === this.activeInputs[1]) {
+      this.plot.updateCoorinateSystem(1, this.activeInputs[1], false);
+    }
+    if (d === this.activeInputs[2]) {
+      this.plot.updateColormap(this.activeInputs[2], false);
+    }
+    if (d === this.activeInputs[0] || d === this.activeInputs[1] || d === this.activeInputs[2]) {
+      this.plot.invalidate();
+    }
+  }
+
+  scale(d, factor) {
+    this.dataset.dataVectors[d].scale *= factor;
+    this.invalid = true;
+
+    if (d === this.activeInputs[0]) {
+      this.plot.updateCoorinateSystem(0, this.activeInputs[0]);
+    }
+    if (d === this.activeInputs[1]) {
+      this.plot.updateCoorinateSystem(1, this.activeInputs[1]);
+    }
+    if (d === this.activeInputs[2]) {
+      this.plot.updateColormap(this.activeInputs[2]);
+    }
+    if (d === this.activeInputs[0] || d === this.activeInputs[1] || d === this.activeInputs[2]) {
+      this.plot.invalidate();
+    }
+  }
+
+  onInputChanged() {
+    this.invalid = true;
+    return true;
+  }
+
+  // Getter methods
+  getOffset(d) {
+    return this.dataset.dataVectors[this.activeInputs[d]].offset;
+  }
+
+  getScale(d) {
+    return this.dataset.dataVectors[this.activeInputs[d]].scale;
+  }
+
+  getMinimum(d) {
+    return this.dataset.dataVectors[this.activeInputs[d]].minimum;
+  }
+
+  getMaximum(d) {
+    return this.dataset.dataVectors[this.activeInputs[d]].maximum;
+  }
+
+  getVisibleMinimum(d) {
+    return (0 - this.dataset.dataVectors[this.activeInputs[d]].offset) /
+    this.dataset.dataVectors[this.activeInputs[d]].scale;
+  }
+
+  getVisibleMaximum(d) {
+    return (1 - this.dataset.dataVectors[this.activeInputs[d]].offset) /
+      this.dataset.dataVectors[this.activeInputs[d]].scale;
+  }
+
+  getOffsets() {
+    if (this.invalid === true) {
+      this.recompute();
+    }
+    return this.offsets;
+  }
+
+  getScales() {
+    if (this.invalid === true) {
+      this.recompute();
+    }
+    return this.scales;
+  }
+
+  getAnimatedScales() {
+    if (this.invalid === true) {
+      this.recompute();
+    }
+    return this.animatedScales;
+  }
+
+  // Transformation methods
+  deviceCoordToDatasetCoord(vOutCoord, vInCoord) {
+    const vOut = vOutCoord;
+    const vIn = vInCoord;
+    if (this.invalid === true) {
+      this.invalid = false;
+      this.recompute();
+    }
+    for (let d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; d += 1) {
+      vOut[d] = (vIn[d] - this.offsets[d]) / this.scales[d];
+    }
+    return vOut;
+  }
+
+  deviceDistToDatasetDist(vOutCoord, vInCoord) {
+    const vOut = vOutCoord;
+    const vIn = vInCoord;
+    if (this.invalid === true) {
+      this.invalid = false;
+      this.recompute();
+    }
+    for (let d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; d += 1) {
+      vOut[d] = vIn[d] / this.scales[d];
+    }
+    return vOut;
+  }
+
+  datasetCoordToDeviceCoord(vOutCoord, vInCoord) {
+    const vOut = vOutCoord;
+    const vIn = vInCoord;
+    if (this.invalid === true) {
+      this.invalid = false;
+      this.recompute();
+    }
+    for (let d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; d += 1) {
+      vOut[d] = this.offsets[d] + (vIn[d] * this.scales[d]);
+    }
+    return vOut;
+  }
+
+  datasetDistToDeviceDist(vOutCoord, vInCoord) {
+    const vOut = vOutCoord;
+    const vIn = vInCoord;
+    if (this.invalid === true) {
+      this.invalid = false;
+      this.recompute();
+    }
+    for (let d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; d += 1) {
+      vOut[d] = vIn[d] * this.scales[d];
+    }
+    return vOut;
+  }
+
+  transformPos(vOutCoord, vInCoord) {
+    const vOut = vOutCoord;
+    const vIn = vInCoord;
+    if (this.invalid === true) {
+      this.invalid = false;
+      this.recompute();
+    }
+    for (let d = 0, nd = vOut.length; d < nd; d += 1) {
+      vOut[d] = this.offsets[d] + (vIn[this.activeInputs[d]] * this.scales[d]);
+    }
+    return vOut;
+  }
+
+  transformNml(vOutCoord, vInCoord) {
+    const vOut = vOutCoord;
+    const vIn = vInCoord;
+    if (this.invalid === true) {
+      this.invalid = false;
+      this.recompute();
+    }
+    for (let d = 0, nd = vOut.length; d < nd; d += 1) {
+      vOut[d] = vIn[this.activeInputs[d]] * this.scales[d];
+    }
+    return vOut;
+  }
+
+  transformNml2(vOutCoord, vInCoord) {
+    const vOut = vOutCoord;
+    const vIn = vInCoord;
+    if (this.invalid === true) {
+      this.invalid = false;
+      this.recompute();
+    }
+    for (let d = 0, nd = vOut.length; d < nd; d += 1) {
+      vOut[d] = vIn[this.activeInputs[d]] * this.dataset.dataVectors[this.activeInputs[d]].scale;
+    }
+    return vOut;
+  }
+
+  // Methods modifying offsets, scales and animatedScales
+  recompute() {
+    this.invalid = false;
+
+    // Compute offsets and scales for active inputs
+    for (let d = 0; d < ND; d += 1) {
+      this.offsets[d] = this.dataset.dataVectors[this.activeInputs[d]].offset;
+      this.scales[d] = this.dataset.dataVectors[this.activeInputs[d]].scale;
+      this.animatedScales[d] = 0;
+    }
+
+    // Transform first two dimensions offsets and scales into device coordinates
+    this.offsets[0] *= (2 * this.plotBounds.width) / this.gl.width;
+    this.offsets[0] += ((2 * this.plotBounds.x) / this.gl.width) - 1;
+    this.offsets[1] *= (2 * this.plotBounds.height) / this.gl.height;
+    this.offsets[1] += ((2 * this.plotBounds.y) / this.gl.height) - 1;
+    this.scales[0] *= (2 * this.plotBounds.width) / this.gl.width;
+    this.scales[1] *= (2 * this.plotBounds.height) / this.gl.height;
+    this.animatedScales[0] *= (2 * this.plotBounds.width) / this.gl.width;
+    this.animatedScales[1] *= (2 * this.plotBounds.height) / this.gl.height;
+
+    return this.offsets;
+  }
+
+  animate() {
+    this.invalid = false;
+
+    let isAnimating = false;
+
+    // Compute offsets and scales, either static based on activeInputs,
+    // or animated between activeInputs and animatedInputs
+    const oi = this.animatedInputs.map(anim => anim.origin);
+    const di = this.activeInputs;
+    for (let d = 0; d < ND; d += 1) {
+      const ts = this.dataset.dataVectors[di[d]].scale;
+      const tt = this.dataset.dataVectors[di[d]].offset;
+
+      if (this.animatedInputs[d].origin === this.activeInputs[d]) {
+        this.scales[d] = ts;
+        this.offsets[d] = tt;
+        this.animatedScales[d] = 0;
+      } else {
+        const os = this.dataset.dataVectors[oi[d]].scale;
+        const ot = this.dataset.dataVectors[oi[d]].offset;
+
+        let alpha = this.animatedInputs[d].f;
+        this.offsets[d] = (alpha * tt) + ((1 - alpha) * ot);
+        alpha *= Math.PI / 2.0;
+        this.scales[d] = Math.sin(alpha) * ts;
+        this.animatedScales[d] = Math.cos(alpha) * os;
+
+        this.animatedInputs[d].f += this.plot.deltaTime * 0.001;
+        if (this.animatedInputs[d].f >= 1.0) {
+          this.animatedInputs[d].origin = this.activeInputs[d];
+        }
+
+        isAnimating = true;
+      }
+    }
+
+    // Transform first two dimensions offsets and scales into device coordinates
+    this.offsets[0] *= (2 * this.plotBounds.width) / this.gl.width;
+    this.offsets[0] += ((2 * this.plotBounds.x) / this.gl.width) - 1;
+    this.offsets[1] *= (2 * this.plotBounds.height) / this.gl.height;
+    this.offsets[1] += ((2 * this.plotBounds.y) / this.gl.height) - 1;
+    this.scales[0] *= (2 * this.plotBounds.width) / this.gl.width;
+    this.scales[1] *= (2 * this.plotBounds.height) / this.gl.height;
+    this.animatedScales[0] *= (2 * this.plotBounds.width) / this.gl.width;
+    this.animatedScales[1] *= (2 * this.plotBounds.height) / this.gl.height;
+
+    return isAnimating;
+  }
+}
+
+/**
  * @summary A fast scatterplot rendered with WebGL
- * @constructor
- * @export
  */
 // eslint-disable-next-line import/prefer-default-export
-export function GlobalView(div, startupOptions) {
-  const globalView = this;
-  if (!(this instanceof GlobalView)) {
-    throw new Error('GlobalView cannot be invoked without "new"');
-  }
-
-  let canvas = null;
-  for (let i = 0; i < div.children.length; i += 1) {
-    if (div.children[i] instanceof HTMLCanvasElement && div.children[i].globalViewWebGLCanvas) {
-    // If div already contains a GlobalView-WebGL-canvas, ...
-    // Share canvas
-      canvas = /** @type {HTMLCanvasElement} */ (div.children[i]);
-      break;
-    }
-  }
-  if (canvas === null) {
-    canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
-    canvas.setAttribute('id', 'webGLCanvas');
-    canvas.style.position = 'static';// "absolute";
-    canvas.style.left = '0px';
-    canvas.style.top = '0px';
-    canvas.style.width = '100%';
-    canvas.style.height = '100%';
-    canvas.style.backgroundColor = 'transparent';
-    canvas.globalViewWebGLCanvas = true;
-    div.appendChild(canvas);
-  }
-
-  this.invalidate = function () {}; // Silently ignore calls to invalidate during initialization
-
-  const gl = canvas.getContext('webgl');
-  if (!gl) {
-    libUtility.showAlert('Error: WebGL not supported');
-    return;
-  }
-  const OESElementIndexUint = gl.getExtension('OES_element_index_uint');
-  if (!OESElementIndexUint) {
-    libUtility.consoleWarn('GlobalView warning: ' +
-      'Unsupported WebGL extension: OES_element_index_uint');
-  }
-  gl.ext = gl.getExtension('ANGLE_instanced_arrays');
-  if (!gl.ext) {
-    libUtility.consoleWarn('GlobalView warning: ' +
-      'Unsupported WebGL extension: ANGLE_instanced_arrays');
-  }
-
-  const divStyle = window.getComputedStyle(div);
-
-  let coordSys = null;
-  let colormap = null;
-
-
-  gl.backColor = divStyle.backgroundColor === 'transparent' ?
-    [0, 0, 0, 0] :
-    libUtility.rgbStringToFloatArray(divStyle.backgroundColor);
-  gl.foreColor = libUtility.rgbStringToFloatArray(gl.foreColorString = divStyle.color);
-
+export class GlobalView {
   /**
-   * Call this method after updating the parent div's color or background-color styles
-   * in order for the changes to be applied to the rendering pipeline.
-   * @summary Apply div foreground- and background colors to the plot
+   * @constructor
+   * @export
+   * @param {*} divElement the html div element to contain the canvas
+   * @param {*} startupOptions  startup options
    */
-  this.updateColorSchema = function () {
-    const vDivStyle = window.getComputedStyle(div);
-    gl.backColor = vDivStyle.backgroundColor === 'transparent' ?
-      [0, 0, 0, 0] : libUtility.rgbStringToFloatArray(vDivStyle.backgroundColor);
-    gl.foreColor = libUtility.rgbStringToFloatArray(gl.foreColorString = vDivStyle.color);
-    gl.clearColor(...gl.backColor);
-    // histogramViewer.updateColorSchema();
-    coordSys.updateColorSchema();
-    colormap.updateColorSchema();
-    this.invalidate();
-  };
-
-  const trc = new libTextRenderContext.TextRenderContext(gl, canvas);
-  // trc.setFont("10px monospace");
-  trc.setFont(`${divStyle.fontSize} ${divStyle.fontFamily}`);
-
-  /**
-   * Call this method after updating the parent div's font style
-   * in order for the changes to be applied to the rendering pipeline.
-   * @summary Apply div font to the plot
-   */
-  this.updateFont = function () {
-    const vDivStyle = window.getComputedStyle(div);
-    trc.setFont(`${vDivStyle.fontSize} ${vDivStyle.fontFamily}`);
-    this.invalidate();
-  };
-
-  let t = performance.now();
-  let dt = 0.1;
-  let fps = null;
-  let fpsStart = t;
-  let frameCounter = 0;
-
-  const pointViewer = new libPointViewer.PointViewer(gl, this);
-  const imageViewer = new libImageViewer.ImageViewer(gl, this);
-  const densityViewer = new libDensityViewer.DensityViewer(gl, this);
-  const histogramViewer = new libHistogramViewer.HistogramViewer(gl, this);
-  coordSys = new libCoordinateSystem.CoordinateSystem(gl, this);
-  colormap = new libColormap.Colormap(gl, this);
-  /** @type  {Array<Viewer>} */ const viewers = [
-    pointViewer, imageViewer, densityViewer, histogramViewer, coordSys, colormap];
-
-  let dataset = null;
-  let activeInputs = Array.create(ND, -1);
-  const animatedInputs = Array.create(ND, () => ({ target: null, f: 0 }));
-
-  this.points = pointViewer.points;
-  pointViewer.representativePoints = pointViewer.createPointSet([0, 255, 0, 255], 1);
-  this.createPointSet = pointViewer.createPointSet;
-  this.removePointSet = pointViewer.removePointSet;
-
-  let mouseRect = null;
-  let mousePolygon = null;
-  let pointDrag = null;
-
-  let invalidating = false;
-  let tf = null;
-  let plotBounds = {
-    x: 0, y: 0, width: 0, height: 0,
-  }; // Plot bounds [pixel]
-
-  function render(pFlipY) {
-    let flipY = pFlipY;
-    invalidating = false;
-    if (typeof flipY !== 'boolean') {
-      flipY = false;
+  constructor(divElement, startupOptions) {
+    if (!(this instanceof GlobalView)) {
+      throw new Error('GlobalView cannot be invoked without "new"');
     }
-    gl.clear(gl.COLOR_BUFFER_BIT);
-    trc.clear();
-    if (plotBounds.width <= 0 || plotBounds.height <= 0) {
+
+    this.canvas = null;
+    this.div = divElement;
+    this.initializeCanvas(divElement);
+
+    // Silently ignore calls to invalidate during initialization
+    this.disableInvalidate = true;
+
+    this.gl = this.canvas.getContext('webgl');
+    if (!this.gl) {
+      libUtility.showAlert('Error: WebGL not supported');
       return;
     }
+    const OESElementIndexUint = this.gl.getExtension('OES_element_index_uint');
+    if (!OESElementIndexUint) {
+      libUtility.consoleWarn('GlobalView warning: ' +
+        'Unsupported WebGL extension: OES_element_index_uint');
+    }
+    this.gl.ext = this.gl.getExtension('ANGLE_instanced_arrays');
+    if (!this.gl.ext) {
+      libUtility.consoleWarn('GlobalView warning: ' +
+        'Unsupported WebGL extension: ANGLE_instanced_arrays');
+    }
 
-    gl.enable(gl.SCISSOR_TEST);
-    gl.scissor(plotBounds.x, flipY ?
-      gl.height - plotBounds.y - plotBounds.height :
-      plotBounds.y, plotBounds.width, plotBounds.height);
+    const divStyle = window.getComputedStyle(divElement);
 
-    if (tf !== null) {
-      const isAnimating = tf.animate();
-      if (isAnimating) {
-        globalView.invalidate();
+    this.gl.backColor = divStyle.backgroundColor === 'transparent' ?
+      [0, 0, 0, 0] :
+      libUtility.rgbStringToFloatArray(divStyle.backgroundColor);
+    this.gl.foreColor = libUtility.rgbStringToFloatArray(this.gl.foreColorString = divStyle.color);
+
+    this.textRenderContext = new libTextRenderContext.TextRenderContext(this.gl, this.canvas);
+    this.textRenderContext.setFont(`${divStyle.fontSize} ${divStyle.fontFamily}`);
+
+    this.timeNow = performance.now();
+    this.deltaTime = 0.1;
+    this.fps = null;
+    this.fpsStart = this.timeNow;
+    this.frameCounter = 0;
+
+    this.pointViewer = new libPointViewer.PointViewer(this.gl, this);
+    this.imageViewer = new libImageViewer.ImageViewer(this.gl, this);
+    this.densityViewer = new libDensityViewer.DensityViewer(this.gl, this);
+    this.histogramViewer = new libHistogramViewer.HistogramViewer(this.gl, this);
+    this.coordSys = new libCoordinateSystem.CoordinateSystem(this.gl, this);
+    this.colormap = new libColormap.Colormap(this.gl, this);
+    /** @type  {Array<Viewer>} */
+    this.viewers = [
+      this.pointViewer, this.imageViewer, this.densityViewer,
+      this.histogramViewer, this.coordSys, this.colormap];
+
+    this.dataset = null;
+    this.activeInputs = Array.create(ND, -1);
+    this.animatedInputs = Array.create(ND, () => ({ target: null, f: 0 }));
+
+    this.points = this.pointViewer.points;
+    this.pointViewer.representativePoints = this.pointViewer.createPointSet([0, 255, 0, 255], 1);
+    this.createPointSet = this.pointViewer.createPointSet;
+    this.removePointSet = this.pointViewer.removePointSet;
+
+    this.mouseRect = null;
+    this.mousePolygon = null;
+    this.pointDrag = null;
+
+    this.invalidating = false;
+    this.plotTransform = null;
+    this.plotBounds = {
+      x: 0, y: 0, width: 0, height: 0,
+    }; // Plot bounds [pixel]
+
+    /** @enum */
+    this.options = {};
+    this.offscreenRendering = null;
+
+    this.disableInvalidate = false;
+    this.resizeTimer = null;
+
+    // >>> Options
+
+    /**
+     * @summary A map of valid options with option descriptions,
+     *          validation functions and flags about side effects
+     * @const
+     * @enum {OptionDescription}
+    */
+    this.OPTIONS = {
+      // General plot options
+      /** The space around the drawing area in the form [top, right, bottom, left].
+       * X-axis, y-axis and colormap are drawn within padding space. */
+      padding: {
+        description: 'The space around the drawing area in the form [top, right, bottom, left].' +
+          ' X-axis, y-axis and colormap are drawn within padding space.',
+        default: [50, 60, 50, 50],
+        valid: value => libUtility.isNumber(value) || libUtility.isString(value) ||
+          (libUtility.isArray(value) && value.length === 4),
+        requireRedraw: true,
+        requireRecompile: false,
+      },
+      /** When enabled, shows a colormap to the right of the plot. */
+      showColormap: {
+        description: 'When enabled, shows a colormap to the right of the plot.',
+        default: true,
+        valid: [true, false],
+        requireRedraw: true,
+        requireRecompile: false,
+      },
+      /** When enabled, scrolling above the plot zooms in or out of the data. */
+      enableScrolling: {
+        description: 'When enabled, scrolling above the plot zooms in or out of the data.',
+        default: true,
+        valid: [true, false],
+        requireRedraw: false,
+        requireRecompile: false,
+      },
+      /** When enabled, thumbnails can be dragged with the mouse. */
+      enableThumbnailDragging: {
+        description: 'When enabled, thumbnails can be dragged with the mouse.',
+        default: true,
+        valid: [true, false],
+        requireRedraw: false,
+        requireRecompile: false,
+      },
+
+      // Advanced plot options
+      /** When enabled, the canvas is continuously rerendered at up to 60 frames per second.
+       *  Keep this setting disabled to save processing resources. */
+      enableContinuousRendering: {
+        description: 'When enabled, the canvas is continuously rerendered at up to 60 frames ' +
+          'per second. Keep this setting disabled to save processing resources.',
+        default: false,
+        valid: [true, false],
+        requireRedraw: true,
+        requireRecompile: false,
+      },
+      /** Enables/disables blending in WebGL. Whenever using any kind of transparency,
+       * this setting should be kept enabled. */
+      enableTransparency: {
+        description: 'Enables/disables blending in WebGL. Whenever using any kind of transparency' +
+          ', this setting should be kept enabled.',
+        default: true,
+        valid: [true, false],
+        requireRedraw: true,
+        requireRecompile: false,
+      },
+      /** When enabled, draws an image into the background, that shows density of points.
+       * (can be combined with 'showPointClusters') */
+      showPointDensity: {
+        description: 'When enabled, draws an image into the background,' +
+          ' that shows density of points. (can be combined with \'showPointClusters\')',
+        default: false,
+        valid: [true, false],
+        requireRedraw: true,
+        requireRecompile: false,
+      },
+      /** When enabled, draws an image into the background, that shows colored clusters of points.
+       * (can be combined with 'showPointDensity') */
+      showPointClusters: {
+        description: 'When enabled, draws an image into the background, ' +
+        'that shows colored clusters of points. (can be combined with \'showPointDensity\')',
+        default: false,
+        valid: [true, false],
+        requireRedraw: true,
+        requireRecompile: false,
+      },
+      pointClusterThreshold: {
+        description: 'Controls the realtive threshold between clusters and outliers when' +
+        ' showing clusters (see \'showPointClusters\')',
+        default: (new libAlgorithm.ClusterMapOptions()).threshold,
+        valid: value => value > 0,
+        requireRedraw: false, // Requests redraw internally
+        requireRecompile: false,
+      },
+
+      // Histogram options
+      /** When enabled, shows a histogram between the x-axis and the plot. */
+      showXAxisHistogram: {
+        description: 'When enabled, shows a histogram between the x-axis and the plot.',
+        default: false,
+        valid: [true, false],
+        requireRedraw: true,
+        requireRecompile: false,
+      },
+      /** When enabled, shows a histogram between the y-axis and the plot. */
+      showYAxisHistogram: {
+        description: 'When enabled, shows a histogram between the y-axis and the plot.',
+        default: false,
+        valid: [true, false],
+        requireRedraw: true,
+        requireRecompile: false,
+      },
+      /** When enabled, shows a histogram between the colormap and the plot. */
+      showColormapHistogram: {
+        description: 'When enabled, shows a histogram between the colormap and the plot.',
+        default: false,
+        valid: [true, false],
+        requireRedraw: true,
+        requireRecompile: false,
+      },
+      /** Controls the number of bins within each histogram in the scatterplot. */
+      numHistogramBins: {
+        description: 'Controls the number of bins within each histogram in the scatterplot.',
+        default: 50,
+        valid: value => value >= 1,
+        requireRedraw: true,
+        requireRecompile: false,
+      },
+      /** Controls the height of each histogram in the scatterplot (in pixels). */
+      histogramHeight: {
+        description: 'Controls the height of each histogram in the scatterplot (in pixels).',
+        default: 64,
+        valid: value => value >= 0,
+        requireRedraw: true,
+        requireRecompile: false,
+      },
+
+      // Point options
+      /** Controls the shape of data points in the scatterplot. */
+      pointShape: {
+        description: 'Controls the shape of data points in the scatterplot.',
+        default: 'Circle',
+        valid: ['Rectangle', 'Circle', 'Cross', 'Diamond', 'Gaussian', 'Custom'],
+        requireRedraw: true,
+        requireRecompile: true,
+      },
+      /** When 'pointShape' is set to 'Custom', this defines a GLSL function given vec2 p,
+       * that returns opacity in the range [0.0 ... 1.0] at location p. */
+      customPointShape: {
+        description: 'When \'pointShape\' is set to \'Custom\', this defines a GLSL function ' +
+          'given vec2 p, that returns opacity in the range [0.0 ... 1.0] at location p.',
+        default: '{ return 1.0; }',
+        valid: value => libGraphics.validateGLSL(this.gl, `float opacityMap(in vec2 p) ${value}`),
+        requireRedraw: true,
+        requireRecompile: true,
+      },
+      /** Controls the diameter of data points in the scatterplot (in pixels). */
+      pointSize: {
+        description: 'Controls the diameter of data points in the scatterplot (in pixels).',
+        default: 6,
+        valid: value => value >= 0,
+        requireRedraw: true,
+        requireRecompile: false,
+      },
+      /** Controls the visibility of data points in the scatterplot between
+       *  0 (invisible) and 1 (fully opaque). */
+      pointOpacity: {
+        description: 'Controls the visibility of data points in the scatterplot between ' +
+          '0 (invisible) and 1 (fully opaque).',
+        default: 1,
+        valid: value => value >= 0 && value <= 1,
+        requireRedraw: true,
+        requireRecompile: false,
+      },
+      /** Controls the color of data points in the scatterplot.
+       * Valid values are an array of bytes in RGBA order or a colormap name. */
+      pointColor: {
+        description: 'Controls the color of data points in the scatterplot. ' +
+        'Valid values are an array of bytes in RGBA order or a colormap name.',
+        default: 'exhue',
+        valid: value => libColormap.validateColormap(value),
+        requireRedraw: true,
+        requireRecompile: false,
+      },
+
+      // Thumbnail options
+      /** Controls the width/height of thumbnails in the scatterplot (in pixels). */
+      thumbnailSize: {
+        description: 'Controls the width/height of thumbnails in the scatterplot (in pixels).',
+        default: 64,
+        valid: value => value > 0,
+        requireRedraw: true,
+        requireRecompile: false,
+      },
+      /** Controls the width of thumbnail borders in the scatterplot. */
+      thumbnailBorderWidth: {
+        description: 'Controls the width of thumbnail borders in the scatterplot.',
+        default: 1,
+        valid: value => value >= 0,
+        requireRedraw: true,
+        requireRecompile: false,
+      },
+      /** Controls the color of thumbnail borders in the scatterplot.
+       * Valid values are an array of bytes in RGBA order, a color name or 'null'.
+       * If set to 'null', the CSS foreground color will be used. */
+      thumbnailBorderColor: {
+        description: 'Controls the color of thumbnail borders in the scatterplot. ' +
+          'Valid values are an array of bytes in RGBA order, a color name or \'null\'. ' +
+          'If set to \'null\', the CSS foreground color will be used.',
+        default: null,
+        valid: value => value === null || libColormap.validateColor(value),
+        requireRedraw: true,
+        requireRecompile: false,
+      },
+      /** Controls the color of thumbnail line in the scatterplot.
+       * Valid values are an array of bytes in RGBA order, a color name or 'null'.
+       * If set to 'null', the CSS foreground color will be used. */
+      thumbnailLineColor: {
+        description: 'Controls the color of thumbnail line in the scatterplot. ' +
+          'Valid values are an array of bytes in RGBA order, a color name or\'null\'. ' +
+          'If set to \'null\', the CSS foreground color will be used.',
+        default: null,
+        valid: value => value === null || libColormap.validateColor(value),
+        requireRedraw: true,
+        requireRecompile: false,
+      },
+      /** Controls the color of thumbnail labels in the scatterplot.
+       * Valid values are an array of bytes in RGBA order, a color name or 'null'.
+       * If set to 'null', the CSS background color will be used. */
+      thumbnailLabelColor: {
+        description: 'Controls the color of thumbnail labels in the scatterplot. ' +
+          'Valid values are an array of bytes in RGBA order, a color name or \'null\'. ' +
+          'If set to \'null\', the CSS foreground color will be used.',
+        default: null,
+        valid: value => value === null || libColormap.validateColor(value),
+        requireRedraw: true,
+        requireRecompile: false,
+      },
+      /** When enabled, links thumbnails to points using unique labels instead of lines. */
+      labelThumbnails: {
+        description: 'When enabled, links thumbnails to points using unique labels instead of lines.',
+        default: false,
+        valid: [true, false],
+        requireRedraw: true,
+        requireRecompile: false,
+      },
+    };
+
+    this.pushedOptions = [];
+
+    // >>> Mouse handlers
+
+    this.mouseOverDatapoint = -1;
+    this.pointDragDownPos = null;
+    this.viewDragStartPos = null;
+    this.viewDragX = null;
+    this.viewDragY = null;
+    this.viewDragZ = null;
+    this.mouseOverAxisLabel = null;
+    this.mouseOverImage = null;
+    this.imageDragStartPos = null;
+    this.imageDragImages = [];
+    this.ctrlPressed = false;
+    this.shiftPressed = false;
+    this.shiftPressed = navigator.appVersion.indexOf('Mac') === -1 ? 17 : 224;
+
+    /**
+     * @callback onMouseOverDatapointCallback
+     * @param  {Dataset} dataset
+     * @param  {number} mouseOverDatapoint Index of the point the mouse cursor is hovering over
+     */
+    /**
+     * There is no mouse-leave event for datapoints.
+     * When the mouse cursor leaves a datapoint,
+     * this event is raised with `mouseOverDatapoint == -1`.
+     * @summary Event handler that gets fired everytime
+     *          the mouse cursor enters the boundaries of a datapoint
+     * @member
+     * @alias onMouseOverDatapoint
+     * @memberof GlobalView
+     * @type {onMouseOverDatapointCallback}
+     */
+    this.onMouseOverDatapoint = null;
+
+    /**
+     * @callback onMouseOverAxisLabelCallback
+     * @param  {DataVector} dataVector Data vector whose axis label the mouse cursor
+     *         is hovering over
+     * @param  {{l: number, t: number, r: number, b: number}} labelRect
+     *          Area of the label relative to the location of the plot
+     */
+    /**
+     * There is no mouse-leave event for axis labels.
+     * When the mouse cursor leaves an axis label, this event is raised with
+     * `dataVector == labelRect == null`.
+     * @summary Event handler that gets fired everytime the mouse cursor
+     *          enters the boundaries of an axis label
+     * @member
+     * @alias onMouseOverAxisLabel
+     * @memberof GlobalView
+     * @type {onMouseOverAxisLabelCallback}
+     */
+    this.onMouseOverAxisLabel = null;
+
+    /**
+     * @callback onSelectionChangedCallback
+     * @param  {Dataset} dataset
+     * @param  {Array<number>} selection Array of indices of all selected points
+     */
+    /**
+     * When the selection is cleared, this event is raised with `selection == []`.
+     * @summary Event handler that gets fired everytime the collection of selected points is altered
+     * @member
+     * @alias onSelectionChanged
+     * @memberof GlobalView
+     * @type {onSelectionChangedCallback}
+     */
+    this.onSelectionChanged = null;
+
+    /**
+     * @callback onLassoSelectionCallback
+     * @param  {Dataset} dataset
+     * @param  {Array<number>} selection Array of indices of all selected points
+     * @param  {{l: number, t: number, r: number, b: number}|Array<Array<number>>} lassoArea
+     * Rectangle or list of 2D points of the area selected
+     * by the lasso relative to the location of the plot
+     */
+    /**
+     * This event is fired with `selection == []` if no points lie inside the lasso area.
+     * @summary Event handler that gets fired everytime a lasso selection was made
+     * @member
+     * @alias onLassoSelection
+     * @memberof GlobalView
+     * @type {onLassoSelectionCallback}
+     */
+    this.onLassoSelection = null;
+
+    /**
+     * @callback onThumbnailSelectionChangedCallback
+     * @param  {Dataset} dataset
+     * @param  {Array<Thumbnail>} selection Array of all selected images
+     */
+    /**
+     * When the selection is cleared, this event is raised with `selection == []`.
+     * @summary Event handler that gets fired everytime the collection of selected images is altered
+     * @member
+     * @alias onThumbnailSelectionChanged
+     * @memberof GlobalView
+     * @type {onThumbnailSelectionChangedCallback}
+     */
+    this.onThumbnailSelectionChanged = null;
+
+    libUtility.addKeyDownHandler((event) => {
+      if (event.keyCode === this.shiftPressed) {
+        this.ctrlPressed = true;
+      } else if (event.keyCode === 16) {
+        this.shiftPressed = true;
+      }
+    });
+
+    libUtility.addKeyUpHandler((event) => {
+      if (event.which === this.shiftPressed) {
+        this.ctrlPressed = false;
+      } else if (event.keyCode === 16) {
+        this.shiftPressed = false;
+      }
+    });
+
+    this.canvas.oncontextmenu = function () {
+      return false;
+    }; // Disable canvas context menu
+
+    this.canvas.onmousedown = function (event) {
+      if (this.plotTransform === null || this.offscreenRendering !== null) {
+        return;
       }
 
-      const d0 = activeInputs[0];
-      const d1 = activeInputs[1];
-      // densityViewer.updateImages(imageViewer.getImages(), d0, d1);
-      densityViewer.render(flipY, tf, d0, d1);
-      pointViewer.render(flipY, tf, colormap.getTexture(), pointDrag);
-      // if (!isAnimating)
-      imageViewer.render(flipY, tf);
-    }
+      // Compute mousepos in canvas space -> p
+      const canvasBounds = this.canvas.getBoundingClientRect();
+      const p = new Float32Array([event.clientX - canvasBounds.left,
+        event.clientY - canvasBounds.top,
+        event.clientY - canvasBounds.top]);
 
-    gl.disable(gl.SCISSOR_TEST);
+      // Fire mouse-down handler
+      this.onMouseDown(event);
 
-    if (tf !== null) {
-      histogramViewer.render(flipY, tf, plotBounds);
-    }
-    coordSys.render(flipY, plotBounds);
-    colormap.render(flipY, plotBounds);
+      if (event.viewDragging) {
+        // If mouse-down handler set viewDragging property to a truthy value
+        if (p[0] > this.plotBounds.x + this.plotBounds.width) {
+          this.viewDragX = false;
+          this.viewDragY = false;
+          this.viewDragZ = this.colormap.visible;
+        } else {
+          this.viewDragX = p[0] >= this.plotBounds.x;
+          this.viewDragY = p[1] <= this.plotBounds.y + this.plotBounds.height;
+          this.viewDragZ = false;
+        }
 
-    if (mouseRect !== null && (mouseRect.width !== 0 || mouseRect.height !== 0)) {
-      gl.drawRect(mouseRect.x, mouseRect.y, mouseRect.width, mouseRect.height);
-    }
-    if (mousePolygon !== null) {
-      gl.fillPolygon(mousePolygon, 'rgba(255, 255, 255, 0.25)');
-      gl.drawPolygon(mousePolygon);
-    }
+        // Transform mousepos from canvas space to device coordinates
+        p[0] = ((2 * p[0]) / canvasBounds.width) - 1;
+        p[1] = 1 - ((2 * p[1]) / canvasBounds.height);
+        p[2] = 1 - ((p[2] - this.plotBounds.y) / this.plotBounds.height);
 
-    const tn = performance.now();
-    dt = tn - t;
-    t = tn;
-    if (SHOW_FPS) {
-      frameCounter += 1;
-      if (t - fpsStart > 10000.0 || frameCounter > 1000) {
-        // Refresh FPS after 10s or 1000 frames
-        // fps = (frameCounter == 1 ? 10000.0 : 1000 * frameCounter) / (t - fpsStart);
-        fps = (1000 * frameCounter) / (t - fpsStart);
-        fpsStart = t;
-        frameCounter = 0;
+        if (this.viewDragX || this.viewDragY || this.viewDragZ) {
+          this.viewDragStartPos = p;
+        } // Initiate view dragging
+        return; // Prevent other mouse-down events
       }
-      if (fps !== null) {
-        gl.drawText(`${fps.toFixed(5)} FPS`, canvas.width - 8, 8, 'topright');
+      // Transform mousepos from canvas space to device coordinates
+      p[0] = ((2 * p[0]) / canvasBounds.width) - 1;
+      p[1] = 1 - ((2 * p[1]) / canvasBounds.height);
+
+
+      const selectedImage = this.imageViewer.imageFromPoint(this.plotTransform, p);
+      if (!this.shiftPressed && !this.ctrlPressed && this.imageDragImages.length !== 0 &&
+        (selectedImage === null || this.imageDragImages.indexOf(selectedImage) === -1)) {
+        // Deselect images
+        this.imageDragImages.forEach((image) => {
+          const varImage = image;
+          varImage.highlighted = false;
+        });
+        this.imageDragImages = [];
+        this.invalidate();
+        if (this.onThumbnailSelectionChanged !== null) {
+          this.onThumbnailSelectionChanged(this.dataset, []);
+        }
+      }
+      if (selectedImage !== null) {
+        selectedImage.highlighted = true;
+        if (this.imageDragImages.indexOf(selectedImage) === -1) {
+          this.imageDragImages.push(selectedImage);
+        }
+        if (this.options.enableThumbnailDragging) {
+          this.imageDragStartPos = p;
+        } // Initiate image dragging
+        this.invalidate();
+        if (event.pointSelection && this.onSelectionChanged !== null) {
+          this.onSelectionChanged(this.dataset, []);
+        }
+        if (this.onThumbnailSelectionChanged !== null) {
+          this.onThumbnailSelectionChanged(this.dataset, this.imageDragImages);
+        }
+        return; // Prevent other mouse-down events
+      }
+
+      // Transform p from device coordinates to dataset coordinates
+      this.plotTransform.deviceCoordToDatasetCoord(p, p);
+
+      let closest = Number.MAX_VALUE;
+      let closestIndex = -1;
+      let sqDist;
+      const sqscl0 = this.plotTransform.getScale(0) * this.plotTransform.getScale(0);
+      const sqscl1 = this.plotTransform.getScale(1) * this.plotTransform.getScale(1);
+      const v0 = this.dataset.dataVectors[this.activeInputs[0]];
+      const v1 = this.dataset.dataVectors[this.activeInputs[1]];
+      this.pointViewer.points.forEach((i) => {
+        sqDist =
+          (sqscl0 * ((p[0] - v0.getValue(i)) ** 2)) +
+          (sqscl1 * ((p[1] - v1.getValue(i)) ** 2));
+        if (sqDist < closest) {
+          closest = sqDist;
+          closestIndex = i;
+        }
+      });
+
+      // Get closest dataset coordinates in dataset coordinates -> dp
+      const dp = new Float32Array([v0.getValue(closestIndex), v1.getValue(closestIndex)]);
+
+      // Transform dp from dataset coordinates to canvas coordinates
+      this.plotTransform.datasetCoordToDeviceCoord(dp, dp);
+      dp[0] = (0.5 + (0.5 * dp[0])) * canvasBounds.width;
+      dp[1] = (0.5 - (0.5 * dp[1])) * canvasBounds.height;
+
+      sqDist =
+        (((event.clientX - canvasBounds.left) - dp[0]) ** 2) +
+        (((event.clientY - canvasBounds.top) - dp[1]) ** 2);
+      if (sqDist > (this.options.pointSize / 2.0) ** 2) {
+        if ((event.lassoSelection || event.polygonLassoSelection) &&
+            this.onLassoSelection !== null) {
+          if (event.polygonLassoSelection) {
+            this.mousePolygon = [];
+          } else {
+            this.mouseRect = {
+              x: event.clientX - canvasBounds.left,
+              y: event.clientY - canvasBounds.top,
+              width: 0,
+              height: 0,
+            };
+          }
+        }
+        if (event.pointSelection && this.onSelectionChanged !== null) {
+          this.onSelectionChanged(this.dataset, []);
+        }
       } else {
-        gl.drawText(
-          `approx. ${Math.floor((frameCounter === 1 ?
-            10000.0 : 1000 * frameCounter) / (t - fpsStart))} FPS`,
-          canvas.width - 8, 8, 'topright',
-        );
+        if (event.pointDragging) {
+          this.pointDragDownPos = [dp[0], dp[1], closestIndex];
+        } // (This makes sure pointDragDownPos is centered on the selected datapoint)
+        if (event.pointSelection && this.onSelectionChanged !== null) {
+          this.onSelectionChanged(this.dataset, [closestIndex]);
+        }
       }
-    }
-    if (SIMULATE_LOW_FPS) {
-      setTimeout(() => {
-        globalView.invalidate();
-      }, 100);
-    } else if (ENABLE_CONTINUOUS_RENDERING) {
-      globalView.invalidate();
-    }
+    }.bind(this);
+
+    let onmousemove;
+    libUtility.addMouseMoveHandler(onmousemove = function (event) {
+      if (this.plotTransform === null || this.offscreenRendering !== null ||
+        (event.target !== this.canvas && this.pointDragDownPos === null &&
+          this.viewDragStartPos === null && this.imageDragStartPos === null &&
+          this.mouseRect === null && this.mousePolygon === null)) {
+        return;
+      }
+
+      // Compute mousepos in canvas space -> p
+      const canvasBounds = this.canvas.getBoundingClientRect();
+      const p = new Float32Array([
+        event.clientX - canvasBounds.left,
+        event.clientY - canvasBounds.top,
+        event.clientY - canvasBounds.top]);
+
+      // Resize mouse polygon
+      if (this.mousePolygon !== null) {
+        this.mousePolygon.push(p);
+        this.invalidate();
+        return;
+      }
+
+      // Resize mouse rect
+      if (this.mouseRect !== null) {
+        this.mouseRect.width = p[0] - this.mouseRect.x;
+        this.mouseRect.height = p[1] - this.mouseRect.y;
+        this.invalidate();
+        return;
+      }
+
+      if (this.pointDragDownPos) {
+        const scale = (1 /
+          (this.dataset.dataVectors[this.activeInputs[3]]
+            .getValue(this.pointDragDownPos[2]) * this.plotTransform.getScale(3))) +
+          this.plotTransform.getOffset(3);
+        // libUtility.consoleLog(scale);
+
+        this.pointDrag = [
+          scale * (p[0] - this.pointDragDownPos[0]),
+          scale * (p[1] - this.pointDragDownPos[1])];
+        this.invalidate();
+        return;
+      }
+
+      if (this.onMouseOverAxisLabel) {
+        const newMouseOverAxisLabel = this.coordSys.labelFromPoint(this.plotBounds, p);
+        if (newMouseOverAxisLabel !== this.mouseOverAxisLabel) {
+          this.mouseOverAxisLabel = newMouseOverAxisLabel;
+          if (this.mouseOverAxisLabel !== null) {
+            this.onMouseOverAxisLabel(
+              this.dataset.dataVectors[this.activeInputs[this.mouseOverAxisLabel]],
+              this.coordSys.getLabelBounds(this.plotBounds, this.mouseOverAxisLabel),
+            );
+          } else {
+            this.onMouseOverAxisLabel(null, null);
+          }
+        }
+      }
+
+      // Transform mousepos from canvas space to device coordinates
+      p[0] = ((2 * p[0]) / canvasBounds.width) - 1;
+      p[1] = 1 - ((2 * p[1]) / canvasBounds.height);
+      p[2] = 1 - ((p[2] - this.plotBounds.y) / this.plotBounds.height);
+
+      const d0 = this.activeInputs[0];
+      const d1 = this.activeInputs[1];
+
+      if (this.viewDragStartPos) {
+        const d2 = this.activeInputs[2];
+        const viewDelta = libGlMatrix.vec3.create();
+        this.plotTransform.deviceDistToDatasetDist(
+          viewDelta,
+          libGlMatrix.vec3.subtract(viewDelta, p, this.viewDragStartPos),
+        );
+
+        if (this.viewDragX) {
+          this.plotTransform.translate(d0, viewDelta[0]);
+        }
+        if (this.viewDragY) {
+          this.plotTransform.translate(d1, viewDelta[1]);
+        }
+        if (this.viewDragZ) {
+          this.plotTransform.translate(d2, viewDelta[2]);
+        }
+        this.viewDragStartPos = p;
+        return;
+      }
+
+      if (this.imageDragStartPos) {
+        const imageDelta = libGlMatrix.vec2.create();
+        this.plotTransform.deviceDistToDatasetDist(
+          imageDelta,
+          libGlMatrix.vec2.subtract(imageDelta, p, this.imageDragStartPos),
+        );
+        this.imageDragImages.forEach((image) => {
+          // eslint-disable-next-line no-param-reassign
+          image.imagePos[this.activeInputs[0]] += imageDelta[0];
+          // eslint-disable-next-line no-param-reassign
+          image.imagePos[this.activeInputs[1]] += imageDelta[1];
+        });
+        this.imageDragStartPos = p;
+        this.invalidate();
+        return;
+      }
+
+      if (this.mouseOverImage !== null &&
+          this.imageDragImages.indexOf(this.mouseOverImage) === -1) {
+        this.mouseOverImage.highlighted = false;
+        this.invalidate();
+        this.mouseOverImage = null;
+      }
+      this.mouseOverImage = this.imageViewer.imageFromPoint(this.plotTransform, p);
+      if (this.mouseOverImage !== null) {
+        if (this.imageDragImages.indexOf(this.mouseOverImage) === -1) {
+          this.mouseOverImage.highlighted = true;
+          this.invalidate();
+        }
+        if (this.mouseOverDatapoint !== -1) {
+          this.mouseOverDatapoint = -1;
+          if (this.onMouseOverDatapoint !== null) {
+            this.onMouseOverDatapoint(this.dataset, this.mouseOverDatapoint);
+          }
+        }
+        return;
+      }
+
+      // Transform p from device coordinates to dataset coordinates
+      this.plotTransform.deviceCoordToDatasetCoord(p, p);
+
+      let closest = Number.MAX_VALUE;
+      let closestIndex = -1;
+      let sqDist;
+      const sqscl0 = this.plotTransform.getScale(0) * this.plotTransform.getScale(0);
+      const sqscl1 = this.plotTransform.getScale(1) * this.plotTransform.getScale(1);
+      const v0 = this.dataset.dataVectors[d0];
+      const v1 = this.dataset.dataVectors[d1];
+      this.pointViewer.points.forEach((i) => {
+        sqDist =
+          (sqscl0 * ((p[0] - v0.getValue(i)) ** 2)) +
+          (sqscl1 * ((p[1] - v1.getValue(i)) ** 2));
+        if (sqDist < closest) {
+          closest = sqDist;
+          closestIndex = i;
+        }
+      });
+      // Get closest dataset coordinates in dataset coordinates -> dp
+      const dp = new Float32Array([v0.getValue(closestIndex), v1.getValue(closestIndex)]);
+
+      // Transform dp from dataset coordinates to canvas coordinates
+      this.plotTransform.datasetCoordToDeviceCoord(dp, dp);
+      dp[0] = (0.5 + (0.5 * dp[0])) * canvasBounds.width;
+      dp[1] = (0.5 - (0.5 * dp[1])) * canvasBounds.height;
+
+      sqDist =
+        (((event.clientX - canvasBounds.left) - dp[0]) ** 2) +
+        (((event.clientY - canvasBounds.top) - dp[1]) ** 2);
+      if (sqDist > (this.options.pointSize / 2.0) ** 2) {
+        if (this.mouseOverDatapoint !== -1) {
+          this.mouseOverDatapoint = -1;
+          if (this.onMouseOverDatapoint !== null) {
+            this.onMouseOverDatapoint(this.dataset, this.mouseOverDatapoint);
+          }
+        }
+      } else if (this.mouseOverDatapoint !== closestIndex) {
+        this.mouseOverDatapoint = closestIndex;
+        if (this.onMouseOverDatapoint !== null) {
+          this.onMouseOverDatapoint(this.dataset, this.mouseOverDatapoint);
+        }
+      }
+    }.bind(this));
+
+    libUtility.addMouseUpHandler((event) => {
+      if (this.plotTransform === null || this.offscreenRendering !== null ||
+        (event.target !== this.canvas && this.pointDragDownPos === null &&
+          this.viewDragStartPos === null && this.mouseRect === null)) {
+        return;
+      }
+
+      let invalidate = false;
+      if (this.pointDragDownPos !== null) {
+        this.pointDragDownPos = null;
+        this.pointDrag = null;
+        invalidate = true;
+      }
+      this.viewDragStartPos = null;
+      this.imageDragStartPos = null;
+      if (this.mousePolygon !== null) {
+        if (this.onSelectionChanged !== null && this.mousePolygon.length >= 3) {
+          // TODO: Find points within this.mousePolygon -> selection
+
+          // Transform this.mousePolygon from canvas space to dataset coordinates
+          for (let i = 0; i < this.mousePolygon.length; i += 1) {
+            const p = this.mousePolygon[i];
+
+            // Transform p from canvas space to device coordinates
+            p[0] = ((2 * p[0]) / this.canvas.width) - 1;
+            p[1] = 1 - ((2 * p[1]) / this.canvas.height);
+
+            // Transform p from device coordinates to dataset coordinates
+            this.plotTransform.deviceCoordToDatasetCoord(p, p);
+
+            this.mousePolygon[i] = p;
+          }
+
+          // Close polygon
+          this.mousePolygon.push(this.mousePolygon[0]);
+
+          const selection = [];
+          const v0 = this.dataset.dataVectors[this.activeInputs[0]];
+          const v1 = this.dataset.dataVectors[this.activeInputs[1]];
+          this.pointViewer.points.forEach((i) => {
+            const px = v0.getValue(i);
+            const py = v1.getValue(i);
+            if (libAlgorithm.pointInsidePolygon([px, py], this.mousePolygon)) {
+              selection.push(i);
+            }
+          });
+          this.onLassoSelection(this.dataset, selection, this.mousePolygon);
+        }
+
+        this.mousePolygon = null;
+        invalidate = true;
+      }
+      if (this.mouseRect !== null) {
+        if (this.onSelectionChanged !== null &&
+            this.mouseRect.width !== 0 &&
+            this.mouseRect.height !== 0) {
+          // Normalize this.mouseRect (make sure width/height are positive)
+          if (this.mouseRect.width < 0) {
+            this.mouseRect.x += this.mouseRect.width;
+            this.mouseRect.width = -this.mouseRect.width;
+          }
+          if (this.mouseRect.height < 0) {
+            this.mouseRect.y += this.mouseRect.height;
+            this.mouseRect.height = -this.mouseRect.height;
+          }
+
+          // Transform this.mouseRect from canvas space to device coordinates
+          this.mouseRect.l = ((2 * this.mouseRect.x) / this.canvas.width) - 1;
+          this.mouseRect.r = ((2 * (this.mouseRect.x + this.mouseRect.width)) /
+                              this.canvas.width) - 1;
+          this.mouseRect.t = 1 - ((2 * (this.mouseRect.y + this.mouseRect.height)) /
+                                  this.canvas.height);
+          this.mouseRect.b = 1 - ((2 * this.mouseRect.y) / this.canvas.height);
+
+          // Transform this.mouseRect from device coordinates to dataset coordinates
+          let p = new Float32Array([this.mouseRect.l, this.mouseRect.t]);
+          this.plotTransform.deviceCoordToDatasetCoord(p, p);
+          this.mouseRect.l = p[0];
+          this.mouseRect.t = p[1];
+          p = new Float32Array([this.mouseRect.r, this.mouseRect.b]);
+          this.plotTransform.deviceCoordToDatasetCoord(p, p);
+          this.mouseRect.r = p[0];
+          this.mouseRect.b = p[1];
+
+          let px;
+          let py;
+          const selection = [];
+          const v0 = this.dataset.dataVectors[this.activeInputs[0]];
+          const v1 = this.dataset.dataVectors[this.activeInputs[1]];
+          this.pointViewer.points.forEach((i) => {
+            px = v0.getValue(i);
+            py = v1.getValue(i);
+            if (px >= this.mouseRect.l &&
+                px < this.mouseRect.r &&
+                py >= this.mouseRect.t &&
+                py < this.mouseRect.b) {
+              selection.push(i);
+            }
+          });
+          this.onLassoSelection(this.dataset, selection, this.mouseRect);
+        }
+
+        this.mouseRect = null;
+        invalidate = true;
+      }
+      if (invalidate) {
+        this.invalidate();
+        onmousemove(event);
+      }
+    });
+
+    this.canvas.onmouseleave = function (/* event */) {
+      if (this.mouseOverImage != null && this.imageDragImages.indexOf(this.mouseOverImage) === -1) {
+        this.mouseOverImage.highlighted = false;
+        this.invalidate();
+        this.mouseOverImage = null;
+      }
+      if (this.onMouseOverAxisLabel && this.mouseOverAxisLabel !== null) {
+        this.onMouseOverAxisLabel(null, null);
+        this.mouseOverAxisLabel = null;
+      }
+
+      if (this.onMouseOverDatapoint !== null && this.mouseOverDatapoint !== -1) {
+        this.onMouseOverDatapoint(this.dataset, this.mouseOverDatapoint = -1);
+      }
+    }.bind(this);
+
+
+    libUtility.addMouseWheelHandler((event) => {
+      if (event.target !== this.canvas || !this.options.enableScrolling) {
+        return;
+      }
+      const deltaZ = event.wheelDelta == null ? event.detail : -event.wheelDelta / 20.0;
+      event.preventDefault();
+
+      // Compute mousepos in canvas space -> p
+      const canvasBounds = this.canvas.getBoundingClientRect();
+      const p = new Float32Array([
+        event.clientX - canvasBounds.left,
+        event.clientY - canvasBounds.top,
+        event.clientY - canvasBounds.top]);
+
+      let scrollX;
+      let scrollY;
+      let scrollZ;
+      if (p[0] > this.plotBounds.x + this.plotBounds.width) {
+        scrollX = false;
+        scrollY = false;
+        scrollZ = true;
+      } else {
+        scrollX = p[0] >= this.plotBounds.x;
+        scrollY = p[1] < this.canvas.height - this.plotBounds.y;
+        scrollZ = false;
+      }
+
+      // Transform mousepos from canvas space to device coordinates
+      p[0] = ((2 * p[0]) / canvasBounds.width) - 1;
+      p[1] = 1 - ((2 * p[1]) / canvasBounds.height);
+      p[2] = 1 - ((p[2] - this.plotBounds.y) / this.plotBounds.height);
+
+      const d0 = this.activeInputs[0];
+      const d1 = this.activeInputs[1];
+      const d2 = this.activeInputs[2];
+
+      // Transform p from device coordinates to dataset coordinates
+      this.plotTransform.deviceCoordToDatasetCoord(p, p);
+
+      // Zoom towards mouse position
+      const zoom = 1.0 - (deltaZ / 50.0);
+      // Offset is difference between p in current zoom level and p after zooming
+      libGlMatrix.vec3.scaleAndAdd(p, p, p, -zoom);
+      if (scrollX) {
+        this.plotTransform.translate(d0, p[0]);
+        this.plotTransform.scale(d0, zoom);
+      }
+      if (scrollY) {
+        this.plotTransform.translate(d1, p[1]);
+        this.plotTransform.scale(d1, zoom);
+      }
+      if (scrollZ) {
+        this.plotTransform.translate(d2, p[2]);
+        this.plotTransform.scale(d2, zoom);
+      }
+    });
+
+    this.ondragover = null;
+    this.canvas.ondragover = function (event) {
+      if (this.ondragover !== null) {
+        this.ondragover(event);
+      }
+    }.bind(this);
+
+    this.ondrop = null;
+    this.canvas.ondrop = function (event) {
+      if (this.ondrop !== null) {
+        this.ondrop(event);
+      }
+    }.bind(this);
+
+    this.initializeGL();
+
+    // Hook to window-resize event and fire once for initial setup
+    window.addEventListener('resize', this.onresize.bind(this), false);
+    this.onresize();
+
+    // Set unset options to default values
+    this.setDefaultOptions();
+    this.setOptions(startupOptions);
   }
 
-  /** @enum */
-  const options = {};
-  let offscreenRendering = null;
+  initializeCanvas(div) {
+    for (let i = 0; i < div.children.length; i += 1) {
+      if (div.children[i] instanceof HTMLCanvasElement && div.children[i].globalViewWebGLCanvas) {
+      // If div already contains a GlobalView-WebGL-canvas, ...
+      // Share canvas
+        this.canvas = /** @type {HTMLCanvasElement} */ (div.children[i]);
+        break;
+      }
+    }
+
+    // create the canvas element if doesn't exist
+    if (this.canvas === null) {
+      this.canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+      this.canvas.setAttribute('id', 'webGLCanvas');
+      this.canvas.style.position = 'static';// "absolute";
+      this.canvas.style.left = '0px';
+      this.canvas.style.top = '0px';
+      this.canvas.style.width = '100%';
+      this.canvas.style.height = '100%';
+      this.canvas.style.backgroundColor = 'transparent';
+      this.canvas.globalViewWebGLCanvas = true;
+      div.appendChild(this.canvas);
+    }
+  }
 
   /**
    * @summary Request to rerender the plot
    */
-  this.invalidate = function () {
-    if (invalidating === false && offscreenRendering === null) {
-      invalidating = true;
-      webglUtils.requestAnimFrame(render);
+  invalidate() {
+    if (this.disableInvalidate) {
+      return;
     }
-  };
-  let reresizeTimer = null;
-  function onresize() {
-    const rect = canvas.getBoundingClientRect();
+    if (this.invalidating === false && this.offscreenRendering === null) {
+      this.invalidating = true;
+      webglUtils.requestAnimFrame(this.render.bind(this));
+    }
+  }
+
+  onresize() {
+    const rect = this.canvas.getBoundingClientRect();
     const width = rect.right - rect.left;
     const height = rect.bottom - rect.top;
-    if (!offscreenRendering && (width !== gl.width || height !== gl.height)) {
-      gl.width = width;
-      canvas.width = width;
-      gl.height = height;
-      canvas.height = height;
-      gl.viewport(0, 0, gl.width, gl.height);
-      trc.onResize();
-      if (options.padding) {
-        setPlotBounds(options.padding);
+    if (!this.offscreenRendering && (width !== this.gl.width || height !== this.gl.height)) {
+      this.gl.width = width;
+      this.canvas.width = width;
+      this.gl.height = height;
+      this.canvas.height = height;
+      this.gl.viewport(0, 0, this.gl.width, this.gl.height);
+      this.textRenderContext.onResize();
+      if (this.options.padding) {
+        this.setPlotBounds(this.options.padding);
       }
-      if (invalidating === false && offscreenRendering === null) {
-        invalidating = true;
-        webglUtils.requestAnimFrame(render);
+      if (this.invalidating === false && this.offscreenRendering === null) {
+        this.invalidating = true;
+        webglUtils.requestAnimFrame(this.render.bind(this));
       }
 
       // Refire event after 100ms in case another resize handler queued
       // after this on changes the canvas size
-      if (reresizeTimer !== null) {
-        clearTimeout(reresizeTimer);
+      if (this.resizeTimer !== null) {
+        clearTimeout(this.resizeTimer);
       }
-      reresizeTimer = setTimeout(onresize, 100);
+      this.resizeTimer = setTimeout(this.onresize.bind(this), 100);
     }
   }
 
-  /**
-   * A class containing variables and functions for transforming data vectors into device space
-   * @constructor
-   * @package
-   */
-  function Transform() {
-    const offsets = new Float32Array(ND);
-    const scales = new Float32Array(ND);
-    const animatedScales = new Float32Array(ND);
-    let invalid = false;
-
-    // Setter methods
-    this.setFromMinMax = function (d, minimum, maximum) {
-      dataset.dataVectors[d].scale = maximum - minimum;
-      if (dataset.dataVectors[d].scale > -1e-5 && dataset.dataVectors[d].scale < 1e-5) {
-        dataset.dataVectors[d].offset =
-          0.5 - (0.5 * (minimum + maximum) * (dataset.dataVectors[d].scale = 0.5));
-      } else {
-        dataset.dataVectors[d].offset =
-          -minimum * (dataset.dataVectors[d].scale = 1 / dataset.dataVectors[d].scale);
-      }
-      invalid = true;
-
-      if (d === activeInputs[0]) {
-        updateCoorinateSystem(0, activeInputs[0]);
-      }
-      if (d === activeInputs[1]) {
-        updateCoorinateSystem(1, activeInputs[1]);
-      }
-      if (d === activeInputs[2]) {
-        updateColormap(activeInputs[2]);
-      }
-      if (d === activeInputs[0] || d === activeInputs[1] || d === activeInputs[2]) {
-        globalView.invalidate();
-      }
-    };
-    this.translate = function (d, distance) {
-      dataset.dataVectors[d].offset += distance * dataset.dataVectors[d].scale;
-      invalid = true;
-
-      if (d === activeInputs[0]) {
-        updateCoorinateSystem(0, activeInputs[0], false);
-      }
-      if (d === activeInputs[1]) {
-        updateCoorinateSystem(1, activeInputs[1], false);
-      }
-      if (d === activeInputs[2]) {
-        updateColormap(activeInputs[2], false);
-      }
-      if (d === activeInputs[0] || d === activeInputs[1] || d === activeInputs[2]) {
-        globalView.invalidate();
-      }
-    };
-    this.scale = function (d, factor) {
-      dataset.dataVectors[d].scale *= factor;
-      invalid = true;
-
-      if (d === activeInputs[0]) {
-        updateCoorinateSystem(0, activeInputs[0]);
-      }
-      if (d === activeInputs[1]) {
-        updateCoorinateSystem(1, activeInputs[1]);
-      }
-      if (d === activeInputs[2]) {
-        updateColormap(activeInputs[2]);
-      }
-      if (d === activeInputs[0] || d === activeInputs[1] || d === activeInputs[2]) {
-        globalView.invalidate();
-      }
-    };
-    this.onInputChanged = () => {
-      invalid = true;
-      return true;
-    };
-
-    // Getter methods
-    this.getOffset = function (d) {
-      return dataset.dataVectors[activeInputs[d]].offset;
-    };
-    this.getScale = function (d) {
-      return dataset.dataVectors[activeInputs[d]].scale;
-    };
-    this.getMinimum = function (d) {
-      return dataset.dataVectors[activeInputs[d]].minimum;
-    };
-    this.getMaximum = function (d) {
-      return dataset.dataVectors[activeInputs[d]].maximum;
-    };
-    this.getVisibleMinimum = function (d) {
-      return (0 - dataset.dataVectors[activeInputs[d]].offset) /
-        dataset.dataVectors[activeInputs[d]].scale;
-    };
-    this.getVisibleMaximum = function (d) {
-      return (1 - dataset.dataVectors[activeInputs[d]].offset) /
-        dataset.dataVectors[activeInputs[d]].scale;
-    };
-    this.getOffsets = function () {
-      if (invalid === true) {
-        recompute();
-      }
-      return offsets;
-    };
-    this.getScales = function () {
-      if (invalid === true) {
-        recompute();
-      }
-      return scales;
-    };
-    this.getAnimatedScales = function () {
-      if (invalid === true) {
-        recompute();
-      }
-      return animatedScales;
-    };
-
-    // Transformation methods
-    this.deviceCoordToDatasetCoord = function (vOutCoord, vInCoord) {
-      const vOut = vOutCoord;
-      const vIn = vInCoord;
-      if (invalid === true) {
-        invalid = false;
-        recompute();
-      }
-      for (let d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; d += 1) {
-        vOut[d] = (vIn[d] - offsets[d]) / scales[d];
-      }
-      return vOut;
-    };
-
-    this.deviceDistToDatasetDist = function (vOutCoord, vInCoord) {
-      const vOut = vOutCoord;
-      const vIn = vInCoord;
-      if (invalid === true) {
-        invalid = false;
-        recompute();
-      }
-      for (let d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; d += 1) {
-        vOut[d] = vIn[d] / scales[d];
-      }
-      return vOut;
-    };
-
-    this.datasetCoordToDeviceCoord = function (vOutCoord, vInCoord) {
-      const vOut = vOutCoord;
-      const vIn = vInCoord;
-      if (invalid === true) {
-        invalid = false;
-        recompute();
-      }
-      for (let d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; d += 1) {
-        vOut[d] = offsets[d] + (vIn[d] * scales[d]);
-      }
-      return vOut;
-    };
-
-    this.datasetDistToDeviceDist = function (vOutCoord, vInCoord) {
-      const vOut = vOutCoord;
-      const vIn = vInCoord;
-      if (invalid === true) {
-        invalid = false;
-        recompute();
-      }
-      for (let d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; d += 1) {
-        vOut[d] = vIn[d] * scales[d];
-      }
-      return vOut;
-    };
-
-    this.transformPos = function (vOutCoord, vInCoord) {
-      const vOut = vOutCoord;
-      const vIn = vInCoord;
-      if (invalid === true) {
-        invalid = false;
-        recompute();
-      }
-      for (let d = 0, nd = vOut.length; d < nd; d += 1) {
-        vOut[d] = offsets[d] + (vIn[activeInputs[d]] * scales[d]);
-      }
-      return vOut;
-    };
-
-    this.transformNml = function (vOutCoord, vInCoord) {
-      const vOut = vOutCoord;
-      const vIn = vInCoord;
-      if (invalid === true) {
-        invalid = false;
-        recompute();
-      }
-      for (let d = 0, nd = vOut.length; d < nd; d += 1) {
-        vOut[d] = vIn[activeInputs[d]] * scales[d];
-      }
-      return vOut;
-    };
-
-    this.transformNml2 = function (vOutCoord, vInCoord) {
-      const vOut = vOutCoord;
-      const vIn = vInCoord;
-      if (invalid === true) {
-        invalid = false;
-        recompute();
-      }
-      for (let d = 0, nd = vOut.length; d < nd; d += 1) {
-        vOut[d] = vIn[activeInputs[d]] * dataset.dataVectors[activeInputs[d]].scale;
-      }
-      return vOut;
-    };
-
-    // Methods modifying offsets, scales and animatedScales
-    function recompute() {
-      invalid = false;
-
-      // Compute offsets and scales for active inputs
-      for (let d = 0; d < ND; d += 1) {
-        offsets[d] = dataset.dataVectors[activeInputs[d]].offset;
-        scales[d] = dataset.dataVectors[activeInputs[d]].scale;
-        animatedScales[d] = 0;
-      }
-
-      // Transform first two dimensions offsets and scales into device coordinates
-      offsets[0] *= (2 * plotBounds.width) / gl.width;
-      offsets[0] += ((2 * plotBounds.x) / gl.width) - 1;
-      offsets[1] *= (2 * plotBounds.height) / gl.height;
-      offsets[1] += ((2 * plotBounds.y) / gl.height) - 1;
-      scales[0] *= (2 * plotBounds.width) / gl.width;
-      scales[1] *= (2 * plotBounds.height) / gl.height;
-      animatedScales[0] *= (2 * plotBounds.width) / gl.width;
-      animatedScales[1] *= (2 * plotBounds.height) / gl.height;
-
-      return offsets;
-    }
-    this.animate = function () {
-      invalid = false;
-
-      let isAnimating = false;
-
-      // Compute offsets and scales, either static based on activeInputs,
-      // or animated between activeInputs and animatedInputs
-      const oi = animatedInputs.map(anim => anim.origin);
-      const di = activeInputs;
-      for (let d = 0; d < ND; d += 1) {
-        const ts = dataset.dataVectors[di[d]].scale;
-        const tt = dataset.dataVectors[di[d]].offset;
-
-        if (animatedInputs[d].origin === activeInputs[d]) {
-          scales[d] = ts;
-          offsets[d] = tt;
-          animatedScales[d] = 0;
-        } else {
-          const os = dataset.dataVectors[oi[d]].scale;
-          const ot = dataset.dataVectors[oi[d]].offset;
-
-          let alpha = animatedInputs[d].f;
-          offsets[d] = (alpha * tt) + ((1 - alpha) * ot);
-          alpha *= Math.PI / 2.0;
-          scales[d] = Math.sin(alpha) * ts;
-          animatedScales[d] = Math.cos(alpha) * os;
-
-          animatedInputs[d].f += dt * 0.001;
-          if (animatedInputs[d].f >= 1.0) {
-            animatedInputs[d].origin = activeInputs[d];
-          }
-
-          isAnimating = true;
-        }
-      }
-
-      // Transform first two dimensions offsets and scales into device coordinates
-      offsets[0] *= (2 * plotBounds.width) / gl.width;
-      offsets[0] += ((2 * plotBounds.x) / gl.width) - 1;
-      offsets[1] *= (2 * plotBounds.height) / gl.height;
-      offsets[1] += ((2 * plotBounds.y) / gl.height) - 1;
-      scales[0] *= (2 * plotBounds.width) / gl.width;
-      scales[1] *= (2 * plotBounds.height) / gl.height;
-      animatedScales[0] *= (2 * plotBounds.width) / gl.width;
-      animatedScales[1] *= (2 * plotBounds.height) / gl.height;
-
-      return isAnimating;
-    };
+  getPlotBounds() {
+    return this.plotBounds;
   }
 
-  this.getPlotBounds = function () {
-    return plotBounds;
-  };
-  function setPlotBounds(padding) {
+  setPlotBounds(padding) {
     let computedPadding;
     if (libUtility.isArray(padding) && padding.length === 4) {
       computedPadding = padding.map((v, i) => Math.floor(libUtility.isString(v) ?
         Number.parseFloat(v) *
-          (v.endsWith('%') ? (i % 2 === 0 ? canvas.width : canvas.height) / 100 : 1) :
+          (v.endsWith('%') ? (i % 2 === 0 ? this.canvas.width : this.canvas.height) / 100 : 1) :
         padding[i]));
     } else if (libUtility.isNumber(padding) || libUtility.isString(padding)) {
       computedPadding = Array.create(4, i => Math.floor(libUtility.isString(padding) ?
         Number.parseFloat(padding) * (padding.endsWith('%') ?
-          (i % 2 === 0 ? canvas.width : canvas.height) / 100 : 1) :
+          (i % 2 === 0 ? this.canvas.width : this.canvas.height) / 100 : 1) :
         padding));
     }
 
     const newPlotBounds = {
       x: computedPadding[3],
       y: computedPadding[2],
-      width: canvas.width - computedPadding[3] - computedPadding[1],
-      height: canvas.height - computedPadding[0] - computedPadding[2],
+      width: this.canvas.width - computedPadding[3] - computedPadding[1],
+      height: this.canvas.height - computedPadding[0] - computedPadding[2],
     };
 
-    if (newPlotBounds.x !== plotBounds.x ||
-      newPlotBounds.y !== plotBounds.y ||
-      newPlotBounds.width !== plotBounds.width ||
-      newPlotBounds.height !== plotBounds.height) {
-      plotBounds = newPlotBounds;
-      viewers.forEach((viewer) => {
-        viewer.onPlotBoundsChanged(plotBounds);
+    if (newPlotBounds.x !== this.plotBounds.x ||
+      newPlotBounds.y !== this.plotBounds.y ||
+      newPlotBounds.width !== this.plotBounds.width ||
+      newPlotBounds.height !== this.plotBounds.height) {
+      this.plotBounds = newPlotBounds;
+      this.viewers.forEach((viewer) => {
+        viewer.onPlotBoundsChanged(this.plotBounds);
       });
     } else {
-      plotBounds = newPlotBounds;
+      this.plotBounds = newPlotBounds;
     }
   }
 
   /**
    * @summary Zoom all dimensions to exactly fit all data points
    */
-  this.zoomFit = function () {
-    const nv = dataset.dataVectors.length;
+  zoomFit() {
+    const nv = this.dataset.dataVectors.length;
 
     // Compute offsets and scales to fit dataset inside view
     for (let v = 0; v < nv; v += 1) {
-      tf.setFromMinMax(v, dataset.dataVectors[v].minimum, dataset.dataVectors[v].maximum);
+      this.plotTransform.setFromMinMax(
+        v, this.dataset.dataVectors[v].minimum,
+        this.dataset.dataVectors[v].maximum,
+      );
     }
-  };
+  }
 
   /**
    * @summary Zoom currently visible x- and y- dimensions to exactly fit all data points
    */
-  this.zoomFit2D = function () {
-    const d0 = activeInputs[0];
-    const d1 = activeInputs[1];
+  zoomFit2D() {
+    const d0 = this.activeInputs[0];
+    const d1 = this.activeInputs[1];
 
     // Compute offsets and scales to fit dataset inside view
-    tf.setFromMinMax(d0, dataset.dataVectors[d0].minimum, dataset.dataVectors[d0].maximum);
-    tf.setFromMinMax(d1, dataset.dataVectors[d1].minimum, dataset.dataVectors[d1].maximum);
-  };
+    this.plotTransform.setFromMinMax(
+      d0,
+      this.dataset.dataVectors[d0].minimum,
+      this.dataset.dataVectors[d0].maximum,
+    );
+    this.plotTransform.setFromMinMax(
+      d1,
+      this.dataset.dataVectors[d1].minimum,
+      this.dataset.dataVectors[d1].maximum,
+    );
+  }
 
   /**
    * @summary Zoom currently visible x- and y- dimensions to the given bounds in data space
    * @param  {{l: number, t: number, r: number, b: number}} rect Bounds of the visible region
    */
-  this.zoomRect = function (rect) {
-    const d0 = activeInputs[0];
-    const d1 = activeInputs[1];
+  zoomRect(rect) {
+    const d0 = this.activeInputs[0];
+    const d1 = this.activeInputs[1];
 
-    tf.setFromMinMax(d0, rect.l, rect.r);
-    tf.setFromMinMax(d1, rect.t, rect.b);
-  };
+    this.plotTransform.setFromMinMax(d0, rect.l, rect.r);
+    this.plotTransform.setFromMinMax(d1, rect.t, rect.b);
+  }
 
-  // >>> Options
-
-  /**
-   * @summary A map of valid options with option descriptions,
-   *          validation functions and flags about side effects
-   * @const
-   * @enum {OptionDescription}
-  */
-  const OPTIONS = {
-    // General plot options
-    /** The space around the drawing area in the form [top, right, bottom, left].
-     * X-axis, y-axis and colormap are drawn within padding space. */
-    padding: {
-      description: 'The space around the drawing area in the form [top, right, bottom, left].' +
-        ' X-axis, y-axis and colormap are drawn within padding space.',
-      default: [50, 60, 50, 50],
-      valid: value => libUtility.isNumber(value) || libUtility.isString(value) ||
-        (libUtility.isArray(value) && value.length === 4),
-      requireRedraw: true,
-      requireRecompile: false,
-    },
-    /** When enabled, shows a colormap to the right of the plot. */
-    showColormap: {
-      description: 'When enabled, shows a colormap to the right of the plot.',
-      default: true,
-      valid: [true, false],
-      requireRedraw: true,
-      requireRecompile: false,
-    },
-    /** When enabled, scrolling above the plot zooms in or out of the data. */
-    enableScrolling: {
-      description: 'When enabled, scrolling above the plot zooms in or out of the data.',
-      default: true,
-      valid: [true, false],
-      requireRedraw: false,
-      requireRecompile: false,
-    },
-    /** When enabled, thumbnails can be dragged with the mouse. */
-    enableThumbnailDragging: {
-      description: 'When enabled, thumbnails can be dragged with the mouse.',
-      default: true,
-      valid: [true, false],
-      requireRedraw: false,
-      requireRecompile: false,
-    },
-
-    // Advanced plot options
-    /** When enabled, the canvas is continuously rerendered at up to 60 frames per second.
-     *  Keep this setting disabled to save processing resources. */
-    enableContinuousRendering: {
-      description: 'When enabled, the canvas is continuously rerendered at up to 60 frames ' +
-        'per second. Keep this setting disabled to save processing resources.',
-      default: false,
-      valid: [true, false],
-      requireRedraw: true,
-      requireRecompile: false,
-    },
-    /** Enables/disables blending in WebGL. Whenever using any kind of transparency,
-     * this setting should be kept enabled. */
-    enableTransparency: {
-      description: 'Enables/disables blending in WebGL. Whenever using any kind of transparency' +
-        ', this setting should be kept enabled.',
-      default: true,
-      valid: [true, false],
-      requireRedraw: true,
-      requireRecompile: false,
-    },
-    /** When enabled, draws an image into the background, that shows density of points.
-     * (can be combined with 'showPointClusters') */
-    showPointDensity: {
-      description: 'When enabled, draws an image into the background,' +
-        ' that shows density of points. (can be combined with \'showPointClusters\')',
-      default: false,
-      valid: [true, false],
-      requireRedraw: true,
-      requireRecompile: false,
-    },
-    /** When enabled, draws an image into the background, that shows colored clusters of points.
-     * (can be combined with 'showPointDensity') */
-    showPointClusters: {
-      description: 'When enabled, draws an image into the background, ' +
-      'that shows colored clusters of points. (can be combined with \'showPointDensity\')',
-      default: false,
-      valid: [true, false],
-      requireRedraw: true,
-      requireRecompile: false,
-    },
-    pointClusterThreshold: {
-      description: 'Controls the realtive threshold between clusters and outliers when' +
-      ' showing clusters (see \'showPointClusters\')',
-      default: (new libAlgorithm.ClusterMapOptions()).threshold,
-      valid: value => value > 0,
-      requireRedraw: false, // Requests redraw internally
-      requireRecompile: false,
-    },
-
-    // Histogram options
-    /** When enabled, shows a histogram between the x-axis and the plot. */
-    showXAxisHistogram: {
-      description: 'When enabled, shows a histogram between the x-axis and the plot.',
-      default: false,
-      valid: [true, false],
-      requireRedraw: true,
-      requireRecompile: false,
-    },
-    /** When enabled, shows a histogram between the y-axis and the plot. */
-    showYAxisHistogram: {
-      description: 'When enabled, shows a histogram between the y-axis and the plot.',
-      default: false,
-      valid: [true, false],
-      requireRedraw: true,
-      requireRecompile: false,
-    },
-    /** When enabled, shows a histogram between the colormap and the plot. */
-    showColormapHistogram: {
-      description: 'When enabled, shows a histogram between the colormap and the plot.',
-      default: false,
-      valid: [true, false],
-      requireRedraw: true,
-      requireRecompile: false,
-    },
-    /** Controls the number of bins within each histogram in the scatterplot. */
-    numHistogramBins: {
-      description: 'Controls the number of bins within each histogram in the scatterplot.',
-      default: 50,
-      valid: value => value >= 1,
-      requireRedraw: true,
-      requireRecompile: false,
-    },
-    /** Controls the height of each histogram in the scatterplot (in pixels). */
-    histogramHeight: {
-      description: 'Controls the height of each histogram in the scatterplot (in pixels).',
-      default: 64,
-      valid: value => value >= 0,
-      requireRedraw: true,
-      requireRecompile: false,
-    },
-
-    // Point options
-    /** Controls the shape of data points in the scatterplot. */
-    pointShape: {
-      description: 'Controls the shape of data points in the scatterplot.',
-      default: 'Circle',
-      valid: ['Rectangle', 'Circle', 'Cross', 'Diamond', 'Gaussian', 'Custom'],
-      requireRedraw: true,
-      requireRecompile: true,
-    },
-    /** When 'pointShape' is set to 'Custom', this defines a GLSL function given vec2 p,
-     * that returns opacity in the range [0.0 ... 1.0] at location p. */
-    customPointShape: {
-      description: 'When \'pointShape\' is set to \'Custom\', this defines a GLSL function ' +
-        'given vec2 p, that returns opacity in the range [0.0 ... 1.0] at location p.',
-      default: '{ return 1.0; }',
-      valid: value => libGraphics.validateGLSL(gl, `float opacityMap(in vec2 p) ${value}`),
-      requireRedraw: true,
-      requireRecompile: true,
-    },
-    /** Controls the diameter of data points in the scatterplot (in pixels). */
-    pointSize: {
-      description: 'Controls the diameter of data points in the scatterplot (in pixels).',
-      default: 6,
-      valid: value => value >= 0,
-      requireRedraw: true,
-      requireRecompile: false,
-    },
-    /** Controls the visibility of data points in the scatterplot between
-     *  0 (invisible) and 1 (fully opaque). */
-    pointOpacity: {
-      description: 'Controls the visibility of data points in the scatterplot between ' +
-        '0 (invisible) and 1 (fully opaque).',
-      default: 1,
-      valid: value => value >= 0 && value <= 1,
-      requireRedraw: true,
-      requireRecompile: false,
-    },
-    /** Controls the color of data points in the scatterplot.
-     * Valid values are an array of bytes in RGBA order or a colormap name. */
-    pointColor: {
-      description: 'Controls the color of data points in the scatterplot. ' +
-      'Valid values are an array of bytes in RGBA order or a colormap name.',
-      default: 'exhue',
-      valid: value => libColormap.validateColormap(value),
-      requireRedraw: true,
-      requireRecompile: false,
-    },
-
-    // Thumbnail options
-    /** Controls the width/height of thumbnails in the scatterplot (in pixels). */
-    thumbnailSize: {
-      description: 'Controls the width/height of thumbnails in the scatterplot (in pixels).',
-      default: 64,
-      valid: value => value > 0,
-      requireRedraw: true,
-      requireRecompile: false,
-    },
-    /** Controls the width of thumbnail borders in the scatterplot. */
-    thumbnailBorderWidth: {
-      description: 'Controls the width of thumbnail borders in the scatterplot.',
-      default: 1,
-      valid: value => value >= 0,
-      requireRedraw: true,
-      requireRecompile: false,
-    },
-    /** Controls the color of thumbnail borders in the scatterplot.
-     * Valid values are an array of bytes in RGBA order, a color name or 'null'.
-     * If set to 'null', the CSS foreground color will be used. */
-    thumbnailBorderColor: {
-      description: 'Controls the color of thumbnail borders in the scatterplot. ' +
-        'Valid values are an array of bytes in RGBA order, a color name or \'null\'. ' +
-        'If set to \'null\', the CSS foreground color will be used.',
-      default: null,
-      valid: value => value === null || libColormap.validateColor(value),
-      requireRedraw: true,
-      requireRecompile: false,
-    },
-    /** Controls the color of thumbnail line in the scatterplot.
-     * Valid values are an array of bytes in RGBA order, a color name or 'null'.
-     * If set to 'null', the CSS foreground color will be used. */
-    thumbnailLineColor: {
-      description: 'Controls the color of thumbnail line in the scatterplot. ' +
-        'Valid values are an array of bytes in RGBA order, a color name or\'null\'. ' +
-        'If set to \'null\', the CSS foreground color will be used.',
-      default: null,
-      valid: value => value === null || libColormap.validateColor(value),
-      requireRedraw: true,
-      requireRecompile: false,
-    },
-    /** Controls the color of thumbnail labels in the scatterplot.
-     * Valid values are an array of bytes in RGBA order, a color name or 'null'.
-     * If set to 'null', the CSS background color will be used. */
-    thumbnailLabelColor: {
-      description: 'Controls the color of thumbnail labels in the scatterplot. ' +
-        'Valid values are an array of bytes in RGBA order, a color name or \'null\'. ' +
-        'If set to \'null\', the CSS foreground color will be used.',
-      default: null,
-      valid: value => value === null || libColormap.validateColor(value),
-      requireRedraw: true,
-      requireRecompile: false,
-    },
-    /** When enabled, links thumbnails to points using unique labels instead of lines. */
-    labelThumbnails: {
-      description: 'When enabled, links thumbnails to points using unique labels instead of lines.',
-      default: false,
-      valid: [true, false],
-      requireRedraw: true,
-      requireRecompile: false,
-    },
-  };
-
-  const pushedOptions = [];
-  function onOptionsChanged(requireRedraw, requireRecompile) {
+  onOptionsChanged(requireRedraw, requireRecompile) {
     // Update trivial options
-    ENABLE_CONTINUOUS_RENDERING = options.enableContinuousRendering;
-    SHOW_FPS = options.enableContinuousRendering;
-    if (options.enableTransparency) {
-      gl.enable(gl.BLEND);
+    ENABLE_CONTINUOUS_RENDERING = this.options.enableContinuousRendering;
+    SHOW_FPS = this.options.enableContinuousRendering;
+    if (this.options.enableTransparency) {
+      this.gl.enable(this.gl.BLEND);
     } else {
-      gl.disable(gl.BLEND);
+      this.gl.disable(this.gl.BLEND);
     }
-    colormap.visible = options.showColormap;
-    densityViewer.showDensityMap = options.showPointDensity;
-    densityViewer.showClusterMap = options.showPointClusters;
-    densityViewer.setClusterMapThreshold(options.pointClusterThreshold);
+    this.colormap.visible = this.options.showColormap;
+    this.densityViewer.showDensityMap = this.options.showPointDensity;
+    this.densityViewer.showClusterMap = this.options.showPointClusters;
+    this.densityViewer.setClusterMapThreshold(this.options.pointClusterThreshold);
 
-    if (options.padding) {
-      setPlotBounds(options.padding);
+    if (this.options.padding) {
+      this.setPlotBounds(this.options.padding);
     }
 
-    viewers.forEach(viewer => viewer.onOptionsChanged(options, requireRecompile));
+    this.viewers.forEach(viewer => viewer.onOptionsChanged(this.options, requireRecompile));
 
-    if (dataset !== null) {
+    if (this.dataset !== null) {
       // Reset FPS counter
-      fps = null;
-      fpsStart = t;
-      frameCounter = 0;
+      this.fps = null;
+      this.fpsStart = this.timeNow;
+      this.frameCounter = 0;
 
       // Redraw
       if (requireRedraw) {
@@ -920,17 +1501,17 @@ export function GlobalView(div, startupOptions) {
   /**
    * Note: When setting multiple options, {@link GlobalView#setOptions} should be prefered.
    * @summary Sets the given option
-   * @see GlobalView#OPTIONS
+   * @see GlobalView#this.OPTIONS
    * @param  {string} option
    * @param  {*} value
    */
-  this.setOption = function (option, value) {
+  setOption(option, value) {
     // Validate option
-    if (!Object.prototype.hasOwnProperty.call(OPTIONS, option)) {
+    if (!Object.prototype.hasOwnProperty.call(this.OPTIONS, option)) {
       libUtility.consoleWarn(`GlobalView warning: Unsupported option: ${option}`);
       return;
     }
-    const optionDefinition = OPTIONS[option];
+    const optionDefinition = this.OPTIONS[option];
 
     // Validate value
     let validationResult;
@@ -947,16 +1528,20 @@ export function GlobalView(div, startupOptions) {
     }
 
     // Set option
-    options[option] = value;
+    this.options[option] = value;
 
-    onOptionsChanged.call(this, optionDefinition.requireRedraw, optionDefinition.requireRecompile);
-  };
+    this.onOptionsChanged.call(
+      this,
+      optionDefinition.requireRedraw,
+      optionDefinition.requireRecompile,
+    );
+  }
 
   /**
    * @summary Sets multiple options
    * @param  {Object} newOptions A JavaScript object of options
    */
-  this.setOptions = function (newOptions) {
+  setOptions(newOptions) {
     let requireRecompile = false;
     let requireRedraw = false;
     // eslint-disable-next-line no-restricted-syntax
@@ -966,11 +1551,11 @@ export function GlobalView(div, startupOptions) {
       }
 
       // Validate option
-      if (!Object.prototype.hasOwnProperty.call(OPTIONS, option)) {
+      if (!Object.prototype.hasOwnProperty.call(this.OPTIONS, option)) {
         libUtility.consoleWarn(`GlobalView warning: Unsupported option: ${option}`);
         continue; // eslint-disable-line no-continue
       }
-      const optionDefinition = OPTIONS[option];
+      const optionDefinition = this.OPTIONS[option];
 
       // Validate value
       const value = newOptions[option];
@@ -990,40 +1575,40 @@ export function GlobalView(div, startupOptions) {
       }
 
       // Set option
-      options[option] = value;
+      this.options[option] = value;
 
       requireRecompile = requireRecompile || optionDefinition.requireRecompile;
       requireRedraw = requireRedraw || optionDefinition.requireRedraw;
     }
 
-    onOptionsChanged.call(this, requireRedraw, requireRecompile);
-  };
+    this.onOptionsChanged.call(this, requireRedraw, requireRecompile);
+  }
 
   /**
    * @summary Sets the given option to its default value
    * @param  {string} option
    */
-  this.setDefaultOption = function (option) {
+  setDefaultOption(option) {
     // Validate option
-    if (!Object.prototype.hasOwnProperty.call(OPTIONS, option)) {
+    if (!Object.prototype.hasOwnProperty.call(this.OPTIONS, option)) {
       libUtility.consoleWarn(`GlobalView warning: Unsupported option: ${option}`);
       return;
     }
-    const optionDefinition = OPTIONS[option];
+    const optionDefinition = this.OPTIONS[option];
 
     this.setOption(option, optionDefinition.default);
-  };
+  }
 
   /**
    * @summary Sets all options to their respective defaults
    */
-  this.setDefaultOptions = function () {
+  setDefaultOptions() {
     const defaultOptions = {};
-    Object.keys(OPTIONS).forEach((option) => {
-      defaultOptions[option] = OPTIONS[option].default;
+    Object.keys(this.OPTIONS).forEach((option) => {
+      defaultOptions[option] = this.OPTIONS[option].default;
     });
     this.setOptions(defaultOptions);
-  };
+  }
 
   /**
    * @summary Checks the given option for errors without setting it
@@ -1031,12 +1616,12 @@ export function GlobalView(div, startupOptions) {
    * @param  {*} value
    * @return  {string|boolean} Error message or 'true' if the option is valid
    */
-  this.validateOption = function (option, value) {
+  validateOption(option, value) {
     // Validate option
-    if (!Object.prototype.hasOwnProperty.call(OPTIONS, option)) {
+    if (!Object.prototype.hasOwnProperty.call(this.OPTIONS, option)) {
       return `Unsupported option: ${option}`;
     }
-    const optionDefinition = OPTIONS[option];
+    const optionDefinition = this.OPTIONS[option];
 
     // Validate value
     let validationResult;
@@ -1050,14 +1635,14 @@ export function GlobalView(div, startupOptions) {
     }
 
     return true;
-  };
+  }
 
   /**
    * @summary Checks multiple options for errors without setting them
    * @param  {Object} newOptions A JavaScript object of options
    * @return  {string|boolean} Error message or 'true' if all options are valid
    */
-  this.validateOptions = function (newOptions) {
+  validateOptions(newOptions) {
     const errors = [];
     // eslint-disable-next-line no-restricted-syntax
     for (const option in newOptions) {
@@ -1066,11 +1651,11 @@ export function GlobalView(div, startupOptions) {
       }
 
       // Validate option
-      if (!Object.prototype.hasOwnProperty.call(OPTIONS, option)) {
+      if (!Object.prototype.hasOwnProperty.call(this.OPTIONS, option)) {
         errors.push(`Unsupported option: ${option}`);
         continue; // eslint-disable-line no-continue
       }
-      const optionDefinition = OPTIONS[option];
+      const optionDefinition = this.OPTIONS[option];
 
       // Validate value
       const value = newOptions[option];
@@ -1087,41 +1672,40 @@ export function GlobalView(div, startupOptions) {
     }
 
     return errors.length === 0 ? true : errors.join('\n');
-  };
+  }
 
   /**
    * @summary Returns the value assigned to the given option
    * @param  {string} option
    * @return {*}
    */
-  this.getOption = function (option) {
-    return options[option];
-  };
+  getOption(option) {
+    return this.options[option];
+  }
 
   /**
    * @summary Returns a JavaScript object of all options and their values
    * @return {Object}
    */
-  this.getOptions = function () {
-    return /** @type {Object} */(JSON.parse(JSON.stringify(options)));
-  };
+  getOptions() {
+    return /** @type {Object} */(JSON.parse(JSON.stringify(this.options)));
+  }
 
   /**
    * @summary Save all options
    */
-  this.pushOptions = function () {
-    pushedOptions.push(options);
-    // options = {};
-  };
+  pushOptions() {
+    this.pushedOptions.push(this.options);
+  }
 
   /**
    * @summary Recall the options last saved with {@link GlobalView#pushOptions}
    */
-  this.popOptions = function () {
-    if (pushedOptions.length !== 0) {
-      this.setOptions(pushedOptions.pop());
+  popOptions() {
+    if (this.pushedOptions.length !== 0) {
+      this.setOptions(this.pushedOptions.pop());
     }
-  };
+  }
 
   // >>> Dataset interaction
 
@@ -1131,39 +1715,39 @@ export function GlobalView(div, startupOptions) {
    * @param  {number} columnIdx
    * @param  {boolean=} changeTickDistance=true
    */
-  function updateCoorinateSystem(d, columnIdx, changeTickDistance) {
-    if (dataset.dataVectors[columnIdx].values) {
-      coordSys.setEnumRange(
-        d, tf.getVisibleMinimum(d), tf.getVisibleMaximum(d),
-        dataset.dataVectors[columnIdx].values,
+  updateCoorinateSystem(d, columnIdx, changeTickDistance) {
+    if (this.dataset.dataVectors[columnIdx].values) {
+      this.coordSys.setEnumRange(
+        d, this.plotTransform.getVisibleMinimum(d), this.plotTransform.getVisibleMaximum(d),
+        this.dataset.dataVectors[columnIdx].values,
       );
     } else {
-      coordSys.setNumericRange(
-        d, tf.getVisibleMinimum(d), tf.getVisibleMaximum(d),
+      this.coordSys.setNumericRange(
+        d, this.plotTransform.getVisibleMinimum(d), this.plotTransform.getVisibleMaximum(d),
         changeTickDistance,
       );
     }
-    coordSys.setLabel(d, dataset.dataVectors[columnIdx].label);
+    this.coordSys.setLabel(d, this.dataset.dataVectors[columnIdx].label);
   }
   /**
    * @private
    * @param  {number} columnIdx
    * @param  {boolean=} changeTickDistance=true
    */
-  function updateColormap(columnIdx, changeTickDistance) {
-    if (dataset.dataVectors[columnIdx].values) {
-      colormap.setEnumRange(
-        tf.getVisibleMinimum(2),
-        tf.getVisibleMaximum(2),
-        dataset.dataVectors[columnIdx].values,
+  updateColormap(columnIdx, changeTickDistance) {
+    if (this.dataset.dataVectors[columnIdx].values) {
+      this.colormap.setEnumRange(
+        this.plotTransform.getVisibleMinimum(2),
+        this.plotTransform.getVisibleMaximum(2),
+        this.dataset.dataVectors[columnIdx].values,
       );
     } else {
-      colormap.setNumericRange(
-        tf.getVisibleMinimum(2),
-        tf.getVisibleMaximum(2), changeTickDistance,
+      this.colormap.setNumericRange(
+        this.plotTransform.getVisibleMinimum(2),
+        this.plotTransform.getVisibleMaximum(2), changeTickDistance,
       );
     }
-    colormap.setLabel(dataset.dataVectors[columnIdx].label);
+    this.colormap.setLabel(this.dataset.dataVectors[columnIdx].label);
   }
 
   // var pushedDatasets = [];
@@ -1175,85 +1759,79 @@ export function GlobalView(div, startupOptions) {
    * @param  {number} activeColumnC
    * @param  {number} activeColumnS
    */
-  this.load = function (_dataset, activeColumnX, activeColumnY, activeColumnC, activeColumnS) {
+  load(_dataset, activeColumnX, activeColumnY, activeColumnC, activeColumnS) {
     // Remove old dataset
-    dataset = null;
-    activeInputs = Array.create(ND, -1);
-    imageViewer.clearImages();
+    this.dataset = null;
+    this.activeInputs = Array.create(ND, -1);
+    this.imageViewer.clearImages();
 
     // Set new dataset
-    dataset = _dataset;
-    animatedInputs[0].origin = activeColumnX;
-    activeInputs[0] = activeColumnX;
-    animatedInputs[1].origin = activeColumnY;
-    activeInputs[1] = activeColumnY;
-    animatedInputs[2].origin = activeColumnC;
-    activeInputs[2] = activeColumnC;
-    animatedInputs[3].origin = activeColumnS;
-    activeInputs[3] = activeColumnS;
-    // dataset.dataVectors.push(new DataVector(dataset, "({1} + {2}) / 2.0"));//"i"));
-    // dataset.dataVectors.push(new DataVector(dataset, "{2} + 2.0"));//"i"));
+    this.dataset = _dataset;
+    this.animatedInputs[0].origin = activeColumnX;
+    this.activeInputs[0] = activeColumnX;
+    this.animatedInputs[1].origin = activeColumnY;
+    this.activeInputs[1] = activeColumnY;
+    this.animatedInputs[2].origin = activeColumnC;
+    this.activeInputs[2] = activeColumnC;
+    this.animatedInputs[3].origin = activeColumnS;
+    this.activeInputs[3] = activeColumnS;
 
 
     // Reset transform
-    tf = new Transform();
+    this.plotTransform = new Transform(this);
     this.zoomFit();
 
     // Update viewers
-    viewers.forEach(viewer => viewer.setDataset(dataset, options));
-    viewers.forEach(viewer => viewer.onInputChanged(activeInputs, animatedInputs, options));
-    /* pointViewer.setDataset(dataset, options);
-    pointViewer.onInputChanged(activeInputs, animatedInputs, options);
-    densityViewer.setDataset(dataset, options);
-    histogramViewer.setDataset(dataset, options);
-    histogramViewer.onInputChanged(activeInputs, animatedInputs, options); */
+    this.viewers.forEach(viewer =>
+      viewer.setDataset(_dataset, this.options));
+    this.viewers.forEach(viewer =>
+      viewer.onInputChanged(this.activeInputs, this.animatedInputs, this.options));
 
     // Reset FPS counter
-    fps = null;
-    fpsStart = t;
-    frameCounter = 0;
+    this.fps = null;
+    this.fpsStart = this.timeNow;
+    this.frameCounter = 0;
 
     // Redraw
     this.invalidate();
-  };
+  }
 
   /**
    * Assign dataset column c to axis d
    * @param  {number} d
    * @param  {number} c
    */
-  this.setActiveColumn = function (d, c) {
+  setActiveColumn(d, c) {
     if (!ENABLE_CONTINUOUS_RENDERING) {
-      dt = 0.0;
-      t = performance.now();
+      this.deltaTime = 0.0;
+      this.timeNow = performance.now();
     }
 
-    animatedInputs[d].origin = activeInputs[d];
-    animatedInputs[d].f = 0.0;
-    activeInputs[d] = c;
+    this.animatedInputs[d].origin = this.activeInputs[d];
+    this.animatedInputs[d].f = 0.0;
+    this.activeInputs[d] = c;
 
-    tf.onInputChanged();
-    viewers.forEach(viewer => viewer.onInputChanged(activeInputs, animatedInputs, options));
-    /* pointViewer.onInputChanged(activeInputs, animatedInputs, options);
-    histogramViewer.onInputChanged(activeInputs, animatedInputs, options); */
+    this.plotTransform.onInputChanged();
+    this.viewers.forEach(viewer =>
+      viewer.onInputChanged(this.activeInputs, this.animatedInputs, this.options));
     if (d < 2) {
-      updateCoorinateSystem(d, activeInputs[d]);
+      this.updateCoorinateSystem(d, this.activeInputs[d]);
     } else {
-      updateColormap(activeInputs[2]);
+      this.updateColormap(this.activeInputs[2]);
     }
     if (d < 3) {
       this.invalidate();
     }
-  };
+  }
 
   /**
    * Get column assigned to axis c
    * @param  {number} d
    * @return {number}
    */
-  this.getActiveColumn = function (d) {
-    return d >= 0 && d < activeInputs.length ? activeInputs[d] : -1;
-  };
+  getActiveColumn(d) {
+    return d >= 0 && d < this.activeInputs.length ? this.activeInputs[d] : -1;
+  }
 
 
   /**
@@ -1262,13 +1840,13 @@ export function GlobalView(div, startupOptions) {
    * @param  {function(Array<number>)} ondone Event handler,
    *        called after characteristic points have been found
    */
-  this.getCharacteristicPoints = function (n, densityRatio, ondone) {
-    if (!dataset) {
+  getCharacteristicPoints(n, densityRatio, ondone) {
+    if (!this.dataset) {
       return;
     }
-    let d0 = activeInputs[0];
-    let d1 = activeInputs[1];
-    dataset.requestDensityMap(d0, d1, undefined, undefined, (densityMap) => {
+    let d0 = this.activeInputs[0];
+    let d1 = this.activeInputs[1];
+    this.dataset.requestDensityMap(d0, d1, undefined, undefined, (densityMap) => {
       if (d1 < d0) {
         // Swap d0 <-> d1
         const temp = d0;
@@ -1277,20 +1855,20 @@ export function GlobalView(div, startupOptions) {
       }
 
       const characteristicPoints =
-        libAlgorithm.findRepresentativePoints2(dataset, d0, d1, densityMap, n, densityRatio);
+        libAlgorithm.findRepresentativePoints2(this.dataset, d0, d1, densityMap, n, densityRatio);
       ondone(characteristicPoints);
     });
-  };
+  }
 
   // >>> Annotation
 
   /**
    * @summary Remove all thumbnails from the plot
    */
-  this.clearThumbnails = function () {
+  clearThumbnails() {
     // Clear stencil maps
-    if (dataset) {
-      dataset.iterateDensityMaps((densityMap) => {
+    if (this.dataset) {
+      this.dataset.iterateDensityMaps((densityMap) => {
         if (densityMap.stencilMap && densityMap.stencilMap.data) {
           for (let i = 0, stencilMap = densityMap.stencilMap.data, len = stencilMap.length;
             i < len; i += 1) {
@@ -1300,17 +1878,18 @@ export function GlobalView(div, startupOptions) {
       });
     }
 
-    imageViewer.clearImages();
+    this.imageViewer.clearImages();
     this.invalidate();
-  };
+  }
+
   /**
    */
-  this.showData2D = function () {
-    imageViewer.clearImages();
+  showData2D() {
+    this.imageViewer.clearImages();
 
-    let d0 = activeInputs[0];
-    let d1 = activeInputs[1];
-    dataset.requestDensityMap(d0, d1, undefined, undefined, (pDensityMap) => {
+    let d0 = this.activeInputs[0];
+    let d1 = this.activeInputs[1];
+    this.dataset.requestDensityMap(d0, d1, undefined, undefined, (pDensityMap) => {
       const densityMap = pDensityMap;
       if (d1 < d0) {
         // Swap d0 <-> d1
@@ -1323,52 +1902,53 @@ export function GlobalView(div, startupOptions) {
         densityMap.stencilMap = {};
       }
 
-      // downloadDensityMap(densityMap);
-      pointViewer.representativePoints.assign(libAlgorithm.findRepresentativePoints2(
-        dataset,
+      this.pointViewer.representativePoints.assign(libAlgorithm.findRepresentativePoints2(
+        this.dataset,
         d0, d1, densityMap, 16, 0.3,
       ));
-      if (dataset.imageFilenames) {
-        pointViewer.representativePoints.forEach((r) => {
-          if (dataset.imageFilenames[r]) {
-            const dataPos = dataset.dataVectors.map(v => v.getValue(r));
+
+      if (this.dataset.imageFilenames) {
+        this.pointViewer.representativePoints.forEach((r) => {
+          if (this.dataset.imageFilenames[r]) {
+            const dataPos = this.dataset.dataVectors.map(v => v.getValue(r));
             const imagePos = dataPos.slice(0);
             const p = libAlgorithm.findClosePointOfLowDensity(
-              dataset, d0, d1, r,
+              this.dataset, d0, d1, r,
               densityMap, densityMap.stencilMap,
-              (0.6 * options.thumbnailSize) / gl.width,
-              (0.6 * (options.thumbnailSize + libImageViewer.getLabelHeight())) / gl.height,
+              (0.6 * this.options.thumbnailSize) / this.gl.width,
+              (0.6 * (this.options.thumbnailSize + libImageViewer.getLabelHeight())) /
+                this.gl.height,
             ); // EDIT: Factor 0.6: WHY?
             imagePos[d0] = p[0];
             imagePos[d1] = p[1];
-            const imageSize = dataset.dataVectors.map(v =>
-              options.thumbnailSize * (v.maximum - v.minimum));
-            imageViewer.showImage(dataset.imageFilenames[r], r, dataPos, imagePos, imageSize);
+            const imageSize = this.dataset.dataVectors.map(v =>
+              this.options.thumbnailSize * (v.maximum - v.minimum));
+            this.imageViewer.showImage(
+              this.dataset.imageFilenames[r], r,
+              dataPos, imagePos, imageSize,
+            );
           }
         });
       }
       // downloadDensityMap(densityMap);
     });
-  };
+  }
 
 
   /**
    * @summary A shorthand function to `showImage(index, "lowDensity")`
    * @param  {number} index Index of the datapoint to show
    */
-  this.showImage_lowDensity = function (index) {
-    if (dataset.imageFilenames && dataset.imageFilenames[index]) {
-      let d0 = activeInputs[0];
-      let d1 = activeInputs[1];
-      // libUtility.consoleLog(dataset.requestDensityMap(d0, d1, undefined, undefined));
-      // dataset.requestDensityMap(d0, d1, undefined, undefined,
-      // function(densityMap) { libUtility.consoleLog(densityMap); });
+  showImageLowDensity(index) {
+    if (this.dataset.imageFilenames && this.dataset.imageFilenames[index]) {
+      let d0 = this.activeInputs[0];
+      let d1 = this.activeInputs[1];
 
-      dataset.requestDensityMap(d0, d1, undefined, undefined, (pDensityMap) => {
+      this.dataset.requestDensityMap(d0, d1, undefined, undefined, (pDensityMap) => {
         const densityMap = pDensityMap;
-        let imageWidth = (0.6 * options.thumbnailSize) / gl.width;
-        let imageHeight = ((0.6 * options.thumbnailSize) + libImageViewer.getLabelHeight()) /
-          gl.height; // EDIT: Factor 0.6: WHY?
+        let imageWidth = (0.6 * this.options.thumbnailSize) / this.gl.width;
+        let imageHeight = ((0.6 * this.options.thumbnailSize) + libImageViewer.getLabelHeight()) /
+          this.gl.height; // EDIT: Factor 0.6: WHY?
         if (d1 < d0) {
           // Swap d0 <-> d1
           let temp = d0;
@@ -1381,12 +1961,12 @@ export function GlobalView(div, startupOptions) {
           imageHeight = temp;
         }
 
-        const dataPos = dataset.dataVectors.map(v => v.getValue(index));
+        const dataPos = this.dataset.dataVectors.map(v => v.getValue(index));
         let imagePos;
         if (libUtility.isUndefined(densityMap.data)) { // If densityMap is nD
           imagePos = libAlgorithm.findClosePointOfLowDensityNDDescend(
-            dataset, index, densityMap,
-            (0.6 * options.thumbnailSize) / Math.min(gl.width, gl.height),
+            this.dataset, index, densityMap,
+            (0.6 * this.options.thumbnailSize) / Math.min(this.gl.width, this.gl.height),
           );
         } else { // EDIT: Factor 0.6: WHY?
           imagePos = dataPos.slice(0);
@@ -1395,7 +1975,7 @@ export function GlobalView(div, startupOptions) {
             densityMap.stencilMap = {};
           }
           const p = libAlgorithm.findClosePointOfLowDensity(
-            dataset, d0, d1, index, densityMap,
+            this.dataset, d0, d1, index, densityMap,
             densityMap.stencilMap, imageWidth, imageHeight,
           );
           if (p) {
@@ -1403,33 +1983,36 @@ export function GlobalView(div, startupOptions) {
             imagePos[d1] = p[1];
           } else {
             const halfImageSize = [
-              (1.1 * options.thumbnailSize) / gl.width,
-              (1.1 * options.thumbnailSize) / gl.height];
-            tf.deviceDistToDatasetDist(halfImageSize, halfImageSize);
+              (1.1 * this.options.thumbnailSize) / this.gl.width,
+              (1.1 * this.options.thumbnailSize) / this.gl.height];
+            this.plotTransform.deviceDistToDatasetDist(halfImageSize, halfImageSize);
             imagePos[d0] += halfImageSize[0];
             imagePos[d1] += halfImageSize[1];
           }
         }
-        const imageSize = dataset.dataVectors.map(v =>
-          options.thumbnailSize * (v.maximum - v.minimum));
-        imageViewer.showImage(dataset.imageFilenames[index], index, dataPos, imagePos, imageSize);
+        const imageSize = this.dataset.dataVectors.map(v =>
+          this.options.thumbnailSize * (v.maximum - v.minimum));
+        this.imageViewer.showImage(
+          this.dataset.imageFilenames[index],
+          index, dataPos, imagePos, imageSize,
+        );
       });
     }
-  };
+  }
 
   /**
    * @summary A shorthand function to `showImages(index, "lowDensity")`
    * @param  {Array<number>} points List of indices of datapoints to show
    */
-  this.showImages_lowDensity = function (points) {
-    if (dataset.imageFilenames) {
-      let d0 = activeInputs[0];
-      let d1 = activeInputs[1];
-      dataset.requestDensityMap(d0, d1, undefined, undefined, (pDensityMap) => {
+  showImagesLowDensity(points) {
+    if (this.dataset.imageFilenames) {
+      let d0 = this.activeInputs[0];
+      let d1 = this.activeInputs[1];
+      this.dataset.requestDensityMap(d0, d1, undefined, undefined, (pDensityMap) => {
         const densityMap = pDensityMap;
-        let imageWidth = (0.6 * options.thumbnailSize) / gl.width;
-        let imageHeight = ((0.6 * options.thumbnailSize) + libImageViewer.getLabelHeight()) /
-          gl.height; // EDIT: Factor 0.6: WHY?
+        let imageWidth = (0.6 * this.options.thumbnailSize) / this.gl.width;
+        let imageHeight = ((0.6 * this.options.thumbnailSize) + libImageViewer.getLabelHeight()) /
+          this.gl.height; // EDIT: Factor 0.6: WHY?
         if (d1 < d0) {
           // Swap d0 <-> d1
           let temp = d0;
@@ -1445,81 +2028,83 @@ export function GlobalView(div, startupOptions) {
           densityMap.stencilMap = {};
         }
         libAlgorithm.markPointsInStencilMap(
-          dataset, d0, d1, points,
+          this.dataset, d0, d1, points,
           densityMap, densityMap.stencilMap,
           imageWidth, imageHeight,
         );
       });
     }
-    points.forEach(i => globalView.showImage_lowDensity(i));
-    imageViewer.resolveIntersections(tf);
-  };
+    const plot = this;
+    points.forEach(i => plot.showImageLowDensity(i));
+    this.imageViewer.resolveIntersections(this.plotTransform);
+  }
 
 
   /**
    * @summary A shorthand function to `showImage(index, "none")`
    * @param  {number} index Index of the datapoint to show
    */
-  this.showImage_none = function (index) {
-    const dataPos = dataset.dataVectors.map(v => v.getValue(index));
-    imageViewer.showImage(dataset.imageFilenames[index], index, dataPos);
-  };
+  showImageNone(index) {
+    const dataPos = this.dataset.dataVectors.map(v => v.getValue(index));
+    this.imageViewer.showImage(this.dataset.imageFilenames[index], index, dataPos);
+  }
 
   /**
    * @summary A shorthand function to `showImages(index, "none")`
    * @param  {Array<number>} points List of indices of datapoints to show
    */
-  this.showImages_none = function (points) {
+  showImagesNone(points) {
     points.forEach((p) => {
-      const dataPos = dataset.dataVectors.map(v => v.getValue(p));
-      imageViewer.showImage(dataset.imageFilenames[p], p, dataPos);
+      const dataPos = this.dataset.dataVectors.map(v => v.getValue(p));
+      this.imageViewer.showImage(this.dataset.imageFilenames[p], p, dataPos);
     });
-  };
+  }
 
 
   /**
    * @summary A shorthand function to `showImage(index, "adjacent")`
    * @param  {number} index Index of the datapoint to show
    */
-  this.showImage_adjacent = function (index) {
-    const dataPos = dataset.dataVectors.map(v => v.getValue(index));
-    const imageSize = dataset.dataVectors.map(v =>
-      options.thumbnailSize * (v.maximum - v.minimum));
-    imageViewer.showImage(
-      dataset.imageFilenames[index],
+  showImageAdjacent(index) {
+    const dataPos = this.dataset.dataVectors.map(v => v.getValue(index));
+    const imageSize = this.dataset.dataVectors.map(v =>
+      this.options.thumbnailSize * (v.maximum - v.minimum));
+    this.imageViewer.showImage(
+      this.dataset.imageFilenames[index],
       index, dataPos, dataPos,
       imageSize, 'bottomleft',
     );
-  };
+  }
 
   /**
    * @summary A shorthand function to `showImages(index, "adjacent")`
    * @param  {Array<number>} points List of indices of datapoints to show
    */
-  this.showImages_adjacent = function (points) {
-    points.forEach(i => globalView.showImage_adjacent(i));
-  };
+  showImagesAdjacent(points) {
+    const plot = this;
+    points.forEach(i => plot.showImageAdjacent(i));
+  }
 
 
   /**
    * @summary A shorthand function to `showImages(index, "project")`
    * @param  {Array<number>} points List of indices of datapoints to show
    */
-  this.showImages_project = function (points) {
-    if (!dataset.imageFilenames) {
+  showImagesProject(points) {
+    if (!this.dataset.imageFilenames) {
       return;
     }
 
-    const d0 = activeInputs[0];
-    const d1 = activeInputs[1];
-    const offsets = tf.getOffsets();
-    const scales = tf.getScales();
+    const d0 = this.activeInputs[0];
+    const d1 = this.activeInputs[1];
+    const offsets = this.plotTransform.getOffsets();
+    const scales = this.plotTransform.getScales();
 
     // Computed expected value (= mean) of points -> E
     const E = [0, 0];
     points.forEach((p) => {
-      E[0] += dataset.dataVectors[d0].getValue(p);
-      E[1] += dataset.dataVectors[d1].getValue(p);
+      E[0] += this.dataset.dataVectors[d0].getValue(p);
+      E[1] += this.dataset.dataVectors[d1].getValue(p);
     });
     E[0] *= scales[0] / points.length;
     E[1] *= scales[1] / points.length;
@@ -1527,8 +2112,8 @@ export function GlobalView(div, startupOptions) {
     // Compute covariance matrix of points -> cov [symetrical 2D matrix]
     const cov = [0, 0, 0];
     points.forEach((p) => {
-      const x0 = (dataset.dataVectors[d0].getValue(p) * scales[0]) - E[0];
-      const x1 = (dataset.dataVectors[d1].getValue(p) * scales[1]) - E[1];
+      const x0 = (this.dataset.dataVectors[d0].getValue(p) * scales[0]) - E[0];
+      const x1 = (this.dataset.dataVectors[d1].getValue(p) * scales[1]) - E[1];
       cov[0] += x0 * x0;
       cov[1] += x0 * x1;
       cov[2] += x1 * x1;
@@ -1550,33 +2135,37 @@ export function GlobalView(div, startupOptions) {
     eigenvec[0] /= eigenVecLength;
     eigenvec[1] /= eigenVecLength;
 
-    // Define corners of AABB
-    const imageSize = dataset.dataVectors.map(v =>
-      options.thumbnailSize * (v.maximum - v.minimum));
-    const labelHeightOffset = 1.0 + (libImageViewer.getLabelHeight() / options.thumbnailSize);
+    // Define corners of AABB (axis-aligned bounding box)
+    const imageSize = this.dataset.dataVectors.map(v =>
+      this.options.thumbnailSize * (v.maximum - v.minimum));
+    const labelHeightOffset = 1.0 + (libImageViewer.getLabelHeight() / this.options.thumbnailSize);
     const labelWidthOffset = 1.0 +
       ((libImageViewer.getLabelHeight() + (2 * libImageViewer.getLabelWidth()))
-        / options.thumbnailSize);
-    const bl = [
-      tf.getMinimum(0) - ((imageSize[d0] * 0.6) / plotBounds.width),
-      tf.getMinimum(1) - ((imageSize[d1] * 0.6) / plotBounds.height),
+        / this.options.thumbnailSize);
+    const bl = [ // bottom-left
+      this.plotTransform.getMinimum(0) - ((imageSize[d0] * 0.6) / this.plotBounds.width),
+      this.plotTransform.getMinimum(1) - ((imageSize[d1] * 0.6) / this.plotBounds.height),
     ];
-    const tl = [
-      tf.getMinimum(0) - ((imageSize[d0] * 0.6) / plotBounds.width),
-      tf.getMaximum(1) + ((imageSize[d1] * labelHeightOffset * 0.8) / plotBounds.height),
+    const tl = [ // top-left
+      this.plotTransform.getMinimum(0) - ((imageSize[d0] * 0.6) / this.plotBounds.width),
+      this.plotTransform.getMaximum(1) + ((imageSize[d1] * labelHeightOffset * 0.8) /
+        this.plotBounds.height),
     ];
-    const tr = [
-      tf.getMaximum(0) + ((imageSize[d0] * labelWidthOffset * 0.6) / plotBounds.width),
-      tf.getMaximum(1) + ((imageSize[d1] * labelHeightOffset * 0.8) / plotBounds.height),
+    const tr = [ // top-right
+      this.plotTransform.getMaximum(0) + ((imageSize[d0] * labelWidthOffset * 0.6) /
+        this.plotBounds.width),
+      this.plotTransform.getMaximum(1) + ((imageSize[d1] * labelHeightOffset * 0.8) /
+        this.plotBounds.height),
     ];
-    const br = [
-      tf.getMaximum(0) + ((imageSize[d0] * labelWidthOffset * 0.6) / plotBounds.width),
-      tf.getMinimum(1) - ((imageSize[d1] * 0.6) / plotBounds.height),
+    const br = [ // bottom-right
+      this.plotTransform.getMaximum(0) + ((imageSize[d0] * labelWidthOffset * 0.6) /
+        this.plotBounds.width),
+      this.plotTransform.getMinimum(1) - ((imageSize[d1] * 0.6) / this.plotBounds.height),
     ];
-    tf.datasetCoordToDeviceCoord(bl, bl);
-    tf.datasetCoordToDeviceCoord(tl, tl);
-    tf.datasetCoordToDeviceCoord(tr, tr);
-    tf.datasetCoordToDeviceCoord(br, br);
+    this.plotTransform.datasetCoordToDeviceCoord(bl, bl);
+    this.plotTransform.datasetCoordToDeviceCoord(tl, tl);
+    this.plotTransform.datasetCoordToDeviceCoord(tr, tr);
+    this.plotTransform.datasetCoordToDeviceCoord(br, br);
 
     // >>> Set image locations to be projections of data positions along eigenvec onto AABB
 
@@ -1620,17 +2209,17 @@ export function GlobalView(div, startupOptions) {
 
     let imageLocations = [];
     let dest;
-    const v0 = dataset.dataVectors[activeInputs[0]];
-    const v1 = dataset.dataVectors[activeInputs[1]];
+    const v0 = this.dataset.dataVectors[this.activeInputs[0]];
+    const v1 = this.dataset.dataVectors[this.activeInputs[1]];
     points.forEach((p) => {
-      if (!dataset.imageFilenames[p]) {
+      if (!this.dataset.imageFilenames[p]) {
         return;
       }
 
       const src = [v0.getValue(p), v1.getValue(p)];
       // Same as src = [v0.getValue(p) * scales[0] + offsets[0],
       //                v1.getValue(p) * scales[1] + offsets[1]];
-      tf.datasetCoordToDeviceCoord(src, src);
+      this.plotTransform.datasetCoordToDeviceCoord(src, src);
 
       if (libGlMatrix.vec2.dot(
         [src[0] - offsets[0] - E[0], src[1] - offsets[1] - E[1]],
@@ -1725,25 +2314,25 @@ export function GlobalView(div, startupOptions) {
 
     let idx = 0;
     points.forEach((p) => {
-      if (!dataset.imageFilenames[p]) {
+      if (!this.dataset.imageFilenames[p]) {
         return;
       }
 
-      const dataPos = dataset.dataVectors.map(v => v.getValue(p));
+      const dataPos = this.dataset.dataVectors.map(v => v.getValue(p));
       const imagePos = dataPos.slice(0);
 
       // Convert scalar to position on rectangle [bl, br, tl, tr] -> dest
       dest = locToPos(imageLocations[idx]);
       idx += 1;
-      tf.deviceCoordToDatasetCoord(dest, dest);
+      this.plotTransform.deviceCoordToDatasetCoord(dest, dest);
       imagePos[d0] = dest[0];
       imagePos[d1] = dest[1];
 
-      imageViewer.showImage(dataset.imageFilenames[p], p, dataPos, imagePos, imageSize);
+      this.imageViewer.showImage(this.dataset.imageFilenames[p], p, dataPos, imagePos, imageSize);
     });
 
-    imageViewer.resolveIntersections(tf);
-  };
+    this.imageViewer.resolveIntersections(this.plotTransform);
+  }
 
 
   /**
@@ -1755,14 +2344,14 @@ export function GlobalView(div, startupOptions) {
    * @param  {number} index Index of the datapoint to show
    * @param  {string} placement
    */
-  this.showImage = function (index, placement) {
+  showImage(index, placement) {
     switch (placement) {
       case 'none':
-        return this.showImage_none(index);
+        return this.showImageNone(index);
       case 'adjacent':
-        return this.showImage_adjacent(index);
+        return this.showImageAdjacent(index);
       case 'lowDensity':
-        return this.showImage_lowDensity(index);
+        return this.showImageLowDensity(index);
       case 'project':
         libUtility.consoleWarn('GlobalView warning: ' +
           "Can't place a single image using the 'project'-strategy");
@@ -1772,7 +2361,7 @@ export function GlobalView(div, startupOptions) {
           `Unknown image placement strategy: ${placement}`);
         return false;
     }
-  };
+  }
 
   /**
    * Valid placement strategies are:
@@ -1784,22 +2373,22 @@ export function GlobalView(div, startupOptions) {
    * @param  {Array<number>} points List of indices of datapoints to show
    * @param  {string} placement
    */
-  this.showImages = function (points, placement) {
+  showImages(points, placement) {
     switch (placement) {
       case 'none':
-        return this.showImages_none(points);
+        return this.showImagesNone(points);
       case 'adjacent':
-        return this.showImages_adjacent(points);
+        return this.showImagesAdjacent(points);
       case 'lowDensity':
-        return this.showImages_lowDensity(points);
+        return this.showImagesLowDensity(points);
       case 'project':
-        return this.showImages_project(points);
+        return this.showImagesProject(points);
       default:
         libUtility.consoleWarn('GlobalView warning: ' +
           `Unknown image placement strategy: ${placement}`);
         return false;
     }
-  };
+  }
 
 
   /**
@@ -1808,8 +2397,8 @@ export function GlobalView(div, startupOptions) {
    * @deprecated Set image.labelColor manually
    * @param  {Thumbnail|number} image Image or index of image to show
    */
-  this.highlightImage = function (image) {
-    const images = imageViewer.getImages();
+  highlightImage(image) {
+    const images = this.imageViewer.getImages();
     if (libUtility.isNumber(image)) {
       for (let i = 0; i < images.length; i += 1) {
         images[i].highlighted = i === image;
@@ -1820,30 +2409,15 @@ export function GlobalView(div, startupOptions) {
       }
     }
     this.invalidate();
-  };
+  }
 
   /**
    * @summary Get an array of all images of the plot
    * @return {Array<Thumbnail>}
    */
-  this.getImages = imageViewer.getImages;
-
-
-  // >>> Mouse handlers
-
-  let mouseOverDatapoint = -1;
-  let pointDragDownPos = null;
-  let viewDragStartPos = null;
-  let viewDragX;
-  let viewDragY;
-  let viewDragZ;
-  let mouseOverAxisLabel = null;
-  let mouseOverImage = null;
-  let imageDragStartPos = null;
-  let imageDragImages = [];
-  let ctrlPressed = false;
-  let shiftPressed = false;
-  const CTRL = navigator.appVersion.indexOf('Mac') === -1 ? 17 : 224;
+  getImages() {
+    return this.imageViewer.getImages;
+  }
 
   /**
    * @callback onMouseDownCallback
@@ -1862,7 +2436,7 @@ export function GlobalView(div, startupOptions) {
    * @memberof GlobalView
    * @type {onMouseDownCallback}
    */
-  this.onMouseDown = function (pEvent) { // Default mouse-down handler
+  onMouseDown(pEvent) { // Default mouse-down handler
     const event = pEvent;
     switch (event.button) {
       // On left mouse button: Enable point selection and dragging events.
@@ -1871,7 +2445,7 @@ export function GlobalView(div, startupOptions) {
       case 0:
         event.pointSelection = true;
         event.pointDragging = true;
-        if (ctrlPressed) {
+        if (this.ctrlPressed) {
           event.viewDragging = true;
         } else {
           event.lassoSelection = true;
@@ -1887,722 +2461,247 @@ export function GlobalView(div, startupOptions) {
       default:
         break;
     }
-  };
-  /**
-   * @callback onMouseOverDatapointCallback
-   * @param  {Dataset} dataset
-   * @param  {number} mouseOverDatapoint Index of the point the mouse cursor is hovering over
-   */
-  /**
-   * There is no mouse-leave event for datapoints.
-   * When the mouse cursor leaves a datapoint,
-   * this event is raised with `mouseOverDatapoint == -1`.
-   * @summary Event handler that gets fired everytime
-   *          the mouse cursor enters the boundaries of a datapoint
-   * @member
-   * @alias onMouseOverDatapoint
-   * @memberof GlobalView
-   * @type {onMouseOverDatapointCallback}
-   */
-  this.onMouseOverDatapoint = null;
-  /**
-   * @callback onMouseOverAxisLabelCallback
-   * @param  {DataVector} dataVector Data vector whose axis label the mouse cursor is hovering over
-   * @param  {{l: number, t: number, r: number, b: number}} labelRect
-   *          Area of the label relative to the location of the plot
-   */
-  /**
-   * There is no mouse-leave event for axis labels.
-   * When the mouse cursor leaves an axis label, this event is raised with
-   * `dataVector == labelRect == null`.
-   * @summary Event handler that gets fired everytime the mouse cursor
-   *          enters the boundaries of an axis label
-   * @member
-   * @alias onMouseOverAxisLabel
-   * @memberof GlobalView
-   * @type {onMouseOverAxisLabelCallback}
-   */
-  this.onMouseOverAxisLabel = null;
-  /**
-   * @callback onSelectionChangedCallback
-   * @param  {Dataset} dataset
-   * @param  {Array<number>} selection Array of indices of all selected points
-   */
-  /**
-   * When the selection is cleared, this event is raised with `selection == []`.
-   * @summary Event handler that gets fired everytime the collection of selected points is altered
-   * @member
-   * @alias onSelectionChanged
-   * @memberof GlobalView
-   * @type {onSelectionChangedCallback}
-   */
-  this.onSelectionChanged = null;
-  /**
-   * @callback onLassoSelectionCallback
-   * @param  {Dataset} dataset
-   * @param  {Array<number>} selection Array of indices of all selected points
-   * @param  {{l: number, t: number, r: number, b: number}|Array<Array<number>>} lassoArea
-   * Rectangle or list of 2D points of the area selected
-   * by the lasso relative to the location of the plot
-   */
-  /**
-   * This event is fired with `selection == []` if no points lie inside the lasso area.
-   * @summary Event handler that gets fired everytime a lasso selection was made
-   * @member
-   * @alias onLassoSelection
-   * @memberof GlobalView
-   * @type {onLassoSelectionCallback}
-   */
-  this.onLassoSelection = null;
-  /**
-   * @callback onThumbnailSelectionChangedCallback
-   * @param  {Dataset} dataset
-   * @param  {Array<Thumbnail>} selection Array of all selected images
-   */
-  /**
-   * When the selection is cleared, this event is raised with `selection == []`.
-   * @summary Event handler that gets fired everytime the collection of selected images is altered
-   * @member
-   * @alias onThumbnailSelectionChanged
-   * @memberof GlobalView
-   * @type {onThumbnailSelectionChangedCallback}
-   */
-  this.onThumbnailSelectionChanged = null;
-  libUtility.addKeyDownHandler((event) => {
-    if (event.keyCode === CTRL) {
-      ctrlPressed = true;
-    } else if (event.keyCode === 16) {
-      shiftPressed = true;
-    }
-  });
-  libUtility.addKeyUpHandler((event) => {
-    if (event.which === CTRL) {
-      ctrlPressed = false;
-    } else if (event.keyCode === 16) {
-      shiftPressed = false;
-    }
-  });
-  canvas.oncontextmenu = function () {
-    return false;
-  }; // Disable canvas context menu
-  canvas.onmousedown = function (event) {
-    if (tf === null || offscreenRendering !== null) {
-      return;
-    }
-
-    // Compute mousepos in canvas space -> p
-    const canvasBounds = canvas.getBoundingClientRect();
-    const p = new Float32Array([event.clientX - canvasBounds.left,
-      event.clientY - canvasBounds.top,
-      event.clientY - canvasBounds.top]);
-
-    // Fire mouse-down handler
-    this.onMouseDown(event);
-
-    if (event.viewDragging) {
-      // If mouse-down handler set viewDragging property to a truthy value
-      if (p[0] > plotBounds.x + plotBounds.width) {
-        viewDragX = false;
-        viewDragY = false;
-        viewDragZ = colormap.visible;
-      } else {
-        viewDragX = p[0] >= plotBounds.x;
-        viewDragY = p[1] <= plotBounds.y + plotBounds.height;
-        viewDragZ = false;
-      }
-
-      // Transform mousepos from canvas space to device coordinates
-      p[0] = ((2 * p[0]) / canvasBounds.width) - 1;
-      p[1] = 1 - ((2 * p[1]) / canvasBounds.height);
-      p[2] = 1 - ((p[2] - plotBounds.y) / plotBounds.height);
-
-      if (viewDragX || viewDragY || viewDragZ) {
-        viewDragStartPos = p;
-      } // Initiate view dragging
-      return; // Prevent other mouse-down events
-    }
-    // Transform mousepos from canvas space to device coordinates
-    p[0] = ((2 * p[0]) / canvasBounds.width) - 1;
-    p[1] = 1 - ((2 * p[1]) / canvasBounds.height);
-
-
-    const selectedImage = imageViewer.imageFromPoint(tf, p);
-    if (!shiftPressed && !ctrlPressed && imageDragImages.length !== 0 &&
-      (selectedImage === null || imageDragImages.indexOf(selectedImage) === -1)) {
-      // Deselect images
-      imageDragImages.forEach((image) => {
-        const varImage = image;
-        varImage.highlighted = false;
-      });
-      imageDragImages = [];
-      this.invalidate();
-      if (this.onThumbnailSelectionChanged !== null) {
-        this.onThumbnailSelectionChanged(dataset, []);
-      }
-    }
-    if (selectedImage !== null) {
-      selectedImage.highlighted = true;
-      if (imageDragImages.indexOf(selectedImage) === -1) {
-        imageDragImages.push(selectedImage);
-      }
-      if (options.enableThumbnailDragging) {
-        imageDragStartPos = p;
-      } // Initiate image dragging
-      this.invalidate();
-      if (event.pointSelection && this.onSelectionChanged !== null) {
-        this.onSelectionChanged(dataset, []);
-      }
-      if (this.onThumbnailSelectionChanged !== null) {
-        this.onThumbnailSelectionChanged(dataset, imageDragImages);
-      }
-      return; // Prevent other mouse-down events
-    }
-
-    // Transform p from device coordinates to dataset coordinates
-    tf.deviceCoordToDatasetCoord(p, p);
-
-    let closest = Number.MAX_VALUE;
-    let closestIndex = -1;
-    let sqDist;
-    const sqscl0 = tf.getScale(0) * tf.getScale(0);
-    const sqscl1 = tf.getScale(1) * tf.getScale(1);
-    const v0 = dataset.dataVectors[activeInputs[0]];
-    const v1 = dataset.dataVectors[activeInputs[1]];
-    pointViewer.points.forEach((i) => {
-      sqDist =
-        (sqscl0 * ((p[0] - v0.getValue(i)) ** 2)) +
-        (sqscl1 * ((p[1] - v1.getValue(i)) ** 2));
-      if (sqDist < closest) {
-        closest = sqDist;
-        closestIndex = i;
-      }
-    });
-
-    // Get closest dataset coordinates in dataset coordinates -> dp
-    const dp = new Float32Array([v0.getValue(closestIndex), v1.getValue(closestIndex)]);
-
-    // Transform dp from dataset coordinates to canvas coordinates
-    tf.datasetCoordToDeviceCoord(dp, dp);
-    dp[0] = (0.5 + (0.5 * dp[0])) * canvasBounds.width;
-    dp[1] = (0.5 - (0.5 * dp[1])) * canvasBounds.height;
-
-    sqDist =
-      (((event.clientX - canvasBounds.left) - dp[0]) ** 2) +
-      (((event.clientY - canvasBounds.top) - dp[1]) ** 2);
-    if (sqDist > (options.pointSize / 2.0) ** 2) {
-      if ((event.lassoSelection || event.polygonLassoSelection) &&
-          this.onLassoSelection !== null) {
-        if (event.polygonLassoSelection) {
-          mousePolygon = [];
-        } else {
-          mouseRect = {
-            x: event.clientX - canvasBounds.left,
-            y: event.clientY - canvasBounds.top,
-            width: 0,
-            height: 0,
-          };
-        }
-      }
-      if (event.pointSelection && this.onSelectionChanged !== null) {
-        this.onSelectionChanged(dataset, []);
-      }
-    } else {
-      if (event.pointDragging) {
-        pointDragDownPos = [dp[0], dp[1], closestIndex];
-      } // (This makes sure pointDragDownPos is centered on the selected datapoint)
-      if (event.pointSelection && this.onSelectionChanged !== null) {
-        this.onSelectionChanged(dataset, [closestIndex]);
-      }
-    }
-  }.bind(this);
-  let onmousemove;
-  libUtility.addMouseMoveHandler(onmousemove = function (event) {
-    if (tf === null || offscreenRendering !== null ||
-      (event.target !== canvas && pointDragDownPos === null &&
-        viewDragStartPos === null && imageDragStartPos === null &&
-        mouseRect === null && mousePolygon === null)) {
-      return;
-    }
-
-    // Compute mousepos in canvas space -> p
-    const canvasBounds = canvas.getBoundingClientRect();
-    const p = new Float32Array([
-      event.clientX - canvasBounds.left,
-      event.clientY - canvasBounds.top,
-      event.clientY - canvasBounds.top]);
-
-    // Resize mouse polygon
-    if (mousePolygon !== null) {
-      mousePolygon.push(p);
-      this.invalidate();
-      return;
-    }
-
-    // Resize mouse rect
-    if (mouseRect !== null) {
-      mouseRect.width = p[0] - mouseRect.x;
-      mouseRect.height = p[1] - mouseRect.y;
-      this.invalidate();
-      return;
-    }
-
-    if (pointDragDownPos) {
-      const scale = (1 /
-        (dataset.dataVectors[activeInputs[3]].getValue(pointDragDownPos[2]) * tf.getScale(3))) +
-          tf.getOffset(3);
-      // libUtility.consoleLog(scale);
-
-      pointDrag = [scale * (p[0] - pointDragDownPos[0]), scale * (p[1] - pointDragDownPos[1])];
-      this.invalidate();
-      return;
-    }
-
-    if (this.onMouseOverAxisLabel) {
-      const newMouseOverAxisLabel = coordSys.labelFromPoint(plotBounds, p);
-      if (newMouseOverAxisLabel !== mouseOverAxisLabel) {
-        mouseOverAxisLabel = newMouseOverAxisLabel;
-        if (mouseOverAxisLabel !== null) {
-          this.onMouseOverAxisLabel(
-            dataset.dataVectors[activeInputs[mouseOverAxisLabel]],
-            coordSys.getLabelBounds(plotBounds, mouseOverAxisLabel),
-          );
-        } else {
-          this.onMouseOverAxisLabel(null, null);
-        }
-      }
-    }
-
-    // Transform mousepos from canvas space to device coordinates
-    p[0] = ((2 * p[0]) / canvasBounds.width) - 1;
-    p[1] = 1 - ((2 * p[1]) / canvasBounds.height);
-    p[2] = 1 - ((p[2] - plotBounds.y) / plotBounds.height);
-
-    const d0 = activeInputs[0];
-    const d1 = activeInputs[1];
-
-    if (viewDragStartPos) {
-      const d2 = activeInputs[2];
-      const viewDelta = libGlMatrix.vec3.create();
-      tf.deviceDistToDatasetDist(
-        viewDelta,
-        libGlMatrix.vec3.subtract(viewDelta, p, viewDragStartPos),
-      );
-
-      if (viewDragX) {
-        tf.translate(d0, viewDelta[0]);
-      }
-      if (viewDragY) {
-        tf.translate(d1, viewDelta[1]);
-      }
-      if (viewDragZ) {
-        tf.translate(d2, viewDelta[2]);
-      }
-      viewDragStartPos = p;
-      return;
-    }
-
-    if (imageDragStartPos) {
-      const imageDelta = libGlMatrix.vec2.create();
-      tf.deviceDistToDatasetDist(
-        imageDelta,
-        libGlMatrix.vec2.subtract(imageDelta, p, imageDragStartPos),
-      );
-      imageDragImages.forEach((image) => {
-        image.imagePos[activeInputs[0]] += imageDelta[0]; // eslint-disable-line no-param-reassign
-        image.imagePos[activeInputs[1]] += imageDelta[1]; // eslint-disable-line no-param-reassign
-      });
-      imageDragStartPos = p;
-      this.invalidate();
-      return;
-    }
-
-    if (mouseOverImage !== null && imageDragImages.indexOf(mouseOverImage) === -1) {
-      mouseOverImage.highlighted = false;
-      this.invalidate();
-      mouseOverImage = null;
-    }
-    mouseOverImage = imageViewer.imageFromPoint(tf, p);
-    if (mouseOverImage !== null) {
-      if (imageDragImages.indexOf(mouseOverImage) === -1) {
-        mouseOverImage.highlighted = true;
-        this.invalidate();
-      }
-      if (mouseOverDatapoint !== -1) {
-        mouseOverDatapoint = -1;
-        if (this.onMouseOverDatapoint !== null) {
-          this.onMouseOverDatapoint(dataset, mouseOverDatapoint);
-        }
-      }
-      return;
-    }
-
-    // Transform p from device coordinates to dataset coordinates
-    tf.deviceCoordToDatasetCoord(p, p);
-
-    let closest = Number.MAX_VALUE;
-    let closestIndex = -1;
-    let sqDist;
-    const sqscl0 = tf.getScale(0) * tf.getScale(0);
-    const sqscl1 = tf.getScale(1) * tf.getScale(1);
-    const v0 = dataset.dataVectors[d0];
-    const v1 = dataset.dataVectors[d1];
-    pointViewer.points.forEach((i) => {
-      sqDist =
-        (sqscl0 * ((p[0] - v0.getValue(i)) ** 2)) +
-        (sqscl1 * ((p[1] - v1.getValue(i)) ** 2));
-      if (sqDist < closest) {
-        closest = sqDist;
-        closestIndex = i;
-      }
-    });
-
-    // Get closest dataset coordinates in dataset coordinates -> dp
-    const dp = new Float32Array([v0.getValue(closestIndex), v1.getValue(closestIndex)]);
-
-    // Transform dp from dataset coordinates to canvas coordinates
-    tf.datasetCoordToDeviceCoord(dp, dp);
-    dp[0] = (0.5 + (0.5 * dp[0])) * canvasBounds.width;
-    dp[1] = (0.5 - (0.5 * dp[1])) * canvasBounds.height;
-
-    sqDist =
-      (((event.clientX - canvasBounds.left) - dp[0]) ** 2) +
-      (((event.clientY - canvasBounds.top) - dp[1]) ** 2);
-    if (sqDist > (options.pointSize / 2.0) ** 2) {
-      if (mouseOverDatapoint !== -1) {
-        mouseOverDatapoint = -1;
-        if (this.onMouseOverDatapoint !== null) {
-          this.onMouseOverDatapoint(dataset, mouseOverDatapoint);
-        }
-      }
-    } else if (mouseOverDatapoint !== closestIndex) {
-      mouseOverDatapoint = closestIndex;
-      if (this.onMouseOverDatapoint !== null) {
-        this.onMouseOverDatapoint(dataset, mouseOverDatapoint);
-      }
-    }
-  }.bind(this));
-  libUtility.addMouseUpHandler((event) => {
-    if (tf === null || offscreenRendering !== null ||
-      (event.target !== canvas && pointDragDownPos === null &&
-        viewDragStartPos === null && mouseRect === null)) {
-      return;
-    }
-
-    let invalidate = false;
-    if (pointDragDownPos !== null) {
-      pointDragDownPos = null;
-      pointDrag = null;
-      invalidate = true;
-    }
-    viewDragStartPos = null;
-    imageDragStartPos = null;
-    if (mousePolygon !== null) {
-      if (this.onSelectionChanged !== null && mousePolygon.length >= 3) {
-        // TODO: Find points within mousePolygon -> selection
-
-        // Transform mousePolygon from canvas space to dataset coordinates
-        for (let i = 0; i < mousePolygon.length; i += 1) {
-          const p = mousePolygon[i];
-
-          // Transform p from canvas space to device coordinates
-          p[0] = ((2 * p[0]) / canvas.width) - 1;
-          p[1] = 1 - ((2 * p[1]) / canvas.height);
-
-          // Transform p from device coordinates to dataset coordinates
-          tf.deviceCoordToDatasetCoord(p, p);
-
-          mousePolygon[i] = p;
-        }
-
-        // Close polygon
-        mousePolygon.push(mousePolygon[0]);
-
-        const selection = [];
-        const v0 = dataset.dataVectors[activeInputs[0]];
-        const v1 = dataset.dataVectors[activeInputs[1]];
-        pointViewer.points.forEach((i) => {
-          const px = v0.getValue(i);
-          const py = v1.getValue(i);
-          if (libAlgorithm.pointInsidePolygon([px, py], mousePolygon)) {
-            selection.push(i);
-          }
-        });
-        this.onLassoSelection(dataset, selection, mousePolygon);
-      }
-
-      mousePolygon = null;
-      invalidate = true;
-    }
-    if (mouseRect !== null) {
-      if (this.onSelectionChanged !== null && mouseRect.width !== 0 && mouseRect.height !== 0) {
-        // Normalize mouseRect (make sure width/height are positive)
-        if (mouseRect.width < 0) {
-          mouseRect.x += mouseRect.width;
-          mouseRect.width = -mouseRect.width;
-        }
-        if (mouseRect.height < 0) {
-          mouseRect.y += mouseRect.height;
-          mouseRect.height = -mouseRect.height;
-        }
-
-        // Transform mouseRect from canvas space to device coordinates
-        mouseRect.l = ((2 * mouseRect.x) / canvas.width) - 1;
-        mouseRect.r = ((2 * (mouseRect.x + mouseRect.width)) / canvas.width) - 1;
-        mouseRect.t = 1 - ((2 * (mouseRect.y + mouseRect.height)) / canvas.height);
-        mouseRect.b = 1 - ((2 * mouseRect.y) / canvas.height);
-
-        // Transform mouseRect from device coordinates to dataset coordinates
-        let p = new Float32Array([mouseRect.l, mouseRect.t]);
-        tf.deviceCoordToDatasetCoord(p, p);
-        mouseRect.l = p[0];
-        mouseRect.t = p[1];
-        p = new Float32Array([mouseRect.r, mouseRect.b]);
-        tf.deviceCoordToDatasetCoord(p, p);
-        mouseRect.r = p[0];
-        mouseRect.b = p[1];
-
-        let px;
-        let py;
-        const selection = [];
-        const v0 = dataset.dataVectors[activeInputs[0]];
-        const v1 = dataset.dataVectors[activeInputs[1]];
-        pointViewer.points.forEach((i) => {
-          px = v0.getValue(i);
-          py = v1.getValue(i);
-          if (px >= mouseRect.l && px < mouseRect.r && py >= mouseRect.t && py < mouseRect.b) {
-            selection.push(i);
-          }
-        });
-        this.onLassoSelection(dataset, selection, mouseRect);
-      }
-
-      mouseRect = null;
-      invalidate = true;
-    }
-    if (invalidate) {
-      this.invalidate();
-      onmousemove(event);
-    }
-  });
-  canvas.onmouseleave = function (/* event */) {
-    if (mouseOverImage != null && imageDragImages.indexOf(mouseOverImage) === -1) {
-      mouseOverImage.highlighted = false;
-      this.invalidate();
-      mouseOverImage = null;
-    }
-    if (this.onMouseOverAxisLabel && mouseOverAxisLabel !== null) {
-      this.onMouseOverAxisLabel(null, null);
-      mouseOverAxisLabel = null;
-    }
-
-    if (this.onMouseOverDatapoint !== null && mouseOverDatapoint !== -1) {
-      this.onMouseOverDatapoint(dataset, mouseOverDatapoint = -1);
-    }
-  }.bind(this);
-  libUtility.addMouseWheelHandler((event) => {
-    if (event.target !== canvas || !options.enableScrolling) {
-      return;
-    }
-    const deltaZ = event.wheelDelta == null ? event.detail : -event.wheelDelta / 20.0;
-    event.preventDefault();
-
-    // Compute mousepos in canvas space -> p
-    const canvasBounds = canvas.getBoundingClientRect();
-    const p = new Float32Array([
-      event.clientX - canvasBounds.left,
-      event.clientY - canvasBounds.top,
-      event.clientY - canvasBounds.top]);
-
-    let scrollX;
-    let scrollY;
-    let scrollZ;
-    if (p[0] > plotBounds.x + plotBounds.width) {
-      scrollX = false;
-      scrollY = false;
-      scrollZ = true;
-    } else {
-      scrollX = p[0] >= plotBounds.x;
-      scrollY = p[1] < canvas.height - plotBounds.y;
-      scrollZ = false;
-    }
-
-    // Transform mousepos from canvas space to device coordinates
-    p[0] = ((2 * p[0]) / canvasBounds.width) - 1;
-    p[1] = 1 - ((2 * p[1]) / canvasBounds.height);
-    p[2] = 1 - ((p[2] - plotBounds.y) / plotBounds.height);
-
-    const d0 = activeInputs[0];
-    const d1 = activeInputs[1];
-    const d2 = activeInputs[2];
-
-    // Transform p from device coordinates to dataset coordinates
-    tf.deviceCoordToDatasetCoord(p, p);
-
-    // Zoom towards mouse position
-    const zoom = 1.0 - (deltaZ / 50.0);
-    // Offset is difference between p in current zoom level and p after zooming
-    libGlMatrix.vec3.scaleAndAdd(p, p, p, -zoom);
-    if (scrollX) {
-      tf.translate(d0, p[0]);
-      tf.scale(d0, zoom);
-    }
-    if (scrollY) {
-      tf.translate(d1, p[1]);
-      tf.scale(d1, zoom);
-    }
-    if (scrollZ) {
-      tf.translate(d2, p[2]);
-      tf.scale(d2, zoom);
-    }
-  });
-
-  this.ondragover = null;
-  canvas.ondragover = function (event) {
-    if (this.ondragover !== null) {
-      this.ondragover(event);
-    }
-  }.bind(this);
-  this.ondrop = null;
-  canvas.ondrop = function (event) {
-    if (this.ondrop !== null) {
-      this.ondrop(event);
-    }
-  }.bind(this);
+  }
 
   // >>> Offscreen Rendering
 
-  this.enableOffscreenRendering = function (width, height) {
-    if (offscreenRendering !== null) {
+  enableOffscreenRendering(width, height) {
+    if (this.offscreenRendering !== null) {
       return;
     }
-    offscreenRendering = {};
+    this.offscreenRendering = {};
 
-    gl.width = width;
-    canvas.width = width;
-    gl.height = height;
-    canvas.height = height;
+    this.gl.width = width;
+    this.canvas.width = width;
+    this.gl.height = height;
+    this.canvas.height = height;
 
-    trc.enableOffscreenRendering(width, height);
+    this.textRenderContext.enableOffscreenRendering(width, height);
 
     // Disable continuous rendering
-    offscreenRendering.enableContinuousRendering = options.enableContinuousRendering;
-    if (offscreenRendering.enableContinuousRendering) {
+    this.offscreenRendering.enableContinuousRendering = this.options.enableContinuousRendering;
+    if (this.offscreenRendering.enableContinuousRendering) {
       this.setOption('enableContinuousRendering', false);
     }
 
     // Create render target texture
-    offscreenRendering.rttTexture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, offscreenRendering.rttTexture);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    this.offscreenRendering.rttTexture = this.gl.createTexture();
+    this.gl.bindTexture(this.gl.TEXTURE_2D, this.offscreenRendering.rttTexture);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
 
-    // Create render target framebuffer -> offscreenRendering.rttFramebuffer
-    offscreenRendering.rttFramebuffer = gl.createFramebuffer();
-    gl.bindFramebuffer(gl.FRAMEBUFFER, offscreenRendering.rttFramebuffer);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-
-    /* // Create depth buffer -> offscreenRendering.rttRenderbuffer
-    offscreenRendering.rttRenderbuffer = gl.createRenderbuffer();
-    gl.bindRenderbuffer(gl.RENDERBUFFER, offscreenRendering.rttRenderbuffer);
-    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height); */
+    // Create render target framebuffer -> this.offscreenRendering.rttFramebuffer
+    this.offscreenRendering.rttFramebuffer = this.gl.createFramebuffer();
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.offscreenRendering.rttFramebuffer);
+    this.gl.texImage2D(
+      this.gl.TEXTURE_2D, 0, this.gl.RGBA, width, height, 0,
+      this.gl.RGBA, this.gl.UNSIGNED_BYTE, null,
+    );
 
     // Bind framebuffer
-    gl.framebufferTexture2D(
-      gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0,
-      gl.TEXTURE_2D, offscreenRendering.rttTexture, 0,
+    this.gl.framebufferTexture2D(
+      this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0,
+      this.gl.TEXTURE_2D, this.offscreenRendering.rttTexture, 0,
     );
-    // Bind depth buffer
-    // gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT,
-    //  gl.RENDERBUFFER, offscreenRendering.rttRenderbuffer);
 
-    gl.bindTexture(gl.TEXTURE_2D, null);
-    gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+    this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+    this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, null);
 
     // Set viewport
-    gl.viewportWidth = width;
-    gl.viewportHeight = height;
-    gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+    this.gl.viewportWidth = width;
+    this.gl.viewportHeight = height;
+    this.gl.viewport(0, 0, this.gl.viewportWidth, this.gl.viewportHeight);
 
-    if (options.padding) {
-      setPlotBounds(options.padding);
+    if (this.options.padding) {
+      this.setPlotBounds(this.options.padding);
     }
-  };
+  }
 
-  this.disableOffscreenRendering = function () {
-    if (offscreenRendering === null) {
+  disableOffscreenRendering() {
+    if (this.offscreenRendering === null) {
       return;
     }
 
-    trc.disableOffscreenRendering();
+    this.textRenderContext.disableOffscreenRendering();
 
     // Remove framebuffer
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    gl.deleteFramebuffer(offscreenRendering.rttFramebuffer);
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
+    this.gl.deleteFramebuffer(this.offscreenRendering.rttFramebuffer);
 
     // Restore viewport
-    gl.viewportWidth = canvas.width;
-    gl.viewportHeight = canvas.height;
-    gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
-
-    // if (options.padding)
-    //  setPlotBounds(options.padding);
+    this.gl.viewportWidth = this.canvas.width;
+    this.gl.viewportHeight = this.canvas.height;
+    this.gl.viewport(0, 0, this.gl.viewportWidth, this.gl.viewportHeight);
 
     // Reenable continuous rendering
-    if (offscreenRendering.enableContinuousRendering) {
+    if (this.offscreenRendering.enableContinuousRendering) {
       this.setOption('enableContinuousRendering', true);
     }
 
-    offscreenRendering = null;
+    this.offscreenRendering = null;
 
-    onresize();
-  };
+    this.onresize();
+  }
 
-  this.renderOffscreenBuffer = function () {
+  renderOffscreenBuffer() {
     // Render scene
-    render(true);
-    gl.finish();
-  };
+    this.render(true);
+    this.gl.finish();
+  }
 
-  this.saveOffscreenBuffer = function () {
+  saveOffscreenBuffer() {
     // Read pixels
-    const data = new Uint8Array(gl.viewportWidth * gl.viewportHeight * 4);
-    gl.readPixels(0, 0, gl.viewportWidth, gl.viewportHeight, gl.RGBA, gl.UNSIGNED_BYTE, data);
+    const data = new Uint8Array(this.gl.viewportWidth * this.gl.viewportHeight * 4);
+    this.gl.readPixels(
+      0, 0, this.gl.viewportWidth, this.gl.viewportHeight,
+      this.gl.RGBA, this.gl.UNSIGNED_BYTE, data,
+    );
 
     // Create a temporary 2D canvas to store the result -> tempCanvas
     let tempCanvas = document.createElement('canvas');
     tempCanvas.setAttribute('id', 'tempCanvas');
-    tempCanvas.width = gl.viewportWidth;
-    tempCanvas.height = gl.viewportHeight;
+    tempCanvas.width = this.gl.viewportWidth;
+    tempCanvas.height = this.gl.viewportHeight;
     const tempContext = tempCanvas.getContext('2d');
 
     // Copy the pixels to the 2D canvas
     const imageData = tempContext.createImageData(tempCanvas.width, tempCanvas.height);
     imageData.data.set(data);
     tempContext.putImageData(imageData, 0, 0);
-    tempContext.drawImage(trc.getCanvas(), 0, 0);
+    tempContext.drawImage(this.textRenderContext.getCanvas(), 0, 0);
     const dataURL = tempCanvas.toDataURL();
 
     // Free tempCanvas
     tempCanvas = null;
 
     return dataURL;
-  };
+  }
 
   // >>> Initialize global view
+  initializeGL() {
+    this.gl.disable(this.gl.CULL_FACE);
+    this.gl.enable(this.gl.BLEND);
+    this.gl.blendEquationSeparate(this.gl.FUNC_ADD, this.gl.FUNC_ADD);
+    this.gl.blendFuncSeparate(
+      this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA,
+      this.gl.ONE, this.gl.ONE,
+    );
+    this.gl.clearColor(...this.gl.backColor);
+  }
 
-  gl.disable(gl.CULL_FACE);
-  gl.enable(gl.BLEND);
-  gl.blendEquationSeparate(gl.FUNC_ADD, gl.FUNC_ADD);
-  gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE);
-  gl.clearColor(...gl.backColor);
+  /**
+   * Call this method after updating the parent div's color or background-color styles
+   * in order for the changes to be applied to the rendering pipeline.
+   * @summary Apply div foreground- and background colors to the plot
+   */
+  updateColorSchema() {
+    const vDivStyle = window.getComputedStyle(this.div);
+    this.gl.backColor = vDivStyle.backgroundColor === 'transparent' ?
+      [0, 0, 0, 0] : libUtility.rgbStringToFloatArray(vDivStyle.backgroundColor);
+    this.gl.foreColor = libUtility.rgbStringToFloatArray(this.gl.foreColorString = vDivStyle.color);
+    this.gl.clearColor(...this.gl.backColor);
+    // histogramViewer.updateColorSchema();
+    this.coordSys.updateColorSchema();
+    this.colormap.updateColorSchema();
+    this.invalidate();
+  }
 
-  // Hook to window-resize event and fire once for initial setup
-  window.addEventListener('resize', onresize, false);
-  onresize();
+  /**
+   * Call this method after updating the parent div's font style
+   * in order for the changes to be applied to the rendering pipeline.
+   * @summary Apply div font to the plot
+   */
+  updateFont() {
+    const vDivStyle = window.getComputedStyle(this.div);
+    this.textRenderContext.setFont(`${vDivStyle.fontSize} ${vDivStyle.fontFamily}`);
+    this.invalidate();
+  }
 
-  // Set unset options to default values
-  this.setDefaultOptions();
-  this.setOptions(startupOptions);
+  render(pFlipY) {
+    let flipY = pFlipY;
+    this.invalidating = false;
+    if (typeof flipY !== 'boolean') {
+      flipY = false;
+    }
+    this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+    this.textRenderContext.clear();
+    if (this.plotBounds.width <= 0 || this.plotBounds.height <= 0) {
+      return;
+    }
+
+    this.gl.enable(this.gl.SCISSOR_TEST);
+    this.gl.scissor(this.plotBounds.x, flipY ?
+      this.gl.height - this.plotBounds.y - this.plotBounds.height :
+      this.plotBounds.y, this.plotBounds.width, this.plotBounds.height);
+
+    if (this.plotTransform !== null) {
+      const isAnimating = this.plotTransform.animate();
+      if (isAnimating) {
+        this.invalidate();
+      }
+
+      const d0 = this.activeInputs[0];
+      const d1 = this.activeInputs[1];
+      // densityViewer.updateImages(imageViewer.getImages(), d0, d1);
+      this.densityViewer.render(flipY, this.plotTransform, d0, d1);
+      this.pointViewer.render(
+        flipY, this.plotTransform,
+        this.colormap.getTexture(), this.pointDrag,
+      );
+      // if (!isAnimating)
+      this.imageViewer.render(flipY, this.plotTransform);
+    }
+
+    this.gl.disable(this.gl.SCISSOR_TEST);
+
+    if (this.plotTransform !== null) {
+      this.histogramViewer.render(flipY, this.plotTransform, this.plotBounds);
+    }
+    this.coordSys.render(flipY, this.plotBounds);
+    this.colormap.render(flipY, this.plotBounds);
+
+    if (this.mouseRect !== null && (this.mouseRect.width !== 0 || this.mouseRect.height !== 0)) {
+      this.gl.drawRect(
+        this.mouseRect.x, this.mouseRect.y,
+        this.mouseRect.width, this.mouseRect.height,
+      );
+    }
+    if (this.mousePolygon !== null) {
+      this.gl.fillPolygon(this.mousePolygon, 'rgba(255, 255, 255, 0.25)');
+      this.gl.drawPolygon(this.mousePolygon);
+    }
+
+    const tn = performance.now();
+    this.deltaTime = tn - this.timeNow;
+    this.timeNow = tn;
+    if (SHOW_FPS) {
+      this.frameCounter += 1;
+      if (this.timeNow - this.fpsStart > 10000.0 || this.frameCounter > 1000) {
+        // Refresh FPS after 10s or 1000 frames
+        this.fps = (1000 * this.frameCounter) / (this.timeNow - this.fpsStart);
+        this.fpsStart = this.timeNow;
+        this.frameCounter = 0;
+      }
+      if (this.fps !== null) {
+        this.gl.drawText(`${this.fps.toFixed(5)} FPS`, this.canvas.width - 8, 8, 'topright');
+      } else {
+        this.gl.drawText(
+          `approx. ${Math.floor((this.frameCounter === 1 ?
+            10000.0 : 1000 * this.frameCounter) / (this.timeNow - this.fpsStart))} FPS`,
+          this.canvas.width - 8, 8, 'topright',
+        );
+      }
+    }
+
+    const plot = this;
+    if (SIMULATE_LOW_FPS) {
+      setTimeout(() => {
+        plot.invalidate();
+      }, 100);
+    } else if (ENABLE_CONTINUOUS_RENDERING) {
+      plot.invalidate();
+    }
+  }
 }
 
 /**
