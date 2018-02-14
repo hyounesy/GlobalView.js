@@ -6,70 +6,103 @@ const libUtility = require('./utility.js');
 
 /**
  * A viewer that renders point density to the global view.
- * @constructor
- * @package
- * @implements {Viewer}
- * @param {Object} gl // {WebGLRenderingContext}
- * @param {Object} globalView // {GlobalView}
  */
 // eslint-disable-next-line import/prefer-default-export
-export function DensityViewer(gl, globalView) {
-  const sdrDensityMap =
-    new libGraphics.Shader(gl, libShaders.Shaders.vsTextured2, libShaders.Shaders.fsViewDensityMap);
-  sdrDensityMap.matWorldViewProj = sdrDensityMap.u4x4f('matWorldViewProj');
-  sdrDensityMap.matTexCoordTransform = sdrDensityMap.u2x2f('matTexCoordTransform');
-  sdrDensityMap.scale = sdrDensityMap.u1f('scale');
-  sdrDensityMap.color = sdrDensityMap.u3f('color');
+export class DensityViewer {
+  /**
+   * @constructor
+   * @package
+   * @implements {Viewer}
+   * @param {WebGLRenderingContext} gl webgl render context
+   * @param {GlobalView} plot GlobalView plot
+   */
+  constructor(gl, plot) {
+    this.gl = gl;
+    this.plot = plot;
 
-  const sdrClusterMap =
-    new libGraphics.Shader(gl, libShaders.Shaders.vsTextured2, libShaders.Shaders.fsTextured);
-  sdrClusterMap.matWorldViewProj = sdrClusterMap.u4x4f('matWorldViewProj');
-  sdrClusterMap.matTexCoordTransform = sdrClusterMap.u2x2f('matTexCoordTransform');
+    this.sdrDensityMap = new libGraphics.Shader(
+      gl, libShaders.Shaders.vsTextured2,
+      libShaders.Shaders.fsViewDensityMap,
+    );
+    this.sdrDensityMap.matWorldViewProj = this.sdrDensityMap.u4x4f('matWorldViewProj');
+    this.sdrDensityMap.matTexCoordTransform = this.sdrDensityMap.u2x2f('matTexCoordTransform');
+    this.sdrDensityMap.scale = this.sdrDensityMap.u1f('scale');
+    this.sdrDensityMap.color = this.sdrDensityMap.u3f('color');
 
-  // Create a 2D quad mesh
-  const meshQuad = new libGraphics.Mesh(gl, new Float32Array([
-    // Positions
-    0, 1, 0,
-    0, 0, 0,
-    1, 1, 0,
-    1, 0, 0,
-  ]), null, null, null, new Float32Array([
-    // Texture coordinates
-    0, 1,
-    0, 0,
-    1, 1,
-    1, 0,
-  ]));
+    this.sdrClusterMap =
+      new libGraphics.Shader(gl, libShaders.Shaders.vsTextured2, libShaders.Shaders.fsTextured);
+    this.sdrClusterMap.matWorldViewProj = this.sdrClusterMap.u4x4f('matWorldViewProj');
+    this.sdrClusterMap.matTexCoordTransform = this.sdrClusterMap.u2x2f('matTexCoordTransform');
 
-  let dataset = null;
+    // Create a 2D quad mesh
+    this.meshQuad = new libGraphics.Mesh(gl, new Float32Array([
+      // Positions
+      0, 1, 0,
+      0, 0, 0,
+      1, 1, 0,
+      1, 0, 0,
+    ]), null, null, null, new Float32Array([
+      // Texture coordinates
+      0, 1,
+      0, 0,
+      1, 1,
+      1, 0,
+    ]));
 
-  const clusterMapOptions = new libAlgorithm.ClusterMapOptions();
-  this.setClusterMapThreshold = function (threshold) {
-    if (this.showDensityMap && clusterMapOptions.threshold !== threshold) {
-      clusterMapOptions.threshold = threshold;
-      dataset.requestClusterMap(
-        globalView.getActiveColumn(0),
-        globalView.getActiveColumn(1),
-        clusterMapOptions, () => {
-          globalView.invalidate();
+    this.dataset = null;
+
+    this.clusterMapOptions = new libAlgorithm.ClusterMapOptions();
+
+    this.showDensityMap = false;
+    this.showClusterMap = false;
+
+    this.onInputChanged = (/* activeInputs, animatedInputs, options */) => {};
+    this.onOptionsChanged = (/* options */) => {};
+    this.onPlotBoundsChanged = (/* plotBounds */) => {};
+  }
+
+  /**
+   * Sets the current threshold.
+   * @param {number} threshold new threshold value.
+   */
+  setClusterMapThreshold(threshold) {
+    if (this.showDensityMap && this.clusterMapOptions.threshold !== threshold) {
+      this.clusterMapOptions.threshold = threshold;
+      this.dataset.requestClusterMap(
+        this.plot.getActiveColumn(0),
+        this.plot.getActiveColumn(1),
+        this.clusterMapOptions, () => {
+          this.plot.invalidate();
         },
       ); // Request clusterMap and redraw once it's computed
     } else {
-      clusterMapOptions.threshold = threshold;
+      this.clusterMapOptions.threshold = threshold;
     }
-  };
-  this.getClusterMapThreshold = () => clusterMapOptions.threshold;
+  }
 
-  this.showDensityMap = false;
-  this.showClusterMap = false;
-  this.render = function (flipY, tf, d0, d1) {
+  /**
+   * Returns current threshold value
+   * @returns {number} current threshold value
+   */
+  getClusterMapThreshold() {
+    return this.clusterMapOptions.threshold;
+  }
+
+  /**
+   * Renders the density map
+   * @param {boolean} flipY whether to flip the density map horizontally.
+   * @param {Transform} transform the Transform object from the plot
+   * @param {number} dim0 first dimension index
+   * @param {number} dim1 second dimension index
+   */
+  render(flipY, transform, dim0, dim1) {
     const pos = libGlMatrix.vec2.create();
 
     if (this.showClusterMap) {
-      if (dataset && dataset.isClusterMapReady(d0, d1)) {
+      if (this.dataset && this.dataset.isClusterMapReady(dim0, dim1)) {
         // If clusterMap is ready Retrieve clusterMap synchronously
         // (since we already know it's ready)
-        const clusterMap = dataset.requestClusterMap(d0, d1, clusterMapOptions);
+        const clusterMap = this.dataset.requestClusterMap(dim0, dim1, this.clusterMapOptions);
         if (clusterMap.width === 0 || clusterMap.height === 0) {
           return;
         }
@@ -79,7 +112,7 @@ export function DensityViewer(gl, globalView) {
         if (!texture) {
           // Retrieve densityMap synchronously (since we already know it's ready)
           const densityMap = this.showDensityMap ?
-            dataset.requestDensityMap(d0, d1, undefined, undefined) : null;
+            this.dataset.requestDensityMap(dim0, dim1, undefined, undefined) : null;
           const rgba = new Uint8Array(4 * clusterMap.data.length);
           for (let i = 0; i < clusterMap.data.length; i += 1) {
             let c = clusterMap.data[i];
@@ -113,8 +146,10 @@ export function DensityViewer(gl, globalView) {
               rgba[(4 * i) + 3] = Math.floor(d * 255);
             }
           }
-          texture =
-            libGraphics.LoadTextureFromByteArray(gl, rgba, clusterMap.width, clusterMap.height);
+          texture = libGraphics.LoadTextureFromByteArray(
+            this.gl, rgba,
+            clusterMap.width, clusterMap.height,
+          );
           if (this.showDensityMap) {
             clusterMap.dtex = texture;
           } else {
@@ -122,38 +157,39 @@ export function DensityViewer(gl, globalView) {
           }
         }
 
-        sdrClusterMap.bind();
-        meshQuad.bind(sdrClusterMap, texture);
+        this.sdrClusterMap.bind();
+        this.meshQuad.bind(this.sdrClusterMap, texture);
 
         const mattrans = libGlMatrix.mat4.create();
         if (flipY === true) {
           libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
         }
-        tf.datasetCoordToDeviceCoord(pos, d0 > d1 ?
+        transform.datasetCoordToDeviceCoord(pos, dim0 > dim1 ?
           [clusterMap.invTransformY(0), clusterMap.invTransformX(0)] :
           [clusterMap.invTransformX(0), clusterMap.invTransformY(0)]);
         libGlMatrix.mat4.translate(mattrans, mattrans, [pos[0], pos[1], 0.0]);
-        tf.datasetDistToDeviceDist(pos, d0 > d1 ?
+        transform.datasetDistToDeviceDist(pos, dim0 > dim1 ?
           [clusterMap.height / clusterMap.transform[2],
             clusterMap.width / clusterMap.transform[0]] :
           [clusterMap.width / clusterMap.transform[0],
             clusterMap.height / clusterMap.transform[2]]);
         libGlMatrix.mat4.scale(mattrans, mattrans, [pos[0], pos[1], 1.0]);
-        sdrClusterMap.matWorldViewProj(mattrans);
+        this.sdrClusterMap.matWorldViewProj(mattrans);
 
-        sdrClusterMap.matTexCoordTransform(new Float32Array(d0 > d1 ? [0, 1, 1, 0] : [1, 0, 0, 1]));
-        meshQuad.draw();
+        this.sdrClusterMap.matTexCoordTransform(new Float32Array(dim0 > dim1 ?
+          [0, 1, 1, 0] : [1, 0, 0, 1]));
+        this.meshQuad.draw();
       } else { // If clusterMap isn't ready yet
-        dataset.requestClusterMap(d0, d1, clusterMapOptions, () => {
-          globalView.invalidate();
+        this.dataset.requestClusterMap(dim0, dim1, this.clusterMapOptions, () => {
+          this.plot.invalidate();
         });
       } // Request clusterMap and redraw once it's computed
     } else if (this.showDensityMap) {
-      if (dataset && dataset.isDensityMapReady(d0, d1)) {
+      if (this.dataset && this.dataset.isDensityMapReady(dim0, dim1)) {
         // If densityMap is ready retrieve densityMap synchronously
         // (since we already know it's ready)
         const densityMap =
-        /** @type {DensityMap} */(dataset.requestDensityMap(d0, d1, undefined, undefined));
+        /** @type {DensityMap} */(this.dataset.requestDensityMap(dim0, dim1, undefined, undefined));
         if (densityMap.width === 0 || densityMap.height === 0) {
           return;
         }
@@ -161,52 +197,60 @@ export function DensityViewer(gl, globalView) {
         // Create texture if it wasn't already created
         if (!densityMap.texture) {
           densityMap.texture = libGraphics.LoadTextureFromFloatArray(
-            gl, densityMap.data, densityMap.width,
+            this.gl, densityMap.data, densityMap.width,
             densityMap.height,
           );
         }
 
-        sdrDensityMap.bind();
-        meshQuad.bind(sdrDensityMap, [densityMap.texture]);
+        this.sdrDensityMap.bind();
+        this.meshQuad.bind(this.sdrDensityMap, [densityMap.texture]);
 
         const mattrans = libGlMatrix.mat4.create();
         if (flipY === true) {
           libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
         }
-        tf.datasetCoordToDeviceCoord(pos, d0 > d1 ?
+        transform.datasetCoordToDeviceCoord(pos, dim0 > dim1 ?
           [densityMap.invTransformY(0), densityMap.invTransformX(0)] :
           [densityMap.invTransformX(0), densityMap.invTransformY(0)]);
         libGlMatrix.mat4.translate(mattrans, mattrans, [pos[0], pos[1], 0.0]);
-        tf.datasetDistToDeviceDist(pos, d0 > d1 ?
+        transform.datasetDistToDeviceDist(pos, dim0 > dim1 ?
           [densityMap.height / densityMap.transform[2],
             densityMap.width / densityMap.transform[0]] :
           [densityMap.width / densityMap.transform[0],
             densityMap.height / densityMap.transform[2]]);
         libGlMatrix.mat4.scale(mattrans, mattrans, [pos[0], pos[1], 1.0]);
-        sdrDensityMap.matWorldViewProj(mattrans);
+        this.sdrDensityMap.matWorldViewProj(mattrans);
 
-        sdrDensityMap.matTexCoordTransform(new Float32Array(d0 > d1 ? [0, 1, 1, 0] : [1, 0, 0, 1]));
-        sdrDensityMap.scale(1 / densityMap.maximum);
-        sdrDensityMap.color(gl.foreColor[0], gl.foreColor[1], gl.foreColor[2]);
-        meshQuad.draw();
+        this.sdrDensityMap.matTexCoordTransform(new Float32Array(dim0 > dim1 ?
+          [0, 1, 1, 0] : [1, 0, 0, 1]));
+        this.sdrDensityMap.scale(1 / densityMap.maximum);
+        this.sdrDensityMap.color(this.gl.foreColor[0], this.gl.foreColor[1], this.gl.foreColor[2]);
+        this.meshQuad.draw();
       } else { // If densityMap isn't ready yet
-        dataset.requestDensityMap(d0, d1, undefined, undefined, () => {
-          globalView.invalidate();
+        this.dataset.requestDensityMap(dim0, dim1, undefined, undefined, () => {
+          this.plot.invalidate();
         });
       } // Request densityMap and redraw once it's computed
     }
-  };
+  }
 
-  this.setDataset = function (_dataset /* , options */) {
-    dataset = _dataset;
-  };
-  this.onInputChanged = function (/* activeInputs, animatedInputs, options */) {};
-  this.onOptionsChanged = function (/* options */) {};
-  this.onPlotBoundsChanged = function (/* plotBounds */) {};
+  /**
+   * sets the dataset
+   * @param {Dataset} dataset
+   */
+  setDataset(dataset /* , options */) {
+    this.dataset = dataset;
+  }
 
-  this.updateImages = function (images, d0, d1) {
-    const densityMap = dataset.requestDensityMap(d0, d1, undefined, undefined);
-    if (densityMap.texture === null || d0 === d1) {
+  /**
+   * Updates the thumbnail images.
+   * @param {Array<Thumbnail>} images array of thumbnails
+   * @param {number} dim0 first dimension index
+   * @param {number} dim1 second dimension index
+   */
+  updateImages(images, dim0, dim1) {
+    const densityMap = this.dataset.requestDensityMap(dim0, dim1, undefined, undefined);
+    if (densityMap.texture === null || dim0 === dim1) {
       return;
     }
 
@@ -218,10 +262,10 @@ export function DensityViewer(gl, globalView) {
     const yMax = height;
 
     const bodies = images.map((image) => {
-      const x = densityMap.transformX(image.imagePos[d0]);
-      const y = densityMap.transformY(image.imagePos[d1]);
-      const rx = densityMap.transformX(image.refPos[d0]);
-      const ry = densityMap.transformY(image.refPos[d1]);
+      const x = densityMap.transformX(image.imagePos[dim0]);
+      const y = densityMap.transformY(image.imagePos[dim1]);
+      const rx = densityMap.transformX(image.refPos[dim0]);
+      const ry = densityMap.transformY(image.refPos[dim1]);
       return {
         x, y, rx, ry, vx: 0, vy: 0, fx: 0, fy: 0,
       };
@@ -282,8 +326,8 @@ export function DensityViewer(gl, globalView) {
       bodies[i].x += bodies[i].fx;
       bodies[i].y += bodies[i].fy;
 
-      varImages[i].imagePos[d0] = densityMap.invTransformX(bodies[i].x);
-      varImages[i].imagePos[d1] = densityMap.invTransformY(bodies[i].y);
+      varImages[i].imagePos[dim0] = densityMap.invTransformX(bodies[i].x);
+      varImages[i].imagePos[dim1] = densityMap.invTransformY(bodies[i].y);
     }
-  };
+  }
 }
