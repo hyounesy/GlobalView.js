@@ -3,6 +3,7 @@ const libGraphics = require('./graphics.js');
 const libShaders = require('./shaders.js');
 const libColormap = require('./colormap.js');
 const libGlMatrix = require('gl-matrix');
+const Transform = require('./transform').default;
 
 /**
  * A viewer that renders point sets to the global view.
@@ -267,8 +268,7 @@ vec{1} getPos()
           inputs.push(`p${i}${attrLen === 1 ? '' : `[${a}]`}`);
         }
       }
-      const ND = 4; // same as globalView.ND
-      for (let d = 0; d < ND; d += 1) {
+      for (let d = 0; d < Transform.NumDim; d += 1) {
         inputCode.push(String.prototype.format2.apply(activeInputVectors[d] ?
           activeInputVectors[d].getValueCode :
           '0.0', inputs));

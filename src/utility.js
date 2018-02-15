@@ -475,7 +475,6 @@ export function imageUrlFromBytes(bytes, width, height) {
   return dataURL;
 }
 
-
 let varSeededRandomSeed = 1;
 Math.seededRandom = function () { // Source: https://stackoverflow.com/a/19303725
   const x = Math.sin(varSeededRandomSeed) * 10000;
@@ -487,7 +486,6 @@ Math.clamp = function (f, minimum, maximum) {
   return Math.min(Math.max(f, minimum), maximum);
 };
 
-
 export function createCookie(name, value, days) {
   // Source: http://www.quirksmode.org/js/cookies.html
   let expires = '';
@@ -498,6 +496,7 @@ export function createCookie(name, value, days) {
   }
   document.cookie = `${name}=${value}${expires}; path=/`;
 }
+
 export function readCookie(name) {
   // Source: http://www.quirksmode.org/js/cookies.html
   const nameEQ = `${name}=`;
@@ -513,16 +512,19 @@ export function readCookie(name) {
   }
   return null;
 }
+
 export function readFloatCookie(name) {
   let cookie = readCookie(name);
   cookie = Number.parseFloat(cookie);
   return Number.isNaN(cookie) ? null : cookie;
 }
+
 export function readIntCookie(name) {
   let cookie = readCookie(name);
   cookie = Number.parseInt(cookie, 10);
   return Number.isNaN(cookie) ? null : cookie;
 }
+
 export function eraseCookie(name) {
   // Source: http://www.quirksmode.org/js/cookies.html
   createCookie(name, '', -1);
@@ -556,6 +558,7 @@ export function addMouseWheelHandler(onmousewheel) {
     document.addEventListener(mousewheelevt, onmousewheel, false);
   }
 }
+
 export function addMouseMoveHandler(onmousemove) {
   if (document.attachEvent) {
     document.attachEvent('onmousemove', onmousemove);
@@ -563,6 +566,7 @@ export function addMouseMoveHandler(onmousemove) {
     document.addEventListener('mousemove', onmousemove, false);
   }
 }
+
 export function addMouseUpHandler(onmouseup) {
   if (document.attachEvent) {
     document.attachEvent('onmouseup', onmouseup);
@@ -570,6 +574,7 @@ export function addMouseUpHandler(onmouseup) {
     document.addEventListener('mouseup', onmouseup, false);
   }
 }
+
 export function addKeyDownHandler(onkeydown) {
   if (document.attachEvent) {
     document.attachEvent('onkeydown', onkeydown);
@@ -577,6 +582,7 @@ export function addKeyDownHandler(onkeydown) {
     document.addEventListener('keydown', onkeydown, false);
   }
 }
+
 export function addKeyUpHandler(onkeyup) {
   if (document.attachEvent) {
     document.attachEvent('onkeyup', onkeyup);

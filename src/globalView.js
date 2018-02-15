@@ -10,6 +10,7 @@ const libColormap = require('./colormap.js');
 const libAlgorithm = require('./algorithm.js');
 const libGraphics = require('./graphics.js');
 const libGlMatrix = require('gl-matrix');
+const Transform = require('./transform').default;
 
 // >>> Options
 
@@ -20,8 +21,6 @@ const SIMULATE_LOW_FPS = false;
 // Image width/height are smaller or equal to IMAGE_SIZE, maintaining aspect ratio
 // var IMAGE_SIZE = 64
 
-const ND = 4; // Number of dimensions
-
 /** @typedef {{
  * description: string,
  * default: *,
@@ -30,311 +29,6 @@ const ND = 4; // Number of dimensions
  * requireRecompile: boolean
  * }} */
 let OptionDescription; // eslint-disable-line no-unused-vars
-
-/**
- * A class containing variables and functions for transforming data vectors into device space
- */
-export class Transform {
-  /**
-   * @constructor
-   * @package
-   * @param {*} plot GlobalView plot
-   */
-  constructor(plot) {
-    this.plot = plot;
-    this.dataset = plot.dataset;
-    this.activeInputs = plot.activeInputs;
-    this.animatedInputs = plot.animatedInputs;
-    this.plotBounds = plot.plotBounds;
-    this.gl = plot.gl;
-
-    this.offsets = new Float32Array(ND);
-    this.scales = new Float32Array(ND);
-    this.animatedScales = new Float32Array(ND);
-    this.invalid = false;
-  }
-
-  // Setter methods
-
-  setFromMinMax(d, minimum, maximum) {
-    this.dataset.dataVectors[d].scale = maximum - minimum;
-    if (this.dataset.dataVectors[d].scale > -1e-5 && this.dataset.dataVectors[d].scale < 1e-5) {
-      this.dataset.dataVectors[d].offset =
-        0.5 - (0.5 * (minimum + maximum) * (this.dataset.dataVectors[d].scale = 0.5));
-    } else {
-      this.dataset.dataVectors[d].offset =
-        -minimum * (this.dataset.dataVectors[d].scale = 1 / this.dataset.dataVectors[d].scale);
-    }
-    this.invalid = true;
-
-    if (d === this.activeInputs[0]) {
-      this.plot.updateCoorinateSystem(0, this.activeInputs[0]);
-    }
-    if (d === this.activeInputs[1]) {
-      this.plot.updateCoorinateSystem(1, this.activeInputs[1]);
-    }
-    if (d === this.activeInputs[2]) {
-      this.plot.updateColormap(this.activeInputs[2]);
-    }
-    if (d === this.activeInputs[0] || d === this.activeInputs[1] || d === this.activeInputs[2]) {
-      this.plot.invalidate();
-    }
-  }
-
-  translate(d, distance) {
-    this.dataset.dataVectors[d].offset += distance * this.dataset.dataVectors[d].scale;
-    this.invalid = true;
-
-    if (d === this.activeInputs[0]) {
-      this.plot.updateCoorinateSystem(0, this.activeInputs[0], false);
-    }
-    if (d === this.activeInputs[1]) {
-      this.plot.updateCoorinateSystem(1, this.activeInputs[1], false);
-    }
-    if (d === this.activeInputs[2]) {
-      this.plot.updateColormap(this.activeInputs[2], false);
-    }
-    if (d === this.activeInputs[0] || d === this.activeInputs[1] || d === this.activeInputs[2]) {
-      this.plot.invalidate();
-    }
-  }
-
-  scale(d, factor) {
-    this.dataset.dataVectors[d].scale *= factor;
-    this.invalid = true;
-
-    if (d === this.activeInputs[0]) {
-      this.plot.updateCoorinateSystem(0, this.activeInputs[0]);
-    }
-    if (d === this.activeInputs[1]) {
-      this.plot.updateCoorinateSystem(1, this.activeInputs[1]);
-    }
-    if (d === this.activeInputs[2]) {
-      this.plot.updateColormap(this.activeInputs[2]);
-    }
-    if (d === this.activeInputs[0] || d === this.activeInputs[1] || d === this.activeInputs[2]) {
-      this.plot.invalidate();
-    }
-  }
-
-  onInputChanged() {
-    this.invalid = true;
-    return true;
-  }
-
-  // Getter methods
-  getOffset(d) {
-    return this.dataset.dataVectors[this.activeInputs[d]].offset;
-  }
-
-  getScale(d) {
-    return this.dataset.dataVectors[this.activeInputs[d]].scale;
-  }
-
-  getMinimum(d) {
-    return this.dataset.dataVectors[this.activeInputs[d]].minimum;
-  }
-
-  getMaximum(d) {
-    return this.dataset.dataVectors[this.activeInputs[d]].maximum;
-  }
-
-  getVisibleMinimum(d) {
-    return (0 - this.dataset.dataVectors[this.activeInputs[d]].offset) /
-    this.dataset.dataVectors[this.activeInputs[d]].scale;
-  }
-
-  getVisibleMaximum(d) {
-    return (1 - this.dataset.dataVectors[this.activeInputs[d]].offset) /
-      this.dataset.dataVectors[this.activeInputs[d]].scale;
-  }
-
-  getOffsets() {
-    if (this.invalid === true) {
-      this.recompute();
-    }
-    return this.offsets;
-  }
-
-  getScales() {
-    if (this.invalid === true) {
-      this.recompute();
-    }
-    return this.scales;
-  }
-
-  getAnimatedScales() {
-    if (this.invalid === true) {
-      this.recompute();
-    }
-    return this.animatedScales;
-  }
-
-  // Transformation methods
-  deviceCoordToDatasetCoord(vOutCoord, vInCoord) {
-    const vOut = vOutCoord;
-    const vIn = vInCoord;
-    if (this.invalid === true) {
-      this.invalid = false;
-      this.recompute();
-    }
-    for (let d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; d += 1) {
-      vOut[d] = (vIn[d] - this.offsets[d]) / this.scales[d];
-    }
-    return vOut;
-  }
-
-  deviceDistToDatasetDist(vOutCoord, vInCoord) {
-    const vOut = vOutCoord;
-    const vIn = vInCoord;
-    if (this.invalid === true) {
-      this.invalid = false;
-      this.recompute();
-    }
-    for (let d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; d += 1) {
-      vOut[d] = vIn[d] / this.scales[d];
-    }
-    return vOut;
-  }
-
-  datasetCoordToDeviceCoord(vOutCoord, vInCoord) {
-    const vOut = vOutCoord;
-    const vIn = vInCoord;
-    if (this.invalid === true) {
-      this.invalid = false;
-      this.recompute();
-    }
-    for (let d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; d += 1) {
-      vOut[d] = this.offsets[d] + (vIn[d] * this.scales[d]);
-    }
-    return vOut;
-  }
-
-  datasetDistToDeviceDist(vOutCoord, vInCoord) {
-    const vOut = vOutCoord;
-    const vIn = vInCoord;
-    if (this.invalid === true) {
-      this.invalid = false;
-      this.recompute();
-    }
-    for (let d = 0, nd = Math.min(vIn.length, vOut.length, ND); d < nd; d += 1) {
-      vOut[d] = vIn[d] * this.scales[d];
-    }
-    return vOut;
-  }
-
-  transformPos(vOutCoord, vInCoord) {
-    const vOut = vOutCoord;
-    const vIn = vInCoord;
-    if (this.invalid === true) {
-      this.invalid = false;
-      this.recompute();
-    }
-    for (let d = 0, nd = vOut.length; d < nd; d += 1) {
-      vOut[d] = this.offsets[d] + (vIn[this.activeInputs[d]] * this.scales[d]);
-    }
-    return vOut;
-  }
-
-  transformNml(vOutCoord, vInCoord) {
-    const vOut = vOutCoord;
-    const vIn = vInCoord;
-    if (this.invalid === true) {
-      this.invalid = false;
-      this.recompute();
-    }
-    for (let d = 0, nd = vOut.length; d < nd; d += 1) {
-      vOut[d] = vIn[this.activeInputs[d]] * this.scales[d];
-    }
-    return vOut;
-  }
-
-  transformNml2(vOutCoord, vInCoord) {
-    const vOut = vOutCoord;
-    const vIn = vInCoord;
-    if (this.invalid === true) {
-      this.invalid = false;
-      this.recompute();
-    }
-    for (let d = 0, nd = vOut.length; d < nd; d += 1) {
-      vOut[d] = vIn[this.activeInputs[d]] * this.dataset.dataVectors[this.activeInputs[d]].scale;
-    }
-    return vOut;
-  }
-
-  // Methods modifying offsets, scales and animatedScales
-  recompute() {
-    this.invalid = false;
-
-    // Compute offsets and scales for active inputs
-    for (let d = 0; d < ND; d += 1) {
-      this.offsets[d] = this.dataset.dataVectors[this.activeInputs[d]].offset;
-      this.scales[d] = this.dataset.dataVectors[this.activeInputs[d]].scale;
-      this.animatedScales[d] = 0;
-    }
-
-    // Transform first two dimensions offsets and scales into device coordinates
-    this.offsets[0] *= (2 * this.plotBounds.width) / this.gl.width;
-    this.offsets[0] += ((2 * this.plotBounds.x) / this.gl.width) - 1;
-    this.offsets[1] *= (2 * this.plotBounds.height) / this.gl.height;
-    this.offsets[1] += ((2 * this.plotBounds.y) / this.gl.height) - 1;
-    this.scales[0] *= (2 * this.plotBounds.width) / this.gl.width;
-    this.scales[1] *= (2 * this.plotBounds.height) / this.gl.height;
-    this.animatedScales[0] *= (2 * this.plotBounds.width) / this.gl.width;
-    this.animatedScales[1] *= (2 * this.plotBounds.height) / this.gl.height;
-
-    return this.offsets;
-  }
-
-  animate() {
-    this.invalid = false;
-
-    let isAnimating = false;
-
-    // Compute offsets and scales, either static based on activeInputs,
-    // or animated between activeInputs and animatedInputs
-    const oi = this.animatedInputs.map(anim => anim.origin);
-    const di = this.activeInputs;
-    for (let d = 0; d < ND; d += 1) {
-      const ts = this.dataset.dataVectors[di[d]].scale;
-      const tt = this.dataset.dataVectors[di[d]].offset;
-
-      if (this.animatedInputs[d].origin === this.activeInputs[d]) {
-        this.scales[d] = ts;
-        this.offsets[d] = tt;
-        this.animatedScales[d] = 0;
-      } else {
-        const os = this.dataset.dataVectors[oi[d]].scale;
-        const ot = this.dataset.dataVectors[oi[d]].offset;
-
-        let alpha = this.animatedInputs[d].f;
-        this.offsets[d] = (alpha * tt) + ((1 - alpha) * ot);
-        alpha *= Math.PI / 2.0;
-        this.scales[d] = Math.sin(alpha) * ts;
-        this.animatedScales[d] = Math.cos(alpha) * os;
-
-        this.animatedInputs[d].f += this.plot.deltaTime * 0.001;
-        if (this.animatedInputs[d].f >= 1.0) {
-          this.animatedInputs[d].origin = this.activeInputs[d];
-        }
-
-        isAnimating = true;
-      }
-    }
-
-    // Transform first two dimensions offsets and scales into device coordinates
-    this.offsets[0] *= (2 * this.plotBounds.width) / this.gl.width;
-    this.offsets[0] += ((2 * this.plotBounds.x) / this.gl.width) - 1;
-    this.offsets[1] *= (2 * this.plotBounds.height) / this.gl.height;
-    this.offsets[1] += ((2 * this.plotBounds.y) / this.gl.height) - 1;
-    this.scales[0] *= (2 * this.plotBounds.width) / this.gl.width;
-    this.scales[1] *= (2 * this.plotBounds.height) / this.gl.height;
-    this.animatedScales[0] *= (2 * this.plotBounds.width) / this.gl.width;
-    this.animatedScales[1] *= (2 * this.plotBounds.height) / this.gl.height;
-
-    return isAnimating;
-  }
-}
 
 /**
  * @summary A fast scatterplot rendered with WebGL
@@ -403,8 +97,8 @@ export class GlobalView {
       this.histogramViewer, this.coordSys, this.colormap];
 
     this.dataset = null;
-    this.activeInputs = Array.create(ND, -1);
-    this.animatedInputs = Array.create(ND, () => ({ target: null, f: 0 }));
+    this.activeInputs = Array.create(Transform.NumDim, -1);
+    this.animatedInputs = Array.create(Transform.NumDim, () => ({ target: null, f: 0 }));
 
     this.points = this.pointViewer.points;
     this.pointViewer.representativePoints = this.pointViewer.createPointSet([0, 255, 0, 255], 1);
@@ -693,7 +387,8 @@ export class GlobalView {
     this.imageDragImages = [];
     this.ctrlPressed = false;
     this.shiftPressed = false;
-    this.shiftPressed = navigator.appVersion.indexOf('Mac') === -1 ? 17 : 224;
+    this.keyCodeCtrl = navigator.appVersion.indexOf('Mac') === -1 ? 17 : 224;
+    this.keyCodeShift = 16;
 
     /**
      * @callback onMouseOverDatapointCallback
@@ -781,18 +476,28 @@ export class GlobalView {
      */
     this.onThumbnailSelectionChanged = null;
 
+    /**
+     * @summary Event handler that gets fired when dragged over canvas
+     */
+    this.ondragover = null;
+
+    /**
+     * @summary Event handler that gets fired when dropped on canvas
+     */
+    this.ondrop = null;
+
     libUtility.addKeyDownHandler((event) => {
-      if (event.keyCode === this.shiftPressed) {
+      if (event.keyCode === this.keyCodeCtrl) {
         this.ctrlPressed = true;
-      } else if (event.keyCode === 16) {
+      } else if (event.keyCode === this.keyCodeShift) {
         this.shiftPressed = true;
       }
     });
 
     libUtility.addKeyUpHandler((event) => {
-      if (event.which === this.shiftPressed) {
+      if (event.which === this.keyCodeCtrl) {
         this.ctrlPressed = false;
-      } else if (event.keyCode === 16) {
+      } else if (event.keyCode === this.keyCodeShift) {
         this.shiftPressed = false;
       }
     });
@@ -801,502 +506,19 @@ export class GlobalView {
       return false;
     }; // Disable canvas context menu
 
-    this.canvas.onmousedown = function (event) {
-      if (this.plotTransform === null || this.offscreenRendering !== null) {
-        return;
-      }
+    // add mouse event handlers
+    this.canvas.onmousedown = this.onCanvasMouseDown.bind(this);
+    libUtility.addMouseMoveHandler(this.onMouseMove.bind(this));
+    libUtility.addMouseUpHandler(this.onMouseUp.bind(this));
+    this.canvas.onmouseleave = this.onMouseLeave.bind(this);
+    libUtility.addMouseWheelHandler(this.onMouseWheel.bind(this));
 
-      // Compute mousepos in canvas space -> p
-      const canvasBounds = this.canvas.getBoundingClientRect();
-      const p = new Float32Array([event.clientX - canvasBounds.left,
-        event.clientY - canvasBounds.top,
-        event.clientY - canvasBounds.top]);
-
-      // Fire mouse-down handler
-      this.onMouseDown(event);
-
-      if (event.viewDragging) {
-        // If mouse-down handler set viewDragging property to a truthy value
-        if (p[0] > this.plotBounds.x + this.plotBounds.width) {
-          this.viewDragX = false;
-          this.viewDragY = false;
-          this.viewDragZ = this.colormap.visible;
-        } else {
-          this.viewDragX = p[0] >= this.plotBounds.x;
-          this.viewDragY = p[1] <= this.plotBounds.y + this.plotBounds.height;
-          this.viewDragZ = false;
-        }
-
-        // Transform mousepos from canvas space to device coordinates
-        p[0] = ((2 * p[0]) / canvasBounds.width) - 1;
-        p[1] = 1 - ((2 * p[1]) / canvasBounds.height);
-        p[2] = 1 - ((p[2] - this.plotBounds.y) / this.plotBounds.height);
-
-        if (this.viewDragX || this.viewDragY || this.viewDragZ) {
-          this.viewDragStartPos = p;
-        } // Initiate view dragging
-        return; // Prevent other mouse-down events
-      }
-      // Transform mousepos from canvas space to device coordinates
-      p[0] = ((2 * p[0]) / canvasBounds.width) - 1;
-      p[1] = 1 - ((2 * p[1]) / canvasBounds.height);
-
-
-      const selectedImage = this.imageViewer.imageFromPoint(this.plotTransform, p);
-      if (!this.shiftPressed && !this.ctrlPressed && this.imageDragImages.length !== 0 &&
-        (selectedImage === null || this.imageDragImages.indexOf(selectedImage) === -1)) {
-        // Deselect images
-        this.imageDragImages.forEach((image) => {
-          const varImage = image;
-          varImage.highlighted = false;
-        });
-        this.imageDragImages = [];
-        this.invalidate();
-        if (this.onThumbnailSelectionChanged !== null) {
-          this.onThumbnailSelectionChanged(this.dataset, []);
-        }
-      }
-      if (selectedImage !== null) {
-        selectedImage.highlighted = true;
-        if (this.imageDragImages.indexOf(selectedImage) === -1) {
-          this.imageDragImages.push(selectedImage);
-        }
-        if (this.options.enableThumbnailDragging) {
-          this.imageDragStartPos = p;
-        } // Initiate image dragging
-        this.invalidate();
-        if (event.pointSelection && this.onSelectionChanged !== null) {
-          this.onSelectionChanged(this.dataset, []);
-        }
-        if (this.onThumbnailSelectionChanged !== null) {
-          this.onThumbnailSelectionChanged(this.dataset, this.imageDragImages);
-        }
-        return; // Prevent other mouse-down events
-      }
-
-      // Transform p from device coordinates to dataset coordinates
-      this.plotTransform.deviceCoordToDatasetCoord(p, p);
-
-      let closest = Number.MAX_VALUE;
-      let closestIndex = -1;
-      let sqDist;
-      const sqscl0 = this.plotTransform.getScale(0) * this.plotTransform.getScale(0);
-      const sqscl1 = this.plotTransform.getScale(1) * this.plotTransform.getScale(1);
-      const v0 = this.dataset.dataVectors[this.activeInputs[0]];
-      const v1 = this.dataset.dataVectors[this.activeInputs[1]];
-      this.pointViewer.points.forEach((i) => {
-        sqDist =
-          (sqscl0 * ((p[0] - v0.getValue(i)) ** 2)) +
-          (sqscl1 * ((p[1] - v1.getValue(i)) ** 2));
-        if (sqDist < closest) {
-          closest = sqDist;
-          closestIndex = i;
-        }
-      });
-
-      // Get closest dataset coordinates in dataset coordinates -> dp
-      const dp = new Float32Array([v0.getValue(closestIndex), v1.getValue(closestIndex)]);
-
-      // Transform dp from dataset coordinates to canvas coordinates
-      this.plotTransform.datasetCoordToDeviceCoord(dp, dp);
-      dp[0] = (0.5 + (0.5 * dp[0])) * canvasBounds.width;
-      dp[1] = (0.5 - (0.5 * dp[1])) * canvasBounds.height;
-
-      sqDist =
-        (((event.clientX - canvasBounds.left) - dp[0]) ** 2) +
-        (((event.clientY - canvasBounds.top) - dp[1]) ** 2);
-      if (sqDist > (this.options.pointSize / 2.0) ** 2) {
-        if ((event.lassoSelection || event.polygonLassoSelection) &&
-            this.onLassoSelection !== null) {
-          if (event.polygonLassoSelection) {
-            this.mousePolygon = [];
-          } else {
-            this.mouseRect = {
-              x: event.clientX - canvasBounds.left,
-              y: event.clientY - canvasBounds.top,
-              width: 0,
-              height: 0,
-            };
-          }
-        }
-        if (event.pointSelection && this.onSelectionChanged !== null) {
-          this.onSelectionChanged(this.dataset, []);
-        }
-      } else {
-        if (event.pointDragging) {
-          this.pointDragDownPos = [dp[0], dp[1], closestIndex];
-        } // (This makes sure pointDragDownPos is centered on the selected datapoint)
-        if (event.pointSelection && this.onSelectionChanged !== null) {
-          this.onSelectionChanged(this.dataset, [closestIndex]);
-        }
-      }
-    }.bind(this);
-
-    let onmousemove;
-    libUtility.addMouseMoveHandler(onmousemove = function (event) {
-      if (this.plotTransform === null || this.offscreenRendering !== null ||
-        (event.target !== this.canvas && this.pointDragDownPos === null &&
-          this.viewDragStartPos === null && this.imageDragStartPos === null &&
-          this.mouseRect === null && this.mousePolygon === null)) {
-        return;
-      }
-
-      // Compute mousepos in canvas space -> p
-      const canvasBounds = this.canvas.getBoundingClientRect();
-      const p = new Float32Array([
-        event.clientX - canvasBounds.left,
-        event.clientY - canvasBounds.top,
-        event.clientY - canvasBounds.top]);
-
-      // Resize mouse polygon
-      if (this.mousePolygon !== null) {
-        this.mousePolygon.push(p);
-        this.invalidate();
-        return;
-      }
-
-      // Resize mouse rect
-      if (this.mouseRect !== null) {
-        this.mouseRect.width = p[0] - this.mouseRect.x;
-        this.mouseRect.height = p[1] - this.mouseRect.y;
-        this.invalidate();
-        return;
-      }
-
-      if (this.pointDragDownPos) {
-        const scale = (1 /
-          (this.dataset.dataVectors[this.activeInputs[3]]
-            .getValue(this.pointDragDownPos[2]) * this.plotTransform.getScale(3))) +
-          this.plotTransform.getOffset(3);
-        // libUtility.consoleLog(scale);
-
-        this.pointDrag = [
-          scale * (p[0] - this.pointDragDownPos[0]),
-          scale * (p[1] - this.pointDragDownPos[1])];
-        this.invalidate();
-        return;
-      }
-
-      if (this.onMouseOverAxisLabel) {
-        const newMouseOverAxisLabel = this.coordSys.labelFromPoint(this.plotBounds, p);
-        if (newMouseOverAxisLabel !== this.mouseOverAxisLabel) {
-          this.mouseOverAxisLabel = newMouseOverAxisLabel;
-          if (this.mouseOverAxisLabel !== null) {
-            this.onMouseOverAxisLabel(
-              this.dataset.dataVectors[this.activeInputs[this.mouseOverAxisLabel]],
-              this.coordSys.getLabelBounds(this.plotBounds, this.mouseOverAxisLabel),
-            );
-          } else {
-            this.onMouseOverAxisLabel(null, null);
-          }
-        }
-      }
-
-      // Transform mousepos from canvas space to device coordinates
-      p[0] = ((2 * p[0]) / canvasBounds.width) - 1;
-      p[1] = 1 - ((2 * p[1]) / canvasBounds.height);
-      p[2] = 1 - ((p[2] - this.plotBounds.y) / this.plotBounds.height);
-
-      const d0 = this.activeInputs[0];
-      const d1 = this.activeInputs[1];
-
-      if (this.viewDragStartPos) {
-        const d2 = this.activeInputs[2];
-        const viewDelta = libGlMatrix.vec3.create();
-        this.plotTransform.deviceDistToDatasetDist(
-          viewDelta,
-          libGlMatrix.vec3.subtract(viewDelta, p, this.viewDragStartPos),
-        );
-
-        if (this.viewDragX) {
-          this.plotTransform.translate(d0, viewDelta[0]);
-        }
-        if (this.viewDragY) {
-          this.plotTransform.translate(d1, viewDelta[1]);
-        }
-        if (this.viewDragZ) {
-          this.plotTransform.translate(d2, viewDelta[2]);
-        }
-        this.viewDragStartPos = p;
-        return;
-      }
-
-      if (this.imageDragStartPos) {
-        const imageDelta = libGlMatrix.vec2.create();
-        this.plotTransform.deviceDistToDatasetDist(
-          imageDelta,
-          libGlMatrix.vec2.subtract(imageDelta, p, this.imageDragStartPos),
-        );
-        this.imageDragImages.forEach((image) => {
-          // eslint-disable-next-line no-param-reassign
-          image.imagePos[this.activeInputs[0]] += imageDelta[0];
-          // eslint-disable-next-line no-param-reassign
-          image.imagePos[this.activeInputs[1]] += imageDelta[1];
-        });
-        this.imageDragStartPos = p;
-        this.invalidate();
-        return;
-      }
-
-      if (this.mouseOverImage !== null &&
-          this.imageDragImages.indexOf(this.mouseOverImage) === -1) {
-        this.mouseOverImage.highlighted = false;
-        this.invalidate();
-        this.mouseOverImage = null;
-      }
-      this.mouseOverImage = this.imageViewer.imageFromPoint(this.plotTransform, p);
-      if (this.mouseOverImage !== null) {
-        if (this.imageDragImages.indexOf(this.mouseOverImage) === -1) {
-          this.mouseOverImage.highlighted = true;
-          this.invalidate();
-        }
-        if (this.mouseOverDatapoint !== -1) {
-          this.mouseOverDatapoint = -1;
-          if (this.onMouseOverDatapoint !== null) {
-            this.onMouseOverDatapoint(this.dataset, this.mouseOverDatapoint);
-          }
-        }
-        return;
-      }
-
-      // Transform p from device coordinates to dataset coordinates
-      this.plotTransform.deviceCoordToDatasetCoord(p, p);
-
-      let closest = Number.MAX_VALUE;
-      let closestIndex = -1;
-      let sqDist;
-      const sqscl0 = this.plotTransform.getScale(0) * this.plotTransform.getScale(0);
-      const sqscl1 = this.plotTransform.getScale(1) * this.plotTransform.getScale(1);
-      const v0 = this.dataset.dataVectors[d0];
-      const v1 = this.dataset.dataVectors[d1];
-      this.pointViewer.points.forEach((i) => {
-        sqDist =
-          (sqscl0 * ((p[0] - v0.getValue(i)) ** 2)) +
-          (sqscl1 * ((p[1] - v1.getValue(i)) ** 2));
-        if (sqDist < closest) {
-          closest = sqDist;
-          closestIndex = i;
-        }
-      });
-      // Get closest dataset coordinates in dataset coordinates -> dp
-      const dp = new Float32Array([v0.getValue(closestIndex), v1.getValue(closestIndex)]);
-
-      // Transform dp from dataset coordinates to canvas coordinates
-      this.plotTransform.datasetCoordToDeviceCoord(dp, dp);
-      dp[0] = (0.5 + (0.5 * dp[0])) * canvasBounds.width;
-      dp[1] = (0.5 - (0.5 * dp[1])) * canvasBounds.height;
-
-      sqDist =
-        (((event.clientX - canvasBounds.left) - dp[0]) ** 2) +
-        (((event.clientY - canvasBounds.top) - dp[1]) ** 2);
-      if (sqDist > (this.options.pointSize / 2.0) ** 2) {
-        if (this.mouseOverDatapoint !== -1) {
-          this.mouseOverDatapoint = -1;
-          if (this.onMouseOverDatapoint !== null) {
-            this.onMouseOverDatapoint(this.dataset, this.mouseOverDatapoint);
-          }
-        }
-      } else if (this.mouseOverDatapoint !== closestIndex) {
-        this.mouseOverDatapoint = closestIndex;
-        if (this.onMouseOverDatapoint !== null) {
-          this.onMouseOverDatapoint(this.dataset, this.mouseOverDatapoint);
-        }
-      }
-    }.bind(this));
-
-    libUtility.addMouseUpHandler((event) => {
-      if (this.plotTransform === null || this.offscreenRendering !== null ||
-        (event.target !== this.canvas && this.pointDragDownPos === null &&
-          this.viewDragStartPos === null && this.mouseRect === null)) {
-        return;
-      }
-
-      let invalidate = false;
-      if (this.pointDragDownPos !== null) {
-        this.pointDragDownPos = null;
-        this.pointDrag = null;
-        invalidate = true;
-      }
-      this.viewDragStartPos = null;
-      this.imageDragStartPos = null;
-      if (this.mousePolygon !== null) {
-        if (this.onSelectionChanged !== null && this.mousePolygon.length >= 3) {
-          // TODO: Find points within this.mousePolygon -> selection
-
-          // Transform this.mousePolygon from canvas space to dataset coordinates
-          for (let i = 0; i < this.mousePolygon.length; i += 1) {
-            const p = this.mousePolygon[i];
-
-            // Transform p from canvas space to device coordinates
-            p[0] = ((2 * p[0]) / this.canvas.width) - 1;
-            p[1] = 1 - ((2 * p[1]) / this.canvas.height);
-
-            // Transform p from device coordinates to dataset coordinates
-            this.plotTransform.deviceCoordToDatasetCoord(p, p);
-
-            this.mousePolygon[i] = p;
-          }
-
-          // Close polygon
-          this.mousePolygon.push(this.mousePolygon[0]);
-
-          const selection = [];
-          const v0 = this.dataset.dataVectors[this.activeInputs[0]];
-          const v1 = this.dataset.dataVectors[this.activeInputs[1]];
-          this.pointViewer.points.forEach((i) => {
-            const px = v0.getValue(i);
-            const py = v1.getValue(i);
-            if (libAlgorithm.pointInsidePolygon([px, py], this.mousePolygon)) {
-              selection.push(i);
-            }
-          });
-          this.onLassoSelection(this.dataset, selection, this.mousePolygon);
-        }
-
-        this.mousePolygon = null;
-        invalidate = true;
-      }
-      if (this.mouseRect !== null) {
-        if (this.onSelectionChanged !== null &&
-            this.mouseRect.width !== 0 &&
-            this.mouseRect.height !== 0) {
-          // Normalize this.mouseRect (make sure width/height are positive)
-          if (this.mouseRect.width < 0) {
-            this.mouseRect.x += this.mouseRect.width;
-            this.mouseRect.width = -this.mouseRect.width;
-          }
-          if (this.mouseRect.height < 0) {
-            this.mouseRect.y += this.mouseRect.height;
-            this.mouseRect.height = -this.mouseRect.height;
-          }
-
-          // Transform this.mouseRect from canvas space to device coordinates
-          this.mouseRect.l = ((2 * this.mouseRect.x) / this.canvas.width) - 1;
-          this.mouseRect.r = ((2 * (this.mouseRect.x + this.mouseRect.width)) /
-                              this.canvas.width) - 1;
-          this.mouseRect.t = 1 - ((2 * (this.mouseRect.y + this.mouseRect.height)) /
-                                  this.canvas.height);
-          this.mouseRect.b = 1 - ((2 * this.mouseRect.y) / this.canvas.height);
-
-          // Transform this.mouseRect from device coordinates to dataset coordinates
-          let p = new Float32Array([this.mouseRect.l, this.mouseRect.t]);
-          this.plotTransform.deviceCoordToDatasetCoord(p, p);
-          this.mouseRect.l = p[0];
-          this.mouseRect.t = p[1];
-          p = new Float32Array([this.mouseRect.r, this.mouseRect.b]);
-          this.plotTransform.deviceCoordToDatasetCoord(p, p);
-          this.mouseRect.r = p[0];
-          this.mouseRect.b = p[1];
-
-          let px;
-          let py;
-          const selection = [];
-          const v0 = this.dataset.dataVectors[this.activeInputs[0]];
-          const v1 = this.dataset.dataVectors[this.activeInputs[1]];
-          this.pointViewer.points.forEach((i) => {
-            px = v0.getValue(i);
-            py = v1.getValue(i);
-            if (px >= this.mouseRect.l &&
-                px < this.mouseRect.r &&
-                py >= this.mouseRect.t &&
-                py < this.mouseRect.b) {
-              selection.push(i);
-            }
-          });
-          this.onLassoSelection(this.dataset, selection, this.mouseRect);
-        }
-
-        this.mouseRect = null;
-        invalidate = true;
-      }
-      if (invalidate) {
-        this.invalidate();
-        onmousemove(event);
-      }
-    });
-
-    this.canvas.onmouseleave = function (/* event */) {
-      if (this.mouseOverImage != null && this.imageDragImages.indexOf(this.mouseOverImage) === -1) {
-        this.mouseOverImage.highlighted = false;
-        this.invalidate();
-        this.mouseOverImage = null;
-      }
-      if (this.onMouseOverAxisLabel && this.mouseOverAxisLabel !== null) {
-        this.onMouseOverAxisLabel(null, null);
-        this.mouseOverAxisLabel = null;
-      }
-
-      if (this.onMouseOverDatapoint !== null && this.mouseOverDatapoint !== -1) {
-        this.onMouseOverDatapoint(this.dataset, this.mouseOverDatapoint = -1);
-      }
-    }.bind(this);
-
-
-    libUtility.addMouseWheelHandler((event) => {
-      if (event.target !== this.canvas || !this.options.enableScrolling) {
-        return;
-      }
-      const deltaZ = event.wheelDelta == null ? event.detail : -event.wheelDelta / 20.0;
-      event.preventDefault();
-
-      // Compute mousepos in canvas space -> p
-      const canvasBounds = this.canvas.getBoundingClientRect();
-      const p = new Float32Array([
-        event.clientX - canvasBounds.left,
-        event.clientY - canvasBounds.top,
-        event.clientY - canvasBounds.top]);
-
-      let scrollX;
-      let scrollY;
-      let scrollZ;
-      if (p[0] > this.plotBounds.x + this.plotBounds.width) {
-        scrollX = false;
-        scrollY = false;
-        scrollZ = true;
-      } else {
-        scrollX = p[0] >= this.plotBounds.x;
-        scrollY = p[1] < this.canvas.height - this.plotBounds.y;
-        scrollZ = false;
-      }
-
-      // Transform mousepos from canvas space to device coordinates
-      p[0] = ((2 * p[0]) / canvasBounds.width) - 1;
-      p[1] = 1 - ((2 * p[1]) / canvasBounds.height);
-      p[2] = 1 - ((p[2] - this.plotBounds.y) / this.plotBounds.height);
-
-      const d0 = this.activeInputs[0];
-      const d1 = this.activeInputs[1];
-      const d2 = this.activeInputs[2];
-
-      // Transform p from device coordinates to dataset coordinates
-      this.plotTransform.deviceCoordToDatasetCoord(p, p);
-
-      // Zoom towards mouse position
-      const zoom = 1.0 - (deltaZ / 50.0);
-      // Offset is difference between p in current zoom level and p after zooming
-      libGlMatrix.vec3.scaleAndAdd(p, p, p, -zoom);
-      if (scrollX) {
-        this.plotTransform.translate(d0, p[0]);
-        this.plotTransform.scale(d0, zoom);
-      }
-      if (scrollY) {
-        this.plotTransform.translate(d1, p[1]);
-        this.plotTransform.scale(d1, zoom);
-      }
-      if (scrollZ) {
-        this.plotTransform.translate(d2, p[2]);
-        this.plotTransform.scale(d2, zoom);
-      }
-    });
-
-    this.ondragover = null;
     this.canvas.ondragover = function (event) {
       if (this.ondragover !== null) {
         this.ondragover(event);
       }
     }.bind(this);
 
-    this.ondrop = null;
     this.canvas.ondrop = function (event) {
       if (this.ondrop !== null) {
         this.ondrop(event);
@@ -1762,7 +984,7 @@ export class GlobalView {
   load(_dataset, activeColumnX, activeColumnY, activeColumnC, activeColumnS) {
     // Remove old dataset
     this.dataset = null;
-    this.activeInputs = Array.create(ND, -1);
+    this.activeInputs = Array.create(Transform.NumDim, -1);
     this.imageViewer.clearImages();
 
     // Set new dataset
@@ -1930,10 +1152,8 @@ export class GlobalView {
           }
         });
       }
-      // downloadDensityMap(densityMap);
     });
   }
-
 
   /**
    * @summary A shorthand function to `showImage(index, "lowDensity")`
@@ -2334,7 +1554,6 @@ export class GlobalView {
     this.imageViewer.resolveIntersections(this.plotTransform);
   }
 
-
   /**
    * Valid placement strategies are:
    * + none
@@ -2390,7 +1609,6 @@ export class GlobalView {
     }
   }
 
-
   /**
    * Images other than the given image will be de-highlighted.
    * @summary Highlight the given image with a highlight color
@@ -2439,10 +1657,9 @@ export class GlobalView {
   onMouseDown(pEvent) { // Default mouse-down handler
     const event = pEvent;
     switch (event.button) {
-      // On left mouse button: Enable point selection and dragging events.
-      //                       If control button is pressed, initiate view dragging,
-      //                       else, enable lasso selection
       case 0:
+        // On left mouse button: Enable point selection and dragging events.
+        // If control button is pressed, initiate view dragging; else, enable lasso selection
         event.pointSelection = true;
         event.pointDragging = true;
         if (this.ctrlPressed) {
@@ -2451,15 +1668,524 @@ export class GlobalView {
           event.lassoSelection = true;
         }
         break;
-      // On middle mouse button: Initiate view dragging
+
       case 1:
+        // On middle mouse button: Initiate view dragging
         event.viewDragging = true;
         break;
-      // On right mouse button: Do nothing
+
       case 2:
+        // On right mouse button: Do nothing
         break;
       default:
         break;
+    }
+  }
+
+  /**
+   * Handler for the mouse down event on Canvas
+   * @param {Object} event event object
+   */
+  onCanvasMouseDown(event) {
+    if (this.plotTransform === null || this.offscreenRendering !== null) {
+      return;
+    }
+
+    // Compute mousepos in canvas space -> p
+    const canvasBounds = this.canvas.getBoundingClientRect();
+    const p = new Float32Array([event.clientX - canvasBounds.left,
+      event.clientY - canvasBounds.top,
+      event.clientY - canvasBounds.top]);
+
+    // Fire mouse-down handler
+    this.onMouseDown(event);
+
+    if (event.viewDragging) {
+      // If mouse-down handler set viewDragging property to a truthy value
+      if (p[0] > this.plotBounds.x + this.plotBounds.width) {
+        this.viewDragX = false;
+        this.viewDragY = false;
+        this.viewDragZ = this.colormap.visible;
+      } else {
+        this.viewDragX = p[0] >= this.plotBounds.x;
+        this.viewDragY = p[1] <= this.plotBounds.y + this.plotBounds.height;
+        this.viewDragZ = false;
+      }
+
+      // Transform mousepos from canvas space to device coordinates
+      p[0] = ((2 * p[0]) / canvasBounds.width) - 1;
+      p[1] = 1 - ((2 * p[1]) / canvasBounds.height);
+      p[2] = 1 - ((p[2] - this.plotBounds.y) / this.plotBounds.height);
+
+      if (this.viewDragX || this.viewDragY || this.viewDragZ) {
+        this.viewDragStartPos = p;
+      } // Initiate view dragging
+      return; // Prevent other mouse-down events
+    }
+    // Transform mousepos from canvas space to device coordinates
+    p[0] = ((2 * p[0]) / canvasBounds.width) - 1;
+    p[1] = 1 - ((2 * p[1]) / canvasBounds.height);
+
+
+    const selectedImage = this.imageViewer.imageFromPoint(this.plotTransform, p);
+    if (!this.shiftPressed && !this.ctrlPressed && this.imageDragImages.length !== 0 &&
+      (selectedImage === null || this.imageDragImages.indexOf(selectedImage) === -1)) {
+      // Deselect images
+      this.imageDragImages.forEach((image) => {
+        const varImage = image;
+        varImage.highlighted = false;
+      });
+      this.imageDragImages = [];
+      this.invalidate();
+      if (this.onThumbnailSelectionChanged !== null) {
+        this.onThumbnailSelectionChanged(this.dataset, []);
+      }
+    }
+    if (selectedImage !== null) {
+      selectedImage.highlighted = true;
+      if (this.imageDragImages.indexOf(selectedImage) === -1) {
+        this.imageDragImages.push(selectedImage);
+      }
+      if (this.options.enableThumbnailDragging) {
+        this.imageDragStartPos = p;
+      } // Initiate image dragging
+      this.invalidate();
+      if (event.pointSelection && this.onSelectionChanged !== null) {
+        this.onSelectionChanged(this.dataset, []);
+      }
+      if (this.onThumbnailSelectionChanged !== null) {
+        this.onThumbnailSelectionChanged(this.dataset, this.imageDragImages);
+      }
+      return; // Prevent other mouse-down events
+    }
+
+    // Transform p from device coordinates to dataset coordinates
+    this.plotTransform.deviceCoordToDatasetCoord(p, p);
+
+    let closest = Number.MAX_VALUE;
+    let closestIndex = -1;
+    let sqDist;
+    const sqscl0 = this.plotTransform.getScale(0) * this.plotTransform.getScale(0);
+    const sqscl1 = this.plotTransform.getScale(1) * this.plotTransform.getScale(1);
+    const v0 = this.dataset.dataVectors[this.activeInputs[0]];
+    const v1 = this.dataset.dataVectors[this.activeInputs[1]];
+    this.pointViewer.points.forEach((i) => {
+      sqDist =
+        (sqscl0 * ((p[0] - v0.getValue(i)) ** 2)) +
+        (sqscl1 * ((p[1] - v1.getValue(i)) ** 2));
+      if (sqDist < closest) {
+        closest = sqDist;
+        closestIndex = i;
+      }
+    });
+
+    // Get closest dataset coordinates in dataset coordinates -> dp
+    const dp = new Float32Array([v0.getValue(closestIndex), v1.getValue(closestIndex)]);
+
+    // Transform dp from dataset coordinates to canvas coordinates
+    this.plotTransform.datasetCoordToDeviceCoord(dp, dp);
+    dp[0] = (0.5 + (0.5 * dp[0])) * canvasBounds.width;
+    dp[1] = (0.5 - (0.5 * dp[1])) * canvasBounds.height;
+
+    sqDist =
+      (((event.clientX - canvasBounds.left) - dp[0]) ** 2) +
+      (((event.clientY - canvasBounds.top) - dp[1]) ** 2);
+    if (sqDist > (this.options.pointSize / 2.0) ** 2) {
+      if ((event.lassoSelection || event.polygonLassoSelection) &&
+          this.onLassoSelection !== null) {
+        if (event.polygonLassoSelection) {
+          this.mousePolygon = [];
+        } else {
+          this.mouseRect = {
+            x: event.clientX - canvasBounds.left,
+            y: event.clientY - canvasBounds.top,
+            width: 0,
+            height: 0,
+          };
+        }
+      }
+      if (event.pointSelection && this.onSelectionChanged !== null) {
+        this.onSelectionChanged(this.dataset, []);
+      }
+    } else {
+      if (event.pointDragging) {
+        this.pointDragDownPos = [dp[0], dp[1], closestIndex];
+      } // (This makes sure pointDragDownPos is centered on the selected datapoint)
+      if (event.pointSelection && this.onSelectionChanged !== null) {
+        this.onSelectionChanged(this.dataset, [closestIndex]);
+      }
+    }
+  }
+
+  /**
+   * Handler for the mouse move event of window
+   * @param {Object} event event object
+   */
+  onMouseMove(event) {
+    if (this.plotTransform === null || this.offscreenRendering !== null ||
+      (event.target !== this.canvas && this.pointDragDownPos === null &&
+        this.viewDragStartPos === null && this.imageDragStartPos === null &&
+        this.mouseRect === null && this.mousePolygon === null)) {
+      return;
+    }
+
+    // Compute mousepos in canvas space -> p
+    const canvasBounds = this.canvas.getBoundingClientRect();
+    const p = new Float32Array([
+      event.clientX - canvasBounds.left,
+      event.clientY - canvasBounds.top,
+      event.clientY - canvasBounds.top]);
+
+    // Resize mouse polygon
+    if (this.mousePolygon !== null) {
+      this.mousePolygon.push(p);
+      this.invalidate();
+      return;
+    }
+
+    // Resize mouse rect
+    if (this.mouseRect !== null) {
+      this.mouseRect.width = p[0] - this.mouseRect.x;
+      this.mouseRect.height = p[1] - this.mouseRect.y;
+      this.invalidate();
+      return;
+    }
+
+    if (this.pointDragDownPos) {
+      const scale = (1 /
+        (this.dataset.dataVectors[this.activeInputs[3]]
+          .getValue(this.pointDragDownPos[2]) * this.plotTransform.getScale(3))) +
+        this.plotTransform.getOffset(3);
+      // libUtility.consoleLog(scale);
+
+      this.pointDrag = [
+        scale * (p[0] - this.pointDragDownPos[0]),
+        scale * (p[1] - this.pointDragDownPos[1])];
+      this.invalidate();
+      return;
+    }
+
+    if (this.onMouseOverAxisLabel) {
+      const newMouseOverAxisLabel = this.coordSys.labelFromPoint(this.plotBounds, p);
+      if (newMouseOverAxisLabel !== this.mouseOverAxisLabel) {
+        this.mouseOverAxisLabel = newMouseOverAxisLabel;
+        if (this.mouseOverAxisLabel !== null) {
+          this.onMouseOverAxisLabel(
+            this.dataset.dataVectors[this.activeInputs[this.mouseOverAxisLabel]],
+            this.coordSys.getLabelBounds(this.plotBounds, this.mouseOverAxisLabel),
+          );
+        } else {
+          this.onMouseOverAxisLabel(null, null);
+        }
+      }
+    }
+
+    // Transform mousepos from canvas space to device coordinates
+    p[0] = ((2 * p[0]) / canvasBounds.width) - 1;
+    p[1] = 1 - ((2 * p[1]) / canvasBounds.height);
+    p[2] = 1 - ((p[2] - this.plotBounds.y) / this.plotBounds.height);
+
+    const d0 = this.activeInputs[0];
+    const d1 = this.activeInputs[1];
+
+    if (this.viewDragStartPos) {
+      const d2 = this.activeInputs[2];
+      const viewDelta = libGlMatrix.vec3.create();
+      this.plotTransform.deviceDistToDatasetDist(
+        viewDelta,
+        libGlMatrix.vec3.subtract(viewDelta, p, this.viewDragStartPos),
+      );
+
+      if (this.viewDragX) {
+        this.plotTransform.translate(d0, viewDelta[0]);
+      }
+      if (this.viewDragY) {
+        this.plotTransform.translate(d1, viewDelta[1]);
+      }
+      if (this.viewDragZ) {
+        this.plotTransform.translate(d2, viewDelta[2]);
+      }
+      this.viewDragStartPos = p;
+      return;
+    }
+
+    if (this.imageDragStartPos) {
+      const imageDelta = libGlMatrix.vec2.create();
+      this.plotTransform.deviceDistToDatasetDist(
+        imageDelta,
+        libGlMatrix.vec2.subtract(imageDelta, p, this.imageDragStartPos),
+      );
+      this.imageDragImages.forEach((image) => {
+        // eslint-disable-next-line no-param-reassign
+        image.imagePos[this.activeInputs[0]] += imageDelta[0];
+        // eslint-disable-next-line no-param-reassign
+        image.imagePos[this.activeInputs[1]] += imageDelta[1];
+      });
+      this.imageDragStartPos = p;
+      this.invalidate();
+      return;
+    }
+
+    if (this.mouseOverImage !== null &&
+        this.imageDragImages.indexOf(this.mouseOverImage) === -1) {
+      this.mouseOverImage.highlighted = false;
+      this.invalidate();
+      this.mouseOverImage = null;
+    }
+    this.mouseOverImage = this.imageViewer.imageFromPoint(this.plotTransform, p);
+    if (this.mouseOverImage !== null) {
+      if (this.imageDragImages.indexOf(this.mouseOverImage) === -1) {
+        this.mouseOverImage.highlighted = true;
+        this.invalidate();
+      }
+      if (this.mouseOverDatapoint !== -1) {
+        this.mouseOverDatapoint = -1;
+        if (this.onMouseOverDatapoint !== null) {
+          this.onMouseOverDatapoint(this.dataset, this.mouseOverDatapoint);
+        }
+      }
+      return;
+    }
+
+    // Transform p from device coordinates to dataset coordinates
+    this.plotTransform.deviceCoordToDatasetCoord(p, p);
+
+    let closest = Number.MAX_VALUE;
+    let closestIndex = -1;
+    let sqDist;
+    const sqscl0 = this.plotTransform.getScale(0) * this.plotTransform.getScale(0);
+    const sqscl1 = this.plotTransform.getScale(1) * this.plotTransform.getScale(1);
+    const v0 = this.dataset.dataVectors[d0];
+    const v1 = this.dataset.dataVectors[d1];
+    this.pointViewer.points.forEach((i) => {
+      sqDist =
+        (sqscl0 * ((p[0] - v0.getValue(i)) ** 2)) +
+        (sqscl1 * ((p[1] - v1.getValue(i)) ** 2));
+      if (sqDist < closest) {
+        closest = sqDist;
+        closestIndex = i;
+      }
+    });
+    // Get closest dataset coordinates in dataset coordinates -> dp
+    const dp = new Float32Array([v0.getValue(closestIndex), v1.getValue(closestIndex)]);
+
+    // Transform dp from dataset coordinates to canvas coordinates
+    this.plotTransform.datasetCoordToDeviceCoord(dp, dp);
+    dp[0] = (0.5 + (0.5 * dp[0])) * canvasBounds.width;
+    dp[1] = (0.5 - (0.5 * dp[1])) * canvasBounds.height;
+
+    sqDist =
+      (((event.clientX - canvasBounds.left) - dp[0]) ** 2) +
+      (((event.clientY - canvasBounds.top) - dp[1]) ** 2);
+    if (sqDist > (this.options.pointSize / 2.0) ** 2) {
+      if (this.mouseOverDatapoint !== -1) {
+        this.mouseOverDatapoint = -1;
+        if (this.onMouseOverDatapoint !== null) {
+          this.onMouseOverDatapoint(this.dataset, this.mouseOverDatapoint);
+        }
+      }
+    } else if (this.mouseOverDatapoint !== closestIndex) {
+      this.mouseOverDatapoint = closestIndex;
+      if (this.onMouseOverDatapoint !== null) {
+        this.onMouseOverDatapoint(this.dataset, this.mouseOverDatapoint);
+      }
+    }
+  }
+
+  /**
+   * Handler for the mouse up event of window
+   * @param {Object} event event object
+   */
+  onMouseUp(event) {
+    if (this.plotTransform === null || this.offscreenRendering !== null ||
+      (event.target !== this.canvas && this.pointDragDownPos === null &&
+        this.viewDragStartPos === null && this.mouseRect === null)) {
+      return;
+    }
+
+    let invalidate = false;
+    if (this.pointDragDownPos !== null) {
+      this.pointDragDownPos = null;
+      this.pointDrag = null;
+      invalidate = true;
+    }
+    this.viewDragStartPos = null;
+    this.imageDragStartPos = null;
+    if (this.mousePolygon !== null) {
+      if (this.onSelectionChanged !== null && this.mousePolygon.length >= 3) {
+        // TODO: Find points within this.mousePolygon -> selection
+
+        // Transform this.mousePolygon from canvas space to dataset coordinates
+        for (let i = 0; i < this.mousePolygon.length; i += 1) {
+          const p = this.mousePolygon[i];
+
+          // Transform p from canvas space to device coordinates
+          p[0] = ((2 * p[0]) / this.canvas.width) - 1;
+          p[1] = 1 - ((2 * p[1]) / this.canvas.height);
+
+          // Transform p from device coordinates to dataset coordinates
+          this.plotTransform.deviceCoordToDatasetCoord(p, p);
+
+          this.mousePolygon[i] = p;
+        }
+
+        // Close polygon
+        this.mousePolygon.push(this.mousePolygon[0]);
+
+        const selection = [];
+        const v0 = this.dataset.dataVectors[this.activeInputs[0]];
+        const v1 = this.dataset.dataVectors[this.activeInputs[1]];
+        this.pointViewer.points.forEach((i) => {
+          const px = v0.getValue(i);
+          const py = v1.getValue(i);
+          if (libAlgorithm.pointInsidePolygon([px, py], this.mousePolygon)) {
+            selection.push(i);
+          }
+        });
+        this.onLassoSelection(this.dataset, selection, this.mousePolygon);
+      }
+
+      this.mousePolygon = null;
+      invalidate = true;
+    }
+    if (this.mouseRect !== null) {
+      if (this.onSelectionChanged !== null &&
+          this.mouseRect.width !== 0 &&
+          this.mouseRect.height !== 0) {
+        // Normalize this.mouseRect (make sure width/height are positive)
+        if (this.mouseRect.width < 0) {
+          this.mouseRect.x += this.mouseRect.width;
+          this.mouseRect.width = -this.mouseRect.width;
+        }
+        if (this.mouseRect.height < 0) {
+          this.mouseRect.y += this.mouseRect.height;
+          this.mouseRect.height = -this.mouseRect.height;
+        }
+
+        // Transform this.mouseRect from canvas space to device coordinates
+        this.mouseRect.l = ((2 * this.mouseRect.x) / this.canvas.width) - 1;
+        this.mouseRect.r = ((2 * (this.mouseRect.x + this.mouseRect.width)) /
+                            this.canvas.width) - 1;
+        this.mouseRect.t = 1 - ((2 * (this.mouseRect.y + this.mouseRect.height)) /
+                                this.canvas.height);
+        this.mouseRect.b = 1 - ((2 * this.mouseRect.y) / this.canvas.height);
+
+        // Transform this.mouseRect from device coordinates to dataset coordinates
+        let p = new Float32Array([this.mouseRect.l, this.mouseRect.t]);
+        this.plotTransform.deviceCoordToDatasetCoord(p, p);
+        this.mouseRect.l = p[0];
+        this.mouseRect.t = p[1];
+        p = new Float32Array([this.mouseRect.r, this.mouseRect.b]);
+        this.plotTransform.deviceCoordToDatasetCoord(p, p);
+        this.mouseRect.r = p[0];
+        this.mouseRect.b = p[1];
+
+        let px;
+        let py;
+        const selection = [];
+        const v0 = this.dataset.dataVectors[this.activeInputs[0]];
+        const v1 = this.dataset.dataVectors[this.activeInputs[1]];
+        this.pointViewer.points.forEach((i) => {
+          px = v0.getValue(i);
+          py = v1.getValue(i);
+          if (px >= this.mouseRect.l &&
+              px < this.mouseRect.r &&
+              py >= this.mouseRect.t &&
+              py < this.mouseRect.b) {
+            selection.push(i);
+          }
+        });
+        this.onLassoSelection(this.dataset, selection, this.mouseRect);
+      }
+
+      this.mouseRect = null;
+      invalidate = true;
+    }
+    if (invalidate) {
+      this.invalidate();
+      this.onMouseMove(event);
+    }
+  }
+
+
+  /**
+   * Handler for the mouse leave event of window
+   */
+  onMouseLeave(/* event */) {
+    if (this.mouseOverImage != null && this.imageDragImages.indexOf(this.mouseOverImage) === -1) {
+      this.mouseOverImage.highlighted = false;
+      this.invalidate();
+      this.mouseOverImage = null;
+    }
+
+    if (this.onMouseOverAxisLabel && this.mouseOverAxisLabel !== null) {
+      this.onMouseOverAxisLabel(null, null);
+      this.mouseOverAxisLabel = null;
+    }
+
+    if (this.onMouseOverDatapoint !== null && this.mouseOverDatapoint !== -1) {
+      this.onMouseOverDatapoint(this.dataset, this.mouseOverDatapoint = -1);
+    }
+  }
+
+  /**
+   * Handler for the mouse wheel event of window
+   * @param {Object} event event object
+   */
+  onMouseWheel(event) {
+    if (event.target !== this.canvas || !this.options.enableScrolling) {
+      return;
+    }
+    const deltaZ = event.wheelDelta == null ? event.detail : -event.wheelDelta / 20.0;
+    event.preventDefault();
+
+    // Compute mousepos in canvas space -> p
+    const canvasBounds = this.canvas.getBoundingClientRect();
+    const p = new Float32Array([
+      event.clientX - canvasBounds.left,
+      event.clientY - canvasBounds.top,
+      event.clientY - canvasBounds.top]);
+
+    let scrollX;
+    let scrollY;
+    let scrollZ;
+    if (p[0] > this.plotBounds.x + this.plotBounds.width) {
+      scrollX = false;
+      scrollY = false;
+      scrollZ = true;
+    } else {
+      scrollX = p[0] >= this.plotBounds.x;
+      scrollY = p[1] < this.canvas.height - this.plotBounds.y;
+      scrollZ = false;
+    }
+
+    // Transform mousepos from canvas space to device coordinates
+    p[0] = ((2 * p[0]) / canvasBounds.width) - 1;
+    p[1] = 1 - ((2 * p[1]) / canvasBounds.height);
+    p[2] = 1 - ((p[2] - this.plotBounds.y) / this.plotBounds.height);
+
+    const d0 = this.activeInputs[0];
+    const d1 = this.activeInputs[1];
+    const d2 = this.activeInputs[2];
+
+    // Transform p from device coordinates to dataset coordinates
+    this.plotTransform.deviceCoordToDatasetCoord(p, p);
+
+    // Zoom towards mouse position
+    const zoom = 1.0 - (deltaZ / 50.0);
+    // Offset is difference between p in current zoom level and p after zooming
+    libGlMatrix.vec3.scaleAndAdd(p, p, p, -zoom);
+    if (scrollX) {
+      this.plotTransform.translate(d0, p[0]);
+      this.plotTransform.scale(d0, zoom);
+    }
+    if (scrollY) {
+      this.plotTransform.translate(d1, p[1]);
+      this.plotTransform.scale(d1, zoom);
+    }
+    if (scrollZ) {
+      this.plotTransform.translate(d2, p[2]);
+      this.plotTransform.scale(d2, zoom);
     }
   }
 
