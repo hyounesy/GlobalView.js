@@ -8,9 +8,9 @@ const libHistogramViewer = require('./histogramViewer.js');
 const libCoordinateSystem = require('./coordinateSystem.js');
 const libColormap = require('./colormap.js');
 const libAlgorithm = require('./algorithm.js');
-const libGraphics = require('./graphics.js');
 const libGlMatrix = require('gl-matrix');
 const Transform = require('./transform').default;
+const PlotOptions = require('./plotOptions');
 
 // >>> Options
 
@@ -47,27 +47,11 @@ export class GlobalView {
     }
 
     this.canvas = null;
-    this.div = divElement;
+    this.divElement = divElement;
     this.initializeCanvas(divElement);
 
     // Silently ignore calls to invalidate during initialization
     this.disableInvalidate = true;
-
-    this.gl = this.canvas.getContext('webgl');
-    if (!this.gl) {
-      libUtility.showAlert('Error: WebGL not supported');
-      return;
-    }
-    const OESElementIndexUint = this.gl.getExtension('OES_element_index_uint');
-    if (!OESElementIndexUint) {
-      libUtility.consoleWarn('GlobalView warning: ' +
-        'Unsupported WebGL extension: OES_element_index_uint');
-    }
-    this.gl.ext = this.gl.getExtension('ANGLE_instanced_arrays');
-    if (!this.gl.ext) {
-      libUtility.consoleWarn('GlobalView warning: ' +
-        'Unsupported WebGL extension: ANGLE_instanced_arrays');
-    }
 
     const divStyle = window.getComputedStyle(divElement);
 
@@ -122,255 +106,6 @@ export class GlobalView {
     this.disableInvalidate = false;
     this.resizeTimer = null;
 
-    // >>> Options
-
-    /**
-     * @summary A map of valid options with option descriptions,
-     *          validation functions and flags about side effects
-     * @const
-     * @enum {OptionDescription}
-    */
-    this.OPTIONS = {
-      // General plot options
-      /** The space around the drawing area in the form [top, right, bottom, left].
-       * X-axis, y-axis and colormap are drawn within padding space. */
-      padding: {
-        description: 'The space around the drawing area in the form [top, right, bottom, left].' +
-          ' X-axis, y-axis and colormap are drawn within padding space.',
-        default: [50, 60, 50, 50],
-        valid: value => libUtility.isNumber(value) || libUtility.isString(value) ||
-          (libUtility.isArray(value) && value.length === 4),
-        requireRedraw: true,
-        requireRecompile: false,
-      },
-      /** When enabled, shows a colormap to the right of the plot. */
-      showColormap: {
-        description: 'When enabled, shows a colormap to the right of the plot.',
-        default: true,
-        valid: [true, false],
-        requireRedraw: true,
-        requireRecompile: false,
-      },
-      /** When enabled, scrolling above the plot zooms in or out of the data. */
-      enableScrolling: {
-        description: 'When enabled, scrolling above the plot zooms in or out of the data.',
-        default: true,
-        valid: [true, false],
-        requireRedraw: false,
-        requireRecompile: false,
-      },
-      /** When enabled, thumbnails can be dragged with the mouse. */
-      enableThumbnailDragging: {
-        description: 'When enabled, thumbnails can be dragged with the mouse.',
-        default: true,
-        valid: [true, false],
-        requireRedraw: false,
-        requireRecompile: false,
-      },
-
-      // Advanced plot options
-      /** When enabled, the canvas is continuously rerendered at up to 60 frames per second.
-       *  Keep this setting disabled to save processing resources. */
-      enableContinuousRendering: {
-        description: 'When enabled, the canvas is continuously rerendered at up to 60 frames ' +
-          'per second. Keep this setting disabled to save processing resources.',
-        default: false,
-        valid: [true, false],
-        requireRedraw: true,
-        requireRecompile: false,
-      },
-      /** Enables/disables blending in WebGL. Whenever using any kind of transparency,
-       * this setting should be kept enabled. */
-      enableTransparency: {
-        description: 'Enables/disables blending in WebGL. Whenever using any kind of transparency' +
-          ', this setting should be kept enabled.',
-        default: true,
-        valid: [true, false],
-        requireRedraw: true,
-        requireRecompile: false,
-      },
-      /** When enabled, draws an image into the background, that shows density of points.
-       * (can be combined with 'showPointClusters') */
-      showPointDensity: {
-        description: 'When enabled, draws an image into the background,' +
-          ' that shows density of points. (can be combined with \'showPointClusters\')',
-        default: false,
-        valid: [true, false],
-        requireRedraw: true,
-        requireRecompile: false,
-      },
-      /** When enabled, draws an image into the background, that shows colored clusters of points.
-       * (can be combined with 'showPointDensity') */
-      showPointClusters: {
-        description: 'When enabled, draws an image into the background, ' +
-        'that shows colored clusters of points. (can be combined with \'showPointDensity\')',
-        default: false,
-        valid: [true, false],
-        requireRedraw: true,
-        requireRecompile: false,
-      },
-      pointClusterThreshold: {
-        description: 'Controls the realtive threshold between clusters and outliers when' +
-        ' showing clusters (see \'showPointClusters\')',
-        default: (new libAlgorithm.ClusterMapOptions()).threshold,
-        valid: value => value > 0,
-        requireRedraw: false, // Requests redraw internally
-        requireRecompile: false,
-      },
-
-      // Histogram options
-      /** When enabled, shows a histogram between the x-axis and the plot. */
-      showXAxisHistogram: {
-        description: 'When enabled, shows a histogram between the x-axis and the plot.',
-        default: false,
-        valid: [true, false],
-        requireRedraw: true,
-        requireRecompile: false,
-      },
-      /** When enabled, shows a histogram between the y-axis and the plot. */
-      showYAxisHistogram: {
-        description: 'When enabled, shows a histogram between the y-axis and the plot.',
-        default: false,
-        valid: [true, false],
-        requireRedraw: true,
-        requireRecompile: false,
-      },
-      /** When enabled, shows a histogram between the colormap and the plot. */
-      showColormapHistogram: {
-        description: 'When enabled, shows a histogram between the colormap and the plot.',
-        default: false,
-        valid: [true, false],
-        requireRedraw: true,
-        requireRecompile: false,
-      },
-      /** Controls the number of bins within each histogram in the scatterplot. */
-      numHistogramBins: {
-        description: 'Controls the number of bins within each histogram in the scatterplot.',
-        default: 50,
-        valid: value => value >= 1,
-        requireRedraw: true,
-        requireRecompile: false,
-      },
-      /** Controls the height of each histogram in the scatterplot (in pixels). */
-      histogramHeight: {
-        description: 'Controls the height of each histogram in the scatterplot (in pixels).',
-        default: 64,
-        valid: value => value >= 0,
-        requireRedraw: true,
-        requireRecompile: false,
-      },
-
-      // Point options
-      /** Controls the shape of data points in the scatterplot. */
-      pointShape: {
-        description: 'Controls the shape of data points in the scatterplot.',
-        default: 'Circle',
-        valid: ['Rectangle', 'Circle', 'Cross', 'Diamond', 'Gaussian', 'Custom'],
-        requireRedraw: true,
-        requireRecompile: true,
-      },
-      /** When 'pointShape' is set to 'Custom', this defines a GLSL function given vec2 p,
-       * that returns opacity in the range [0.0 ... 1.0] at location p. */
-      customPointShape: {
-        description: 'When \'pointShape\' is set to \'Custom\', this defines a GLSL function ' +
-          'given vec2 p, that returns opacity in the range [0.0 ... 1.0] at location p.',
-        default: '{ return 1.0; }',
-        valid: value => libGraphics.validateGLSL(this.gl, `float opacityMap(in vec2 p) ${value}`),
-        requireRedraw: true,
-        requireRecompile: true,
-      },
-      /** Controls the diameter of data points in the scatterplot (in pixels). */
-      pointSize: {
-        description: 'Controls the diameter of data points in the scatterplot (in pixels).',
-        default: 6,
-        valid: value => value >= 0,
-        requireRedraw: true,
-        requireRecompile: false,
-      },
-      /** Controls the visibility of data points in the scatterplot between
-       *  0 (invisible) and 1 (fully opaque). */
-      pointOpacity: {
-        description: 'Controls the visibility of data points in the scatterplot between ' +
-          '0 (invisible) and 1 (fully opaque).',
-        default: 1,
-        valid: value => value >= 0 && value <= 1,
-        requireRedraw: true,
-        requireRecompile: false,
-      },
-      /** Controls the color of data points in the scatterplot.
-       * Valid values are an array of bytes in RGBA order or a colormap name. */
-      pointColor: {
-        description: 'Controls the color of data points in the scatterplot. ' +
-        'Valid values are an array of bytes in RGBA order or a colormap name.',
-        default: 'exhue',
-        valid: value => libColormap.validateColormap(value),
-        requireRedraw: true,
-        requireRecompile: false,
-      },
-
-      // Thumbnail options
-      /** Controls the width/height of thumbnails in the scatterplot (in pixels). */
-      thumbnailSize: {
-        description: 'Controls the width/height of thumbnails in the scatterplot (in pixels).',
-        default: 64,
-        valid: value => value > 0,
-        requireRedraw: true,
-        requireRecompile: false,
-      },
-      /** Controls the width of thumbnail borders in the scatterplot. */
-      thumbnailBorderWidth: {
-        description: 'Controls the width of thumbnail borders in the scatterplot.',
-        default: 1,
-        valid: value => value >= 0,
-        requireRedraw: true,
-        requireRecompile: false,
-      },
-      /** Controls the color of thumbnail borders in the scatterplot.
-       * Valid values are an array of bytes in RGBA order, a color name or 'null'.
-       * If set to 'null', the CSS foreground color will be used. */
-      thumbnailBorderColor: {
-        description: 'Controls the color of thumbnail borders in the scatterplot. ' +
-          'Valid values are an array of bytes in RGBA order, a color name or \'null\'. ' +
-          'If set to \'null\', the CSS foreground color will be used.',
-        default: null,
-        valid: value => value === null || libColormap.validateColor(value),
-        requireRedraw: true,
-        requireRecompile: false,
-      },
-      /** Controls the color of thumbnail line in the scatterplot.
-       * Valid values are an array of bytes in RGBA order, a color name or 'null'.
-       * If set to 'null', the CSS foreground color will be used. */
-      thumbnailLineColor: {
-        description: 'Controls the color of thumbnail line in the scatterplot. ' +
-          'Valid values are an array of bytes in RGBA order, a color name or\'null\'. ' +
-          'If set to \'null\', the CSS foreground color will be used.',
-        default: null,
-        valid: value => value === null || libColormap.validateColor(value),
-        requireRedraw: true,
-        requireRecompile: false,
-      },
-      /** Controls the color of thumbnail labels in the scatterplot.
-       * Valid values are an array of bytes in RGBA order, a color name or 'null'.
-       * If set to 'null', the CSS background color will be used. */
-      thumbnailLabelColor: {
-        description: 'Controls the color of thumbnail labels in the scatterplot. ' +
-          'Valid values are an array of bytes in RGBA order, a color name or \'null\'. ' +
-          'If set to \'null\', the CSS foreground color will be used.',
-        default: null,
-        valid: value => value === null || libColormap.validateColor(value),
-        requireRedraw: true,
-        requireRecompile: false,
-      },
-      /** When enabled, links thumbnails to points using unique labels instead of lines. */
-      labelThumbnails: {
-        description: 'When enabled, links thumbnails to points using unique labels instead of lines.',
-        default: false,
-        valid: [true, false],
-        requireRedraw: true,
-        requireRecompile: false,
-      },
-    };
-
     this.pushedOptions = [];
 
     // >>> Mouse handlers
@@ -385,6 +120,7 @@ export class GlobalView {
     this.mouseOverImage = null;
     this.imageDragStartPos = null;
     this.imageDragImages = [];
+
     this.ctrlPressed = false;
     this.shiftPressed = false;
     this.keyCodeCtrl = navigator.appVersion.indexOf('Mac') === -1 ? 17 : 224;
@@ -486,6 +222,77 @@ export class GlobalView {
      */
     this.ondrop = null;
 
+    this.addEventHanders();
+
+    this.initializeGL();
+
+    // Hook to window-resize event and fire once for initial setup
+    window.addEventListener('resize', this.onresize.bind(this), false);
+    this.onresize();
+
+    // Set unset options to default values
+    this.setDefaultOptions();
+    this.setOptions(startupOptions);
+  }
+
+  /**
+   * Initializes the html canvas within the specified div element
+   * @param {HTMLDivElement} div
+   */
+  initializeCanvas(div) {
+    for (let i = 0; i < div.children.length; i += 1) {
+      if (div.children[i] instanceof HTMLCanvasElement && div.children[i].globalViewWebGLCanvas) {
+        // If div already contains a GlobalView-WebGL-canvas, share the canvas
+        this.canvas = /** @type {HTMLCanvasElement} */ (div.children[i]);
+        break;
+      }
+    }
+
+    // create the canvas element if doesn't exist
+    if (this.canvas === null) {
+      this.canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+      this.canvas.setAttribute('id', 'webGLCanvas');
+      this.canvas.style.position = 'static';// "absolute";
+      this.canvas.style.left = '0px';
+      this.canvas.style.top = '0px';
+      this.canvas.style.width = '100%';
+      this.canvas.style.height = '100%';
+      this.canvas.style.backgroundColor = 'transparent';
+      this.canvas.globalViewWebGLCanvas = true;
+      div.appendChild(this.canvas);
+    }
+
+    this.gl = this.canvas.getContext('webgl');
+    if (!this.gl) {
+      libUtility.showAlert('Error: WebGL not supported');
+      return;
+    }
+    const OESElementIndexUint = this.gl.getExtension('OES_element_index_uint');
+    if (!OESElementIndexUint) {
+      libUtility.consoleWarn('GlobalView warning: ' +
+        'Unsupported WebGL extension: OES_element_index_uint');
+    }
+    this.gl.ext = this.gl.getExtension('ANGLE_instanced_arrays');
+    if (!this.gl.ext) {
+      libUtility.consoleWarn('GlobalView warning: ' +
+        'Unsupported WebGL extension: ANGLE_instanced_arrays');
+    }
+  }
+
+  /** Initialize global view gl context */
+  initializeGL() {
+    this.gl.disable(this.gl.CULL_FACE);
+    this.gl.enable(this.gl.BLEND);
+    this.gl.blendEquationSeparate(this.gl.FUNC_ADD, this.gl.FUNC_ADD);
+    this.gl.blendFuncSeparate(
+      this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA,
+      this.gl.ONE, this.gl.ONE,
+    );
+    this.gl.clearColor(...this.gl.backColor);
+  }
+
+  /** Add the event handlers */
+  addEventHanders() {
     libUtility.addKeyDownHandler((event) => {
       if (event.keyCode === this.keyCodeCtrl) {
         this.ctrlPressed = true;
@@ -524,41 +331,6 @@ export class GlobalView {
         this.ondrop(event);
       }
     }.bind(this);
-
-    this.initializeGL();
-
-    // Hook to window-resize event and fire once for initial setup
-    window.addEventListener('resize', this.onresize.bind(this), false);
-    this.onresize();
-
-    // Set unset options to default values
-    this.setDefaultOptions();
-    this.setOptions(startupOptions);
-  }
-
-  initializeCanvas(div) {
-    for (let i = 0; i < div.children.length; i += 1) {
-      if (div.children[i] instanceof HTMLCanvasElement && div.children[i].globalViewWebGLCanvas) {
-      // If div already contains a GlobalView-WebGL-canvas, ...
-      // Share canvas
-        this.canvas = /** @type {HTMLCanvasElement} */ (div.children[i]);
-        break;
-      }
-    }
-
-    // create the canvas element if doesn't exist
-    if (this.canvas === null) {
-      this.canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
-      this.canvas.setAttribute('id', 'webGLCanvas');
-      this.canvas.style.position = 'static';// "absolute";
-      this.canvas.style.left = '0px';
-      this.canvas.style.top = '0px';
-      this.canvas.style.width = '100%';
-      this.canvas.style.height = '100%';
-      this.canvas.style.backgroundColor = 'transparent';
-      this.canvas.globalViewWebGLCanvas = true;
-      div.appendChild(this.canvas);
-    }
   }
 
   /**
@@ -574,6 +346,7 @@ export class GlobalView {
     }
   }
 
+  /** @summary Event handler for onresize event */
   onresize() {
     const rect = this.canvas.getBoundingClientRect();
     const width = rect.right - rect.left;
@@ -602,10 +375,15 @@ export class GlobalView {
     }
   }
 
+  /** @summary Returns the plot bounds */
   getPlotBounds() {
     return this.plotBounds;
   }
 
+  /**
+   * @summary Sets the plot bounds with the specified padding
+   * @param {number[]|string} padding : array of length 4 or a string with the percentages
+   */
   setPlotBounds(padding) {
     let computedPadding;
     if (libUtility.isArray(padding) && padding.length === 4) {
@@ -723,17 +501,18 @@ export class GlobalView {
   /**
    * Note: When setting multiple options, {@link GlobalView#setOptions} should be prefered.
    * @summary Sets the given option
-   * @see GlobalView#this.OPTIONS
+   * @see PlotOptions.Options
    * @param  {string} option
    * @param  {*} value
    */
   setOption(option, value) {
+    PlotOptions.setCurrentPlot(this);
     // Validate option
-    if (!Object.prototype.hasOwnProperty.call(this.OPTIONS, option)) {
+    if (!Object.prototype.hasOwnProperty.call(PlotOptions.Options, option)) {
       libUtility.consoleWarn(`GlobalView warning: Unsupported option: ${option}`);
       return;
     }
-    const optionDefinition = this.OPTIONS[option];
+    const optionDefinition = PlotOptions.Options[option];
 
     // Validate value
     let validationResult;
@@ -764,6 +543,7 @@ export class GlobalView {
    * @param  {Object} newOptions A JavaScript object of options
    */
   setOptions(newOptions) {
+    PlotOptions.setCurrentPlot(this);
     let requireRecompile = false;
     let requireRedraw = false;
     // eslint-disable-next-line no-restricted-syntax
@@ -773,11 +553,11 @@ export class GlobalView {
       }
 
       // Validate option
-      if (!Object.prototype.hasOwnProperty.call(this.OPTIONS, option)) {
+      if (!Object.prototype.hasOwnProperty.call(PlotOptions.Options, option)) {
         libUtility.consoleWarn(`GlobalView warning: Unsupported option: ${option}`);
         continue; // eslint-disable-line no-continue
       }
-      const optionDefinition = this.OPTIONS[option];
+      const optionDefinition = PlotOptions.Options[option];
 
       // Validate value
       const value = newOptions[option];
@@ -812,11 +592,11 @@ export class GlobalView {
    */
   setDefaultOption(option) {
     // Validate option
-    if (!Object.prototype.hasOwnProperty.call(this.OPTIONS, option)) {
+    if (!Object.prototype.hasOwnProperty.call(PlotOptions.Options, option)) {
       libUtility.consoleWarn(`GlobalView warning: Unsupported option: ${option}`);
       return;
     }
-    const optionDefinition = this.OPTIONS[option];
+    const optionDefinition = PlotOptions.Options[option];
 
     this.setOption(option, optionDefinition.default);
   }
@@ -826,8 +606,8 @@ export class GlobalView {
    */
   setDefaultOptions() {
     const defaultOptions = {};
-    Object.keys(this.OPTIONS).forEach((option) => {
-      defaultOptions[option] = this.OPTIONS[option].default;
+    Object.keys(PlotOptions.Options).forEach((option) => {
+      defaultOptions[option] = PlotOptions.Options[option].default;
     });
     this.setOptions(defaultOptions);
   }
@@ -838,12 +618,12 @@ export class GlobalView {
    * @param  {*} value
    * @return  {string|boolean} Error message or 'true' if the option is valid
    */
-  validateOption(option, value) {
+  static validateOption(option, value) {
     // Validate option
-    if (!Object.prototype.hasOwnProperty.call(this.OPTIONS, option)) {
+    if (!Object.prototype.hasOwnProperty.call(PlotOptions.Options, option)) {
       return `Unsupported option: ${option}`;
     }
-    const optionDefinition = this.OPTIONS[option];
+    const optionDefinition = PlotOptions.Options[option];
 
     // Validate value
     let validationResult;
@@ -864,7 +644,7 @@ export class GlobalView {
    * @param  {Object} newOptions A JavaScript object of options
    * @return  {string|boolean} Error message or 'true' if all options are valid
    */
-  validateOptions(newOptions) {
+  static validateOptions(newOptions) {
     const errors = [];
     // eslint-disable-next-line no-restricted-syntax
     for (const option in newOptions) {
@@ -873,11 +653,11 @@ export class GlobalView {
       }
 
       // Validate option
-      if (!Object.prototype.hasOwnProperty.call(this.OPTIONS, option)) {
+      if (!Object.prototype.hasOwnProperty.call(PlotOptions.Options, option)) {
         errors.push(`Unsupported option: ${option}`);
         continue; // eslint-disable-line no-continue
       }
-      const optionDefinition = this.OPTIONS[option];
+      const optionDefinition = PlotOptions.Options[option];
 
       // Validate value
       const value = newOptions[option];
@@ -951,6 +731,7 @@ export class GlobalView {
     }
     this.coordSys.setLabel(d, this.dataset.dataVectors[columnIdx].label);
   }
+
   /**
    * @private
    * @param  {number} columnIdx
@@ -975,20 +756,20 @@ export class GlobalView {
   // var pushedDatasets = [];
   /**
    * @summary Load a dataset into the plot
-   * @param  {Dataset} _dataset
+   * @param  {Dataset} dataset
    * @param  {number} activeColumnX
    * @param  {number} activeColumnY
    * @param  {number} activeColumnC
    * @param  {number} activeColumnS
    */
-  load(_dataset, activeColumnX, activeColumnY, activeColumnC, activeColumnS) {
+  load(dataset, activeColumnX, activeColumnY, activeColumnC, activeColumnS) {
     // Remove old dataset
     this.dataset = null;
     this.activeInputs = Array.create(Transform.NumDim, -1);
     this.imageViewer.clearImages();
 
     // Set new dataset
-    this.dataset = _dataset;
+    this.dataset = dataset;
     this.animatedInputs[0].origin = activeColumnX;
     this.activeInputs[0] = activeColumnX;
     this.animatedInputs[1].origin = activeColumnY;
@@ -998,14 +779,13 @@ export class GlobalView {
     this.animatedInputs[3].origin = activeColumnS;
     this.activeInputs[3] = activeColumnS;
 
-
     // Reset transform
     this.plotTransform = new Transform(this);
     this.zoomFit();
 
     // Update viewers
     this.viewers.forEach(viewer =>
-      viewer.setDataset(_dataset, this.options));
+      viewer.setDataset(dataset, this.options));
     this.viewers.forEach(viewer =>
       viewer.onInputChanged(this.activeInputs, this.animatedInputs, this.options));
 
@@ -1019,53 +799,54 @@ export class GlobalView {
   }
 
   /**
-   * Assign dataset column c to axis d
-   * @param  {number} d
-   * @param  {number} c
+   * Assign dataset column to axis
+   * @param  {number} axis Axis for the column
+   * @param  {number} column dataset column
    */
-  setActiveColumn(d, c) {
+  setActiveColumn(axis, column) {
     if (!ENABLE_CONTINUOUS_RENDERING) {
       this.deltaTime = 0.0;
       this.timeNow = performance.now();
     }
 
-    this.animatedInputs[d].origin = this.activeInputs[d];
-    this.animatedInputs[d].f = 0.0;
-    this.activeInputs[d] = c;
+    this.animatedInputs[axis].origin = this.activeInputs[axis];
+    this.animatedInputs[axis].f = 0.0;
+    this.activeInputs[axis] = column;
 
     this.plotTransform.onInputChanged();
     this.viewers.forEach(viewer =>
       viewer.onInputChanged(this.activeInputs, this.animatedInputs, this.options));
-    if (d < 2) {
-      this.updateCoorinateSystem(d, this.activeInputs[d]);
+    if (axis < 2) {
+      this.updateCoorinateSystem(axis, this.activeInputs[axis]);
     } else {
       this.updateColormap(this.activeInputs[2]);
     }
-    if (d < 3) {
+    if (axis < 3) {
       this.invalidate();
     }
   }
 
   /**
-   * Get column assigned to axis c
-   * @param  {number} d
+   * Get column assigned to axis
+   * @param  {number} axis
    * @return {number}
    */
-  getActiveColumn(d) {
-    return d >= 0 && d < this.activeInputs.length ? this.activeInputs[d] : -1;
+  getActiveColumn(axis) {
+    return axis >= 0 && axis < this.activeInputs.length ? this.activeInputs[axis] : -1;
   }
 
 
   /**
-   * @param  {number} n
+   * @param  {number} numPointsToReturn
    * @param  {number} densityRatio
    * @param  {function(Array<number>)} ondone Event handler,
    *        called after characteristic points have been found
    */
-  getCharacteristicPoints(n, densityRatio, ondone) {
+  getCharacteristicPoints(numPointsToReturn, densityRatio, ondone) {
     if (!this.dataset) {
       return;
     }
+
     let d0 = this.activeInputs[0];
     let d1 = this.activeInputs[1];
     this.dataset.requestDensityMap(d0, d1, undefined, undefined, (densityMap) => {
@@ -1076,8 +857,10 @@ export class GlobalView {
         d1 = temp;
       }
 
-      const characteristicPoints =
-        libAlgorithm.findRepresentativePoints2(this.dataset, d0, d1, densityMap, n, densityRatio);
+      const characteristicPoints = libAlgorithm.findRepresentativePoints2(
+        this.dataset, d0, d1, densityMap,
+        numPointsToReturn, densityRatio,
+      );
       ondone(characteristicPoints);
     });
   }
@@ -1280,7 +1063,6 @@ export class GlobalView {
     });
   }
 
-
   /**
    * @summary A shorthand function to `showImage(index, "adjacent")`
    * @param  {number} index Index of the datapoint to show
@@ -1304,7 +1086,6 @@ export class GlobalView {
     const plot = this;
     points.forEach(i => plot.showImageAdjacent(i));
   }
-
 
   /**
    * @summary A shorthand function to `showImages(index, "project")`
@@ -1389,7 +1170,7 @@ export class GlobalView {
 
     // >>> Set image locations to be projections of data positions along eigenvec onto AABB
 
-    const posToLoc = function (pos) {
+    const posToLoc = (pos) => {
       const p = pos;
       // Normalize p[0] from [l ... r] to [0 ... 1]
       p[0] = Math.max(0, Math.min(1, (p[0] - tl[0]) / (br[0] - tl[0])));
@@ -1402,7 +1183,8 @@ export class GlobalView {
         case 3: return 4 - p[0];
       }
     };
-    const locToPos = function (loc) {
+
+    const locToPos = (loc) => {
       const l = (loc + 4) % 4;
       let p;
       const li = Math.floor(l);
@@ -1524,6 +1306,7 @@ export class GlobalView {
         }
         return 0;
       });
+
       const repairedR = new Array(R.length);
       for (let i = 0; i < R.length; i += 1) {
         repairedR[rank[i]] = R[newRank[i]];
@@ -2048,6 +1831,7 @@ export class GlobalView {
       this.mousePolygon = null;
       invalidate = true;
     }
+
     if (this.mouseRect !== null) {
       if (this.onSelectionChanged !== null &&
           this.mouseRect.width !== 0 &&
@@ -2269,12 +2053,16 @@ export class GlobalView {
     this.onresize();
   }
 
+  /** Renders to the off screen buffer */
   renderOffscreenBuffer() {
     // Render scene
     this.render(true);
     this.gl.finish();
   }
 
+  /**
+   * Saves the currently rendered offscreen buffer to an image
+   */
   saveOffscreenBuffer() {
     // Read pixels
     const data = new Uint8Array(this.gl.viewportWidth * this.gl.viewportHeight * 4);
@@ -2303,25 +2091,13 @@ export class GlobalView {
     return dataURL;
   }
 
-  // >>> Initialize global view
-  initializeGL() {
-    this.gl.disable(this.gl.CULL_FACE);
-    this.gl.enable(this.gl.BLEND);
-    this.gl.blendEquationSeparate(this.gl.FUNC_ADD, this.gl.FUNC_ADD);
-    this.gl.blendFuncSeparate(
-      this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA,
-      this.gl.ONE, this.gl.ONE,
-    );
-    this.gl.clearColor(...this.gl.backColor);
-  }
-
   /**
    * Call this method after updating the parent div's color or background-color styles
    * in order for the changes to be applied to the rendering pipeline.
    * @summary Apply div foreground- and background colors to the plot
    */
   updateColorSchema() {
-    const vDivStyle = window.getComputedStyle(this.div);
+    const vDivStyle = window.getComputedStyle(this.divElement);
     this.gl.backColor = vDivStyle.backgroundColor === 'transparent' ?
       [0, 0, 0, 0] : libUtility.rgbStringToFloatArray(vDivStyle.backgroundColor);
     this.gl.foreColor = libUtility.rgbStringToFloatArray(this.gl.foreColorString = vDivStyle.color);
@@ -2338,11 +2114,12 @@ export class GlobalView {
    * @summary Apply div font to the plot
    */
   updateFont() {
-    const vDivStyle = window.getComputedStyle(this.div);
+    const vDivStyle = window.getComputedStyle(this.divElement);
     this.textRenderContext.setFont(`${vDivStyle.fontSize} ${vDivStyle.fontFamily}`);
     this.invalidate();
   }
 
+  /** Renders the plot */
   render(pFlipY) {
     let flipY = pFlipY;
     this.invalidating = false;

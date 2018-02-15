@@ -35,7 +35,7 @@ function tOptionsOnChange(/* sender */) {
     return;
   }
 
-  const err = plot.validateOptions(options);
+  const err = globalView.GlobalView.validateOptions(options);
   if (err === true) {
     plot.setOptions(options);
     preStatus.innerText = '';
