@@ -1,6 +1,6 @@
 const libGraphics = require('./graphics.js');
 const libUtility = require('./utility.js');
-const libColormap = require('./colormap.js');
+const Colormap = require('./colormap.js').default;
 const libAlgorithm = require('./algorithm.js');
 
 let currentPlot = null;
@@ -186,7 +186,7 @@ export const Options = {
     description: 'Controls the color of data points in the scatterplot. ' +
     'Valid values are an array of bytes in RGBA order or a colormap name.',
     default: 'exhue',
-    valid: value => libColormap.validateColormap(value),
+    valid: value => Colormap.validateColormap(value),
     requireRedraw: true,
     requireRecompile: false,
   },
@@ -216,7 +216,7 @@ export const Options = {
       'Valid values are an array of bytes in RGBA order, a color name or \'null\'. ' +
       'If set to \'null\', the CSS foreground color will be used.',
     default: null,
-    valid: value => value === null || libColormap.validateColor(value),
+    valid: value => value === null || Colormap.validateColor(value),
     requireRedraw: true,
     requireRecompile: false,
   },
@@ -228,7 +228,7 @@ export const Options = {
       'Valid values are an array of bytes in RGBA order, a color name or\'null\'. ' +
       'If set to \'null\', the CSS foreground color will be used.',
     default: null,
-    valid: value => value === null || libColormap.validateColor(value),
+    valid: value => value === null || Colormap.validateColor(value),
     requireRedraw: true,
     requireRecompile: false,
   },
@@ -240,7 +240,7 @@ export const Options = {
       'Valid values are an array of bytes in RGBA order, a color name or \'null\'. ' +
       'If set to \'null\', the CSS foreground color will be used.',
     default: null,
-    valid: value => value === null || libColormap.validateColor(value),
+    valid: value => value === null || Colormap.validateColor(value),
     requireRedraw: true,
     requireRecompile: false,
   },

@@ -1,7 +1,7 @@
 const libGraphics = require('./graphics.js');
 const libShaders = require('./shaders.js');
 const libAlgorithm = require('./algorithm.js');
-const libColormap = require('./colormap.js');
+const Colormap = require('./colormap.js').default;
 const libGlMatrix = require('gl-matrix');
 // const libUtility = require('./utility.js');
 
@@ -209,7 +209,7 @@ export class HistogramViewer { // eslint-disable-line import/prefer-default-expo
       }
       libGlMatrix.mat4.translate(
         mattrans, mattrans,
-        [((2 * (plotBounds.x + plotBounds.width + libColormap.Colormap.getWidth() + 0.5 + 64)) /
+        [((2 * (plotBounds.x + plotBounds.width + Colormap.getWidth() + 0.5 + 64)) /
           this.gl.width) - 1,
         ((2 * (plotBounds.y + 0.5)) / this.gl.height) - 1, 0],
       ); // 0.5 ... center inside pixel
@@ -224,7 +224,7 @@ export class HistogramViewer { // eslint-disable-line import/prefer-default-expo
       }
       libGlMatrix.mat4.translate(
         mattrans, mattrans,
-        [((2 * (plotBounds.x + plotBounds.width + libColormap.Colormap.getWidth() + 0.5)) /
+        [((2 * (plotBounds.x + plotBounds.width + Colormap.getWidth() + 0.5)) /
           this.gl.width) - 1,
         pos[2] + ((0.5 * 2) / this.gl.height), 0.0],
       ); // 0.5 ... center inside pixel

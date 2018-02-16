@@ -6,7 +6,7 @@ const libImageViewer = require('./imageViewer');
 const libDensityViewer = require('./densityViewer.js');
 const libHistogramViewer = require('./histogramViewer.js');
 const libCoordinateSystem = require('./coordinateSystem.js');
-const libColormap = require('./colormap.js');
+const Colormap = require('./colormap.js').default;
 const libAlgorithm = require('./algorithm.js');
 const libGlMatrix = require('gl-matrix');
 const Transform = require('./transform').default;
@@ -74,7 +74,7 @@ export class GlobalView {
     this.densityViewer = new libDensityViewer.DensityViewer(this.gl, this);
     this.histogramViewer = new libHistogramViewer.HistogramViewer(this.gl, this);
     this.coordSys = new libCoordinateSystem.CoordinateSystem(this.gl, this);
-    this.colormap = new libColormap.Colormap(this.gl, this);
+    this.colormap = new Colormap(this.gl, this);
     /** @type  {Array<Viewer>} */
     this.viewers = [
       this.pointViewer, this.imageViewer, this.densityViewer,

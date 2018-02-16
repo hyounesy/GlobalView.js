@@ -1,7 +1,7 @@
 const libGraphics = require('./graphics.js');
 const libShaders = require('./shaders.js');
 const libAlgorithm = require('./algorithm.js');
-const libColormap = require('./colormap.js');
+const Colormap = require('./colormap.js').default;
 const libGlMatrix = require('gl-matrix');
 
 // const LABEL_HEIGHT = 12, LABEL_WIDTH = 16.5;
@@ -427,15 +427,15 @@ export class ImageViewer {
     this.options = options;
     this.defaultImageBorderWidth = this.options.thumbnailBorderWidth;
     this.defaultImageBorderColor = this.options.thumbnailBorderColor ?
-      new Float32Array(libColormap.parseColor(this.options.thumbnailBorderColor))
+      new Float32Array(Colormap.parseColor(this.options.thumbnailBorderColor))
         .map(c => c / 255.0) :
       this.gl.foreColor;
     this.defaultImageLineColor = this.options.thumbnailLineColor ?
-      new Float32Array(libColormap.parseColor(this.options.thumbnailLineColor))
+      new Float32Array(Colormap.parseColor(this.options.thumbnailLineColor))
         .map(c => c / 255.0) :
       this.gl.foreColor;
     this.defaultImageLabelColor = this.options.thumbnailLabelColor ?
-      new Float32Array(libColormap.parseColor(this.options.thumbnailLabelColor))
+      new Float32Array(Colormap.parseColor(this.options.thumbnailLabelColor))
         .map(c => c / 255.0) :
       this.gl.backColor;
   }

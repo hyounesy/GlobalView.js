@@ -7,6 +7,7 @@ const $ = require('jquery');
 window.jQuery = $;
 require('jquery-csv');
 
+
 /**
  * A vector of data values inside the dataset.
  * The source of a data vector can be either a column in the dataset's data table or a formula.
@@ -551,6 +552,28 @@ export class Dataset {
 
     libUtility.download(filename, `data:text/csv;charset=utf-8,${encodeURIComponent($.csv.fromArrays(csv))}`);
   }
+  /**
+   * Creates an auto-generated column name.
+   * When numColumns is <= 4, the names will be x, y, z, and w.
+   * When numColumns is <= 26, the names will be A, B, ... Z.
+   * For larger numColumns, the names will be c1, c2, ...
+   * @param {number} columnIndex The index of the column to generate the name for.
+   *                             Should be less than numColumns
+   * @param {number} numColumns Total number of columns.
+   */
+  static generateColumnName(columnIndex, numColumns) {
+    const XYZW = ['x', 'y', 'z', 'w'];
+    if (numColumns <= XYZW.length && columnIndex <= XYZW.length) {
+      return XYZW[columnIndex]; // x, y, z, w
+    } else if (numColumns <= 26 && columnIndex <= 26) {
+      return String.fromCharCode(65 + columnIndex); // A, B, C, ...
+    }
+    return `c${columnIndex + 1}`; // c1, c2, c3, ...
+  }
+
+  static parseData(input) {
+    return parseFloat(input);
+  }
 }
 
 
@@ -574,7 +597,7 @@ export class RandomDataset extends Dataset {
     this.numColumns = numCols;
     this.length = numRows;
     for (let i = 0; i < numCols; i += 1) {
-      this.columns.push({ minimum: 0, maximum: 1, label: generateColumnName(i, numCols) });
+      this.columns.push({ minimum: 0, maximum: 1, label: Dataset.generateColumnName(i, numCols) });
       this.dataVectors.push(new DataVector(this, i));
     }
 
@@ -717,8 +740,8 @@ export class CsvDataset extends Dataset {
         // Assume no-header by default
         this.varOptions.hasHeader = false;
 
-        const firstRowOnlyStrings = data[0].every(value => Number.isNaN(parseData(value)));
-        const secondRowHasNumbers = data[1].some(value => !Number.isNaN(parseData(value)));
+        const firstRowOnlyStrings = data[0].every(value => Number.isNaN(Dataset.parseData(value)));
+        const secondRowHasNumbers = data[1].some(value => !Number.isNaN(Dataset.parseData(value)));
 
         // If the first row consists of only string values, but the second row
         // has at least one numeric value, we can assume the first row is a header
@@ -735,7 +758,9 @@ export class CsvDataset extends Dataset {
         for (let c = 0; c < data[0].length; c += 1) {
           const valueMap = {};
           if (data.every((row) => {
-            if (row.length > c && Number.isNaN(parseData(row[c])) && !(row[c] in valueMap)) {
+            if (row.length > c &&
+                Number.isNaN(Dataset.parseData(row[c])) &&
+                !(row[c] in valueMap)) {
               valueMap[row[c]] = true;
               return true;
             }
@@ -802,7 +827,7 @@ export class CsvDataset extends Dataset {
         }
 
         const value = data[i][c];
-        const fvalue = parseData(value);
+        const fvalue = Dataset.parseData(value);
         if (Number.isNaN(fvalue)) {
           isNumeric = false;
           break;
@@ -855,7 +880,7 @@ export class CsvDataset extends Dataset {
       } else if (this.varOptions.hasHeader) {
         theLabel = data[0][c];
       } else {
-        theLabel = generateColumnName(ci, nc);
+        theLabel = Dataset.generateColumnName(ci, nc);
       }
       // Save column meta data
       dataset.columns.push({
@@ -939,29 +964,4 @@ export class CsvDataset extends Dataset {
       this.onloadCallback(dataset);
     }
   }
-}
-
-// >>> Helper functions
-
-/**
- * Creates an auto-generated column name.
- * When numColumns is <= 4, the names will be x, y, z, and w.
- * When numColumns is <= 26, the names will be A, B, ... Z.
- * For larger numColumns, the names will be c1, c2, ...
- * @param {number} columnIndex The index of the column to generate the name for.
- *                             Should be less than numColumns
- * @param {number} numColumns Total number of columns.
- */
-function generateColumnName(columnIndex, numColumns) {
-  const XYZW = ['x', 'y', 'z', 'w'];
-  if (numColumns <= XYZW.length && columnIndex <= XYZW.length) {
-    return XYZW[columnIndex]; // x, y, z, w
-  } else if (numColumns <= 26 && columnIndex <= 26) {
-    return String.fromCharCode(65 + columnIndex); // A, B, C, ...
-  }
-  return `c${columnIndex + 1}`; // c1, c2, c3, ...
-}
-
-function parseData(input) {
-  return parseFloat(input);
 }

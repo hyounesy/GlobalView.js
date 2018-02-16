@@ -32,7 +32,7 @@ const imageRainbow =
  * A class holding the active colormap for the global view.
  * This class also draws a color axis to the right of the scatter plot.
  */
-export class Colormap {
+export default class Colormap {
   /**
    * @constructor
    * @package
@@ -332,7 +332,7 @@ export class Colormap {
       } else if (Colormap.getAvailableColorMaps()[this.pointColor]) {
         this.texColormap = Colormap.getAvailableColorMaps()[this.pointColor];
       } else {
-        const c = parseColormap(this.pointColor);
+        const c = Colormap.parseColormap(this.pointColor);
         if (c) {
           this.texColormap = libGraphics.LoadTextureFromByteArray(this.gl, c, c.length / 4, 1);
         }
@@ -357,131 +357,131 @@ export class Colormap {
   free() {
     this.meshLine.free();
   }
-}
 
-/**
- * Checks if the specified parameter is a valid color
- * @param {(string|number[])} color
- * @returns {(boolean|string)} true of a valid color, otherwise the string error message
- */
-export function validateColor(color) {
-  if (libUtility.isString(color)) {
-    if (!libUtility.isUndefined(libUtility.colorNameToHex(color))) {
+  /**
+   * Parses the colormap and returns an array of Uint8Array
+   * @param {(string|number[])} colormap either the color map name or an array.
+   * Colormap array length must be multiple of 4 and contain numbers between 0 and 255.
+   * @returns {Uint8Array} Colormap colors as an array of size [colormapLength * 4]
+   */
+  static parseColormap(colormap) {
+    if (libUtility.isString(colormap)) {
+      return Colormap.parseColor(colormap);
+    }
+
+    if (libUtility.isArray(colormap)) {
+      if (colormap.length === 0) {
+        return null;
+      }
+      if (libUtility.isString(colormap[0])) {
+        const array = [];
+        for (let i = 0; i < colormap.length; i += 1) {
+          const color = Colormap.parseColor(colormap[i]);
+          if (color) {
+            Array.prototype.push.apply(array, color);
+          } else {
+            return null;
+          }
+        }
+        return new Uint8Array(array);
+      } else if (libUtility.isNumber(colormap[0])) {
+        return new Uint8Array(colormap);
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Checks if the specified parameter is a valid color
+   * @param {(string|number[])} color
+   * @returns {(boolean|string)} true of a valid color, otherwise the string error message
+   */
+  static validateColor(color) {
+    if (libUtility.isString(color)) {
+      if (!libUtility.isUndefined(libUtility.colorNameToHex(color))) {
+        return true;
+      } // color is known color name
+      const rgb = libUtility.hexToRgb(color);
+      if (rgb !== null &&
+        rgb.r >= 0x00 && rgb.r <= 0xFF &&
+        rgb.g >= 0x00 && rgb.g <= 0xFF &&
+        rgb.b >= 0x00 && rgb.b <= 0xFF) {
+        return true;
+      } // color is hex color
+      return `Unknown color ${color}`;
+    }
+
+    if (libUtility.isArray(color)) {
+      if (color.length !== 4) {
+        return 'Color array needs to have 4 components (RGBA).';
+      }
       return true;
-    } // color is known color name
-    const rgb = libUtility.hexToRgb(color);
-    if (rgb !== null &&
-      rgb.r >= 0x00 && rgb.r <= 0xFF &&
-      rgb.g >= 0x00 && rgb.g <= 0xFF &&
-      rgb.b >= 0x00 && rgb.b <= 0xFF) {
-      return true;
-    } // color is hex color
+    }
+
     return `Unknown color ${color}`;
   }
 
-  if (libUtility.isArray(color)) {
-    if (color.length !== 4) {
-      return 'Color array needs to have 4 components (RGBA).';
+  /**
+   * Converts color parameter to a Uint8Array [r, g, b, a]
+   * @param {(string|number[])} color
+   * @returns {Uint8Array} Unit8Array of length 4: [r, g, b, a]
+   */
+  static parseColor(color) {
+    if (libUtility.isString(color)) {
+      const hex = libUtility.colorNameToHex(color);
+      const rgb = libUtility.hexToRgb(hex || color);
+      return rgb ? new Uint8Array([rgb.r, rgb.g, rgb.b, 255]) : null;
     }
-    return true;
+
+    if (libUtility.isArray(color)) {
+      return color.length >= 4 ? new Uint8Array([color[0], color[1], color[2], color[3]]) : null;
+    }
+
+    return null;
   }
 
-  return `Unknown color ${color}`;
-}
-
-/**
- * Converts color parameter to a Uint8Array [r, g, b, a]
- * @param {(string|number[])} color
- * @returns {Uint8Array} Unit8Array of length 4: [r, g, b, a]
- */
-export function parseColor(color) {
-  if (libUtility.isString(color)) {
-    const hex = libUtility.colorNameToHex(color);
-    const rgb = libUtility.hexToRgb(hex || color);
-    return rgb ? new Uint8Array([rgb.r, rgb.g, rgb.b, 255]) : null;
-  }
-
-  if (libUtility.isArray(color)) {
-    return color.length >= 4 ? new Uint8Array([color[0], color[1], color[2], color[3]]) : null;
-  }
-
-  return null;
-}
-
-/**
- * validates the colormap parameters
- * @param {(string|number[])} colormap either the color map name or an array.
- * Colormap array length must be multiple of 4 and contain numbers between 0 and 255.
- * @returns {(boolean|string)} true of a valid color map, otherwise the string error message
- */
-export function validateColormap(colormap) {
-  if (colormap === null) {
-    return true;
-  }
-  if (libUtility.isString(colormap)) {
-    if (Colormap.getAvailableColorMaps()[colormap]) {
+  /**
+   * validates the colormap parameters
+   * @param {(string|number[])} colormap either the color map name or an array.
+   * Colormap array length must be multiple of 4 and contain numbers between 0 and 255.
+   * @returns {(boolean|string)} true of a valid color map, otherwise the string error message
+   */
+  static validateColormap(colormap) {
+    if (colormap === null) {
       return true;
     }
-    return validateColor(colormap);
-  }
-
-  if (libUtility.isArray(colormap)) {
-    if (colormap.length === 0) {
-      return 'Colormap array cannot be empty.';
+    if (libUtility.isString(colormap)) {
+      if (Colormap.getAvailableColorMaps()[colormap]) {
+        return true;
+      }
+      return Colormap.validateColor(colormap);
     }
-    if (libUtility.isString(colormap[0])) {
+
+    if (libUtility.isArray(colormap)) {
+      if (colormap.length === 0) {
+        return 'Colormap array cannot be empty.';
+      }
+      if (libUtility.isString(colormap[0])) {
+        for (let i = 0; i < colormap.length; i += 1) {
+          const err = Colormap.validateColor(colormap[i]);
+          if (err !== true) {
+            return err;
+          }
+        }
+        return true;
+      }
+      if (colormap.length % 4 !== 0) {
+        return 'Colormap array length must be multiple of 4.';
+      }
       for (let i = 0; i < colormap.length; i += 1) {
-        const err = validateColor(colormap[i]);
-        if (err !== true) {
-          return err;
+        if (!libUtility.isNumber(colormap[i]) || colormap[i] < 0x00 || colormap[i] > 0xFF) {
+          return 'Colormap array must contain numbers between 0 and 255.';
         }
       }
       return true;
     }
-    if (colormap.length % 4 !== 0) {
-      return 'Colormap array length must be multiple of 4.';
-    }
-    for (let i = 0; i < colormap.length; i += 1) {
-      if (!libUtility.isNumber(colormap[i]) || colormap[i] < 0x00 || colormap[i] > 0xFF) {
-        return 'Colormap array must contain numbers between 0 and 255.';
-      }
-    }
-    return true;
+
+    return `Unknown colormap ${colormap}`;
   }
-
-  return `Unknown colormap ${colormap}`;
-}
-
-/**
- * Parses the colormap and returns an array of Uint8Array
- * @param {(string|number[])} colormap either the color map name or an array.
- * Colormap array length must be multiple of 4 and contain numbers between 0 and 255.
- * @returns {Uint8Array} Colormap colors as an array of size [colormapLength * 4]
- */
-export function parseColormap(colormap) {
-  if (libUtility.isString(colormap)) {
-    return parseColor(colormap);
-  }
-
-  if (libUtility.isArray(colormap)) {
-    if (colormap.length === 0) {
-      return null;
-    }
-    if (libUtility.isString(colormap[0])) {
-      const array = [];
-      for (let i = 0; i < colormap.length; i += 1) {
-        const color = parseColor(colormap[i]);
-        if (color) {
-          Array.prototype.push.apply(array, color);
-        } else {
-          return null;
-        }
-      }
-      return new Uint8Array(array);
-    } else if (libUtility.isNumber(colormap[0])) {
-      return new Uint8Array(colormap);
-    }
-  }
-
-  return null;
 }

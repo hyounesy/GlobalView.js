@@ -1,7 +1,7 @@
 const libUtility = require('./utility.js');
 const libGraphics = require('./graphics.js');
 const libShaders = require('./shaders.js');
-const libColormap = require('./colormap.js');
+const Colormap = require('./colormap.js').default;
 const libGlMatrix = require('gl-matrix');
 const Transform = require('./transform').default;
 
@@ -464,9 +464,9 @@ export class PointViewer {
   createPointSet(color, opacity) {
     const pointSet = new PointGroup(this, this.gl, this.globalView);
     if (color) {
-      const validationResult = libColormap.validateColormap(color);
+      const validationResult = Colormap.validateColormap(color);
       if (validationResult === true) {
-        const c = libColormap.parseColormap(color);
+        const c = Colormap.parseColormap(color);
         if (c) {
           pointSet.colormap = libGraphics.LoadTextureFromByteArray(this.gl, c, c.length / 4, 1);
         }
