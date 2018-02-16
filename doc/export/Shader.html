@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: ClusterMapOptions</title>
+    <title>JSDoc: Class: Shader</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: ClusterMapOptions</h1>
+    <h1 class="page-title">Class: Shader</h1>
 
     
 
@@ -28,7 +28,9 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>ClusterMapOptions<span class="signature">(source<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>Shader<span class="signature">(gl, vSh, fSh, debug<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
+        
+            <div class="class-description"><p>A WebGL shader</p></div>
         
     
 </header>
@@ -39,13 +41,13 @@
         
 
     
-
-    
-    <h4 class="name" id="ClusterMapOptions"><span class="type-signature"></span>new ClusterMapOptions<span class="signature">(source<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h2>Constructor</h2>
     
 
     
-    <p class="summary"><p>Options to the computeClusterMap() function</p></p>
+    <h4 class="name" id="Shader"><span class="type-signature"></span>new Shader<span class="signature">(gl, vSh, fSh, debug<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    
+
     
 
 
@@ -85,13 +87,112 @@
 
         <tr>
             
-                <td class="name"><code>source</code></td>
+                <td class="name"><code>gl</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="ClusterMapOptions.html">ClusterMapOptions</a></span>
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>// {WebGLRenderingContext}</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vSh</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+|
+
+<span class="param-type">Array.&lt;string></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>vertex shader code</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fSh</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+|
+
+<span class="param-type">Array.&lt;string></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>fragment shader code</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>debug</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
 
 
             
@@ -111,7 +212,7 @@
 
             
 
-            <td class="description last"><p>If not null, creates a copy of source</p></td>
+            <td class="description last"><p>= false</p></td>
         </tr>
 
     
@@ -191,238 +292,7 @@
     
 
     
-        <h3 class="subsection-title">Members</h3>
 
-        
-            
-<h4 class="name" id="threshold"><span class="type-signature"></span>threshold<span class="type-signature"> :number</span></h4>
-
-
-<p class="summary"><p>Densities below threshold * maximum-density are considered outliers</p></p>
-
-
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">number</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-default">Default Value:</dt>
-    <dd class="tag-default"><ul class="dummy">
-            <li>0.1</li>
-        </ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id=".ClusterMapOptions"><span class="type-signature">(static) </span>ClusterMapOptions<span class="signature">(optionsA, optionsB)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>checks if two ClusterMapOptions objects are similar</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>optionsA</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="ClusterMapOptions.html">ClusterMapOptions</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>first ClusterMapOptions object to compare</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>optionsB</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="ClusterMapOptions.html">ClusterMapOptions</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>second ClusterMapOptions object to compare</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
     
 
     

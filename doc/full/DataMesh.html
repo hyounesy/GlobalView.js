@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: DataVector</title>
+    <title>JSDoc: Class: DataMesh</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: DataVector</h1>
+    <h1 class="page-title">Class: DataMesh</h1>
 
     
 
@@ -28,13 +28,9 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>DataVector<span class="signature">(dataset, source)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>DataMesh<span class="signature">(pointViewer, glCtx, glbuffer, numvertices, ndim, options)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description"><p>A vector of data values inside the dataset.
-The source of a data vector can be either a column in the dataset's data table or a formula.
-The length of the vector is fixed by the dataset.
-The DataVector class doesn't store actual values, it only defines
-functions to read from the dataset.</p></div>
+            <div class="class-description"><p>A renderable WebGL mesh of ndim-dimensional points</p></div>
         
     
 </header>
@@ -49,7 +45,7 @@ functions to read from the dataset.</p></div>
     
 
     
-    <h4 class="name" id="DataVector"><span class="type-signature"></span>new DataVector<span class="signature">(dataset, source)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="DataMesh"><span class="type-signature"></span>new DataMesh<span class="signature">(pointViewer, glCtx, glbuffer, numvertices, ndim, options)</span><span class="type-signature"></span></h4>
     
 
     
@@ -89,13 +85,13 @@ functions to read from the dataset.</p></div>
 
         <tr>
             
-                <td class="name"><code>dataset</code></td>
+                <td class="name"><code>pointViewer</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="Dataset.html">Dataset</a></span>
+<span class="param-type"><a href="PointViewer.html">PointViewer</a></span>
 
 
             
@@ -105,23 +101,20 @@ functions to read from the dataset.</p></div>
 
             
 
-            <td class="description last"><p>The underlying dataset</p></td>
+            <td class="description last"></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>source</code></td>
+                <td class="name"><code>glCtx</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
-|
-
-<span class="param-type">string</span>
+<span class="param-type">Object</span>
 
 
             
@@ -131,7 +124,99 @@ functions to read from the dataset.</p></div>
 
             
 
-            <td class="description last"><p>Either a column index into the dataset, or a formula</p></td>
+            <td class="description last"><p>// {WebGLRenderingContext}</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>glbuffer</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">WebGLBuffer</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>numvertices</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ndim</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
         </tr>
 
     
@@ -172,7 +257,7 @@ functions to read from the dataset.</p></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="dataset.js.html">dataset.js</a>, <a href="dataset.js.html#line18">line 18</a>
+        <a href="pointViewer.js.html">pointViewer.js</a>, <a href="pointViewer.js.html#line11">line 11</a>
     </li></ul></dd>
     
 
@@ -217,6 +302,191 @@ functions to read from the dataset.</p></div>
 
     
 
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="drawIndexed"><span class="type-signature"></span>drawIndexed<span class="signature">(texture, idxbuffer, count)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Renders an indexed buffer</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>texture</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Texture</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>idxbuffer</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>count</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="pointViewer.js.html">pointViewer.js</a>, <a href="pointViewer.js.html#line231">line 231</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
     
 
     

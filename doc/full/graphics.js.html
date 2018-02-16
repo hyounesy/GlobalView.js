@@ -31,237 +31,246 @@
 let currentShader = null;
 /**
  * A WebGL shader
- * @constructor
- * @package
- * @param {Object} gl // {WebGLRenderingContext}
- * @param {string|Array&lt;string>} vSh
- * @param {string|Array&lt;string>} fSh
- * @param {boolean=} debug = false
  */
-export function Shader(gl, vSh, fSh, debug) {
-  let vs = vSh;
-  let fs = fSh;
-  if (libUtility.isArray(vs)) {
-    vs = vs.join('\n');
-  }
-  if (libUtility.isArray(fs)) {
-    fs = fs.join('\n');
-  }
-  if (debug === true) {
-    libUtility.consoleLog(vs);
-    libUtility.consoleLog(fs);
+export class Shader {
+  /**
+   * @constructor
+   * @package
+   * @param {Object} gl // {WebGLRenderingContext}
+   * @param {string|Array&lt;string>} vSh vertex shader code
+   * @param {string|Array&lt;string>} fSh fragment shader code
+   * @param {boolean=} debug = false
+   */
+  constructor(gl, vSh, fSh, debug) {
+    this.gl = gl;
+    this.debug = debug;
+    let vs = vSh;
+    let fs = fSh;
+    if (libUtility.isArray(vs)) {
+      vs = vs.join('\n');
+    }
+    if (libUtility.isArray(fs)) {
+      fs = fs.join('\n');
+    }
+    if (debug === true) {
+      libUtility.consoleLog(vs);
+      libUtility.consoleLog(fs);
+    }
+
+    // Compile vertex shader -> vertexShader
+    this.vertexShader = gl.createShader(gl.VERTEX_SHADER);
+    gl.shaderSource(this.vertexShader, vs);
+    gl.compileShader(this.vertexShader);
+    if (!gl.getShaderParameter(this.vertexShader, gl.COMPILE_STATUS)) {
+      libUtility.consoleLog(vs);
+      libUtility.showAlert(gl.getShaderInfoLog(this.vertexShader));
+      return null;
+    }
+
+    // Compile frament shader -> fragmentShader
+    this.fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(this.fragmentShader, fs);
+    gl.compileShader(this.fragmentShader);
+    if (!gl.getShaderParameter(this.fragmentShader, gl.COMPILE_STATUS)) {
+      libUtility.consoleLog(fs);
+      libUtility.showAlert(gl.getShaderInfoLog(this.fragmentShader));
+      return null;
+    }
+
+    // Link shader program -> this.sdr
+    this.sdr = gl.createProgram();
+    gl.attachShader(this.sdr, this.vertexShader);
+    gl.attachShader(this.sdr, this.fragmentShader);
+    gl.linkProgram(this.sdr);
+    if (!gl.getProgramParameter(this.sdr, gl.LINK_STATUS)) {
+      libUtility.consoleLog(vs);
+      libUtility.consoleLog(fs);
+      libUtility.showAlert(gl.getProgramInfoLog(this.sdr));
+      return null;
+    }
+
+    this.vertexPositionAttribute = gl.getAttribLocation(this.sdr, 'vpos');
+    this.vertexNormalAttribute = gl.getAttribLocation(this.sdr, 'vnml');
+    this.vertexTangentAttribute = gl.getAttribLocation(this.sdr, 'vtng');
+    this.vertexBinormalAttribute = gl.getAttribLocation(this.sdr, 'vbnml');
+    this.VertexTexCoordAttribute = gl.getAttribLocation(this.sdr, 'vtexcoord');
+    this.samplerUniform = gl.getUniformLocation(this.sdr, 'uSampler');
+    this.samplerArrayUniform = gl.getUniformLocation(this.sdr, 'uSamplers');
   }
 
-  // Compile vertex shader -> vertexShader
-  let vertexShader = gl.createShader(gl.VERTEX_SHADER);
-  gl.shaderSource(vertexShader, vs);
-  gl.compileShader(vertexShader);
-  if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
-    libUtility.consoleLog(vs);
-    libUtility.showAlert(gl.getShaderInfoLog(vertexShader));
-    return null;
-  }
-
-  // Compile frament shader -> fragmentShader
-  let fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-  gl.shaderSource(fragmentShader, fs);
-  gl.compileShader(fragmentShader);
-  if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
-    libUtility.consoleLog(fs);
-    libUtility.showAlert(gl.getShaderInfoLog(fragmentShader));
-    return null;
-  }
-
-  // Link shader program -> sdr
-  let sdr = gl.createProgram();
-  gl.attachShader(sdr, vertexShader);
-  gl.attachShader(sdr, fragmentShader);
-  gl.linkProgram(sdr);
-  if (!gl.getProgramParameter(sdr, gl.LINK_STATUS)) {
-    libUtility.consoleLog(vs);
-    libUtility.consoleLog(fs);
-    libUtility.showAlert(gl.getProgramInfoLog(sdr));
-    return null;
-  }
-
-  /* // Print active uniforms
-  var count = gl.getProgramParameter(sdr, gl.ACTIVE_UNIFORMS);
-  for (var i = 0; i &lt; count; i += 1)
-    libUtility.consoleLog(gl.getActiveUniform(sdr, i).name); */
-
-  this.vertexPositionAttribute = gl.getAttribLocation(sdr, 'vpos');
-  this.vertexNormalAttribute = gl.getAttribLocation(sdr, 'vnml');
-  this.vertexTangentAttribute = gl.getAttribLocation(sdr, 'vtng');
-  this.vertexBinormalAttribute = gl.getAttribLocation(sdr, 'vbnml');
-  this.VertexTexCoordAttribute = gl.getAttribLocation(sdr, 'vtexcoord');
-  this.samplerUniform = gl.getUniformLocation(sdr, 'uSampler');
-  this.samplerArrayUniform = gl.getUniformLocation(sdr, 'uSamplers');
-
-  this.bind = function () {
+  bind() {
     if (currentShader !== this) {
       currentShader = this;
-      gl.useProgram(sdr);
+      this.gl.useProgram(this.sdr);
     }
-  };
+  }
 
-  this.u1i = function (uniformString) {
+  u1i(uniformString) {
     this.bind();
-    const uniform = gl.getUniformLocation(sdr, uniformString);
+    const uniform = this.gl.getUniformLocation(this.sdr, uniformString);
     if (uniform) {
       return function (i) {
         this.bind();
-        gl.uniform1i(uniform, i);
-        if (debug) {
+        this.gl.uniform1i(uniform, i);
+        if (this.debug) {
           libUtility.consoleLog('gl.uniform1i({0}, {1})'.format(uniformString, i));
         }
       };
     }
-    return debug ? i =>
+    return this.debug ? i =>
       libUtility.consoleLog(`Passing value  ${i} to unused uniform ${uniformString}`) : null;
-  };
-  this.u1f = function (uniformString) {
+  }
+
+  u1f(uniformString) {
     this.bind();
-    const uniform = gl.getUniformLocation(sdr, uniformString);
+    const uniform = this.gl.getUniformLocation(this.sdr, uniformString);
     if (uniform) {
       return function (f) {
         this.bind();
-        gl.uniform1f(uniform, f);
-        if (debug) {
+        this.gl.uniform1f(uniform, f);
+        if (this.debug) {
           libUtility.consoleLog('gl.uniform1f({0}, {1})'.format(uniformString, f));
         }
       };
     }
-    return debug ? f =>
+    return this.debug ? f =>
       libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
-  };
-  this.u2f = function (uniformString) {
+  }
+
+  u2f(uniformString) {
     this.bind();
-    const uniform = gl.getUniformLocation(sdr, uniformString);
+    const uniform = this.gl.getUniformLocation(this.sdr, uniformString);
     if (uniform) {
       return function (x, y) {
         this.bind();
-        gl.uniform2f(uniform, x, y);
-        if (debug) {
+        this.gl.uniform2f(uniform, x, y);
+        if (this.debug) {
           libUtility.consoleLog('gl.uniform2f({0}, {1}, {2})'.format(uniformString, x, y));
         }
       };
     }
-    return debug ? f =>
+    return this.debug ? f =>
       libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
-  };
-  this.u2x2f = function (uniformString) {
+  }
+
+  u2x2f(uniformString) {
     this.bind();
-    const uniform = gl.getUniformLocation(sdr, uniformString);
+    const uniform = this.gl.getUniformLocation(this.sdr, uniformString);
     if (uniform) {
       return function (m) {
         this.bind();
-        gl.uniformMatrix2fv(uniform, false, m);
-        if (debug) {
+        this.gl.uniformMatrix2fv(uniform, false, m);
+        if (this.debug) {
           libUtility.consoleLog('gl.uniformMatrix2fv({0}, {1})'.format(uniformString, m));
         }
       };
     }
-    return debug ? f =>
+    return this.debug ? f =>
       libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
-  };
-  this.u3f = function (uniformString) {
+  }
+
+  u3f(uniformString) {
     this.bind();
-    const uniform = gl.getUniformLocation(sdr, uniformString);
+    const uniform = this.gl.getUniformLocation(this.sdr, uniformString);
     if (uniform) {
       return function (x, y, z) {
         this.bind();
-        gl.uniform3f(uniform, x, y, z);
-        if (debug) {
+        this.gl.uniform3f(uniform, x, y, z);
+        if (this.debug) {
           libUtility.consoleLog('gl.uniform3f({0}, {1}, {2}, {3})'.format(uniformString, x, y, z));
         }
       };
     }
-    return debug ? f =>
+    return this.debug ? f =>
       libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
-  };
-  this.u4f = function (uniformString) {
+  }
+
+  u4f(uniformString) {
     this.bind();
-    const uniform = gl.getUniformLocation(sdr, uniformString);
+    const uniform = this.gl.getUniformLocation(this.sdr, uniformString);
     if (uniform) {
       return function (x, y, z, w) {
         this.bind();
-        gl.uniform4f(uniform, x, y, z, w);
-        if (debug) {
+        this.gl.uniform4f(uniform, x, y, z, w);
+        if (this.debug) {
           libUtility.consoleLog('gl.uniform4f({0}, {1}, {2}, {3}, {4})'.format(uniformString, x, y, z, w));
         }
       };
     }
-    return debug ? f =>
+    return this.debug ? f =>
       libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
-  };
-  this.u1fv = function (uniformString) {
+  }
+
+  u1fv(uniformString) {
     this.bind();
-    const uniform = gl.getUniformLocation(sdr, uniformString);
+    const uniform = this.gl.getUniformLocation(this.sdr, uniformString);
     if (uniform) {
       return function (v) {
         this.bind();
-        gl.uniform1fv(uniform, v);
-        if (debug) {
+        this.gl.uniform1fv(uniform, v);
+        if (this.debug) {
           libUtility.consoleLog('gl.uniform1fv({0}, {1})'.format(uniformString, v));
         }
       };
     }
-    return debug ? f =>
+    return this.debug ? f =>
       libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
-  };
-  this.u4fv = function (uniformString) {
+  }
+
+  u4fv(uniformString) {
     this.bind();
-    const uniform = gl.getUniformLocation(sdr, uniformString);
+    const uniform = this.gl.getUniformLocation(this.sdr, uniformString);
     if (uniform) {
       return function (v) {
         this.bind();
-        gl.uniform4fv(uniform, v);
-        if (debug) {
+        this.gl.uniform4fv(uniform, v);
+        if (this.debug) {
           libUtility.consoleLog('gl.uniform4fv({0}, {1})'.format(uniformString, v));
         }
       };
     }
-    return debug ? f =>
+    return this.debug ? f =>
       libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
-  };
-  this.u4x4f = function (uniformString) {
+  }
+
+  u4x4f(uniformString) {
     this.bind();
-    const uniform = gl.getUniformLocation(sdr, uniformString);
+    const uniform = this.gl.getUniformLocation(this.sdr, uniformString);
     if (uniform) {
       return function (m) {
         this.bind();
-        gl.uniformMatrix4fv(uniform, false, m);
-        if (debug) {
+        this.gl.uniformMatrix4fv(uniform, false, m);
+        if (this.debug) {
           libUtility.consoleLog('gl.uniformMatrix4fv({0}, {1})'.format(uniformString, m));
         }
       };
     }
-    return debug ? f =>
+    return this.debug ? f =>
       libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
-  };
+  }
 
-  this.getAttribLocation = function (attributeName) {
-    return gl.getAttribLocation(sdr, attributeName);
-  };
+  getAttribLocation(attributeName) {
+    return this.gl.getAttribLocation(this.sdr, attributeName);
+  }
 
-  this.free = function () {
-    if (vertexShader != null || fragmentShader != null || sdr != null) {
-      gl.useProgram(null);
+  free() {
+    if (this.vertexShader != null || this.fragmentShader != null || this.sdr != null) {
+      this.gl.useProgram(null);
     }
 
-    if (vertexShader != null) {
-      gl.deleteShader(vertexShader);
-      vertexShader = null;
+    if (this.vertexShader != null) {
+      this.gl.deleteShader(this.vertexShader);
+      this.vertexShader = null;
     }
-    if (fragmentShader != null) {
-      gl.deleteShader(fragmentShader);
-      fragmentShader = null;
+    if (this.fragmentShader != null) {
+      this.gl.deleteShader(this.fragmentShader);
+      this.fragmentShader = null;
     }
-    if (sdr != null) {
-      gl.deleteProgram(sdr);
-      sdr = null;
+    if (this.sdr != null) {
+      this.gl.deleteProgram(this.sdr);
+      this.sdr = null;
     }
-  };
+  }
 }
 
 export function validateGLSL(gl, code) {
@@ -277,214 +286,252 @@ export function validateGLSL(gl, code) {
   return true;
 }
 
-
 /**
  * A renderable WebGL mesh
- * @constructor
- * @package
- * @param {Object} _gl // {WebGLRenderingContext}
- * @param {Float32Array} positions
- * @param {Float32Array=} normals
- * @param {Float32Array=} tangents
- * @param {Float32Array=} binormals
- * @param {Float32Array=} texcoords
- * @param {Uint16Array=} indices
- * @param {number=} _primitivetype = gl.TRIANGLE_STRIP
- * @param {number=} _ndim = 3
  */
-export function Mesh(
-  _gl,
-  positions, normals, tangents, binormals,
-  texcoords, indices, _primitivetype, _ndim,
-) {
-  const gl = _gl;
-  let posbuffer;
-  let nmlbuffer;
-  let tgtbuffer;
-  let bnmbuffer;
-  let texcoordbuffer;
-  let idxbuffer;
-  let primitivetype;
-  let numvertices;
-  let numindices;
-  let ndim;
-
-  this.reset = function (
-    _positions,
-    _normals, _tangents, _binormals, _texcoords,
-    _indices, __primitivetype, __ndim,
+export class Mesh {
+  /**
+   * @constructor
+   * @package
+   * @param {Object} gl // {WebGLRenderingContext}
+   * @param {Float32Array} positions
+   * @param {Float32Array=} normals
+   * @param {Float32Array=} tangents
+   * @param {Float32Array=} binormals
+   * @param {Float32Array=} texcoords
+   * @param {Uint16Array=} indices
+   * @param {number=} primitivetype = gl.TRIANGLE_STRIP
+   * @param {number=} nDim = 3
+   */
+  constructor(
+    gl,
+    positions, normals, tangents, binormals,
+    texcoords, indices, primitiveType, nDim,
   ) {
-    ndim = __ndim || 3;
-    primitivetype = __primitivetype;
-    numvertices = Math.floor(_positions.length / ndim);
-    numindices = 0;
+    this.gl = gl;
+    /** Position buffer */
+    this.posBuffer = null;
+    /** Normals buffer */
+    this.normalsBuffer = null;
+    /** Tangents buffer */
+    this.tangentsBuffer = null;
+    /** Binormals buffer */
+    this.binormalsBuffer = null;
+    /** Texture coordinates buffer */
+    this.texCoordBuffer = null;
+    /** Indices buffer */
+    this.indicesBuffer = null;
+    this.primitiveType = null;
+    this.numVertices = 0;
+    this.numIndices = 0;
+    this.nDim = 0;
 
-    if (!posbuffer) {
-      posbuffer = gl.createBuffer();
+    if (positions) { // Mesh vertex positions array can't be null
+      this.reset(
+        positions, normals, tangents, binormals,
+        texcoords, indices, primitiveType, nDim,
+      );
     }
-    gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, _positions, gl.STATIC_DRAW);
-    if (_normals) {
-      if (!nmlbuffer) {
-        nmlbuffer = gl.createBuffer();
-      }
-      gl.bindBuffer(gl.ARRAY_BUFFER, nmlbuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, _normals, gl.STATIC_DRAW);
-    } else if (!nmlbuffer) {
-      gl.deleteBuffer(nmlbuffer);
-    }
-    if (_tangents) {
-      if (!tgtbuffer) {
-        tgtbuffer = gl.createBuffer();
-      }
-      gl.bindBuffer(gl.ARRAY_BUFFER, tgtbuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, _tangents, gl.STATIC_DRAW);
-    } else if (!tgtbuffer) {
-      gl.deleteBuffer(tgtbuffer);
-    }
-    if (_binormals) {
-      if (!bnmbuffer) {
-        bnmbuffer = gl.createBuffer();
-      }
-      gl.bindBuffer(gl.ARRAY_BUFFER, bnmbuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, _binormals, gl.STATIC_DRAW);
-    } else if (!bnmbuffer) {
-      gl.deleteBuffer(bnmbuffer);
-    }
-    if (_texcoords) {
-      if (!texcoordbuffer) {
-        texcoordbuffer = gl.createBuffer();
-      }
-      gl.bindBuffer(gl.ARRAY_BUFFER, texcoordbuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, _texcoords, gl.STATIC_DRAW);
-    } else if (!texcoordbuffer) {
-      gl.deleteBuffer(texcoordbuffer);
-    }
-    if (_indices) {
-      if (!idxbuffer) {
-        idxbuffer = gl.createBuffer();
-      }
-      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxbuffer);
-      gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, _indices, gl.STATIC_DRAW);
-      numindices = _indices.length;
-      if (typeof primitivetype === 'undefined') {
-        primitivetype = gl.TRIANGLES;
-      } // Default primitive type for indexed geometry is TRIANGLES
-    } else {
-      if (!idxbuffer) {
-        gl.deleteBuffer(idxbuffer);
-      }
-      if (typeof primitivetype === 'undefined') {
-        primitivetype = gl.TRIANGLE_STRIP;
-      } // Default primitive type for non-indexed geometry is TRIANGLE_STRIP
-    }
-  };
-  if (positions) { // Mesh vertex positions array can't be null
-    this.reset(positions, normals, tangents, binormals, texcoords, indices, _primitivetype, _ndim);
   }
 
-  this.bind = function (sdr, texture) {
-    if (!posbuffer) { // Mesh without vertex positions can't be rendered
+  /**
+   * @param {Float32Array} positions
+   * @param {Float32Array=} normals
+   * @param {Float32Array=} tangents
+   * @param {Float32Array=} binormals
+   * @param {Float32Array=} texcoords
+   * @param {Uint16Array=} indices
+   * @param {number=} primitivetype = gl.TRIANGLE_STRIP
+   * @param {number=} nDim = 3
+   */
+  reset(
+    positions,
+    normals, tangents, binormals, texcoords,
+    indices, primitiveType, nDim,
+  ) {
+    this.nDim = nDim || 3;
+    this.primitiveType = primitiveType;
+    this.numVertices = Math.floor(positions.length / this.nDim);
+    this.numIndices = 0;
+
+    if (!this.posBuffer) {
+      this.posBuffer = this.gl.createBuffer();
+    }
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.posBuffer);
+    this.gl.bufferData(this.gl.ARRAY_BUFFER, positions, this.gl.STATIC_DRAW);
+    if (normals) {
+      if (!this.normalsBuffer) {
+        this.normalsBuffer = this.gl.createBuffer();
+      }
+      this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.normalsBuffer);
+      this.gl.bufferData(this.gl.ARRAY_BUFFER, normals, this.gl.STATIC_DRAW);
+    } else if (!this.normalsBuffer) {
+      this.gl.deleteBuffer(this.normalsBuffer);
+    }
+    if (tangents) {
+      if (!this.tangentsBuffer) {
+        this.tangentsBuffer = this.gl.createBuffer();
+      }
+      this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.tangentsBuffer);
+      this.gl.bufferData(this.gl.ARRAY_BUFFER, tangents, this.gl.STATIC_DRAW);
+    } else if (!this.tangentsBuffer) {
+      this.gl.deleteBuffer(this.tangentsBuffer);
+    }
+    if (binormals) {
+      if (!this.binormalsBuffer) {
+        this.binormalsBuffer = this.gl.createBuffer();
+      }
+      this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.binormalsBuffer);
+      this.gl.bufferData(this.gl.ARRAY_BUFFER, binormals, this.gl.STATIC_DRAW);
+    } else if (!this.binormalsBuffer) {
+      this.gl.deleteBuffer(this.binormalsBuffer);
+    }
+    if (texcoords) {
+      if (!this.texCoordBuffer) {
+        this.texCoordBuffer = this.gl.createBuffer();
+      }
+      this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.texCoordBuffer);
+      this.gl.bufferData(this.gl.ARRAY_BUFFER, texcoords, this.gl.STATIC_DRAW);
+    } else if (!this.texCoordBuffer) {
+      this.gl.deleteBuffer(this.texCoordBuffer);
+    }
+    if (indices) {
+      if (!this.indicesBuffer) {
+        this.indicesBuffer = this.gl.createBuffer();
+      }
+      this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
+      this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, indices, this.gl.STATIC_DRAW);
+      this.numIndices = indices.length;
+      if (typeof this.primitiveType === 'undefined') {
+        this.primitiveType = this.gl.TRIANGLES;
+      } // Default primitive type for indexed geometry is TRIANGLES
+    } else {
+      if (!this.indicesBuffer) {
+        this.gl.deleteBuffer(this.indicesBuffer);
+      }
+      if (typeof this.primitiveType === 'undefined') {
+        this.primitiveType = this.gl.TRIANGLE_STRIP;
+      } // Default primitive type for non-indexed geometry is TRIANGLE_STRIP
+    }
+  }
+
+  /**
+   * Bind the parameters to gl buffers
+   * @param {Shader} sdr shader object
+   * @param {Texture} texture texture object
+   */
+  bind(sdr, texture) {
+    if (!this.posBuffer) { // Mesh without vertex positions can't be rendered
       return;
     }
 
     sdr.bind();
 
     for (let i = 0; i &lt; 16; i += 1) {
-      gl.disableVertexAttribArray(i);
-      if (gl.ext) {
-        gl.ext.vertexAttribDivisorANGLE(i, 0);
+      this.gl.disableVertexAttribArray(i);
+      if (this.gl.ext) {
+        this.gl.ext.vertexAttribDivisorANGLE(i, 0);
       }
     }
 
-    gl.enableVertexAttribArray(sdr.vertexPositionAttribute);
-    gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
-    gl.vertexAttribPointer(sdr.vertexPositionAttribute, ndim, gl.FLOAT, false, 0, 0);
-    if (nmlbuffer &amp;&amp; sdr.vertexNormalAttribute !== -1) {
-      gl.enableVertexAttribArray(sdr.vertexNormalAttribute);
-      gl.bindBuffer(gl.ARRAY_BUFFER, nmlbuffer);
-      gl.vertexAttribPointer(sdr.vertexNormalAttribute, ndim, gl.FLOAT, false, 0, 0);
+    this.gl.enableVertexAttribArray(sdr.vertexPositionAttribute);
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.posBuffer);
+    this.gl.vertexAttribPointer(sdr.vertexPositionAttribute, this.nDim, this.gl.FLOAT, false, 0, 0);
+    if (this.normalsBuffer &amp;&amp; sdr.vertexNormalAttribute !== -1) {
+      this.gl.enableVertexAttribArray(sdr.vertexNormalAttribute);
+      this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.normalsBuffer);
+      this.gl.vertexAttribPointer(sdr.vertexNormalAttribute, this.nDim, this.gl.FLOAT, false, 0, 0);
     }
-    if (tgtbuffer &amp;&amp; sdr.vertexTangentAttribute !== -1) {
-      gl.enableVertexAttribArray(sdr.vertexTangentAttribute);
-      gl.bindBuffer(gl.ARRAY_BUFFER, tgtbuffer);
-      gl.vertexAttribPointer(sdr.vertexTangentAttribute, ndim, gl.FLOAT, false, 0, 0);
+    if (this.tangentsBuffer &amp;&amp; sdr.vertexTangentAttribute !== -1) {
+      this.gl.enableVertexAttribArray(sdr.vertexTangentAttribute);
+      this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.tangentsBuffer);
+      this.gl.vertexAttribPointer(
+        sdr.vertexTangentAttribute,
+        this.nDim, this.gl.FLOAT, false, 0, 0,
+      );
     }
-    if (bnmbuffer &amp;&amp; sdr.vertexBinormalAttribute !== -1) {
-      gl.enableVertexAttribArray(sdr.vertexBinormalAttribute);
-      gl.bindBuffer(gl.ARRAY_BUFFER, bnmbuffer);
-      gl.vertexAttribPointer(sdr.vertexBinormalAttribute, ndim, gl.FLOAT, false, 0, 0);
+    if (this.binormalsBuffer &amp;&amp; sdr.vertexBinormalAttribute !== -1) {
+      this.gl.enableVertexAttribArray(sdr.vertexBinormalAttribute);
+      this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.binormalsBuffer);
+      this.gl.vertexAttribPointer(
+        sdr.vertexBinormalAttribute,
+        this.nDim, this.gl.FLOAT, false, 0, 0,
+      );
     }
-    if (texcoordbuffer &amp;&amp; sdr.VertexTexCoordAttribute !== -1) {
-      gl.enableVertexAttribArray(sdr.VertexTexCoordAttribute);
-      gl.bindBuffer(gl.ARRAY_BUFFER, texcoordbuffer);
-      gl.vertexAttribPointer(sdr.VertexTexCoordAttribute, 2, gl.FLOAT, false, 0, 0);
+
+    if (this.texCoordBuffer &amp;&amp; sdr.VertexTexCoordAttribute !== -1) {
+      this.gl.enableVertexAttribArray(sdr.VertexTexCoordAttribute);
+      this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.texCoordBuffer);
+      this.gl.vertexAttribPointer(sdr.VertexTexCoordAttribute, 2, this.gl.FLOAT, false, 0, 0);
     }
+
     if (texture) {
       if (libUtility.isArray(texture)) {
         if (sdr.samplerArrayUniform) {
           const idxarray = new Array(texture.length);
           for (let i = 0; i &lt; texture.length; i += 1) {
-            gl.activeTexture(gl.TEXTURE0 + i);
-            gl.bindTexture(gl.TEXTURE_2D, texture[i]);
+            this.gl.activeTexture(this.gl.TEXTURE0 + i);
+            this.gl.bindTexture(this.gl.TEXTURE_2D, texture[i]);
             idxarray[i] = i;
           }
-          gl.uniform1iv(sdr.samplerArrayUniform, idxarray);
+          this.gl.uniform1iv(sdr.samplerArrayUniform, idxarray);
         }
       } else {
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, texture);
+        this.gl.activeTexture(this.gl.TEXTURE0);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
         if (sdr.samplerUniform) {
-          gl.uniform1i(sdr.samplerUniform, 0);
+          this.gl.uniform1i(sdr.samplerUniform, 0);
         }
         if (sdr.samplerArrayUniform) {
-          gl.uniform1iv(sdr.samplerArrayUniform, [0]);
+          this.gl.uniform1iv(sdr.samplerArrayUniform, [0]);
         }
       }
     }
-    if (idxbuffer) {
-      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxbuffer);
+    if (this.indicesBuffer) {
+      this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
     }
-  };
+  }
 
-  this.draw = function () {
-    if (!posbuffer) { // Mesh without vertex positions can't be rendered
+  /** Renders the mesh */
+  draw() {
+    if (!this.posBuffer) { // Mesh without vertex positions can't be rendered
       return;
     }
 
-    if (idxbuffer) {
-      gl.drawElements(primitivetype, numindices, gl.UNSIGNED_SHORT, 0);
+    if (this.indicesBuffer) {
+      this.gl.drawElements(this.primitiveType, this.numIndices, this.gl.UNSIGNED_SHORT, 0);
     } else {
-      gl.drawArrays(primitivetype, 0, numvertices);
+      this.gl.drawArrays(this.primitiveType, 0, this.numVertices);
     }
-  };
+  }
 
-  this.free = function () {
-    if (posbuffer) {
-      gl.deleteBuffer(posbuffer);
-      posbuffer = null;
+  /** Free up the buffers */
+  free() {
+    if (this.posBuffer) {
+      this.gl.deleteBuffer(this.posBuffer);
+      this.posBuffer = null;
     }
-    if (nmlbuffer) {
-      gl.deleteBuffer(posbuffer);
-      posbuffer = null;
+    if (this.normalsBuffer) {
+      this.gl.deleteBuffer(this.posBuffer);
+      this.posBuffer = null;
     }
-    if (tgtbuffer) {
-      gl.deleteBuffer(posbuffer);
-      posbuffer = null;
+    if (this.tangentsBuffer) {
+      this.gl.deleteBuffer(this.posBuffer);
+      this.posBuffer = null;
     }
-    if (bnmbuffer) {
-      gl.deleteBuffer(posbuffer);
-      posbuffer = null;
+    if (this.binormalsBuffer) {
+      this.gl.deleteBuffer(this.posBuffer);
+      this.posBuffer = null;
     }
-    if (texcoordbuffer) {
-      gl.deleteBuffer(posbuffer);
-      posbuffer = null;
+    if (this.texCoordBuffer) {
+      this.gl.deleteBuffer(this.posBuffer);
+      this.posBuffer = null;
     }
-    if (idxbuffer) {
-      gl.deleteBuffer(posbuffer);
-      posbuffer = null;
+    if (this.indicesBuffer) {
+      this.gl.deleteBuffer(this.posBuffer);
+      this.posBuffer = null;
     }
-  };
+  }
 }
 
 
@@ -505,6 +552,7 @@ function handleLoadedTexture(gl, texture, onload) {
     onload(texture);
   }
 }
+
 export function LoadTexture(gl, filename, onload) {
   const texture = gl.createTexture();
   texture.image = new Image();
@@ -514,12 +562,14 @@ export function LoadTexture(gl, filename, onload) {
   texture.image.src = filename;
   return texture;
 }
+
 export function LoadTextureFromImage(gl, image) {
   const texture = gl.createTexture();
   texture.image = image;
   handleLoadedTexture(gl, texture, null);
   return texture;
 }
+
 export function LoadTextureFromByteArray(gl, array, width, height) {
   const texture = gl.createTexture();
   texture.byteArray = array;
@@ -533,6 +583,7 @@ export function LoadTextureFromByteArray(gl, array, width, height) {
   gl.bindTexture(gl.TEXTURE_2D, null);
   return texture;
 }
+
 export function LoadTextureFromFloatArray(gl, array, width, height) {
   if (gl.getExtension('OES_texture_float') === null) {
     libUtility.consoleWarn("GlobalView warning: The browser doesn't support floatingpoint textures");
@@ -560,13 +611,13 @@ export function LoadTextureFromFloatArray(gl, array, width, height) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClusterMap.html">ClusterMap</a></li><li><a href="ClusterMapOptions.html">ClusterMapOptions</a></li><li><a href="Colormap.html">Colormap</a></li><li><a href="CoordinateSystem.html">CoordinateSystem</a></li><li><a href="CsvDataset.html">CsvDataset</a></li><li><a href="Dataset.html">Dataset</a></li><li><a href="DataVector.html">DataVector</a></li><li><a href="DensityMap.html">DensityMap</a></li><li><a href="DensityMapOptions.html">DensityMapOptions</a></li><li><a href="DensityViewer.html">DensityViewer</a></li><li><a href="ForwardList.html">ForwardList</a></li><li><a href="GlobalView.html">GlobalView</a></li><li><a href="GlobalView-Transform.html">Transform</a></li><li><a href="HashSet.html">HashSet</a></li><li><a href="HistogramViewer.html">HistogramViewer</a></li><li><a href="ImageViewer.html">ImageViewer</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="PointViewer.html">PointViewer</a></li><li><a href="PointViewer-DataMesh.html">DataMesh</a></li><li><a href="PointViewer-PointGroup.html">PointGroup</a></li><li><a href="PriorityQueue.html">PriorityQueue</a></li><li><a href="RandomDataset.html">RandomDataset</a></li><li><a href="Shader.html">Shader</a></li><li><a href="Thumbnail.html">Thumbnail</a></li></ul><h3>Namespaces</h3><ul><li><a href="Shaders.html">Shaders</a></li></ul><h3>Interfaces</h3><ul><li><a href="Viewer.html">Viewer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#computeClusterMap">computeClusterMap</a></li><li><a href="global.html#computeDensityMap">computeDensityMap</a></li><li><a href="global.html#computeDensityMapND">computeDensityMapND</a></li><li><a href="global.html#computeHistogram">computeHistogram</a></li><li><a href="global.html#computeHistogram2D">computeHistogram2D</a></li><li><a href="global.html#CSV_DATASET_OPTIONS">CSV_DATASET_OPTIONS</a></li><li><a href="global.html#downloadDensityMap">downloadDensityMap</a></li><li><a href="global.html#downloadStencilMap">downloadStencilMap</a></li><li><a href="global.html#findClosePointOfLowDensity">findClosePointOfLowDensity</a></li><li><a href="global.html#findClosePointOfLowDensityDescend">findClosePointOfLowDensityDescend</a></li><li><a href="global.html#findClosePointOfLowDensityNDDescend">findClosePointOfLowDensityNDDescend</a></li><li><a href="global.html#findRepresentativePoints">findRepresentativePoints</a></li><li><a href="global.html#findRepresentativePoints2">findRepresentativePoints2</a></li><li><a href="global.html#findRepresentativePointsND">findRepresentativePointsND</a></li><li><a href="global.html#findRepresentativePointsND2">findRepresentativePointsND2</a></li><li><a href="global.html#generateColumnName">generateColumnName</a></li><li><a href="global.html#linesIntersect">linesIntersect</a></li><li><a href="global.html#markPointsInStencilMap">markPointsInStencilMap</a></li><li><a href="global.html#parseColor">parseColor</a></li><li><a href="global.html#parseColormap">parseColormap</a></li><li><a href="global.html#pointInsidePolygon">pointInsidePolygon</a></li><li><a href="global.html#sampleDensityMap">sampleDensityMap</a></li><li><a href="global.html#sampleDensityMapChain">sampleDensityMapChain</a></li><li><a href="global.html#sampleDensityMapColumn">sampleDensityMapColumn</a></li><li><a href="global.html#sampleDensityMapRow">sampleDensityMapRow</a></li><li><a href="global.html#validateColor">validateColor</a></li><li><a href="global.html#validateColormap">validateColormap</a></li><li><a href="global.html#vectorLineIntersection2D">vectorLineIntersection2D</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClusterMap.html">ClusterMap</a></li><li><a href="ClusterMapOptions.html">ClusterMapOptions</a></li><li><a href="CoordinateSystem.html">CoordinateSystem</a></li><li><a href="CsvDataset.html">CsvDataset</a></li><li><a href="DataMesh.html">DataMesh</a></li><li><a href="Dataset.html">Dataset</a></li><li><a href="DataVector.html">DataVector</a></li><li><a href="DensityMap.html">DensityMap</a></li><li><a href="DensityMapOptions.html">DensityMapOptions</a></li><li><a href="DensityViewer.html">DensityViewer</a></li><li><a href="ForwardList.html">ForwardList</a></li><li><a href="GlobalView.html">GlobalView</a></li><li><a href="HashSet.html">HashSet</a></li><li><a href="HistogramViewer.html">HistogramViewer</a></li><li><a href="ImageViewer.html">ImageViewer</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="module.exports.html">exports</a></li><li><a href="PointGroup.html">PointGroup</a></li><li><a href="PointViewer.html">PointViewer</a></li><li><a href="PriorityQueue.html">PriorityQueue</a></li><li><a href="RandomDataset.html">RandomDataset</a></li><li><a href="Shader.html">Shader</a></li><li><a href="TextRenderContext_TextRenderContext.html">TextRenderContext</a></li><li><a href="Thumbnail.html">Thumbnail</a></li></ul><h3>Namespaces</h3><ul><li><a href="Shaders.html">Shaders</a></li></ul><h3>Interfaces</h3><ul><li><a href="Viewer.html">Viewer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#computeClusterMap">computeClusterMap</a></li><li><a href="global.html#computeDensityMap">computeDensityMap</a></li><li><a href="global.html#computeDensityMapND">computeDensityMapND</a></li><li><a href="global.html#computeHistogram">computeHistogram</a></li><li><a href="global.html#computeHistogram2D">computeHistogram2D</a></li><li><a href="global.html#CSV_DATASET_OPTIONS">CSV_DATASET_OPTIONS</a></li><li><a href="global.html#downloadDensityMap">downloadDensityMap</a></li><li><a href="global.html#downloadStencilMap">downloadStencilMap</a></li><li><a href="global.html#findClosePointOfLowDensity">findClosePointOfLowDensity</a></li><li><a href="global.html#findClosePointOfLowDensityDescend">findClosePointOfLowDensityDescend</a></li><li><a href="global.html#findClosePointOfLowDensityNDDescend">findClosePointOfLowDensityNDDescend</a></li><li><a href="global.html#findRepresentativePoints">findRepresentativePoints</a></li><li><a href="global.html#findRepresentativePoints2">findRepresentativePoints2</a></li><li><a href="global.html#findRepresentativePointsND">findRepresentativePointsND</a></li><li><a href="global.html#findRepresentativePointsND2">findRepresentativePointsND2</a></li><li><a href="global.html#getTexture">getTexture</a></li><li><a href="global.html#getWidth">getWidth</a></li><li><a href="global.html#linesIntersect">linesIntersect</a></li><li><a href="global.html#markPointsInStencilMap">markPointsInStencilMap</a></li><li><a href="global.html#onPlotBoundsChanged">onPlotBoundsChanged</a></li><li><a href="global.html#parseColor">parseColor</a></li><li><a href="global.html#parseColormap">parseColormap</a></li><li><a href="global.html#pointInsidePolygon">pointInsidePolygon</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#sampleDensityMap">sampleDensityMap</a></li><li><a href="global.html#sampleDensityMapChain">sampleDensityMapChain</a></li><li><a href="global.html#sampleDensityMapColumn">sampleDensityMapColumn</a></li><li><a href="global.html#sampleDensityMapRow">sampleDensityMapRow</a></li><li><a href="global.html#setEnumRange">setEnumRange</a></li><li><a href="global.html#setLabel">setLabel</a></li><li><a href="global.html#setNumericRange">setNumericRange</a></li><li><a href="global.html#validateColor">validateColor</a></li><li><a href="global.html#validateColormap">validateColormap</a></li><li><a href="global.html#vectorLineIntersection2D">vectorLineIntersection2D</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Feb 13 2018 14:48:02 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Feb 16 2018 15:30:43 GMT-0800 (PST)
 </footer>
 
 <script> prettyPrint(); </script>

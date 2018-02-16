@@ -29,107 +29,109 @@
             <pre class="prettyprint source linenums"><code>const libGraphics = require('./graphics.js');
 const libShaders = require('./shaders.js');
 const libAlgorithm = require('./algorithm.js');
-const libColormap = require('./colormap.js');
+const Colormap = require('./colormap.js').default;
 const libGlMatrix = require('gl-matrix');
 // const libUtility = require('./utility.js');
 
 /**
  * A class drawing histograms for x-, y- and color axes to
  * the left-, bottom- and right of the scatter plot.
- * @constructor
- * @package
- * @implements {Viewer}
- * @param {Object} gl // {WebGLRenderingContext}
- * @param {Object} globalView // {GlobalView}
  */
-// eslint-disable-next-line import/prefer-default-export, no-unused-vars
-export function HistogramViewer(gl, globalView) {
-  const sdrLine =
-    new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
-  sdrLine.color = sdrLine.u4f('color');
-  sdrLine.color(...gl.foreColor);
-  sdrLine.matWorldViewProj = sdrLine.u4x4f('matWorldViewProj');
+export class HistogramViewer { // eslint-disable-line import/prefer-default-export, no-unused-vars
+  /**
+   * @constructor
+   * @package
+   * @implements {Viewer}
+   * @param {Object} gl // {WebGLRenderingContext}
+   */
+  constructor(gl) {
+    this.gl = gl;
+    this.sdrLine =
+      new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
+    this.sdrLine.color = this.sdrLine.u4f('color');
+    this.sdrLine.color(...gl.foreColor);
+    this.sdrLine.matWorldViewProj = this.sdrLine.u4x4f('matWorldViewProj');
 
-  /* this.updateColorSchema = function() {
-    sdrLine.color.apply(sdrLine, gl.foreColor);
-  } */
+    // Create a 2D line mesh
+    this.meshLine = new libGraphics.Mesh(gl, new Float32Array([
+      // Positions
+      0, 0, 0,
+      1, 0, 0,
+    ]), null, null, null, null, null, gl.LINES);
 
-  // Create a 2D line mesh
-  const meshLine = new libGraphics.Mesh(gl, new Float32Array([
-    // Positions
-    0, 0, 0,
-    1, 0, 0,
-  ]), null, null, null, null, null, gl.LINES);
+    this.dataset = null;
+    this.activeInputs = null;
+    this.options = {};
+    this.axes = [
+      {
+        histogram: null,
+        d: -1,
+        meshHistogram: new libGraphics.Mesh(
+          gl,
+          new Float32Array(0), null, null, null, null, null, gl.TRIANGLES,
+        ),
+        meshLineHistogram: new libGraphics.Mesh(
+          gl,
+          new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP,
+        ),
+      },
+      {
+        histogram: null,
+        d: -1,
+        meshHistogram: new libGraphics.Mesh(
+          gl,
+          new Float32Array(0), null, null, null, null, null, gl.TRIANGLES,
+        ),
+        meshLineHistogram: new libGraphics.Mesh(
+          gl,
+          new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP,
+        ),
+      },
+      {
+        histogram: null,
+        d: -1,
+        meshHistogram: new libGraphics.Mesh(
+          gl,
+          new Float32Array(0), null, null, null, null, null, gl.TRIANGLES,
+        ),
+        meshLineHistogram: new libGraphics.Mesh(
+          gl,
+          new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP,
+        ),
+      },
+    ];
+  }
 
-  let dataset = null;
-  let activeInputs = null;
-  let options = {};
-  const axes = [
-    {
-      histogram: null,
-      d: -1,
-      meshHistogram: new libGraphics.Mesh(
-        gl,
-        new Float32Array(0), null, null, null, null, null, gl.TRIANGLES,
-      ),
-      meshLineHistogram: new libGraphics.Mesh(
-        gl,
-        new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP,
-      ),
-    },
-    {
-      histogram: null,
-      d: -1,
-      meshHistogram: new libGraphics.Mesh(
-        gl,
-        new Float32Array(0), null, null, null, null, null, gl.TRIANGLES,
-      ),
-      meshLineHistogram: new libGraphics.Mesh(
-        gl,
-        new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP,
-      ),
-    },
-    {
-      histogram: null,
-      d: -1,
-      meshHistogram: new libGraphics.Mesh(
-        gl,
-        new Float32Array(0), null, null, null, null, null, gl.TRIANGLES,
-      ),
-      meshLineHistogram: new libGraphics.Mesh(
-        gl,
-        new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP,
-      ),
-    },
-  ];
-
-  this.render = function (flipY, tf, plotBounds) {
+  render(flipY, tf, plotBounds) {
     const mattrans = libGlMatrix.mat4.create();
 
     const pos = libGlMatrix.vec3.create();
     const scl = libGlMatrix.vec3.create();
     tf.datasetCoordToDeviceCoord(pos, [
-      axes[0].histogram ? axes[0].histogram.invTransformX(0) : 0.0,
-      axes[1].histogram ? axes[1].histogram.invTransformX(0) : 0.0,
-      axes[2].histogram ? axes[2].histogram.invTransformX(0) : 0.0]);
+      this.axes[0].histogram ? this.axes[0].histogram.invTransformX(0) : 0.0,
+      this.axes[1].histogram ? this.axes[1].histogram.invTransformX(0) : 0.0,
+      this.axes[2].histogram ? this.axes[2].histogram.invTransformX(0) : 0.0]);
     tf.datasetDistToDeviceDist(scl, [
-      axes[0].histogram ? axes[0].histogram.width / axes[0].histogram.transform[0] : 1.0,
-      axes[1].histogram ? axes[1].histogram.width / axes[1].histogram.transform[0] : 1.0,
-      axes[2].histogram ? axes[2].histogram.width / axes[2].histogram.transform[0] : 1.0]);
+      this.axes[0].histogram ?
+        this.axes[0].histogram.width / this.axes[0].histogram.transform[0] : 1.0,
+      this.axes[1].histogram ?
+        this.axes[1].histogram.width / this.axes[1].histogram.transform[0] : 1.0,
+      this.axes[2].histogram ?
+        this.axes[2].histogram.width / this.axes[2].histogram.transform[0] : 1.0]);
 
     // Transform color-dimension from [0 ... 1] to
     // [plotBounds.y .. plotBounds.y + plotBounds.height] in device y-space -> pos[2], scl[2]
-    pos[2] = (((plotBounds.y + (plotBounds.height * pos[2])) * 2) / gl.height) - 1;
-    scl[2] = ((plotBounds.height * scl[2]) * 2) / gl.height;
+    pos[2] = (((plotBounds.y + (plotBounds.height * pos[2])) * 2) / this.gl.height) - 1;
+    scl[2] = ((plotBounds.height * scl[2]) * 2) / this.gl.height;
 
     // Draw x-axis histogram
-    if (options.showXAxisHistogram &amp;&amp; axes[0].histogram) {
-      const axis = axes[0];
-      gl.enable(gl.SCISSOR_TEST);
-      gl.scissor(plotBounds.x, 0.0, plotBounds.width, gl.height);
+    if (this.options.showXAxisHistogram &amp;&amp; this.axes[0].histogram) {
+      const axis = this.axes[0];
+      this.gl.enable(this.gl.SCISSOR_TEST);
+      this.gl.scissor(plotBounds.x, 0.0, plotBounds.width, this.gl.height);
 
-      sdrLine.bind();
-      meshLine.bind(sdrLine, null);
+      this.sdrLine.bind();
+      this.meshLine.bind(this.sdrLine, null);
       libGlMatrix.mat4.identity(mattrans);
       if (flipY === true) {
         libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
@@ -137,12 +139,12 @@ export function HistogramViewer(gl, globalView) {
       libGlMatrix.mat4.translate(
         mattrans,
         mattrans,
-        [((2 * (plotBounds.x + 0.5)) / gl.width) - 1,
-          ((2 * ((plotBounds.y + 0.5) - 64)) / gl.height) - 1, 0],
+        [((2 * (plotBounds.x + 0.5)) / this.gl.width) - 1,
+          ((2 * ((plotBounds.y + 0.5) - 64)) / this.gl.height) - 1, 0],
       ); // 0.5 ... center inside pixel
-      libGlMatrix.mat4.scale(mattrans, mattrans, [(2 * plotBounds.width) / gl.width, 1, 1]);
-      sdrLine.matWorldViewProj(mattrans);
-      meshLine.draw();
+      libGlMatrix.mat4.scale(mattrans, mattrans, [(2 * plotBounds.width) / this.gl.width, 1, 1]);
+      this.sdrLine.matWorldViewProj(mattrans);
+      this.meshLine.draw();
 
       libGlMatrix.mat4.identity(mattrans);
       if (flipY === true) {
@@ -150,47 +152,48 @@ export function HistogramViewer(gl, globalView) {
       }
       libGlMatrix.mat4.translate(
         mattrans, mattrans,
-        [pos[0] + ((0.5 * 2) / gl.width),
-          ((2 * (plotBounds.y + 0.5)) / gl.height) - 1, 0.0],
+        [pos[0] + ((0.5 * 2) / this.gl.width),
+          ((2 * (plotBounds.y + 0.5)) / this.gl.height) - 1, 0.0],
       ); // 0.5 ... center inside pixel
-      libGlMatrix.mat4.scale(mattrans, mattrans, [scl[0], (-64 * 2) / gl.height, 1.0]);
+      libGlMatrix.mat4.scale(mattrans, mattrans, [scl[0], (-64 * 2) / this.gl.height, 1.0]);
 
-      sdrLine.bind();
-      sdrLine.matWorldViewProj(mattrans);
-      sdrLine.color.apply(sdrLine, [gl.foreColor[0], gl.foreColor[1], gl.foreColor[2], 0.5]);
-      axis.meshHistogram.bind(sdrLine, null);
+      this.sdrLine.bind();
+      this.sdrLine.matWorldViewProj(mattrans);
+      this.sdrLine.color.apply(this.sdrLine, [
+        this.gl.foreColor[0], this.gl.foreColor[1], this.gl.foreColor[2], 0.5]);
+      axis.meshHistogram.bind(this.sdrLine, null);
       axis.meshHistogram.draw();
 
-      sdrLine.color(...gl.foreColor);
-      axis.meshLineHistogram.bind(sdrLine, null);
+      this.sdrLine.color(...this.gl.foreColor);
+      axis.meshLineHistogram.bind(this.sdrLine, null);
       axis.meshLineHistogram.draw();
 
-      gl.disable(gl.SCISSOR_TEST);
+      this.gl.disable(this.gl.SCISSOR_TEST);
     }
 
     // Draw y-axis histogram
-    if (options.showYAxisHistogram &amp;&amp; axes[1].histogram) {
-      const axis = axes[1];
-      gl.enable(gl.SCISSOR_TEST);
-      gl.scissor(0.0, flipY ?
-        gl.height - plotBounds.y - plotBounds.height :
-        plotBounds.y, gl.width, plotBounds.height);
+    if (this.options.showYAxisHistogram &amp;&amp; this.axes[1].histogram) {
+      const axis = this.axes[1];
+      this.gl.enable(this.gl.SCISSOR_TEST);
+      this.gl.scissor(0.0, flipY ?
+        this.gl.height - plotBounds.y - plotBounds.height :
+        plotBounds.y, this.gl.width, plotBounds.height);
 
-      sdrLine.bind();
-      meshLine.bind(sdrLine, null);
+      this.sdrLine.bind();
+      this.meshLine.bind(this.sdrLine, null);
       libGlMatrix.mat4.identity(mattrans);
       if (flipY === true) {
         libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
       }
       libGlMatrix.mat4.translate(
         mattrans,
-        mattrans, [((2 * ((plotBounds.x + 0.5) - 64)) / gl.width) - 1,
-          ((2 * (plotBounds.y + 0.5)) / gl.height) - 1, 0],
+        mattrans, [((2 * ((plotBounds.x + 0.5) - 64)) / this.gl.width) - 1,
+          ((2 * (plotBounds.y + 0.5)) / this.gl.height) - 1, 0],
       ); // 0.5 ... center inside pixel
       libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
-      libGlMatrix.mat4.scale(mattrans, mattrans, [(2 * plotBounds.height) / gl.height, 1, 1]);
-      sdrLine.matWorldViewProj(mattrans);
-      meshLine.draw();
+      libGlMatrix.mat4.scale(mattrans, mattrans, [(2 * plotBounds.height) / this.gl.height, 1, 1]);
+      this.sdrLine.matWorldViewProj(mattrans);
+      this.meshLine.draw();
 
       libGlMatrix.mat4.identity(mattrans);
       if (flipY === true) {
@@ -198,49 +201,50 @@ export function HistogramViewer(gl, globalView) {
       }
       libGlMatrix.mat4.translate(
         mattrans, mattrans,
-        [((2 * (plotBounds.x + 0.5)) / gl.width) - 1,
-          pos[1] + ((0.5 * 2) / gl.height), 0.0],
+        [((2 * (plotBounds.x + 0.5)) / this.gl.width) - 1,
+          pos[1] + ((0.5 * 2) / this.gl.height), 0.0],
       ); // 0.5 ... center inside pixel
       libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
-      libGlMatrix.mat4.scale(mattrans, mattrans, [scl[1], (64 * 2) / gl.width, 1.0]);
+      libGlMatrix.mat4.scale(mattrans, mattrans, [scl[1], (64 * 2) / this.gl.width, 1.0]);
 
-      sdrLine.bind();
-      sdrLine.matWorldViewProj(mattrans);
-      sdrLine.color.apply(sdrLine, [gl.foreColor[0], gl.foreColor[1], gl.foreColor[2], 0.5]);
-      axis.meshHistogram.bind(sdrLine, null);
+      this.sdrLine.bind();
+      this.sdrLine.matWorldViewProj(mattrans);
+      this.sdrLine.color.apply(this.sdrLine, [
+        this.gl.foreColor[0], this.gl.foreColor[1], this.gl.foreColor[2], 0.5]);
+      axis.meshHistogram.bind(this.sdrLine, null);
       axis.meshHistogram.draw();
 
-      sdrLine.color(...gl.foreColor);
-      axis.meshLineHistogram.bind(sdrLine, null);
+      this.sdrLine.color(...this.gl.foreColor);
+      axis.meshLineHistogram.bind(this.sdrLine, null);
       axis.meshLineHistogram.draw();
 
-      gl.disable(gl.SCISSOR_TEST);
+      this.gl.disable(this.gl.SCISSOR_TEST);
     }
 
     // Draw color-axis histogram
-    if (options.showColormapHistogram &amp;&amp; axes[2].histogram) {
-      const axis = axes[2];
-      gl.enable(gl.SCISSOR_TEST);
-      gl.scissor(0.0, flipY ?
-        gl.height - plotBounds.y - plotBounds.height :
-        plotBounds.y, gl.width, plotBounds.height);
+    if (this.options.showColormapHistogram &amp;&amp; this.axes[2].histogram) {
+      const axis = this.axes[2];
+      this.gl.enable(this.gl.SCISSOR_TEST);
+      this.gl.scissor(0.0, flipY ?
+        this.gl.height - plotBounds.y - plotBounds.height :
+        plotBounds.y, this.gl.width, plotBounds.height);
 
-      sdrLine.bind();
-      meshLine.bind(sdrLine, null);
+      this.sdrLine.bind();
+      this.meshLine.bind(this.sdrLine, null);
       libGlMatrix.mat4.identity(mattrans);
       if (flipY === true) {
         libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
       }
       libGlMatrix.mat4.translate(
         mattrans, mattrans,
-        [((2 * (plotBounds.x + plotBounds.width + libColormap.Colormap.getWidth() + 0.5 + 64)) /
-          gl.width) - 1,
-        ((2 * (plotBounds.y + 0.5)) / gl.height) - 1, 0],
+        [((2 * (plotBounds.x + plotBounds.width + Colormap.getWidth() + 0.5 + 64)) /
+          this.gl.width) - 1,
+        ((2 * (plotBounds.y + 0.5)) / this.gl.height) - 1, 0],
       ); // 0.5 ... center inside pixel
       libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
-      libGlMatrix.mat4.scale(mattrans, mattrans, [(2 * plotBounds.height) / gl.height, 1, 1]);
-      sdrLine.matWorldViewProj(mattrans);
-      meshLine.draw();
+      libGlMatrix.mat4.scale(mattrans, mattrans, [(2 * plotBounds.height) / this.gl.height, 1, 1]);
+      this.sdrLine.matWorldViewProj(mattrans);
+      this.meshLine.draw();
 
       libGlMatrix.mat4.identity(mattrans);
       if (flipY === true) {
@@ -248,60 +252,61 @@ export function HistogramViewer(gl, globalView) {
       }
       libGlMatrix.mat4.translate(
         mattrans, mattrans,
-        [((2 * (plotBounds.x + plotBounds.width + libColormap.Colormap.getWidth() + 0.5)) /
-          gl.width) - 1,
-        pos[2] + ((0.5 * 2) / gl.height), 0.0],
+        [((2 * (plotBounds.x + plotBounds.width + Colormap.getWidth() + 0.5)) /
+          this.gl.width) - 1,
+        pos[2] + ((0.5 * 2) / this.gl.height), 0.0],
       ); // 0.5 ... center inside pixel
       libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
-      libGlMatrix.mat4.scale(mattrans, mattrans, [scl[2], (-64 * 2) / gl.width, 1.0]);
+      libGlMatrix.mat4.scale(mattrans, mattrans, [scl[2], (-64 * 2) / this.gl.width, 1.0]);
 
-      sdrLine.bind();
-      sdrLine.matWorldViewProj(mattrans);
-      sdrLine.color.apply(sdrLine, [gl.foreColor[0], gl.foreColor[1], gl.foreColor[2], 0.5]);
-      axis.meshHistogram.bind(sdrLine, null);
+      this.sdrLine.bind();
+      this.sdrLine.matWorldViewProj(mattrans);
+      this.sdrLine.color.apply(this.sdrLine, [
+        this.gl.foreColor[0], this.gl.foreColor[1], this.gl.foreColor[2], 0.5]);
+      axis.meshHistogram.bind(this.sdrLine, null);
       axis.meshHistogram.draw();
 
-      sdrLine.color(...gl.foreColor);
-      axis.meshLineHistogram.bind(sdrLine, null);
+      this.sdrLine.color(...this.gl.foreColor);
+      axis.meshLineHistogram.bind(this.sdrLine, null);
       axis.meshLineHistogram.draw();
 
-      gl.disable(gl.SCISSOR_TEST);
+      this.gl.disable(this.gl.SCISSOR_TEST);
     }
-  };
+  }
 
-  this.setDataset = function (_dataset /* , options */) {
-    dataset = _dataset;
-    recreateHistograms();
-  };
+  setDataset(dataset /* , options */) {
+    this.dataset = dataset;
+    this.recreateHistograms();
+  }
 
-  this.onOptionsChanged = function (_options /* , recompileShader */) {
-    options = _options;
-    recreateHistograms();
-  };
+  onOptionsChanged(options /* , recompileShader */) {
+    this.options = options;
+    this.recreateHistograms();
+  }
 
-  this.onInputChanged = function (_activeInputs /* , animatedInputs, options */) {
-    activeInputs = _activeInputs;
-    recreateHistograms();
-  };
+  onInputChanged(activeInputs /* , animatedInputs, options */) {
+    this.activeInputs = activeInputs;
+    this.recreateHistograms();
+  }
 
-  this.onPlotBoundsChanged = function (/* plotBounds */) {};
+  onPlotBoundsChanged(/* plotBounds */) {} // eslint-disable-line class-methods-use-this
 
-  function recreateHistograms() {
-    if (dataset &amp;&amp; options.histogramHeight > 0) {
-      const numBins = options.numHistogramBins;
-      if (options.showXAxisHistogram) {
-        createHistogram(axes[0], dataset, activeInputs[0], numBins);
+  recreateHistograms() {
+    if (this.dataset &amp;&amp; this.options.histogramHeight > 0) {
+      const numBins = this.options.numHistogramBins;
+      if (this.options.showXAxisHistogram) {
+        this.createHistogram(this.axes[0], this.dataset, this.activeInputs[0], numBins);
       }
-      if (options.showYAxisHistogram) {
-        createHistogram(axes[1], dataset, activeInputs[1], numBins);
+      if (this.options.showYAxisHistogram) {
+        this.createHistogram(this.axes[1], this.dataset, this.activeInputs[1], numBins);
       }
-      if (options.showColormapHistogram) {
-        createHistogram(axes[2], dataset, activeInputs[2], numBins);
+      if (this.options.showColormapHistogram) {
+        this.createHistogram(this.axes[2], this.dataset, this.activeInputs[2], numBins);
       }
     }
   }
 
-  function createHistogram(pAxis, pDataset, d, numBins) {
+  createHistogram(pAxis, pDataset, d, numBins) {
     const axis = pAxis;
     if (d &lt; 0 || d >= pDataset.dataVectors.length) {
       return;
@@ -343,7 +348,7 @@ export function HistogramViewer(gl, globalView) {
       v3Set(i += 1, (b + 0) * xScale, y);
       v3Set(i += 1, (b + 0) * xScale, 0);
     }
-    axis.meshHistogram.reset(positions, null, null, null, null, null, gl.TRIANGLES);
+    axis.meshHistogram.reset(positions, null, null, null, null, null, this.gl.TRIANGLES);
 
     positions = new Float32Array(((3 * numBins) + 1) * 3);
     v3Set(0, 0, 0);
@@ -354,7 +359,7 @@ export function HistogramViewer(gl, globalView) {
       v3Set(i += 1, (b += 1) * xScale, y);
       v3Set(i += 1, b * xScale, 0);
     }
-    axis.meshLineHistogram.reset(positions, null, null, null, null, null, gl.LINE_STRIP);
+    axis.meshLineHistogram.reset(positions, null, null, null, null, null, this.gl.LINE_STRIP);
   }
 }
 </code></pre>
@@ -367,13 +372,13 @@ export function HistogramViewer(gl, globalView) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClusterMap.html">ClusterMap</a></li><li><a href="ClusterMapOptions.html">ClusterMapOptions</a></li><li><a href="Colormap.html">Colormap</a></li><li><a href="CoordinateSystem.html">CoordinateSystem</a></li><li><a href="CsvDataset.html">CsvDataset</a></li><li><a href="Dataset.html">Dataset</a></li><li><a href="DataVector.html">DataVector</a></li><li><a href="DensityMap.html">DensityMap</a></li><li><a href="DensityMapOptions.html">DensityMapOptions</a></li><li><a href="DensityViewer.html">DensityViewer</a></li><li><a href="ForwardList.html">ForwardList</a></li><li><a href="GlobalView.html">GlobalView</a></li><li><a href="GlobalView-Transform.html">Transform</a></li><li><a href="HashSet.html">HashSet</a></li><li><a href="HistogramViewer.html">HistogramViewer</a></li><li><a href="ImageViewer.html">ImageViewer</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="PointViewer.html">PointViewer</a></li><li><a href="PointViewer-DataMesh.html">DataMesh</a></li><li><a href="PointViewer-PointGroup.html">PointGroup</a></li><li><a href="PriorityQueue.html">PriorityQueue</a></li><li><a href="RandomDataset.html">RandomDataset</a></li><li><a href="Shader.html">Shader</a></li><li><a href="Thumbnail.html">Thumbnail</a></li></ul><h3>Namespaces</h3><ul><li><a href="Shaders.html">Shaders</a></li></ul><h3>Interfaces</h3><ul><li><a href="Viewer.html">Viewer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#computeClusterMap">computeClusterMap</a></li><li><a href="global.html#computeDensityMap">computeDensityMap</a></li><li><a href="global.html#computeDensityMapND">computeDensityMapND</a></li><li><a href="global.html#computeHistogram">computeHistogram</a></li><li><a href="global.html#computeHistogram2D">computeHistogram2D</a></li><li><a href="global.html#CSV_DATASET_OPTIONS">CSV_DATASET_OPTIONS</a></li><li><a href="global.html#downloadDensityMap">downloadDensityMap</a></li><li><a href="global.html#downloadStencilMap">downloadStencilMap</a></li><li><a href="global.html#findClosePointOfLowDensity">findClosePointOfLowDensity</a></li><li><a href="global.html#findClosePointOfLowDensityDescend">findClosePointOfLowDensityDescend</a></li><li><a href="global.html#findClosePointOfLowDensityNDDescend">findClosePointOfLowDensityNDDescend</a></li><li><a href="global.html#findRepresentativePoints">findRepresentativePoints</a></li><li><a href="global.html#findRepresentativePoints2">findRepresentativePoints2</a></li><li><a href="global.html#findRepresentativePointsND">findRepresentativePointsND</a></li><li><a href="global.html#findRepresentativePointsND2">findRepresentativePointsND2</a></li><li><a href="global.html#generateColumnName">generateColumnName</a></li><li><a href="global.html#linesIntersect">linesIntersect</a></li><li><a href="global.html#markPointsInStencilMap">markPointsInStencilMap</a></li><li><a href="global.html#parseColor">parseColor</a></li><li><a href="global.html#parseColormap">parseColormap</a></li><li><a href="global.html#pointInsidePolygon">pointInsidePolygon</a></li><li><a href="global.html#sampleDensityMap">sampleDensityMap</a></li><li><a href="global.html#sampleDensityMapChain">sampleDensityMapChain</a></li><li><a href="global.html#sampleDensityMapColumn">sampleDensityMapColumn</a></li><li><a href="global.html#sampleDensityMapRow">sampleDensityMapRow</a></li><li><a href="global.html#validateColor">validateColor</a></li><li><a href="global.html#validateColormap">validateColormap</a></li><li><a href="global.html#vectorLineIntersection2D">vectorLineIntersection2D</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClusterMap.html">ClusterMap</a></li><li><a href="ClusterMapOptions.html">ClusterMapOptions</a></li><li><a href="CoordinateSystem.html">CoordinateSystem</a></li><li><a href="CsvDataset.html">CsvDataset</a></li><li><a href="DataMesh.html">DataMesh</a></li><li><a href="Dataset.html">Dataset</a></li><li><a href="DataVector.html">DataVector</a></li><li><a href="DensityMap.html">DensityMap</a></li><li><a href="DensityMapOptions.html">DensityMapOptions</a></li><li><a href="DensityViewer.html">DensityViewer</a></li><li><a href="ForwardList.html">ForwardList</a></li><li><a href="GlobalView.html">GlobalView</a></li><li><a href="HashSet.html">HashSet</a></li><li><a href="HistogramViewer.html">HistogramViewer</a></li><li><a href="ImageViewer.html">ImageViewer</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="module.exports.html">exports</a></li><li><a href="PointGroup.html">PointGroup</a></li><li><a href="PointViewer.html">PointViewer</a></li><li><a href="PriorityQueue.html">PriorityQueue</a></li><li><a href="RandomDataset.html">RandomDataset</a></li><li><a href="Shader.html">Shader</a></li><li><a href="TextRenderContext_TextRenderContext.html">TextRenderContext</a></li><li><a href="Thumbnail.html">Thumbnail</a></li></ul><h3>Namespaces</h3><ul><li><a href="Shaders.html">Shaders</a></li></ul><h3>Interfaces</h3><ul><li><a href="Viewer.html">Viewer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#computeClusterMap">computeClusterMap</a></li><li><a href="global.html#computeDensityMap">computeDensityMap</a></li><li><a href="global.html#computeDensityMapND">computeDensityMapND</a></li><li><a href="global.html#computeHistogram">computeHistogram</a></li><li><a href="global.html#computeHistogram2D">computeHistogram2D</a></li><li><a href="global.html#CSV_DATASET_OPTIONS">CSV_DATASET_OPTIONS</a></li><li><a href="global.html#downloadDensityMap">downloadDensityMap</a></li><li><a href="global.html#downloadStencilMap">downloadStencilMap</a></li><li><a href="global.html#findClosePointOfLowDensity">findClosePointOfLowDensity</a></li><li><a href="global.html#findClosePointOfLowDensityDescend">findClosePointOfLowDensityDescend</a></li><li><a href="global.html#findClosePointOfLowDensityNDDescend">findClosePointOfLowDensityNDDescend</a></li><li><a href="global.html#findRepresentativePoints">findRepresentativePoints</a></li><li><a href="global.html#findRepresentativePoints2">findRepresentativePoints2</a></li><li><a href="global.html#findRepresentativePointsND">findRepresentativePointsND</a></li><li><a href="global.html#findRepresentativePointsND2">findRepresentativePointsND2</a></li><li><a href="global.html#getTexture">getTexture</a></li><li><a href="global.html#getWidth">getWidth</a></li><li><a href="global.html#linesIntersect">linesIntersect</a></li><li><a href="global.html#markPointsInStencilMap">markPointsInStencilMap</a></li><li><a href="global.html#onPlotBoundsChanged">onPlotBoundsChanged</a></li><li><a href="global.html#parseColor">parseColor</a></li><li><a href="global.html#parseColormap">parseColormap</a></li><li><a href="global.html#pointInsidePolygon">pointInsidePolygon</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#sampleDensityMap">sampleDensityMap</a></li><li><a href="global.html#sampleDensityMapChain">sampleDensityMapChain</a></li><li><a href="global.html#sampleDensityMapColumn">sampleDensityMapColumn</a></li><li><a href="global.html#sampleDensityMapRow">sampleDensityMapRow</a></li><li><a href="global.html#setEnumRange">setEnumRange</a></li><li><a href="global.html#setLabel">setLabel</a></li><li><a href="global.html#setNumericRange">setNumericRange</a></li><li><a href="global.html#validateColor">validateColor</a></li><li><a href="global.html#validateColormap">validateColormap</a></li><li><a href="global.html#vectorLineIntersection2D">vectorLineIntersection2D</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Feb 13 2018 14:48:02 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Feb 16 2018 15:30:43 GMT-0800 (PST)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: DataVector</title>
+    <title>JSDoc: Class: exports</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: DataVector</h1>
+    <h1 class="page-title">Class: exports</h1>
 
     
 
@@ -28,13 +28,10 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>DataVector<span class="signature">(dataset, source)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>exports<span class="signature">(gl, plot)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description"><p>A vector of data values inside the dataset.
-The source of a data vector can be either a column in the dataset's data table or a formula.
-The length of the vector is fixed by the dataset.
-The DataVector class doesn't store actual values, it only defines
-functions to read from the dataset.</p></div>
+            <div class="class-description"><p>A class holding the active colormap for the global view.
+This class also draws a color axis to the right of the scatter plot.</p></div>
         
     
 </header>
@@ -49,7 +46,7 @@ functions to read from the dataset.</p></div>
     
 
     
-    <h4 class="name" id="DataVector"><span class="type-signature"></span>new DataVector<span class="signature">(dataset, source)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="exports"><span class="type-signature"></span>new exports<span class="signature">(gl, plot)</span><span class="type-signature"></span></h4>
     
 
     
@@ -89,13 +86,13 @@ functions to read from the dataset.</p></div>
 
         <tr>
             
-                <td class="name"><code>dataset</code></td>
+                <td class="name"><code>gl</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="Dataset.html">Dataset</a></span>
+<span class="param-type">WebGLRenderingContext</span>
 
 
             
@@ -105,23 +102,20 @@ functions to read from the dataset.</p></div>
 
             
 
-            <td class="description last"><p>The underlying dataset</p></td>
+            <td class="description last"><p>webgl render context</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>source</code></td>
+                <td class="name"><code>plot</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
-|
-
-<span class="param-type">string</span>
+<span class="param-type"><a href="GlobalView.html">GlobalView</a></span>
 
 
             
@@ -131,7 +125,7 @@ functions to read from the dataset.</p></div>
 
             
 
-            <td class="description last"><p>Either a column index into the dataset, or a formula</p></td>
+            <td class="description last"><p>GlobalView plot</p></td>
         </tr>
 
     
@@ -172,7 +166,7 @@ functions to read from the dataset.</p></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="dataset.js.html">dataset.js</a>, <a href="dataset.js.html#line18">line 18</a>
+        <a href="colormap.js.html">colormap.js</a>, <a href="colormap.js.html#line35">line 35</a>
     </li></ul></dd>
     
 

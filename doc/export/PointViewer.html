@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: ClusterMapOptions</title>
+    <title>JSDoc: Class: PointViewer</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: ClusterMapOptions</h1>
+    <h1 class="page-title">Class: PointViewer</h1>
 
     
 
@@ -28,7 +28,9 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>ClusterMapOptions<span class="signature">(source<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>PointViewer<span class="signature">(gl, globalView)</span><span class="type-signature"></span></h2>
+        
+            <div class="class-description"><p>A viewer that renders point sets to the global view.</p></div>
         
     
 </header>
@@ -39,13 +41,13 @@
         
 
     
-
-    
-    <h4 class="name" id="ClusterMapOptions"><span class="type-signature"></span>new ClusterMapOptions<span class="signature">(source<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h2>Constructor</h2>
     
 
     
-    <p class="summary"><p>Options to the computeClusterMap() function</p></p>
+    <h4 class="name" id="PointViewer"><span class="type-signature"></span>new PointViewer<span class="signature">(gl, globalView)</span><span class="type-signature"></span></h4>
+    
+
     
 
 
@@ -71,8 +73,6 @@
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
         
 
@@ -85,33 +85,46 @@
 
         <tr>
             
-                <td class="name"><code>source</code></td>
+                <td class="name"><code>gl</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="ClusterMapOptions.html">ClusterMapOptions</a></span>
+<span class="param-type">Object</span>
 
 
             
             </td>
 
             
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
 
-                
+            
 
+            <td class="description last"><p>// {WebGLRenderingContext}</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>globalView</code></td>
+            
+
+            <td class="type">
+            
                 
-                </td>
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
             
 
             
 
-            <td class="description last"><p>If not null, creates a copy of source</p></td>
+            <td class="description last"><p>// {GlobalView}</p></td>
         </tr>
 
     
@@ -191,28 +204,129 @@
     
 
     
-        <h3 class="subsection-title">Members</h3>
+
+    
+        <h3 class="subsection-title">Methods</h3>
 
         
             
-<h4 class="name" id="threshold"><span class="type-signature"></span>threshold<span class="type-signature"> :number</span></h4>
+
+    
+
+    
+    <h4 class="name" id="createPointSet"><span class="type-signature"></span>createPointSet<span class="signature">(color<span class="signature-attributes">opt</span>, opacity<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="HashSet.html">HashSet</a>}</span></h4>
+    
+
+    
 
 
-<p class="summary"><p>Densities below threshold * maximum-density are considered outliers</p></p>
+
+<div class="description">
+    <p>Create a subset of points that can be rendered independently
+Optional parameters color and opacity overwrite the default values</p>
+</div>
 
 
 
 
 
-    <h5>Type:</h5>
-    <ul>
-        <li>
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
             
+                <td class="name"><code>color</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>opacity</code></td>
+            
+
+            <td class="type">
+            
+                
 <span class="param-type">number</span>
 
 
-        </li>
-    </ul>
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
 
 
 
@@ -243,11 +357,6 @@
     
 
     
-    <dt class="tag-default">Default Value:</dt>
-    <dd class="tag-default"><ul class="dummy">
-            <li>0.1</li>
-        </ul></dd>
-    
 
     
 
@@ -263,11 +372,35 @@
 
 
 
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
         
-    
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="HashSet.html">HashSet</a></span>
+
+
+    </dd>
+</dl>
 
     
-        <h3 class="subsection-title">Methods</h3>
+
+
+
+
 
         
             
@@ -275,7 +408,7 @@
     
 
     
-    <h4 class="name" id=".ClusterMapOptions"><span class="type-signature">(static) </span>ClusterMapOptions<span class="signature">(optionsA, optionsB)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="removePointSet"><span class="type-signature"></span>removePointSet<span class="signature">(pointSet)</span><span class="type-signature"></span></h4>
     
 
     
@@ -283,7 +416,8 @@
 
 
 <div class="description">
-    <p>checks if two ClusterMapOptions objects are similar</p>
+    <p>Remove point subset
+(This does not remove any of the points)</p>
 </div>
 
 
@@ -319,13 +453,13 @@
 
         <tr>
             
-                <td class="name"><code>optionsA</code></td>
+                <td class="name"><code>pointSet</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="ClusterMapOptions.html">ClusterMapOptions</a></span>
+<span class="param-type"><a href="HashSet.html">HashSet</a></span>
 
 
             
@@ -335,30 +469,7 @@
 
             
 
-            <td class="description last"><p>first ClusterMapOptions object to compare</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>optionsB</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="ClusterMapOptions.html">ClusterMapOptions</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>second ClusterMapOptions object to compare</p></td>
+            <td class="description last"></td>
         </tr>
 
     

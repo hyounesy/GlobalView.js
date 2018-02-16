@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: ClusterMapOptions</title>
+    <title>JSDoc: Class: DataMesh</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: ClusterMapOptions</h1>
+    <h1 class="page-title">Class: DataMesh</h1>
 
     
 
@@ -28,7 +28,9 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>ClusterMapOptions<span class="signature">(source<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>DataMesh<span class="signature">(pointViewer, glCtx, glbuffer, numvertices, ndim, options)</span><span class="type-signature"></span></h2>
+        
+            <div class="class-description"><p>A renderable WebGL mesh of ndim-dimensional points</p></div>
         
     
 </header>
@@ -39,13 +41,13 @@
         
 
     
-
-    
-    <h4 class="name" id="ClusterMapOptions"><span class="type-signature"></span>new ClusterMapOptions<span class="signature">(source<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h2>Constructor</h2>
     
 
     
-    <p class="summary"><p>Options to the computeClusterMap() function</p></p>
+    <h4 class="name" id="DataMesh"><span class="type-signature"></span>new DataMesh<span class="signature">(pointViewer, glCtx, glbuffer, numvertices, ndim, options)</span><span class="type-signature"></span></h4>
+    
+
     
 
 
@@ -71,8 +73,6 @@
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
         
 
@@ -85,33 +85,138 @@
 
         <tr>
             
-                <td class="name"><code>source</code></td>
+                <td class="name"><code>pointViewer</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="ClusterMapOptions.html">ClusterMapOptions</a></span>
+<span class="param-type"><a href="PointViewer.html">PointViewer</a></span>
 
 
             
             </td>
 
             
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
 
-                
+            
 
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>glCtx</code></td>
+            
+
+            <td class="type">
+            
                 
-                </td>
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
             
 
             
 
-            <td class="description last"><p>If not null, creates a copy of source</p></td>
+            <td class="description last"><p>// {WebGLRenderingContext}</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>glbuffer</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">WebGLBuffer</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>numvertices</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ndim</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
         </tr>
 
     
@@ -191,80 +296,6 @@
     
 
     
-        <h3 class="subsection-title">Members</h3>
-
-        
-            
-<h4 class="name" id="threshold"><span class="type-signature"></span>threshold<span class="type-signature"> :number</span></h4>
-
-
-<p class="summary"><p>Densities below threshold * maximum-density are considered outliers</p></p>
-
-
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">number</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-default">Default Value:</dt>
-    <dd class="tag-default"><ul class="dummy">
-            <li>0.1</li>
-        </ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-    
 
     
         <h3 class="subsection-title">Methods</h3>
@@ -275,7 +306,7 @@
     
 
     
-    <h4 class="name" id=".ClusterMapOptions"><span class="type-signature">(static) </span>ClusterMapOptions<span class="signature">(optionsA, optionsB)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="drawIndexed"><span class="type-signature"></span>drawIndexed<span class="signature">(texture, idxbuffer, count)</span><span class="type-signature"></span></h4>
     
 
     
@@ -283,7 +314,7 @@
 
 
 <div class="description">
-    <p>checks if two ClusterMapOptions objects are similar</p>
+    <p>Renders an indexed buffer</p>
 </div>
 
 
@@ -319,13 +350,13 @@
 
         <tr>
             
-                <td class="name"><code>optionsA</code></td>
+                <td class="name"><code>texture</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="ClusterMapOptions.html">ClusterMapOptions</a></span>
+<span class="param-type">Texture</span>
 
 
             
@@ -335,20 +366,20 @@
 
             
 
-            <td class="description last"><p>first ClusterMapOptions object to compare</p></td>
+            <td class="description last"></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>optionsB</code></td>
+                <td class="name"><code>idxbuffer</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="ClusterMapOptions.html">ClusterMapOptions</a></span>
+<span class="param-type">Array.&lt;number></span>
 
 
             
@@ -358,7 +389,30 @@
 
             
 
-            <td class="description last"><p>second ClusterMapOptions object to compare</p></td>
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>count</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
         </tr>
 
     
