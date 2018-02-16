@@ -6,230 +6,30 @@ const libGlMatrix = require('gl-matrix');
 const Transform = require('./transform').default;
 
 /**
- * A viewer that renders point sets to the global view.
- * @constructor
- * @package
- * @implements {Viewer}
- * @param {Object} gl // {WebGLRenderingContext}
- * @param {Object} globalView // {GlobalView}
+ * A renderable WebGL mesh of ndim-dimensional points
  */
-// eslint-disable-next-line import/prefer-default-export
-export function PointViewer(gl, globalView) {
-  let varDataset;
-  let meshDataPoints = null;
-
-  let varPointOpacity = 1.0;
-  /*
-  var highlightTexture = LoadTextureFromByteArray(gl, new Uint8Array([255, 255, 0, 255]), 1, 1);
-  var selectionTexture = LoadTextureFromByteArray(gl, new Uint8Array([255, 0, 0, 255]), 1, 1);
-  var representativeTexture = LoadTextureFromByteArray(gl, new Uint8Array([0, 255, 0, 255]), 1, 1);
-  */
-
+class DataMesh {
   /**
-   * A renderable set of points
    * @constructor
    * @package
-   * @extends {HashSet}
-   */
-  function PointGroup() {
-    let idxbuffer = gl.createBuffer();
-    function onchange() {
-      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxbuffer);
-      gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.get(), gl.STATIC_DRAW);
-      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
-
-      globalView.invalidate();
-    }
-
-    libUtility.HashSet.call(this, onchange);
-
-    this.render = function fRender(texture) {
-      if (this.size() === varDataset.length) {
-        meshDataPoints.draw(texture, 0, varDataset.length);
-      } else if (this.size() !== 0) {
-        meshDataPoints.drawIndexed(texture, idxbuffer, this.size());
-      }
-    };
-
-    this.renderLines = function fRenderLines(texture, pointDrag) {
-      if (this.size() === varDataset.length) {
-        meshDataPoints.drawLines(texture, pointDrag, 0, varDataset.length);
-      } else if (this.size() !== 0) {
-        // drawLines doesn't support index buffers
-        // Therefore, draw point group as continuous index sequences
-        let startIndex = 0;
-        let lastIndex = -1;
-        let count = 0;
-        this.forEach((index) => {
-          if (index === lastIndex + 1) {
-            count += 1;
-          } else {
-            if (count !== 0) {
-              meshDataPoints.drawLines(texture, pointDrag, startIndex, count);
-            }
-            startIndex = index;
-            count = 1;
-          }
-          lastIndex = index;
-        });
-        if (count !== 0) {
-          meshDataPoints.drawLines(texture, pointDrag, startIndex, count);
-        }
-      }
-    };
-
-    this.free = function fFree() {
-      if (idxbuffer !== -1) {
-        gl.deleteBuffer(idxbuffer);
-        idxbuffer = -1;
-      }
-    };
-  }
-
-  const pointSets = [this.points = new PointGroup()];
-  /**
-   * Create a subset of points that can be rendered independently
-   * Optional parameters color and opacity overwrite the default values
-   * @param  {Object=} color
-   * @param  {number=} opacity
-   * @return {HashSet}
-   */
-  this.createPointSet = function fCreatePointSet(color, opacity) {
-    const pointSet = new PointGroup();
-    if (color) {
-      const validationResult = libColormap.validateColormap(color);
-      if (validationResult === true) {
-        const c = libColormap.parseColormap(color);
-        if (c) {
-          pointSet.colormap = libGraphics.LoadTextureFromByteArray(gl, c, c.length / 4, 1);
-        }
-      } else {
-        libUtility.consoleWarn(`GlobalView warning: Invalid value for point set color: ${color}`);
-        if (libUtility.isString(validationResult)) {
-          libUtility.consoleWarn(`                    ${validationResult}`);
-        }
-      }
-    }
-    pointSet.opacity = opacity;
-    pointSets.push(pointSet);
-    return pointSet;
-  };
-
-  /**
-   * Remove point subset
-   * (This does not remove any of the points)
-   * @param  {HashSet} pointSet
-   */
-  this.removePointSet = function fRemovePointSet(pointSet) {
-    const index = pointSets.indexOf(pointSet);
-    if (index !== -1) {
-      pointSets.splice(index, 1);
-    }
-  };
-
-  this.render = function fRender(flipY, tf, colormapTexture, pointDrag) {
-    if (meshDataPoints === null) {
-      return;
-    }
-
-    /* eslint-disable prefer-spread */
-    meshDataPoints.sdr.bind();
-    meshDataPoints.sdr.offsets.apply(meshDataPoints.sdr, tf.getOffsets());
-    meshDataPoints.sdr.scales.apply(meshDataPoints.sdr, tf.getScales());
-    meshDataPoints.sdr.animatedScales.apply(meshDataPoints.sdr, tf.getAnimatedScales());
-    meshDataPoints.sdr.flipY(flipY ? 1 : 0);
-    pointSets.forEach((pointSet) => {
-      meshDataPoints.sdr.pointOpacity(pointSet.opacity ? pointSet.opacity : varPointOpacity);
-      pointSet.render(pointSet.colormap ? pointSet.colormap : colormapTexture);
-    });
-
-    if (pointDrag) {
-      meshDataPoints.sdrLine.bind();
-      meshDataPoints.sdrLine.offsets.apply(meshDataPoints.sdrLine, tf.getOffsets());
-      meshDataPoints.sdrLine.scales.apply(meshDataPoints.sdrLine, tf.getScales());
-      meshDataPoints.sdrLine.animatedScales.apply(meshDataPoints.sdrLine, tf.getAnimatedScales());
-      meshDataPoints.sdrLine.flipY(flipY ? 1 : 0);
-      pointSets.forEach((pointSet) => {
-        meshDataPoints.sdrLine.pointOpacity(pointSet.opacity ?
-          pointSet.opacity :
-          Math.max(0.1, varPointOpacity / 2.0));
-        pointSet.renderLines(pointSet.colormap ? pointSet.colormap : colormapTexture, pointDrag);
-      });
-    }
-    /* eslint-enable prefer-spread */
-  };
-
-  this.setDataset = function fSetDataset(dataset, options) {
-    // Remove old mesh
-    if (meshDataPoints != null) {
-      meshDataPoints.free();
-    }
-    pointSets.forEach(pointSet => pointSet.clear());
-
-    varDataset = dataset;
-    varPointOpacity = options.pointOpacity;
-
-    // Validate numvertices
-    if (dataset.fdata.length !== dataset.length * dataset.numColumns) {
-      libUtility.showAlert("'dataset.fdata.length !== dataset.length * dataset.numColumns'");
-      return;
-    }
-
-    // Create position buffer
-    let posbuffer;
-    if (dataset.numColumns) {
-      posbuffer = gl.createBuffer();
-      gl.bindBuffer(gl.ARRAY_BUFFER, posbuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(dataset.fdata), gl.STATIC_DRAW);
-    } else {
-      posbuffer = null;
-    }
-    this.getPosBuffer = () => posbuffer;
-
-    meshDataPoints = new DataMesh(gl, posbuffer, dataset.length, dataset.numColumns, options);
-
-    this.points.assignRange(dataset.length);
-  };
-
-  this.onOptionsChanged = function fOnOptionsChanged(options, recompileShader) {
-    varPointOpacity = options.pointOpacity;
-    if (meshDataPoints) {
-      if (recompileShader === true) {
-        meshDataPoints.recompileShader(options);
-      } else {
-        meshDataPoints.sdr.pointSize(options.pointSize);
-      }
-    }
-  };
-
-  let activeInputVectors = null;
-  let animatedInputVectors = null;
-  this.onInputChanged = function fOnInputChanged(activeInputs, animatedInputs, options) {
-    activeInputVectors = activeInputs.map(i => varDataset.dataVectors[i]);
-    animatedInputVectors = animatedInputs.map(animatedInput =>
-      varDataset.dataVectors[animatedInput.origin]);
-    if (meshDataPoints != null) {
-      meshDataPoints.recompileShader(options);
-    }
-  };
-
-  this.onPlotBoundsChanged = function fOnPlotBoundsChanged() { /* plotBounds */ };
-
-  /**
-   * A renderable WebGL mesh of ndim-dimensional points
-   * @constructor
-   * @package
+   * @param {PointViewer} pointViewer
    * @param {Object} glCtx // {WebGLRenderingContext}
    * @param {WebGLBuffer} glbuffer
    * @param {number} numvertices
    * @param {number} ndim
    * @param {Object} options
    */
-  function DataMesh(glCtx, glbuffer, numvertices, ndim, options) {
+  constructor(pointViewer, glCtx, glbuffer, numvertices, ndim, options) {
+    this.pointViewer = pointViewer;
+    this.glCtx = glCtx;
+    this.numvertices = numvertices;
+    this.ndim = ndim;
+    this.options = options;
+
     // Create line buffer
-    let posbuffer = glbuffer;
-    let linebuffer = glCtx.createBuffer();
-    glCtx.bindBuffer(glCtx.ARRAY_BUFFER, linebuffer);
+    this.posbuffer = glbuffer;
+    this.linebuffer = glCtx.createBuffer();
+    glCtx.bindBuffer(glCtx.ARRAY_BUFFER, this.linebuffer);
     glCtx.bufferData(
       glCtx.ARRAY_BUFFER,
       new Float32Array([0, -1, 0, 1, 2, 1, 2, -1]),
@@ -241,311 +41,558 @@ export function PointViewer(gl, globalView) {
     for (let i = 0; i < numvertices; i += 1) {
       vertexIds[i] = i;
     }
-    const vidbuffer = glCtx.createBuffer();
-    glCtx.bindBuffer(glCtx.ARRAY_BUFFER, vidbuffer);
+    this.vidbuffer = glCtx.createBuffer();
+    glCtx.bindBuffer(glCtx.ARRAY_BUFFER, this.vidbuffer);
     glCtx.bufferData(glCtx.ARRAY_BUFFER, vertexIds, glCtx.STATIC_DRAW);
 
-    this.getPosCode = function fGetPosCode(forLineSdr) {
-      // Create shader code for getPos() function -> getPosCode
-      let getPosCode = `
+    this.sdr = null;
+    this.sdrLine = null;
+
+    if (this.pointViewer.activeInputVectors && this.pointViewer.animatedInputVectors) {
+      this.recompileShader(options);
+    }
+  }
+
+  // Creates shader code for getPos() function -> getPosCode
+  getPosCode(forLineSdr) {
+    let strPosCode = `
 {0}
 uniform vec{1} offsets, scales, animatedScales;
 uniform float n;
 #define PI 3.14159265359
 vec{1} getPos()
 {
-  return offsets + vec{1}({2}) * scales + vec{1}({3}) * animatedScales;
+return offsets + vec{1}({2}) * scales + vec{1}({3}) * animatedScales;
 }
 `;
-      let attrDeclCode = '';
-      const inputs = [/c(\d+)/g, '0.0'];
-      const inputCode = [];
-      const animatedInputCode = [];
-      for (let d = 0, i = 0; d < ndim; d += 4, i += 1) {
-        const attrLen = Math.min(4, ndim - d);
-        attrDeclCode += `attribute ${attrLen === 1 ? 'float' : `vec${attrLen}`} p${i};\n`;
-        for (let a = 0; a < attrLen; a += 1) {
-          inputs.push(`p${i}${attrLen === 1 ? '' : `[${a}]`}`);
-        }
+    let attrDeclCode = '';
+    const inputs = [/c(\d+)/g, '0.0'];
+    const inputCode = [];
+    const animatedInputCode = [];
+    for (let d = 0, i = 0; d < this.ndim; d += 4, i += 1) {
+      const attrLen = Math.min(4, this.ndim - d);
+      attrDeclCode += `attribute ${attrLen === 1 ? 'float' : `vec${attrLen}`} p${i};\n`;
+      for (let a = 0; a < attrLen; a += 1) {
+        inputs.push(`p${i}${attrLen === 1 ? '' : `[${a}]`}`);
       }
-      for (let d = 0; d < Transform.NumDim; d += 1) {
-        inputCode.push(String.prototype.format2.apply(activeInputVectors[d] ?
-          activeInputVectors[d].getValueCode :
-          '0.0', inputs));
-        animatedInputCode.push(String.prototype.format2.apply(activeInputVectors[d] ?
-          animatedInputVectors[d].getValueCode :
-          '0.0', inputs));
-      }
-      attrDeclCode += 'attribute float i;\n';
-      if (forLineSdr) {
-        getPosCode = getPosCode.format(
-          attrDeclCode, 4,
-          inputCode.slice(0, 4).join(', '), animatedInputCode.slice(0, 4).join(', '),
-        );
-      } else {
-        getPosCode = getPosCode.format(
-          attrDeclCode, 3,
-          inputCode.slice(0, 3).join(', '), animatedInputCode.slice(0, 3).join(', '),
-        );
-      }
-
-
-      // libUtility.consoleLog(getPosCode);
-      return getPosCode;
-    };
-
-    // let posattr;
-    // let lineattr;
-    this.sdr = null;
-    this.sdrLine = null;
-    this.recompileShader = function (vOptions) {
-      // Free shaders
-      if (this.sdr !== null) {
-        this.sdr.free();
-      }
-      if (this.sdrLine !== null) {
-        this.sdrLine.free();
-      }
-
-      // Create shader code for opacityMap() function -> opacityMapCoe
-      let opacityMapCoe = 'float opacityMap(in vec2 p) ';
-      switch (vOptions.pointShape) {
-        case 'Circle':
-          opacityMapCoe += '{ return 1.0 - pow(p.x*p.x + p.y*p.y, pointSize / 4.0); }';
-          // opacityMapCoe += "{ return p.x*p.x + p.y*p.y < 1.0 ? 1.0 : 0.0; }";
-          break;
-        case 'Cross':
-          opacityMapCoe += '{ return pointSize / 4.0 * (max(4.0 / pointSize - ' +
-                           'abs(p.x - p.y), 0.0) + max(4.0 / pointSize - abs(-p.x - p.y), 0.0)); }';
-          break;
-        case 'Diamond':
-          opacityMapCoe += '{ return 1.0 - pow(abs(p.x) + abs(p.y), 2.0 + pointSize / 4.0); }';
-          break;
-        case 'Gaussian':
-        // opacityMapCoe += "{ return exp({0} * (p.x*p.x + p.y*p.y)); }".format(Math.log(0.001));
-          opacityMapCoe += '{ return exp(-7.0 * (p.x*p.x + p.y*p.y)); }';
-          break;
-        case 'Custom':
-          opacityMapCoe += vOptions.customPointShape;
-          break;
-        default:
-          opacityMapCoe += '{ return 1.0; }';
-          break;
-      }
-
-      // Compile shaders
-      this.sdr = new libGraphics.Shader(
-        glCtx, [
-          this.getPosCode(false),
-          libShaders.Shaders.vsDataPoint],
-        ['precision highp float; uniform float pointSize;',
-          opacityMapCoe,
-          libShaders.Shaders.fsDataPoint,
-        ],
+    }
+    for (let d = 0; d < Transform.NumDim; d += 1) {
+      inputCode.push(String.prototype.format2.apply(this.pointViewer.activeInputVectors[d] ?
+        this.pointViewer.activeInputVectors[d].getValueCode :
+        '0.0', inputs));
+      animatedInputCode.push(String.prototype.format2.apply(this.pointViewer.activeInputVectors[d] ?
+        this.pointViewer.animatedInputVectors[d].getValueCode :
+        '0.0', inputs));
+    }
+    attrDeclCode += 'attribute float i;\n';
+    if (forLineSdr) {
+      strPosCode = strPosCode.format(
+        attrDeclCode, 4,
+        inputCode.slice(0, 4).join(', '), animatedInputCode.slice(0, 4).join(', '),
       );
-      // this.sdr.transform = this.sdr.u1fv("transform");
-      this.sdr.offsets = this.sdr.u3f('offsets');
-      this.sdr.scales = this.sdr.u3f('scales');
-      this.sdr.animatedScales = this.sdr.u3f('animatedScales');
-      this.sdr.flipY = this.sdr.u1i('flipY');
-      this.sdr.quadsize = this.sdr.u2f('quadsize');
-      this.sdr.pointOpacity = this.sdr.u1f('pointOpacity'); this.sdr.pointOpacity(vOptions.pointOpacity);
-      this.sdr.pointSize = this.sdr.u1f('pointSize'); this.sdr.pointSize(vOptions.pointSize);
-      this.sdr.n = this.sdr.u1f('n'); if (this.sdr.n) {
-        this.sdr.n(numvertices);
-      }
-      this.sdr.posattr = [this.sdr.getAttribLocation('p0'), this.sdr.getAttribLocation('p1'), this.sdr.getAttribLocation('p2'), this.sdr.getAttribLocation('p3')];
-      this.sdr.vidattr = this.sdr.getAttribLocation('i');
-      this.sdrLine = new libGraphics.Shader(glCtx, [this.getPosCode(true), libShaders.Shaders.vsDataLine], ['precision highp float; uniform float pointSize;', opacityMapCoe, libShaders.Shaders.fsDataLine]);
-      // this.sdrLine.transform = this.sdrLine.u1fv("transform");
-      this.sdrLine.offsets = this.sdrLine.u4f('offsets');
-      this.sdrLine.scales = this.sdrLine.u4f('scales');
-      this.sdrLine.animatedScales = this.sdrLine.u4f('animatedScales');
-      this.sdrLine.flipY = this.sdrLine.u1i('flipY');
-      this.sdrLine.quadsize = this.sdrLine.u2f('quadsize');
-      this.sdrLine.pointOpacity = this.sdrLine.u1f('pointOpacity'); this.sdrLine.pointOpacity(vOptions.pointOpacity);
-      this.sdrLine.pointSize = this.sdrLine.u1f('pointSize'); this.sdrLine.pointSize(vOptions.pointSize);
-      this.sdrLine.n = this.sdrLine.u1f('n'); if (this.sdrLine.n) {
-        this.sdrLine.n(numvertices);
-      }
-      this.sdrLine.posattr = [this.sdrLine.getAttribLocation('p0'), this.sdrLine.getAttribLocation('p1'), this.sdrLine.getAttribLocation('p2'), this.sdrLine.getAttribLocation('p3')];
-      this.sdrLine.vidattr = this.sdrLine.getAttribLocation('i');
-      this.sdrLine.lineattr = this.sdrLine.getAttribLocation('lineOffset');
-      this.sdrLine.lineTransform = this.sdrLine.u2x2f('lineTransform');
-    };
-    if (activeInputVectors && animatedInputVectors) {
-      this.recompileShader(options);
+    } else {
+      strPosCode = strPosCode.format(
+        attrDeclCode, 3,
+        inputCode.slice(0, 3).join(', '), animatedInputCode.slice(0, 3).join(', '),
+      );
     }
 
-    this.draw = function (texture, pOffset, pCount) {
-      let offset = pOffset;
-      let count = pCount;
-      // Default values
-      if (typeof offset === 'undefined') {
-        offset = 0;
-      }
-      if (typeof count === 'undefined') {
-        count = numvertices;
-      }
-
-      for (let i = 0; i < 16; i += 1) {
-        glCtx.disableVertexAttribArray(i);
-        if (glCtx.ext) {
-          glCtx.ext.vertexAttribDivisorANGLE(i, 0);
-        }
-      }
-
-      if (posbuffer) {
-        glCtx.bindBuffer(glCtx.ARRAY_BUFFER, posbuffer);
-        for (let d = 0, i = 0; d < ndim; d += 4, i += 1) {
-          if (this.sdr.posattr[i] !== -1) {
-            glCtx.enableVertexAttribArray(this.sdr.posattr[i]);
-            glCtx.vertexAttribPointer(
-              this.sdr.posattr[i],
-              Math.min(4, ndim - d), glCtx.FLOAT, false, ndim * 4, ((offset * ndim) + d) * 4,
-            );
-          }
-        }
-      }
-
-      if (this.sdr.vidattr !== -1) {
-        glCtx.bindBuffer(glCtx.ARRAY_BUFFER, vidbuffer);
-        glCtx.enableVertexAttribArray(this.sdr.vidattr);
-        glCtx.vertexAttribPointer(this.sdr.vidattr, 1, glCtx.FLOAT, false, 4, offset * 4);
-      }
-
-      if (texture && this.sdr.samplerUniform) {
-        glCtx.activeTexture(glCtx.TEXTURE0);
-        glCtx.bindTexture(glCtx.TEXTURE_2D, texture);
-        glCtx.uniform1i(this.sdr.samplerUniform, 0);
-      }
-
-      glCtx.drawArrays(glCtx.POINTS, 0, Math.min(count, numvertices - offset));
-    };
-    this.drawIndexed = function (texture, idxbuffer, count) {
-      for (let i = 0; i < 16; i += 1) {
-        glCtx.disableVertexAttribArray(i);
-        if (glCtx.ext) {
-          glCtx.ext.vertexAttribDivisorANGLE(i, 0);
-        }
-      }
-
-      if (posbuffer) {
-        glCtx.bindBuffer(glCtx.ARRAY_BUFFER, posbuffer);
-        for (let d = 0, i = 0; d < ndim; d += 4, i += 1) {
-          if (this.sdr.posattr[i] !== -1) {
-            glCtx.enableVertexAttribArray(this.sdr.posattr[i]);
-            glCtx.vertexAttribPointer(
-              this.sdr.posattr[i],
-              Math.min(4, ndim - d), glCtx.FLOAT, false, ndim * 4, d * 4,
-            );
-          }
-        }
-      }
-
-      if (this.sdr.vidattr !== -1) {
-        glCtx.bindBuffer(glCtx.ARRAY_BUFFER, vidbuffer);
-        glCtx.enableVertexAttribArray(this.sdr.vidattr);
-        glCtx.vertexAttribPointer(this.sdr.vidattr, 1, glCtx.FLOAT, false, 4, 0);
-      }
-
-      if (texture && this.sdr.samplerUniform) {
-        glCtx.activeTexture(glCtx.TEXTURE0);
-        glCtx.bindTexture(glCtx.TEXTURE_2D, texture);
-        glCtx.uniform1i(this.sdr.samplerUniform, 0);
-      }
-
-      glCtx.bindBuffer(glCtx.ELEMENT_ARRAY_BUFFER, idxbuffer);
-      glCtx.drawElements(glCtx.POINTS, count, glCtx.UNSIGNED_INT, 0);
-    };
-
-    this.drawLines = function (texture, line, pOffset, pCount) {
-      let offset = pOffset;
-      let count = pCount;
-      // Default values
-      if (typeof offset === 'undefined') {
-        offset = 0;
-      }
-      if (typeof count === 'undefined') {
-        count = numvertices;
-      }
-
-      for (let i = 0; i < 16; i += 1) {
-        glCtx.disableVertexAttribArray(i);
-        glCtx.ext.vertexAttribDivisorANGLE(i, 0);
-      }
-
-      if (posbuffer) {
-        glCtx.bindBuffer(glCtx.ARRAY_BUFFER, posbuffer);
-        for (let d = 0, i = 0; d < ndim; d += 4, i += 1) {
-          if (this.sdrLine.posattr[i] !== -1) {
-            glCtx.enableVertexAttribArray(this.sdrLine.posattr[i]);
-            glCtx.vertexAttribPointer(
-              this.sdrLine.posattr[i],
-              Math.min(4, ndim - d), glCtx.FLOAT, false, ndim * 4, ((offset * ndim) + d) * 4,
-            );
-            glCtx.ext.vertexAttribDivisorANGLE(this.sdrLine.posattr[i], 1);
-          }
-        }
-      }
-
-      if (this.sdr.vidattr !== -1) {
-        glCtx.bindBuffer(glCtx.ARRAY_BUFFER, vidbuffer);
-        glCtx.enableVertexAttribArray(this.sdr.vidattr);
-        glCtx.vertexAttribPointer(this.sdrLine.vidattr, 1, glCtx.FLOAT, false, 4, offset * 4);
-        glCtx.ext.vertexAttribDivisorANGLE(this.sdrLine.vidattr, 1);
-      }
-
-      if (texture && this.sdrLine.samplerUniform) {
-        glCtx.activeTexture(glCtx.TEXTURE0);
-        glCtx.bindTexture(glCtx.TEXTURE_2D, texture);
-        glCtx.uniform1i(this.sdrLine.samplerUniform, 0);
-      }
-
-      // Compute line vertices
-      const lineTransform = libGlMatrix.mat2.create();
-      libGlMatrix.mat2.scale(
-        lineTransform, lineTransform,
-        libGlMatrix.vec2.fromValues(
-          Math.sqrt((line[0] * line[0]) + (line[1] * line[1])),
-          Math.max(1, options.pointSize /* / 10 */),
-        ),
-      );
-      libGlMatrix.mat2.rotate(
-        lineTransform, lineTransform,
-        Math.atan2(line[1], line[0]),
-      );
-      libGlMatrix.mat2.scale(
-        lineTransform, lineTransform,
-        libGlMatrix.vec2.fromValues(1 / glCtx.width, 1 / glCtx.height),
-      );
-      this.sdrLine.lineTransform(lineTransform);
-
-      glCtx.bindBuffer(glCtx.ARRAY_BUFFER, linebuffer);
-      glCtx.enableVertexAttribArray(this.sdrLine.lineattr);
-      glCtx.vertexAttribPointer(this.sdrLine.lineattr, 2, glCtx.FLOAT, false, 0, 0);
-      glCtx.ext.vertexAttribDivisorANGLE(this.sdrLine.lineattr, 0);
-
-      glCtx.ext.drawArraysInstancedANGLE(
-        glCtx.TRIANGLE_FAN, 0, 4,
-        Math.min(count, numvertices - offset),
-      );
-    };
-
-    this.free = function () {
-      glCtx.bindBuffer(glCtx.ARRAY_BUFFER, null);
-
-      if (posbuffer) {
-        glCtx.deleteBuffer(posbuffer);
-      }
-      posbuffer = null;
-
-      glCtx.deleteBuffer(linebuffer);
-      linebuffer = null;
-
-      if (this.sdr != null) {
-        this.sdr.free();
-      }
-    };
+    return strPosCode;
   }
+
+  recompileShader(vOptions) {
+    // Free shaders
+    if (this.sdr !== null) {
+      this.sdr.free();
+    }
+    if (this.sdrLine !== null) {
+      this.sdrLine.free();
+    }
+
+    // Create shader code for opacityMap() function -> opacityMapCoe
+    let opacityMapCoe = 'float opacityMap(in vec2 p) ';
+    switch (vOptions.pointShape) {
+      case 'Circle':
+        opacityMapCoe += '{ return 1.0 - pow(p.x*p.x + p.y*p.y, pointSize / 4.0); }';
+        // opacityMapCoe += "{ return p.x*p.x + p.y*p.y < 1.0 ? 1.0 : 0.0; }";
+        break;
+      case 'Cross':
+        opacityMapCoe += '{ return pointSize / 4.0 * (max(4.0 / pointSize - ' +
+                          'abs(p.x - p.y), 0.0) + max(4.0 / pointSize - abs(-p.x - p.y), 0.0)); }';
+        break;
+      case 'Diamond':
+        opacityMapCoe += '{ return 1.0 - pow(abs(p.x) + abs(p.y), 2.0 + pointSize / 4.0); }';
+        break;
+      case 'Gaussian':
+      // opacityMapCoe += "{ return exp({0} * (p.x*p.x + p.y*p.y)); }".format(Math.log(0.001));
+        opacityMapCoe += '{ return exp(-7.0 * (p.x*p.x + p.y*p.y)); }';
+        break;
+      case 'Custom':
+        opacityMapCoe += vOptions.customPointShape;
+        break;
+      default:
+        opacityMapCoe += '{ return 1.0; }';
+        break;
+    }
+
+    // Compile shaders
+    this.sdr = new libGraphics.Shader(
+      this.glCtx, [
+        this.getPosCode(false),
+        libShaders.Shaders.vsDataPoint],
+      ['precision highp float; uniform float pointSize;',
+        opacityMapCoe,
+        libShaders.Shaders.fsDataPoint,
+      ],
+    );
+    // this.sdr.transform = this.sdr.u1fv("transform");
+    this.sdr.offsets = this.sdr.u3f('offsets');
+    this.sdr.scales = this.sdr.u3f('scales');
+    this.sdr.animatedScales = this.sdr.u3f('animatedScales');
+    this.sdr.flipY = this.sdr.u1i('flipY');
+    this.sdr.quadsize = this.sdr.u2f('quadsize');
+    this.sdr.pointOpacity = this.sdr.u1f('pointOpacity'); this.sdr.pointOpacity(vOptions.pointOpacity);
+    this.sdr.pointSize = this.sdr.u1f('pointSize'); this.sdr.pointSize(vOptions.pointSize);
+    this.sdr.n = this.sdr.u1f('n'); if (this.sdr.n) {
+      this.sdr.n(this.numvertices);
+    }
+    this.sdr.posattr = [this.sdr.getAttribLocation('p0'), this.sdr.getAttribLocation('p1'), this.sdr.getAttribLocation('p2'), this.sdr.getAttribLocation('p3')];
+    this.sdr.vidattr = this.sdr.getAttribLocation('i');
+    this.sdrLine = new libGraphics.Shader(this.glCtx, [this.getPosCode(true), libShaders.Shaders.vsDataLine], ['precision highp float; uniform float pointSize;', opacityMapCoe, libShaders.Shaders.fsDataLine]);
+    // this.sdrLine.transform = this.sdrLine.u1fv("transform");
+    this.sdrLine.offsets = this.sdrLine.u4f('offsets');
+    this.sdrLine.scales = this.sdrLine.u4f('scales');
+    this.sdrLine.animatedScales = this.sdrLine.u4f('animatedScales');
+    this.sdrLine.flipY = this.sdrLine.u1i('flipY');
+    this.sdrLine.quadsize = this.sdrLine.u2f('quadsize');
+    this.sdrLine.pointOpacity = this.sdrLine.u1f('pointOpacity'); this.sdrLine.pointOpacity(vOptions.pointOpacity);
+    this.sdrLine.pointSize = this.sdrLine.u1f('pointSize'); this.sdrLine.pointSize(vOptions.pointSize);
+    this.sdrLine.n = this.sdrLine.u1f('n'); if (this.sdrLine.n) {
+      this.sdrLine.n(this.numvertices);
+    }
+    this.sdrLine.posattr = [this.sdrLine.getAttribLocation('p0'), this.sdrLine.getAttribLocation('p1'), this.sdrLine.getAttribLocation('p2'), this.sdrLine.getAttribLocation('p3')];
+    this.sdrLine.vidattr = this.sdrLine.getAttribLocation('i');
+    this.sdrLine.lineattr = this.sdrLine.getAttribLocation('lineOffset');
+    this.sdrLine.lineTransform = this.sdrLine.u2x2f('lineTransform');
+  }
+
+  draw(texture, pOffset, pCount) {
+    let offset = pOffset;
+    let count = pCount;
+    // Default values
+    if (typeof offset === 'undefined') {
+      offset = 0;
+    }
+    if (typeof count === 'undefined') {
+      count = this.numvertices;
+    }
+
+    for (let i = 0; i < 16; i += 1) {
+      this.glCtx.disableVertexAttribArray(i);
+      if (this.glCtx.ext) {
+        this.glCtx.ext.vertexAttribDivisorANGLE(i, 0);
+      }
+    }
+
+    if (this.posbuffer) {
+      this.glCtx.bindBuffer(this.glCtx.ARRAY_BUFFER, this.posbuffer);
+      for (let d = 0, i = 0; d < this.ndim; d += 4, i += 1) {
+        if (this.sdr.posattr[i] !== -1) {
+          this.glCtx.enableVertexAttribArray(this.sdr.posattr[i]);
+          this.glCtx.vertexAttribPointer(
+            this.sdr.posattr[i], Math.min(4, this.ndim - d),
+            this.glCtx.FLOAT, false, this.ndim * 4, ((offset * this.ndim) + d) * 4,
+          );
+        }
+      }
+    }
+
+    if (this.sdr.vidattr !== -1) {
+      this.glCtx.bindBuffer(this.glCtx.ARRAY_BUFFER, this.vidbuffer);
+      this.glCtx.enableVertexAttribArray(this.sdr.vidattr);
+      this.glCtx.vertexAttribPointer(this.sdr.vidattr, 1, this.glCtx.FLOAT, false, 4, offset * 4);
+    }
+
+    if (texture && this.sdr.samplerUniform) {
+      this.glCtx.activeTexture(this.glCtx.TEXTURE0);
+      this.glCtx.bindTexture(this.glCtx.TEXTURE_2D, texture);
+      this.glCtx.uniform1i(this.sdr.samplerUniform, 0);
+    }
+
+    this.glCtx.drawArrays(this.glCtx.POINTS, 0, Math.min(count, this.numvertices - offset));
+  }
+
+  /**
+   * Renders an indexed buffer
+   * @param {Texture} texture
+   * @param {number[]} idxbuffer
+   * @param {number} count
+   */
+  drawIndexed(texture, idxbuffer, count) {
+    for (let i = 0; i < 16; i += 1) {
+      this.glCtx.disableVertexAttribArray(i);
+      if (this.glCtx.ext) {
+        this.glCtx.ext.vertexAttribDivisorANGLE(i, 0);
+      }
+    }
+
+    if (this.posbuffer) {
+      this.glCtx.bindBuffer(this.glCtx.ARRAY_BUFFER, this.posbuffer);
+      for (let d = 0, i = 0; d < this.ndim; d += 4, i += 1) {
+        if (this.sdr.posattr[i] !== -1) {
+          this.glCtx.enableVertexAttribArray(this.sdr.posattr[i]);
+          this.glCtx.vertexAttribPointer(
+            this.sdr.posattr[i],
+            Math.min(4, this.ndim - d), this.glCtx.FLOAT, false, this.ndim * 4, d * 4,
+          );
+        }
+      }
+    }
+
+    if (this.sdr.vidattr !== -1) {
+      this.glCtx.bindBuffer(this.glCtx.ARRAY_BUFFER, this.vidbuffer);
+      this.glCtx.enableVertexAttribArray(this.sdr.vidattr);
+      this.glCtx.vertexAttribPointer(this.sdr.vidattr, 1, this.glCtx.FLOAT, false, 4, 0);
+    }
+
+    if (texture && this.sdr.samplerUniform) {
+      this.glCtx.activeTexture(this.glCtx.TEXTURE0);
+      this.glCtx.bindTexture(this.glCtx.TEXTURE_2D, texture);
+      this.glCtx.uniform1i(this.sdr.samplerUniform, 0);
+    }
+
+    this.glCtx.bindBuffer(this.glCtx.ELEMENT_ARRAY_BUFFER, idxbuffer);
+    this.glCtx.drawElements(this.glCtx.POINTS, count, this.glCtx.UNSIGNED_INT, 0);
+  }
+
+  drawLines(texture, line, offset, count) {
+    let varOffset = offset;
+    let varCount = count;
+    // Default values
+    if (typeof varOffset === 'undefined') {
+      varOffset = 0;
+    }
+    if (typeof varCount === 'undefined') {
+      varCount = this.numvertices;
+    }
+
+    for (let i = 0; i < 16; i += 1) {
+      this.glCtx.disableVertexAttribArray(i);
+      this.glCtx.ext.vertexAttribDivisorANGLE(i, 0);
+    }
+
+    if (this.posbuffer) {
+      this.glCtx.bindBuffer(this.glCtx.ARRAY_BUFFER, this.posbuffer);
+      for (let d = 0, i = 0; d < this.ndim; d += 4, i += 1) {
+        if (this.sdrLine.posattr[i] !== -1) {
+          this.glCtx.enableVertexAttribArray(this.sdrLine.posattr[i]);
+          this.glCtx.vertexAttribPointer(
+            this.sdrLine.posattr[i], Math.min(4, this.ndim - d), this.glCtx.FLOAT,
+            false, this.ndim * 4, ((varOffset * this.ndim) + d) * 4,
+          );
+          this.glCtx.ext.vertexAttribDivisorANGLE(this.sdrLine.posattr[i], 1);
+        }
+      }
+    }
+
+    if (this.sdr.vidattr !== -1) {
+      this.glCtx.bindBuffer(this.glCtx.ARRAY_BUFFER, this.vidbuffer);
+      this.glCtx.enableVertexAttribArray(this.sdr.vidattr);
+      this.glCtx.vertexAttribPointer(
+        this.sdrLine.vidattr, 1,
+        this.glCtx.FLOAT, false, 4, varOffset * 4,
+      );
+      this.glCtx.ext.vertexAttribDivisorANGLE(this.sdrLine.vidattr, 1);
+    }
+
+    if (texture && this.sdrLine.samplerUniform) {
+      this.glCtx.activeTexture(this.glCtx.TEXTURE0);
+      this.glCtx.bindTexture(this.glCtx.TEXTURE_2D, texture);
+      this.glCtx.uniform1i(this.sdrLine.samplerUniform, 0);
+    }
+
+    // Compute line vertices
+    const lineTransform = libGlMatrix.mat2.create();
+    libGlMatrix.mat2.scale(
+      lineTransform, lineTransform,
+      libGlMatrix.vec2.fromValues(
+        Math.sqrt((line[0] * line[0]) + (line[1] * line[1])),
+        Math.max(1, this.options.pointSize /* / 10 */),
+      ),
+    );
+    libGlMatrix.mat2.rotate(
+      lineTransform, lineTransform,
+      Math.atan2(line[1], line[0]),
+    );
+    libGlMatrix.mat2.scale(
+      lineTransform, lineTransform,
+      libGlMatrix.vec2.fromValues(1 / this.glCtx.width, 1 / this.glCtx.height),
+    );
+    this.sdrLine.lineTransform(lineTransform);
+
+    this.glCtx.bindBuffer(this.glCtx.ARRAY_BUFFER, this.linebuffer);
+    this.glCtx.enableVertexAttribArray(this.sdrLine.lineattr);
+    this.glCtx.vertexAttribPointer(this.sdrLine.lineattr, 2, this.glCtx.FLOAT, false, 0, 0);
+    this.glCtx.ext.vertexAttribDivisorANGLE(this.sdrLine.lineattr, 0);
+
+    this.glCtx.ext.drawArraysInstancedANGLE(
+      this.glCtx.TRIANGLE_FAN, 0, 4,
+      Math.min(varCount, this.numvertices - varOffset),
+    );
+  }
+
+  free() {
+    this.glCtx.bindBuffer(this.glCtx.ARRAY_BUFFER, null);
+
+    if (this.posbuffer) {
+      this.glCtx.deleteBuffer(this.posbuffer);
+    }
+    this.posbuffer = null;
+
+    this.glCtx.deleteBuffer(this.linebuffer);
+    this.linebuffer = null;
+
+    if (this.sdr != null) {
+      this.sdr.free();
+    }
+  }
+}
+
+/**
+ * A renderable set of points
+ */
+class PointGroup {
+  /**
+   * @constructor
+   * @package
+   * @extends {libUtility.HashSet}
+   */
+  constructor(pointViewer, gl, globalView) {
+    this.pointViewer = pointViewer;
+    this.gl = gl;
+    this.globalView = globalView;
+    this.idxbuffer = this.gl.createBuffer();
+    libUtility.HashSet.call(this, this.onchange);
+  }
+
+  onchange() {
+    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.idxbuffer);
+    this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, this.get(), this.gl.STATIC_DRAW);
+    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, null);
+
+    this.globalView.invalidate();
+  }
+
+  render(texture) {
+    if (this.size() === this.pointViewer.dataset.length) {
+      this.pointViewer.meshDataPoints.draw(texture, 0, this.pointViewer.dataset.length);
+    } else if (this.size() !== 0) {
+      this.pointViewer.meshDataPoints.drawIndexed(texture, this.idxbuffer, this.size());
+    }
+  }
+
+  renderLines(texture, pointDrag) {
+    if (this.size() === this.pointViewer.dataset.length) {
+      this.pointViewer.meshDataPoints.drawLines(
+        texture, pointDrag, 0,
+        this.pointViewer.dataset.length,
+      );
+    } else if (this.size() !== 0) {
+      // drawLines doesn't support index buffers
+      // Therefore, draw point group as continuous index sequences
+      let startIndex = 0;
+      let lastIndex = -1;
+      let count = 0;
+      this.forEach((index) => {
+        if (index === lastIndex + 1) {
+          count += 1;
+        } else {
+          if (count !== 0) {
+            this.pointViewer.meshDataPoints.drawLines(texture, pointDrag, startIndex, count);
+          }
+          startIndex = index;
+          count = 1;
+        }
+        lastIndex = index;
+      });
+      if (count !== 0) {
+        this.pointViewer.meshDataPoints.drawLines(texture, pointDrag, startIndex, count);
+      }
+    }
+  }
+
+  free() {
+    if (this.idxbuffer !== -1) {
+      this.gl.deleteBuffer(this.idxbuffer);
+      this.idxbuffer = -1;
+    }
+  }
+}
+
+
+/**
+ * A viewer that renders point sets to the global view.
+ */
+// eslint-disable-next-line import/prefer-default-export
+export class PointViewer {
+  /**
+   * @constructor
+   * @package
+   * @implements {Viewer}
+   * @param {Object} gl // {WebGLRenderingContext}
+   * @param {Object} globalView // {GlobalView}
+   */
+  constructor(gl, globalView) {
+    this.gl = gl;
+    this.globalView = globalView;
+    this.dataset = null;
+    this.meshDataPoints = null;
+    this.pointOpacity = 1.0;
+    this.points = new PointGroup(this, this.gl, this.globalView);
+    this.pointSets = [this.points];
+    this.activeInputVectors = null;
+    this.animatedInputVectors = null;
+  }
+
+  /**
+   * Create a subset of points that can be rendered independently
+   * Optional parameters color and opacity overwrite the default values
+   * @param  {Object=} color
+   * @param  {number=} opacity
+   * @return {HashSet}
+   */
+  createPointSet(color, opacity) {
+    const pointSet = new PointGroup(this, this.gl, this.globalView);
+    if (color) {
+      const validationResult = libColormap.validateColormap(color);
+      if (validationResult === true) {
+        const c = libColormap.parseColormap(color);
+        if (c) {
+          pointSet.colormap = libGraphics.LoadTextureFromByteArray(this.gl, c, c.length / 4, 1);
+        }
+      } else {
+        libUtility.consoleWarn(`GlobalView warning: Invalid value for point set color: ${color}`);
+        if (libUtility.isString(validationResult)) {
+          libUtility.consoleWarn(`                    ${validationResult}`);
+        }
+      }
+    }
+    pointSet.opacity = opacity;
+    this.pointSets.push(pointSet);
+    return pointSet;
+  }
+
+  /**
+   * Remove point subset
+   * (This does not remove any of the points)
+   * @param  {HashSet} pointSet
+   */
+  removePointSet(pointSet) {
+    const index = this.pointSets.indexOf(pointSet);
+    if (index !== -1) {
+      this.pointSets.splice(index, 1);
+    }
+  }
+
+  render(flipY, transform, colormapTexture, pointDrag) {
+    if (this.meshDataPoints === null) {
+      return;
+    }
+
+    /* eslint-disable prefer-spread */
+    this.meshDataPoints.sdr.bind();
+    this.meshDataPoints.sdr.offsets.apply(this.meshDataPoints.sdr, transform.getOffsets());
+    this.meshDataPoints.sdr.scales.apply(this.meshDataPoints.sdr, transform.getScales());
+    this.meshDataPoints.sdr.animatedScales.apply(
+      this.meshDataPoints.sdr,
+      transform.getAnimatedScales(),
+    );
+    this.meshDataPoints.sdr.flipY(flipY ? 1 : 0);
+    this.pointSets.forEach((pointSet) => {
+      this.meshDataPoints.sdr.pointOpacity(pointSet.opacity ?
+        pointSet.opacity : this.pointOpacity);
+      pointSet.render(pointSet.colormap ? pointSet.colormap : colormapTexture);
+    });
+
+    if (pointDrag) {
+      this.meshDataPoints.sdrLine.bind();
+      this.meshDataPoints.sdrLine.offsets.apply(
+        this.meshDataPoints.sdrLine,
+        transform.getOffsets(),
+      );
+      this.meshDataPoints.sdrLine.scales.apply(this.meshDataPoints.sdrLine, transform.getScales());
+      this.meshDataPoints.sdrLine.animatedScales.apply(
+        this.meshDataPoints.sdrLine,
+        transform.getAnimatedScales(),
+      );
+      this.meshDataPoints.sdrLine.flipY(flipY ? 1 : 0);
+      this.pointSets.forEach((pointSet) => {
+        this.meshDataPoints.sdrLine.pointOpacity(pointSet.opacity ?
+          pointSet.opacity :
+          Math.max(0.1, this.pointOpacity / 2.0));
+        pointSet.renderLines(pointSet.colormap ? pointSet.colormap : colormapTexture, pointDrag);
+      });
+    }
+    /* eslint-enable prefer-spread */
+  }
+
+  setDataset(dataset, options) {
+    // Remove old mesh
+    if (this.meshDataPoints != null) {
+      this.meshDataPoints.free();
+    }
+    this.pointSets.forEach(pointSet => pointSet.clear());
+
+    this.dataset = dataset;
+    this.pointOpacity = options.pointOpacity;
+
+    // Validate numvertices
+    if (dataset.fdata.length !== dataset.length * dataset.numColumns) {
+      libUtility.showAlert("'dataset.fdata.length !== dataset.length * dataset.numColumns'");
+      return;
+    }
+
+    // Create position buffer
+    let posbuffer;
+    if (dataset.numColumns) {
+      posbuffer = this.gl.createBuffer();
+      this.gl.bindBuffer(this.gl.ARRAY_BUFFER, posbuffer);
+      this.gl.bufferData(
+        this.gl.ARRAY_BUFFER,
+        new Float32Array(dataset.fdata), this.gl.STATIC_DRAW,
+      );
+    } else {
+      posbuffer = null;
+    }
+    this.getPosBuffer = () => posbuffer;
+
+    this.meshDataPoints = new DataMesh(
+      this, this.gl, posbuffer,
+      dataset.length, dataset.numColumns, options,
+    );
+
+    this.points.assignRange(dataset.length);
+  }
+
+  onOptionsChanged(options, recompileShader) {
+    this.pointOpacity = options.pointOpacity;
+    if (this.meshDataPoints) {
+      if (recompileShader === true) {
+        this.meshDataPoints.recompileShader(options);
+      } else {
+        this.meshDataPoints.sdr.pointSize(options.pointSize);
+      }
+    }
+  }
+
+  onInputChanged(activeInputs, animatedInputs, options) {
+    this.activeInputVectors = activeInputs.map(i => this.dataset.dataVectors[i]);
+    this.animatedInputVectors = animatedInputs.map(animatedInput =>
+      this.dataset.dataVectors[animatedInput.origin]);
+    if (this.meshDataPoints != null) {
+      this.meshDataPoints.recompileShader(options);
+    }
+  }
+
+  onPlotBoundsChanged() { /* plotBounds */ } // eslint-disable-line class-methods-use-this
 }

@@ -86,8 +86,8 @@ export class GlobalView {
 
     this.points = this.pointViewer.points;
     this.pointViewer.representativePoints = this.pointViewer.createPointSet([0, 255, 0, 255], 1);
-    this.createPointSet = this.pointViewer.createPointSet;
-    this.removePointSet = this.pointViewer.removePointSet;
+    this.createPointSet = this.pointViewer.createPointSet.bind(this.pointViewer);
+    this.removePointSet = this.pointViewer.removePointSet.bind(this.pointViewer);
 
     this.mouseRect = null;
     this.mousePolygon = null;

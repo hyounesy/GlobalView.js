@@ -280,13 +280,13 @@ export class Dataset {
         let histogram = libAlgorithm.computeHistogram2D(this, d0, d1, size, size);
 
         // Execute an asynchronous worker that computes densityMapsArray[d0][d1]
-        const p = new Parallel([libUtility.makeCloneable(histogram),
+        const parallel = new Parallel([libUtility.makeCloneable(histogram),
           new libAlgorithm.DensityMapOptions(options)], { evalPath: 'eval.js' });
-        p.require(libAlgorithm.DensityMap);
-        p.require(libAlgorithm.computeDensityMap);
+        parallel.require(libAlgorithm.DensityMap);
+        parallel.require(libAlgorithm.computeDensityMap);
         // the following code will be evaled from a blob in Parallel. so no need for libAlgorithm.
         // eslint-disable-next-line prefer-spread, no-undef
-        p.spawn(params => computeDensityMap.apply(null, params)).then((pDensityMap) => {
+        parallel.spawn(params => computeDensityMap.apply(null, params)).then((pDensityMap) => {
           const computedDensityMap = new libAlgorithm.DensityMap(pDensityMap);
           // Free histogram
           histogram = null;
@@ -437,14 +437,14 @@ export class Dataset {
 
         this.requestDensityMap(d0, d1, undefined, undefined, (densityMap) => {
           // Execute an asynchronous worker that computes clusterMapsArray[d0][d1]
-          const p = new Parallel([libUtility.makeCloneable(densityMap), d0, d1,
+          const parallel = new Parallel([libUtility.makeCloneable(densityMap), d0, d1,
             new libAlgorithm.ClusterMapOptions(options)], { evalPath: 'eval.js' });
-          p.require(libAlgorithm.computeClusterMap);
-          p.require(libUtility.ForwardList);
-          p.require(libUtility.PriorityQueue);
+          parallel.require(libAlgorithm.computeClusterMap);
+          parallel.require(libUtility.ForwardList);
+          parallel.require(libUtility.PriorityQueue);
           // the following code will be evaled from a blob in Parallel. so no need for libAlgorithm.
           // eslint-disable-next-line prefer-spread, no-undef
-          p.spawn(params => computeClusterMap.apply(null, params)).then((pClusterMap) => {
+          parallel.spawn(params => computeClusterMap.apply(null, params)).then((pClusterMap) => {
             const computedClusterMap = new libAlgorithm.ClusterMap(pClusterMap);
             // Set clusterMapsArray[d0][d1]
             const pending = this.clusterMapsArray[d0][d1].pending;

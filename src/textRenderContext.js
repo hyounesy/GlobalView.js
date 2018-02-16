@@ -1,170 +1,180 @@
 /**
  * A helper class that attaches a 2D canvas to the parent div of the given WebGL canvas.
  * This 2D canvas is used to draw text.
- * @constructor
- * @package
- * @param {Object} glContext // {WebGLRenderingContext}
- * @param {HTMLCanvasElement} canvas
  */
 // eslint-disable-next-line import/prefer-default-export
-export function TextRenderContext(glContext, canvas) {
-  const gl = glContext;
-  let textCanvas = document.createElement('canvas');
-  textCanvas.setAttribute('id', 'textCanvas');
-  textCanvas.style.backgroundColor = 'transparent';
-  textCanvas.style.pointerEvents = 'none';
-  textCanvas.style.zIndex = canvas.style.zIndex + 1;
-  textCanvas.style.position = 'static';// "absolute";
-  // textCanvas.style.left = textCanvas.style.top = "0px";
-  textCanvas.style.width = '100%';
-  textCanvas.style.height = '100%';
-  canvas.parentElement.appendChild(textCanvas);
-  let ctx = textCanvas.getContext('2d');
-  let varFont = ctx.font;
-  let fontHeight = ctx.measureText('M').width;
+export class TextRenderContext {
+  /**
+   * @constructor
+   * @package
+   * @param {Object} glContext // {WebGLRenderingContext}
+   * @param {HTMLCanvasElement} canvas
+   */
+  constructor(glContext, canvas) {
+    this.gl = glContext;
+    this.canvas = canvas;
+    this.textCanvas = document.createElement('canvas');
+    this.textCanvas.setAttribute('id', 'textCanvas');
+    this.textCanvas.style.backgroundColor = 'transparent';
+    this.textCanvas.style.pointerEvents = 'none';
+    this.textCanvas.style.zIndex = this.canvas.style.zIndex + 1;
+    this.textCanvas.style.position = 'static';// "absolute";
+    this.textCanvas.style.width = '100%';
+    this.textCanvas.style.height = '100%';
+    this.canvas.parentElement.appendChild(this.textCanvas);
+    this.ctx2d = this.textCanvas.getContext('2d');
+    this.font = this.ctx2d.font;
+    this.fontHeight = this.ctx2d.measureText('M').width;
+    this.setGLFunctions();
+    this.offscreenRendering = null;
+    this.onResize();
+  }
 
+  clear() {
+    this.ctx2d.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx2d.strokeStyle = this.gl.foreColorString;
+    this.ctx2d.fillStyle = this.gl.foreColorString;
+  }
 
-  this.clear = function () {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.strokeStyle = gl.foreColorString;
-    ctx.fillStyle = gl.foreColorString;
-  };
+  setGLFunctions() {
+    this.gl.drawText = function (str, px, py, anchor, rotation, color) {
+      const x = Math.floor(px);
+      const y = Math.floor(py);
 
-  gl.drawText = function (str, px, py, anchor, rotation, color) {
-    const x = Math.floor(px);
-    const y = Math.floor(py);
+      if (color) {
+        this.ctx2d.fillStyle = color;
+      }
 
-    if (color) {
-      ctx.fillStyle = color;
-    }
+      let offsetV;
+      switch (anchor) {
+        default: // 'topleft'
+          this.ctx2d.textAlign = 'left';
+          offsetV = this.fontHeight;
+          break;
+        case 'topcenter':
+          this.ctx2d.textAlign = 'center';
+          offsetV = this.fontHeight;
+          break;
+        case 'topright':
+          this.ctx2d.textAlign = 'right';
+          offsetV = this.fontHeight;
+          break;
+        case 'middleleft':
+          this.ctx2d.textAlign = 'left';
+          offsetV = this.fontHeight * 0.53;
+          break;
+        case 'middlecenter':
+          this.ctx2d.textAlign = 'center';
+          offsetV = this.fontHeight * 0.53;
+          break;
+        case 'middleright':
+          this.ctx2d.textAlign = 'right';
+          offsetV = this.fontHeight * 0.53;
+          break;
+        case 'bottomleft':
+          this.ctx2d.textAlign = 'left';
+          offsetV = 0;
+          break;
+        case 'bottomcenter':
+          this.ctx2d.textAlign = 'center';
+          offsetV = 0;
+          break;
+        case 'bottomright':
+          this.ctx2d.textAlign = 'right';
+          offsetV = 0;
+          break;
+      }
+      if (rotation === 0) {
+        this.ctx2d.fillText(str, x, y + offsetV);
+      } else {
+        this.ctx2d.save();
+        this.ctx2d.translate(x, y);
+        this.ctx2d.rotate(rotation);
+        this.ctx2d.translate(0, offsetV);
+        this.ctx2d.fillText(str, 0, 0);
+        this.ctx2d.restore();
+      }
 
-    let offsetV;
-    switch (anchor) {
-      default: // 'topleft'
-        ctx.textAlign = 'left';
-        offsetV = fontHeight;
-        break;
-      case 'topcenter':
-        ctx.textAlign = 'center';
-        offsetV = fontHeight;
-        break;
-      case 'topright':
-        ctx.textAlign = 'right';
-        offsetV = fontHeight;
-        break;
-      case 'middleleft':
-        ctx.textAlign = 'left';
-        offsetV = fontHeight * 0.53;
-        break;
-      case 'middlecenter':
-        ctx.textAlign = 'center';
-        offsetV = fontHeight * 0.53;
-        break;
-      case 'middleright':
-        ctx.textAlign = 'right';
-        offsetV = fontHeight * 0.53;
-        break;
-      case 'bottomleft':
-        ctx.textAlign = 'left';
-        offsetV = 0;
-        break;
-      case 'bottomcenter':
-        ctx.textAlign = 'center';
-        offsetV = 0;
-        break;
-      case 'bottomright':
-        ctx.textAlign = 'right';
-        offsetV = 0;
-        break;
-    }
-    if (rotation === 0) {
-      ctx.fillText(str, x, y + offsetV);
-    } else {
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(rotation);
-      ctx.translate(0, offsetV);
-      ctx.fillText(str, 0, 0);
-      ctx.restore();
-    }
+      if (color) {
+        this.ctx2d.fillStyle = this.gl.foreColorString;
+      }
+    }.bind(this);
 
-    if (color) {
-      ctx.fillStyle = gl.foreColorString;
-    }
-  };
-  gl.measureTextWidth = function (str) {
-    return ctx.measureText(str).width;
-  };
-  gl.measureTextHeight = function () {
-    return fontHeight;
-  };
+    this.gl.measureTextWidth = function (str) {
+      return this.ctx2d.measureText(str).width;
+    }.bind(this);
 
-  gl.drawRect = function (px, py, rectWidth, rectHeight) {
-    let x = px;
-    let y = py;
-    let width = rectWidth;
-    let height = rectHeight;
+    this.gl.measureTextHeight = function () {
+      return this.fontHeight;
+    }.bind(this);
 
-    if (width < 0) {
-      x += width;
-      width = -width;
-    }
-    if (height < 0) {
-      y += height;
-      height = -height;
-    }
+    this.gl.drawRect = function (px, py, rectWidth, rectHeight) {
+      let x = px;
+      let y = py;
+      let width = rectWidth;
+      let height = rectHeight;
 
-    x = Math.floor(x) + 0.5;
-    y = Math.floor(y) + 0.5;
-    width = Math.floor(width);
-    height = Math.floor(height);
+      if (width < 0) {
+        x += width;
+        width = -width;
+      }
+      if (height < 0) {
+        y += height;
+        height = -height;
+      }
 
-    // ctx.strokeStyle = gl.foreColorString;
-    ctx.strokeRect(x, y, width, height);
-  };
+      x = Math.floor(x) + 0.5;
+      y = Math.floor(y) + 0.5;
+      width = Math.floor(width);
+      height = Math.floor(height);
 
-  gl.drawPolygon = function (points, color) {
-    if (points.length < 2) {
-      return;
-    }
+      this.ctx2d.strokeRect(x, y, width, height);
+    }.bind(this);
 
-    if (color) {
-      ctx.fillStyle = color;
-    }
-    ctx.beginPath();
-    ctx.moveTo(points[0][0], points[0][1]);
-    for (let i = 1; i < points.length; i += 1) {
-      ctx.lineTo(points[i][0], points[i][1]);
-    }
-    ctx.closePath();
-    ctx.stroke();
-    if (color) {
-      ctx.fillStyle = gl.foreColorString;
-    }
-  };
-  gl.fillPolygon = function (points, color) {
-    if (points.length < 2) {
-      return;
-    }
+    this.gl.drawPolygon = function (points, color) {
+      if (points.length < 2) {
+        return;
+      }
 
-    if (color) {
-      ctx.fillStyle = color;
-    }
-    ctx.beginPath();
-    ctx.moveTo(points[0][0], points[0][1]);
-    for (let i = 1; i < points.length; i += 1) {
-      ctx.lineTo(points[i][0], points[i][1]);
-    }
-    ctx.closePath();
-    ctx.fill();
-    if (color) {
-      ctx.fillStyle = gl.foreColorString;
-    }
-  };
+      if (color) {
+        this.ctx2d.fillStyle = color;
+      }
+      this.ctx2d.beginPath();
+      this.ctx2d.moveTo(points[0][0], points[0][1]);
+      for (let i = 1; i < points.length; i += 1) {
+        this.ctx2d.lineTo(points[i][0], points[i][1]);
+      }
+      this.ctx2d.closePath();
+      this.ctx2d.stroke();
+      if (color) {
+        this.ctx2d.fillStyle = this.gl.foreColorString;
+      }
+    }.bind(this);
 
-  this.setFont = function (font) {
-    ctx.font = font;
-    varFont = font;
+    this.gl.fillPolygon = function (points, color) {
+      if (points.length < 2) {
+        return;
+      }
+
+      if (color) {
+        this.ctx2d.fillStyle = color;
+      }
+      this.ctx2d.beginPath();
+      this.ctx2d.moveTo(points[0][0], points[0][1]);
+      for (let i = 1; i < points.length; i += 1) {
+        this.ctx2d.lineTo(points[i][0], points[i][1]);
+      }
+      this.ctx2d.closePath();
+      this.ctx2d.fill();
+      if (color) {
+        this.ctx2d.fillStyle = this.gl.foreColorString;
+      }
+    }.bind(this);
+  }
+
+  setFont(font) {
+    this.ctx2d.font = font;
+    this.font = font;
 
     // Compute fontHeight (Source: http://stackoverflow.com/a/7462767)
     const body = document.getElementsByTagName('body')[0];
@@ -173,59 +183,51 @@ export function TextRenderContext(glContext, canvas) {
     dummy.appendChild(dummyText);
     dummy.style.font = font;
     body.appendChild(dummy);
-    fontHeight = dummy.offsetHeight * 0.62;
+    this.fontHeight = dummy.offsetHeight * 0.62;
     body.removeChild(dummy);
-  };
+  }
 
-  let offscreenRendering = null;
-
-  this.onResize = function () {
-    /* var canvasBounds = canvas.getBoundingClientRect();
-    textCanvas.style.left = canvasBounds.left;
-    textCanvas.style.top = canvasBounds.top;
-    textCanvas.style.width = textCanvas.width = canvasBounds.width;
-    textCanvas.style.height = textCanvas.height = canvasBounds.height; */
-
-    if (offscreenRendering !== null) {
-      textCanvas.width = offscreenRendering.width;
-      textCanvas.height = offscreenRendering.height;
+  onResize() {
+    if (this.offscreenRendering !== null) {
+      this.textCanvas.width = this.offscreenRendering.width;
+      this.textCanvas.height = this.offscreenRendering.height;
     } else {
-      const rect = textCanvas.getBoundingClientRect();
-      textCanvas.style.marginTop = `${-(rect.bottom - rect.top)}px`;
-      textCanvas.width = rect.right - rect.left;
-      textCanvas.height = rect.bottom - rect.top;
+      const rect = this.textCanvas.getBoundingClientRect();
+      this.textCanvas.style.marginTop = `${-(rect.bottom - rect.top)}px`;
+      this.textCanvas.width = rect.right - rect.left;
+      this.textCanvas.height = rect.bottom - rect.top;
     }
-    this.setFont(varFont); // Reset canvas font
-  };
+    this.setFont(this.font); // Reset canvas font
+  }
 
-  this.enableOffscreenRendering = function (width, height) {
-    if (offscreenRendering !== null) {
+  enableOffscreenRendering(width, height) {
+    if (this.offscreenRendering !== null) {
       return;
     }
-    offscreenRendering = {};
+    this.offscreenRendering = {};
 
-    offscreenRendering.width = width;
-    offscreenRendering.height = height;
-    offscreenRendering.oldCanvas = textCanvas;
-    offscreenRendering.oldContext = ctx;
-    textCanvas = document.createElement('canvas');
-    textCanvas.setAttribute('id', 'textCanvasOffScreen');
-    ctx = textCanvas.getContext('2d');
+    this.offscreenRendering.width = width;
+    this.offscreenRendering.height = height;
+    this.offscreenRendering.oldCanvas = this.textCanvas;
+    this.offscreenRendering.oldContext = this.ctx2d;
+    this.textCanvas = document.createElement('canvas');
+    this.textCanvas.setAttribute('id', 'textCanvasOffScreen');
+    this.ctx2d = this.textCanvas.getContext('2d');
     this.onResize();
-  };
-  this.disableOffscreenRendering = function () {
-    if (offscreenRendering === null) {
+  }
+
+  disableOffscreenRendering() {
+    if (this.offscreenRendering === null) {
       return;
     }
 
-    textCanvas = offscreenRendering.oldCanvas;
-    ctx = offscreenRendering.oldContext;
-    offscreenRendering = null;
+    this.textCanvas = this.offscreenRendering.oldCanvas;
+    this.ctx2d = this.offscreenRendering.oldContext;
+    this.offscreenRendering = null;
     // this.onResize();
-  };
-  this.getCanvas = function () {
-    return textCanvas;
-  };
+  }
 
-  this.onResize();
+  getCanvas() {
+    return this.textCanvas;
+  }
 }

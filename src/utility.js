@@ -598,6 +598,8 @@ export function addKeyUpHandler(onkeyup) {
  * @package
  */
 export function ForwardList(value) {
+  // Note: Tried refactoring this to a proper es6 class, but the transpiled code was not
+  // working properly when used by Parallel in dataset.js (_classCallCheck is not defined)
   this.value = value;
   this.next = null;
 
@@ -693,6 +695,8 @@ export function ForwardList(value) {
  * @param {string} priorityProperty
  */
 export function PriorityQueue(priorityProperty) {
+  // Note: Tried refactoring this to a proper es6 class, but the transpiled code was not
+  // working properly when used by Parallel in dataset.js (_classCallCheck is not defined)
   const data = [];
   this.length = 0;
   this.push = function (element) {

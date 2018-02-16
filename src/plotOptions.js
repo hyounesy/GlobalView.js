@@ -13,6 +13,7 @@ let currentPlot = null;
  */
 export const Options = {
   // General plot options
+
   /** The space around the drawing area in the form [top, right, bottom, left].
    * X-axis, y-axis and colormap are drawn within padding space. */
   padding: {
