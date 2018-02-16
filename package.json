@@ -16,8 +16,7 @@
   "browser": "child_process: false, dist/global-view.js",
   "scripts": {
     "build": "npm run transpile:commonjs && npm run transpile:es && npm run bundle",
-    "bundle": "cross-env BABEL_ENV=es NODE_ENV=production webpack --config webpack.config.js",
-    "uglify": "uglifyjs --compress --mangle -- dist/global-view.js",
+    "bundle": "cross-env BABEL_ENV=es webpack --config webpack.config.js",
     "clean": "rimraf es lib dist",
     "lint": "eslint src/*.js src/test/*.js src/test/plot.test/*.js src/examples/*.js",
     "nibble": "eslint-nibble src/*.js src/test/*.js src/test/plot.test/*.js src/examples/*.js",
@@ -74,6 +73,7 @@
     "rimraf": "~2.6",
     "save-pixels": "^2.3.4",
     "seedrandom": "^2.4.3",
+    "uglifyjs-webpack-plugin": "^1.1.8",
     "webpack": "~3.10",
     "webpack-dev-server": "^2.11.1"
   },

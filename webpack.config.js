@@ -1,5 +1,8 @@
 const path = require('path');
 
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const webpack = require('webpack');
+
 module.exports = {
   entry: './src/index.js',
   output: {
@@ -28,4 +31,14 @@ module.exports = {
   node: {
     child_process: 'empty',
   },
+  plugins: [
+    new UglifyJSPlugin({
+      uglifyOptions: {
+        screw_ie8: true,
+      },
+    }),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('production'),
+    }),
+  ],
 };
