@@ -1,9 +1,4 @@
 export {
-  mean,
-  range,
-} from './stats';
-
-export {
   GlobalView,
 } from './globalView';
 
