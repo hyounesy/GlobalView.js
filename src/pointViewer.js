@@ -1,9 +1,9 @@
-const libUtility = require('./utility.js');
-const libGraphics = require('./graphics.js');
-const libShaders = require('./shaders.js');
-const Colormap = require('./colormap.js').default;
-const libGlMatrix = require('gl-matrix');
-const Transform = require('./transform').default;
+import { mat2, vec2 } from 'gl-matrix';
+import { HashSet, consoleWarn, isString, showAlert } from './utility';
+import Shaders from './shaders';
+import { LoadTextureFromByteArray, Shader } from './graphics';
+import Colormap from './colormap';
+import Transform from './transform';
 
 /**
  * A renderable WebGL mesh of ndim-dimensional points
@@ -136,13 +136,13 @@ return offsets + vec{1}({2}) * scales + vec{1}({3}) * animatedScales;
     }
 
     // Compile shaders
-    this.sdr = new libGraphics.Shader(
+    this.sdr = new Shader(
       this.glCtx, [
         this.getPosCode(false),
-        libShaders.Shaders.vsDataPoint],
+        Shaders.vsDataPoint],
       ['precision highp float; uniform float pointSize;',
         opacityMapCoe,
-        libShaders.Shaders.fsDataPoint,
+        Shaders.fsDataPoint,
       ],
     );
     // this.sdr.transform = this.sdr.u1fv("transform");
@@ -158,7 +158,7 @@ return offsets + vec{1}({2}) * scales + vec{1}({3}) * animatedScales;
     }
     this.sdr.posattr = [this.sdr.getAttribLocation('p0'), this.sdr.getAttribLocation('p1'), this.sdr.getAttribLocation('p2'), this.sdr.getAttribLocation('p3')];
     this.sdr.vidattr = this.sdr.getAttribLocation('i');
-    this.sdrLine = new libGraphics.Shader(this.glCtx, [this.getPosCode(true), libShaders.Shaders.vsDataLine], ['precision highp float; uniform float pointSize;', opacityMapCoe, libShaders.Shaders.fsDataLine]);
+    this.sdrLine = new Shader(this.glCtx, [this.getPosCode(true), Shaders.vsDataLine], ['precision highp float; uniform float pointSize;', opacityMapCoe, Shaders.fsDataLine]);
     // this.sdrLine.transform = this.sdrLine.u1fv("transform");
     this.sdrLine.offsets = this.sdrLine.u4f('offsets');
     this.sdrLine.scales = this.sdrLine.u4f('scales');
@@ -312,21 +312,21 @@ return offsets + vec{1}({2}) * scales + vec{1}({3}) * animatedScales;
     }
 
     // Compute line vertices
-    const lineTransform = libGlMatrix.mat2.create();
-    libGlMatrix.mat2.scale(
+    const lineTransform = mat2.create();
+    mat2.scale(
       lineTransform, lineTransform,
-      libGlMatrix.vec2.fromValues(
+      vec2.fromValues(
         Math.sqrt((line[0] * line[0]) + (line[1] * line[1])),
         Math.max(1, this.options.pointSize /* / 10 */),
       ),
     );
-    libGlMatrix.mat2.rotate(
+    mat2.rotate(
       lineTransform, lineTransform,
       Math.atan2(line[1], line[0]),
     );
-    libGlMatrix.mat2.scale(
+    mat2.scale(
       lineTransform, lineTransform,
-      libGlMatrix.vec2.fromValues(1 / this.glCtx.width, 1 / this.glCtx.height),
+      vec2.fromValues(1 / this.glCtx.width, 1 / this.glCtx.height),
     );
     this.sdrLine.lineTransform(lineTransform);
 
@@ -365,14 +365,14 @@ class PointGroup {
   /**
    * @constructor
    * @package
-   * @extends {libUtility.HashSet}
+   * @extends {HashSet}
    */
   constructor(pointViewer, gl, globalView) {
     this.pointViewer = pointViewer;
     this.gl = gl;
     this.globalView = globalView;
     this.idxbuffer = this.gl.createBuffer();
-    libUtility.HashSet.call(this, this.onchange);
+    HashSet.call(this, this.onchange);
   }
 
   onchange() {
@@ -433,8 +433,7 @@ class PointGroup {
 /**
  * A viewer that renders point sets to the global view.
  */
-// eslint-disable-next-line import/prefer-default-export
-export class PointViewer {
+export default class PointViewer {
   /**
    * @constructor
    * @package
@@ -468,12 +467,12 @@ export class PointViewer {
       if (validationResult === true) {
         const c = Colormap.parseColormap(color);
         if (c) {
-          pointSet.colormap = libGraphics.LoadTextureFromByteArray(this.gl, c, c.length / 4, 1);
+          pointSet.colormap = LoadTextureFromByteArray(this.gl, c, c.length / 4, 1);
         }
       } else {
-        libUtility.consoleWarn(`GlobalView warning: Invalid value for point set color: ${color}`);
-        if (libUtility.isString(validationResult)) {
-          libUtility.consoleWarn(`                    ${validationResult}`);
+        consoleWarn(`GlobalView warning: Invalid value for point set color: ${color}`);
+        if (isString(validationResult)) {
+          consoleWarn(`                    ${validationResult}`);
         }
       }
     }
@@ -548,7 +547,7 @@ export class PointViewer {
 
     // Validate numvertices
     if (dataset.fdata.length !== dataset.length * dataset.numColumns) {
-      libUtility.showAlert("'dataset.fdata.length !== dataset.length * dataset.numColumns'");
+      showAlert("'dataset.fdata.length !== dataset.length * dataset.numColumns'");
       return;
     }
 

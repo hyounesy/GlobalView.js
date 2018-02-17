@@ -1,7 +1,7 @@
-const libGraphics = require('./graphics.js');
-const libUtility = require('./utility.js');
-const Colormap = require('./colormap.js').default;
-const libAlgorithm = require('./algorithm.js');
+import { validateGLSL } from './graphics';
+import { isNumber, isString, isArray } from './utility';
+import Colormap from './colormap';
+import { ClusterMapOptions } from './algorithm';
 
 let currentPlot = null;
 
@@ -21,8 +21,8 @@ export const Options = {
       ' X-axis, y-axis and colormap are drawn within padding space.',
     default: [50, 60, 50, 50],
     valid: value =>
-      libUtility.isNumber(value) || libUtility.isString(value) ||
-      (libUtility.isArray(value) && value.length === 4),
+      isNumber(value) || isString(value) ||
+      (isArray(value) && value.length === 4),
     requireRedraw: true,
     requireRecompile: false,
   },
@@ -95,7 +95,7 @@ export const Options = {
   pointClusterThreshold: {
     description: 'Controls the realtive threshold between clusters and outliers when' +
     ' showing clusters (see \'showPointClusters\')',
-    default: (new libAlgorithm.ClusterMapOptions()).threshold,
+    default: (new ClusterMapOptions()).threshold,
     valid: value => value > 0,
     requireRedraw: false, // Requests redraw internally
     requireRecompile: false,
@@ -158,7 +158,7 @@ export const Options = {
     description: 'When \'pointShape\' is set to \'Custom\', this defines a GLSL function ' +
       'given vec2 p, that returns opacity in the range [0.0 ... 1.0] at location p.',
     default: '{ return 1.0; }',
-    valid: value => libGraphics.validateGLSL(currentPlot.gl, `float opacityMap(in vec2 p) ${value}`),
+    valid: value => validateGLSL(currentPlot.gl, `float opacityMap(in vec2 p) ${value}`),
     requireRedraw: true,
     requireRecompile: true,
   },

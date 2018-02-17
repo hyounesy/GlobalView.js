@@ -1,4 +1,4 @@
-const libUtility = require('./utility.js');
+import { isUndefined, PriorityQueue } from './utility';
 
 export function DepthFirstSearch(problem) {
   const fringe = [];
@@ -24,7 +24,7 @@ export function DepthFirstSearch(problem) {
 
       // Avoid already pushed states (graph search)
       const successorHash = problem.computeHash(successor);
-      if (libUtility.isUndefined(closed[successorHash])) {
+      if (isUndefined(closed[successorHash])) {
         fringe.push({ state: successor });
         closed[successorHash] = successor;
       }
@@ -58,7 +58,7 @@ export function BreadthFirstSearch(problem) {
     // eslint-disable-next-line no-loop-func
     problem.forEachSuccessor(node.state, (successor) => {
       const successorHash = problem.computeHash(successor);
-      if (libUtility.isUndefined(closed[successorHash])) {
+      if (isUndefined(closed[successorHash])) {
         fringe.push({ state: successor });
         closed[successorHash] = successor;
       }
@@ -76,7 +76,7 @@ export function BreadthFirstSearch(problem) {
 }
 
 export function UniformCostSearch(problem) {
-  let fringe = new libUtility.PriorityQueue('cost');
+  let fringe = new PriorityQueue('cost');
   const closed = {};
 
   const startnode = { state: problem.getStartState(), cost: 0.0 };
@@ -91,7 +91,7 @@ export function UniformCostSearch(problem) {
     problem.forEachSuccessor(node.state, (successor, successorCost) => {
       const successorHash = problem.computeHash(successor);
       const varSuccessor = closed[successorHash];
-      if (libUtility.isUndefined(varSuccessor) ||
+      if (isUndefined(varSuccessor) ||
         node.cost + successorCost < varSuccessor.prevCost) {
         fringe.push({ state: successor, cost: node.cost + successorCost });
         closed[successorHash] = { state: successor, prevCost: node.cost + successorCost };
@@ -110,7 +110,7 @@ export function UniformCostSearch(problem) {
 }
 
 export function SimpleUniformCostSearch(problem) {
-  let fringe = new libUtility.PriorityQueue('cost');
+  let fringe = new PriorityQueue('cost');
   const closed = {};
 
   const startnode = { state: problem.getStartState(), cost: 0.0 };
@@ -124,7 +124,7 @@ export function SimpleUniformCostSearch(problem) {
     // eslint-disable-next-line no-loop-func
     problem.forEachSuccessor(node.state, (successor, successorCost) => {
       const successorHash = problem.computeHash(successor);
-      if (libUtility.isUndefined(closed[successorHash])) {
+      if (isUndefined(closed[successorHash])) {
         fringe.push({ state: successor, cost: successorCost });
         closed[successorHash] = successor;
       }
@@ -142,7 +142,7 @@ export function SimpleUniformCostSearch(problem) {
 }
 
 export function SimpleAStarSearch(problem) {
-  let fringe = new libUtility.PriorityQueue('cost');
+  let fringe = new PriorityQueue('cost');
   const closed = {};
 
   const CHECK_CONSISTENCY = false;
@@ -163,7 +163,7 @@ export function SimpleAStarSearch(problem) {
         throw new Error('Inconsistency found in A*-search heuristic');
       }
       const successorHash = problem.computeHash(successor);
-      if (libUtility.isUndefined(closed[successorHash])) {
+      if (isUndefined(closed[successorHash])) {
         fringe.push({ state: successor, f: g + h, g });
         closed[successorHash] = successor;
       }

@@ -6,9 +6,7 @@
  * @namespace
 */
 const Shaders = {};
-module.exports = {
-  Shaders,
-};
+export default Shaders;
 
 /**
  * @summary A simple vertex shader for meshes with positions and texture coordinates.

@@ -1,10 +1,10 @@
-const libUtility = require('./utility.js');
-const libGraphics = require('./graphics.js');
-const libShaders = require('./shaders.js');
-const libGlMatrix = require('gl-matrix');
+import { mat4 } from 'gl-matrix';
+import { isString, isArray, isNumber, isUndefined, colorNameToHex, hexToRgb } from './utility';
+import { Shader, LoadTexture, LoadTextureFromByteArray, Mesh } from './graphics';
+import Shaders from './shaders';
 
-const COLORMAP_WIDTH = 10; // [pixel]
-let availableColorMaps = null;
+const COLORMAP_WIDTH = 10; // (pixels) static, accessed through Colormap.getWidth()
+let availableColorMaps = {}; // static, accessed through Colormap.getAvailableColorMaps()
 
 // http://base64online.org/encode
 // http://textmechanic.co/Line-Length-Breaker.html
@@ -48,24 +48,24 @@ export default class Colormap {
     this.NUM_TICKS = 10;
 
     this.sdrLine =
-      new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
+      new Shader(gl, Shaders.vsSimple, Shaders.fsLine);
     this.sdrLine.color = this.sdrLine.u4f('color');
     this.sdrLine.color(...gl.foreColor);
     this.sdrLine.matWorldViewProj = this.sdrLine.u4x4f('matWorldViewProj');
 
-    this.sdrColormap = new libGraphics.Shader(
-      gl, libShaders.Shaders.vsTextured,
-      libShaders.Shaders.fsTextured1D,
+    this.sdrColormap = new Shader(
+      gl, Shaders.vsTextured,
+      Shaders.fsTextured1D,
     );
     this.sdrColormap.matWorldViewProj = this.sdrColormap.u4x4f('matWorldViewProj');
     availableColorMaps = {
-      exhue: libGraphics.LoadTexture(gl, imageExhue, () => {
+      exhue: LoadTexture(gl, imageExhue, () => {
         this.plot.invalidate();
       }),
-      rainbow: libGraphics.LoadTexture(gl, imageRainbow, () => {
+      rainbow: LoadTexture(gl, imageRainbow, () => {
         this.plot.invalidate();
       }),
-      2: libGraphics.LoadTextureFromByteArray(
+      2: LoadTextureFromByteArray(
         gl,
         new Uint8Array([255, 0, 0, 255, 0, 255, 0, 255]),
         2, 1,
@@ -75,14 +75,14 @@ export default class Colormap {
     this.texColormap = availableColorMaps.exhue;
 
     // Create a 2D line mesh
-    this.meshLine = new libGraphics.Mesh(gl, new Float32Array([
+    this.meshLine = new Mesh(gl, new Float32Array([
       // Positions
       0, 0, 0,
       1, 0, 0,
     ]), null, null, null, null, null, gl.LINES);
 
     // Create a 2D line quad mesh
-    this.meshLineQuad = new libGraphics.Mesh(gl, new Float32Array([
+    this.meshLineQuad = new Mesh(gl, new Float32Array([
       // Positions
       0, 0, 0,
       1, 0, 0,
@@ -91,7 +91,7 @@ export default class Colormap {
     ]), null, null, null, null, null, gl.LINE_LOOP);
 
     // Create a 2D quad mesh
-    this.meshQuad = new libGraphics.Mesh(gl, new Float32Array([
+    this.meshQuad = new Mesh(gl, new Float32Array([
       // Positions
       0, 1, 0,
       0, 0, 0,
@@ -149,19 +149,19 @@ export default class Colormap {
     this.sdrColormap.bind();
     this.meshQuad.bind(this.sdrColormap, this.texColormap);
 
-    const mattrans = libGlMatrix.mat4.create();
-    libGlMatrix.mat4.identity(mattrans);
+    const mattrans = mat4.create();
+    mat4.identity(mattrans);
     if (flipY === true) {
-      libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+      mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
     }
-    libGlMatrix.mat4.translate(
+    mat4.translate(
       mattrans, mattrans,
       [((2 * (plotBounds.x + plotBounds.width + 0.5)) / this.gl.width) - 1,
         ((2 * (plotBounds.y + 0.5)) / this.gl.height) - 1, 0],
     ); // 0.5 ... center inside pixel
-    libGlMatrix.mat4.scale(
+    mat4.scale(
       mattrans, mattrans,
-      [(2 * COLORMAP_WIDTH) / this.gl.width, (2 * plotBounds.height) / this.gl.height, 1],
+      [(2 * Colormap.getWidth()) / this.gl.width, (2 * plotBounds.height) / this.gl.height, 1],
     );
     this.sdrColormap.matWorldViewProj(mattrans);
     this.meshQuad.draw();
@@ -178,46 +178,46 @@ export default class Colormap {
 
     // Draw y-axis ticks and tick labels
     let tickLabelLeft = 0.0;
-    libGlMatrix.mat4.identity(mattrans);
+    mat4.identity(mattrans);
     if (flipY === true) {
-      libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+      mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
     }
-    libGlMatrix.mat4.translate(
+    mat4.translate(
       mattrans, mattrans,
-      [((2 * (plotBounds.x + plotBounds.width + COLORMAP_WIDTH + 0.5)) / this.gl.width) - 1,
+      [((2 * (plotBounds.x + plotBounds.width + Colormap.getWidth() + 0.5)) / this.gl.width) - 1,
         ((2 * (plotBounds.y + 0.5)) / this.gl.height) - 1, 0],
     ); // 0.5 ... center inside pixel
-    libGlMatrix.mat4.scale(
+    mat4.scale(
       mattrans, mattrans,
       [(2 * this.axis.tickLength) / this.gl.width, (2 * plotBounds.height) / this.gl.height, 1],
     );
     this.sdrLine.matWorldViewProj(mattrans);
     this.meshLine.draw();
-    libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, 1.0, 0.0]);
+    mat4.translate(mattrans, mattrans, [0.0, 1.0, 0.0]);
     this.sdrLine.matWorldViewProj(mattrans);
     this.meshLine.draw();
-    libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -1.0, 0.0]);
+    mat4.translate(mattrans, mattrans, [0.0, -1.0, 0.0]);
 
     for (let i = 0; i < this.axis.tickCount; i += 1) {
       const y = this.axis.tickOffset + (i * this.axis.tickDistance);
       const tickPos = (y - this.axis.minimum) / (this.axis.maximum - this.axis.minimum);
 
-      libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, tickPos, 0.0]);
+      mat4.translate(mattrans, mattrans, [0.0, tickPos, 0.0]);
       this.sdrLine.matWorldViewProj(mattrans);
       this.meshLine.draw();
-      libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -tickPos, 0.0]);
+      mat4.translate(mattrans, mattrans, [0.0, -tickPos, 0.0]);
 
       const tickLabel = this.axis.values ? this.axis.values[y] : y.toPrecision(6) / 1;
       tickLabelLeft = Math.max(tickLabelLeft, this.gl.measureTextWidth(tickLabel));
       this.gl.drawText(
         tickLabel,
-        plotBounds.x + plotBounds.width + COLORMAP_WIDTH + this.axis.tickLength + 2,
+        plotBounds.x + plotBounds.width + Colormap.getWidth() + this.axis.tickLength + 2,
         this.gl.height - plotBounds.y - (plotBounds.height * tickPos),
         'middleleft',
       );
     }
     tickLabelLeft = Math.ceil(plotBounds.x +
-      plotBounds.width + COLORMAP_WIDTH +
+      plotBounds.width + Colormap.getWidth() +
       this.axis.tickLength + 10 + tickLabelLeft);
 
     // >>> Draw axis label
@@ -334,7 +334,7 @@ export default class Colormap {
       } else {
         const c = Colormap.parseColormap(this.pointColor);
         if (c) {
-          this.texColormap = libGraphics.LoadTextureFromByteArray(this.gl, c, c.length / 4, 1);
+          this.texColormap = LoadTextureFromByteArray(this.gl, c, c.length / 4, 1);
         }
       }
     }
@@ -365,15 +365,15 @@ export default class Colormap {
    * @returns {Uint8Array} Colormap colors as an array of size [colormapLength * 4]
    */
   static parseColormap(colormap) {
-    if (libUtility.isString(colormap)) {
+    if (isString(colormap)) {
       return Colormap.parseColor(colormap);
     }
 
-    if (libUtility.isArray(colormap)) {
+    if (isArray(colormap)) {
       if (colormap.length === 0) {
         return null;
       }
-      if (libUtility.isString(colormap[0])) {
+      if (isString(colormap[0])) {
         const array = [];
         for (let i = 0; i < colormap.length; i += 1) {
           const color = Colormap.parseColor(colormap[i]);
@@ -384,7 +384,7 @@ export default class Colormap {
           }
         }
         return new Uint8Array(array);
-      } else if (libUtility.isNumber(colormap[0])) {
+      } else if (isNumber(colormap[0])) {
         return new Uint8Array(colormap);
       }
     }
@@ -398,11 +398,11 @@ export default class Colormap {
    * @returns {(boolean|string)} true of a valid color, otherwise the string error message
    */
   static validateColor(color) {
-    if (libUtility.isString(color)) {
-      if (!libUtility.isUndefined(libUtility.colorNameToHex(color))) {
+    if (isString(color)) {
+      if (!isUndefined(colorNameToHex(color))) {
         return true;
       } // color is known color name
-      const rgb = libUtility.hexToRgb(color);
+      const rgb = hexToRgb(color);
       if (rgb !== null &&
         rgb.r >= 0x00 && rgb.r <= 0xFF &&
         rgb.g >= 0x00 && rgb.g <= 0xFF &&
@@ -412,7 +412,7 @@ export default class Colormap {
       return `Unknown color ${color}`;
     }
 
-    if (libUtility.isArray(color)) {
+    if (isArray(color)) {
       if (color.length !== 4) {
         return 'Color array needs to have 4 components (RGBA).';
       }
@@ -428,13 +428,13 @@ export default class Colormap {
    * @returns {Uint8Array} Unit8Array of length 4: [r, g, b, a]
    */
   static parseColor(color) {
-    if (libUtility.isString(color)) {
-      const hex = libUtility.colorNameToHex(color);
-      const rgb = libUtility.hexToRgb(hex || color);
+    if (isString(color)) {
+      const hex = colorNameToHex(color);
+      const rgb = hexToRgb(hex || color);
       return rgb ? new Uint8Array([rgb.r, rgb.g, rgb.b, 255]) : null;
     }
 
-    if (libUtility.isArray(color)) {
+    if (isArray(color)) {
       return color.length >= 4 ? new Uint8Array([color[0], color[1], color[2], color[3]]) : null;
     }
 
@@ -451,18 +451,18 @@ export default class Colormap {
     if (colormap === null) {
       return true;
     }
-    if (libUtility.isString(colormap)) {
+    if (isString(colormap)) {
       if (Colormap.getAvailableColorMaps()[colormap]) {
         return true;
       }
       return Colormap.validateColor(colormap);
     }
 
-    if (libUtility.isArray(colormap)) {
+    if (isArray(colormap)) {
       if (colormap.length === 0) {
         return 'Colormap array cannot be empty.';
       }
-      if (libUtility.isString(colormap[0])) {
+      if (isString(colormap[0])) {
         for (let i = 0; i < colormap.length; i += 1) {
           const err = Colormap.validateColor(colormap[i]);
           if (err !== true) {
@@ -475,7 +475,7 @@ export default class Colormap {
         return 'Colormap array length must be multiple of 4.';
       }
       for (let i = 0; i < colormap.length; i += 1) {
-        if (!libUtility.isNumber(colormap[i]) || colormap[i] < 0x00 || colormap[i] > 0xFF) {
+        if (!isNumber(colormap[i]) || colormap[i] < 0x00 || colormap[i] > 0xFF) {
           return 'Colormap array must contain numbers between 0 and 255.';
         }
       }

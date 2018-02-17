@@ -1,4 +1,4 @@
-const globalView = require('../../dist/global-view.js');
+import { RandomDataset, download } from '../../dist/global-view';
 
 let plot = null;
 export default function BenchmarkDialog(paramPlot) {
@@ -149,7 +149,7 @@ export default function BenchmarkDialog(paramPlot) {
 
     // <<<<<<<<<< START RUN BENCHMARK >>>>>>>>>>
     if (currentOptions.N !== n) {
-      plot.load(new globalView.RandomDataset(n = currentOptions.N, 2), 0, 1, 1, 1);
+      plot.load(new RandomDataset(n = currentOptions.N, 2), 0, 1, 1, 1);
     }
 
     // Set options
@@ -250,10 +250,10 @@ export default function BenchmarkDialog(paramPlot) {
       zip.file('benchmark.csv', $.csv.fromArrays(csv));
 
       zip.generateAsync({ type: 'base64' }).then((base64) => {
-        globalView.download('benchmark.zip', `data:application/zip;base64,${base64}`);
+        download('benchmark.zip', `data:application/zip;base64,${base64}`);
       });
     } else {
-      globalView.download('benchmark.csv', `data:text/csv;charset=utf-8,${encodeURIComponent($.csv.fromArrays(csv))}`);
+      download('benchmark.csv', `data:text/csv;charset=utf-8,${encodeURIComponent($.csv.fromArrays(csv))}`);
     }
   }
 }

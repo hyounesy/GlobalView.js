@@ -1,5 +1,6 @@
-const libUtility = require('./utility.js');
-const libPathFinding = require('./pathFinding.js');
+import { isUndefined, download, imageUrlFromBytes, F32toI24flipY,
+  ForwardList as classForwardList } from './utility';
+import { SimpleUniformCostSearch } from './pathFinding';
 
 /**
  * Represents a density map.
@@ -369,7 +370,7 @@ export function computeDensityMap(histogram, options) {
     0.011447356659209 * (expectedRuntime ** 0.508796587646921) :
     0.017471566555264 * (expectedRuntime ** 0.466050299746328);
   expectedRuntime *= t1;
-  // libUtility.consoleLog("Expected runtime: " + expectedRuntime + "s");
+  // consoleLog("Expected runtime: " + expectedRuntime + "s");
 
   while (expectedRuntime > options.maxExpectedRuntime && width >= 2 && height >= 2) {
     // Downscale density map size by a factor of 2
@@ -762,7 +763,7 @@ export function findRepresentativePoints2(
 ) {
   let varK = numPointsToReturn;
   let varTargetRatio = targetRatio;
-  if (libUtility.isUndefined(varTargetRatio)) {
+  if (isUndefined(varTargetRatio)) {
     varTargetRatio = 0.5;
   } // Default ratio is "fifty-fifty"
 
@@ -1089,9 +1090,9 @@ export function downloadStencilMap(stencilMap, outputFileName) {
     bytes[(i * 4) + 2] = bytes[(i * 4) + 0];
     bytes[(i * 4) + 3] = 255;
   }
-  libUtility.download(
+  download(
     fileName,
-    libUtility.imageUrlFromBytes(bytes, stencilMap.width, stencilMap.height),
+    imageUrlFromBytes(bytes, stencilMap.width, stencilMap.height),
   );
 }
 
@@ -1188,7 +1189,7 @@ export function findClosePointOfLowDensityDescend(
       return (densityOffset + (densities[(state.y * width) + state.x] * densityScale)) ** 2;
     },
   };
-  libPathFinding.SimpleUniformCostSearch(searchProblem);
+  SimpleUniformCostSearch(searchProblem);
   const closestPoint = [bestState.x, bestState.y];
 
   // Transform closestPoint back from density map space to data space
@@ -1321,12 +1322,12 @@ export function findClosePointOfLowDensityNDDescend(dataset, refIndex, densityMa
     },
   };
 
-  libPathFinding.SimpleUniformCostSearch(searchProblem);
+  SimpleUniformCostSearch(searchProblem);
   // Other options for search algorithms:
-  //  libPathFinding.BreadthFirstSearch
-  //  libPathFinding.DepthFirstSearch
-  //  libPathFinding.SimpleAStarSearch
-  //  libPathFinding.SimpleGreedySearch
+  //  BreadthFirstSearch
+  //  DepthFirstSearch
+  //  SimpleAStarSearch
+  //  SimpleGreedySearch
   const closestPoint = bestState.p;
 
   // Transform closestPoint back from [0 ... size] space to data space
@@ -1374,7 +1375,7 @@ export function sampleDensityMap(densityMap) {
  */
 export function sampleDensityMapRow(densityMap, sampleCol, maxIterations) {
   let varMaxIterations = maxIterations;
-  if (libUtility.isUndefined(varMaxIterations)) {
+  if (isUndefined(varMaxIterations)) {
     varMaxIterations = Number.MAX_SAFE_INTEGER;
   }
 
@@ -1405,7 +1406,7 @@ export function sampleDensityMapRow(densityMap, sampleCol, maxIterations) {
  */
 export function sampleDensityMapColumn(densityMap, sampleRow, maxIterations) {
   let varMaxIterations = maxIterations;
-  if (libUtility.isUndefined(varMaxIterations)) {
+  if (isUndefined(varMaxIterations)) {
     varMaxIterations = Number.MAX_SAFE_INTEGER;
   }
 
@@ -1471,8 +1472,7 @@ export function sampleDensityMapChain(densityMapChain) {
   return sample;
 }
 
-const ForwardList = libUtility.ForwardList;
-const PriorityQueue = libUtility.PriorityQueue;
+const ForwardList = classForwardList;
 
 /**
  * This function can be computed by an asynchronous worker.
@@ -1579,81 +1579,6 @@ export function computeClusterMap(densityMap, dim0, dim1, options) {
   const clusterMinDensities = Array.apply(null, Array(numClusters))
     .map(Number.prototype.valueOf, densityThreshold);
 
-  const enableExtensionToZeroDensity = false;
-  if (enableExtensionToZeroDensity) {
-    // Extend clusters to fill entire density != 0 area
-
-    // Queue of all neighbors of clusters (candidates ro be included in the cluster)
-    const neighborQueue = new PriorityQueue('d');
-
-    for (let y = 0; y < height; y += 1) {
-      for (let x = 0; x < width; x += 1) {
-        if (clustermap[(y * width) + x] !== 0 &&
-          (
-            (x < width - 1 && clustermap[((y * width) + x) - 1] === 0) ||
-            (x > 0 && clustermap[(y * width) + x + 1] === 0) ||
-            (y > 0 && clustermap[((y - 1) * width) + x] === 0) ||
-            (y < height - 1 && clustermap[((y + 1) * width) + x] === 0)
-          )) {
-          neighborQueue.push({
-            c: clustermap[(y * width) + x], x, y, d: densities[(y * width) + x],
-          });
-        }
-      }
-    }
-
-    while (neighborQueue.length) {
-      const neighbor = neighborQueue.shift();
-      let x = neighbor.x;
-      let y = neighbor.y;
-      const id = neighbor.c;
-      x -= 1;
-      if (x !== -1) {
-        let nd = densities[(y * width) + x];
-        if (nd !== 0 && clustermap[(y * width) + x] === 0) {
-          neighborQueue.push({
-            c: clustermap[(y * width) + x] = id, x, y, d: nd = densities[(y * width) + x],
-          });
-          clusterMinDensities[id - 1] = Math.min(clusterMinDensities[id - 1], nd);
-        }
-      }
-
-      x += 2;
-      if (x !== width) {
-        let nd = densities[(y * width) + x];
-        if (nd !== 0 && clustermap[(y * width) + x] === 0) {
-          neighborQueue.push({
-            c: clustermap[(y * width) + x] = id, x, y, d: nd = densities[(y * width) + x],
-          });
-          clusterMinDensities[id - 1] = Math.min(clusterMinDensities[id - 1], nd);
-        }
-      }
-
-      x -= 1;
-      y -= 1;
-      if (y !== -1) {
-        let nd = densities[(y * width) + x];
-        if (nd !== 0 && clustermap[(y * width) + x] === 0) {
-          neighborQueue.push({
-            c: clustermap[(y * width) + x] = id, x, y, d: nd = densities[(y * width) + x],
-          });
-          clusterMinDensities[id - 1] = Math.min(clusterMinDensities[id - 1], nd);
-        }
-      }
-
-      y += 2;
-      if (y !== height) {
-        let nd = densities[(y * width) + x];
-        if (nd !== 0 && clustermap[(y * width) + x] === 0) {
-          neighborQueue.push({
-            c: clustermap[(y * width) + x] = id, x, y, d: nd = densities[(y * width) + x],
-          });
-          clusterMinDensities[id - 1] = Math.min(clusterMinDensities[id - 1], nd);
-        }
-      }
-    }
-  }
-
   const clusterMap = {
     data: clustermap,
     densities: clusterDensities,
@@ -1663,10 +1588,6 @@ export function computeClusterMap(densityMap, dim0, dim1, options) {
     width,
     height,
     transform: densityMap.transform,
-    /* transformX: densityMap.transformX,
-    transformY: densityMap.transformY,
-    invTransformX: densityMap.invTransformX,
-    invTransformY: densityMap.invTransformY */
   };
   return clusterMap;
 }
@@ -1683,8 +1604,8 @@ export function downloadDensityMap(densityMap, outputFileName) {
     fileName = 'densityMap.png';
   }
 
-  libUtility.download(fileName, libUtility.imageUrlFromBytes(
-    libUtility.F32toI24flipY(
+  download(fileName, imageUrlFromBytes(
+    F32toI24flipY(
       densityMap.data,
       [densityMap.minimum, densityMap.maximum],
       densityMap.width, densityMap.height,
@@ -1717,8 +1638,6 @@ export function vectorLineIntersection2D(vecPos, vecDir, lineP1, lineP2) {
     return null;
   } // Line and vector are parallel or coincident
 
-  // libUtility.consoleLog([(x1 * y2 - y1 * x2) / denom, (x3 * y4 - y3 * x4) / denom]);
-
   const xi = ((((x1 * y2) - (y1 * x2)) * (x3 - x4)) -
                ((x1 - x2) * ((x3 * y4) - (y3 * x4)))) / denom;
   const yi = ((((x1 * y2) - (y1 * x2)) * (y3 - y4)) -
@@ -1726,7 +1645,6 @@ export function vectorLineIntersection2D(vecPos, vecDir, lineP1, lineP2) {
 
 
   const u = Math.abs(x4 - x3) > Math.abs(y4 - y3) ? (xi - x3) / (x4 - x3) : (yi - y3) / (y4 - y3);
-  // libUtility.consoleLog(u);
   if (u < 0.0 || u > 1.0) {
     return null;
   } // Intersection lies outside the range a...b

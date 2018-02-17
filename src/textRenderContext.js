@@ -2,8 +2,7 @@
  * A helper class that attaches a 2D canvas to the parent div of the given WebGL canvas.
  * This 2D canvas is used to draw text.
  */
-// eslint-disable-next-line import/prefer-default-export
-export class TextRenderContext {
+export default class TextRenderContext {
   /**
    * @constructor
    * @package

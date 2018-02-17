@@ -1,7 +1,6 @@
-const libUtility = require('./utility.js');
+import { isString, isUndefined, isArray, consoleLog } from './utility';
 
-// eslint-disable-next-line import/prefer-default-export
-export const FormulaCompiler = {
+const FormulaCompiler = {
   compile(formula, symbolTypes) {
     // Enable next line to make parsing case-insensitive
     // formula = formula.toLowerCase();
@@ -213,7 +212,7 @@ export const FormulaCompiler = {
       const scope = symbolTypes || {};
 
       function prefixOpAST(op) { // eslint-disable-line no-unused-vars
-        if (!libUtility.isString(curTok)) {
+        if (!isString(curTok)) {
           return error(`Expected variable after prefix operator '${op}'`);
         }
 
@@ -260,7 +259,7 @@ export const FormulaCompiler = {
 
             // Lookup operator function and return type
             const returnType = functionsReturnTypes[funcSignature];
-            if (libUtility.isUndefined(returnType)) {
+            if (isUndefined(returnType)) {
               return error(`Undefined operator ${binOp} on FormulaCompiler.types` +
                            ` ${lhs.type.name} and ${rhs.type.name}`);
             }
@@ -301,12 +300,12 @@ export const FormulaCompiler = {
             return null;
           } // eat '.'
 
-          if (libUtility.isUndefined(type)) {
+          if (isUndefined(type)) {
             return error(`Undefined variable: ${identifier}`);
           }
           const parentType = type;
           const member = type.members[curVal];
-          if (libUtility.isUndefined(member)) {
+          if (isUndefined(member)) {
             return error(`${parentType.name} does not contain a member: ${curVal}`);
           }
           type = member.type;
@@ -333,7 +332,7 @@ export const FormulaCompiler = {
           return varDeclAST(variable, identifier); // Variable declaration
         }
 
-        if (libUtility.isUndefined(type)) {
+        if (isUndefined(type)) {
           return error(`Undefined variable: ${identifier}`);
         }
 
@@ -357,13 +356,13 @@ export const FormulaCompiler = {
       }
       function varDeclAST(pType, typeName) {
         const type = FormulaCompiler.types[typeName];
-        if (libUtility.isUndefined(type)) {
+        if (isUndefined(type)) {
           return error(`Unsupported type: ${typeName}`);
         }
 
         // Update scope
         const prev = scope[curVal];
-        if (!libUtility.isUndefined(prev)) {
+        if (!isUndefined(prev)) {
           return error(`Redefinition of variable: ${curVal}`);
         }
         scope[curVal] = type; // Store variable type in scope
@@ -396,7 +395,7 @@ export const FormulaCompiler = {
 
         // Lookup function and return type
         const returnType = functionsReturnTypes[funcSignature];
-        if (libUtility.isUndefined(returnType)) {
+        if (isUndefined(returnType)) {
           return error(`Undefined function ${funcSignature}`);
         }
 
@@ -482,7 +481,7 @@ export const FormulaCompiler = {
        */
       function exprAST(pExprPrec) {
         let exprPrec = pExprPrec;
-        if (libUtility.isUndefined(exprPrec)) {
+        if (isUndefined(exprPrec)) {
           exprPrec = 0;
         }
 
@@ -633,6 +632,9 @@ export const FormulaCompiler = {
     return result;
   },
 };
+export default FormulaCompiler;
+
+
 FormulaCompiler.types = {
   float: { name: 'float' },
   vec3: { name: 'vec3' },
@@ -646,27 +648,27 @@ FormulaCompiler.types.vec3.members = {
 function verboseTest(formula, symbols, symbolTypes) { // eslint-disable-line no-unused-vars
   const code = FormulaCompiler.compile(formula, symbolTypes || {});
 
-  libUtility.consoleLog(`formula: ${formula}`);
-  if (libUtility.isString(code)) {
-    libUtility.consoleLog(`err: ${code}`);
+  consoleLog(`formula: ${formula}`);
+  if (isString(code)) {
+    consoleLog(`err: ${code}`);
   } else {
     const globalScope = symbols || {};
-    libUtility.consoleLog(`code: ${code.map(c => (libUtility.isString(c) ? `"${c}"` : c)).join(' ')}`);
-    libUtility.consoleLog(`result: ${FormulaCompiler.run(code, new Array(16), globalScope)}`);
-    libUtility.consoleLog(`locals: ${JSON.stringify(globalScope)}`);
+    consoleLog(`code: ${code.map(c => (isString(c) ? `"${c}"` : c)).join(' ')}`);
+    consoleLog(`result: ${FormulaCompiler.run(code, new Array(16), globalScope)}`);
+    consoleLog(`locals: ${JSON.stringify(globalScope)}`);
   }
 }
 
 function verify(formula, result) { // eslint-disable-line no-unused-vars
   const code = FormulaCompiler.compile(formula);
-  if (libUtility.isString(code)) {
-    libUtility.consoleLog("Formula '{0}' failed with error '{1}'".format(formula, code));
+  if (isString(code)) {
+    consoleLog("Formula '{0}' failed with error '{1}'".format(formula, code));
   } else {
     const computedResult = FormulaCompiler.run(code, new Array(16), {});
 
     let match;
-    if (libUtility.isArray(result) &&
-      libUtility.isArray(computedResult) &&
+    if (isArray(result) &&
+      isArray(computedResult) &&
       result.length === computedResult.length) {
       match = true;
       for (let i = 0; i < result.length; i += 1) {
@@ -680,7 +682,7 @@ function verify(formula, result) { // eslint-disable-line no-unused-vars
     }
 
     if (!match) {
-      libUtility.consoleLog("Formula '{0}' returned '{1}', instead of '{2}'"
+      consoleLog("Formula '{0}' returned '{1}', instead of '{2}'"
         .format(formula, computedResult, result));
     }
   }
@@ -697,8 +699,8 @@ function benchmark(nIter, javascriptCode, formulaCode, evalCode) {
   for (let i = 0; i < nIter; i += 1) {
     sum += javascriptCode();
   }
-  libUtility.consoleLog(sum);
-  libUtility.consoleLog(`${performance.now() - tStart}ms`);
+  consoleLog(sum);
+  consoleLog(`${performance.now() - tStart}ms`);
 
   sum = 0.0;
   tStart = performance.now();
@@ -707,16 +709,16 @@ function benchmark(nIter, javascriptCode, formulaCode, evalCode) {
   for (let i = 0; i < nIter; i += 1) {
     sum += FormulaCompiler.run(code, stack, {});
   }
-  libUtility.consoleLog(sum);
-  libUtility.consoleLog(`${performance.now() - tStart}ms`);
+  consoleLog(sum);
+  consoleLog(`${performance.now() - tStart}ms`);
 
   sum = 0.0;
   tStart = performance.now();
   for (let i = 0; i < nIter; i += 1) {
     sum += eval(evalCode); // eslint-disable-line no-eval
   }
-  libUtility.consoleLog(sum);
-  libUtility.consoleLog(`${performance.now() - tStart}ms`);
+  consoleLog(sum);
+  consoleLog(`${performance.now() - tStart}ms`);
 }
 
 /* benchmark(1000000, function() {
