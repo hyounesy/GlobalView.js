@@ -18,7 +18,7 @@
     "build": "npm run transpile:commonjs && npm run transpile:es && npm run bundle",
     "bundle": "cross-env BABEL_ENV=es webpack --config webpack.config.js",
     "clean": "rimraf es lib dist",
-    "lint": "eslint 'src/**/*.js'",
+    "lint": "eslint 'src/**/*.js' --ignore-pattern *.min.js",
     "nibble": "eslint-nibble src/*.js src/test/*.js src/test/plot.test/*.js src/examples/*.js",
     "preversion": "npm run clean && npm run lint && npm run test",
     "postversion": "git push && git push --tags",
