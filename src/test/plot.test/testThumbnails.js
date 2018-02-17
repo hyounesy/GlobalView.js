@@ -1,11 +1,11 @@
-const globalView = require('../../../dist/global-view.js');
+import { GlobalView, CsvDataset } from '../../../dist/global-view';
 
 export default function testThumbnails(div, ondone) {
-  const plot = new globalView.GlobalView(div, null);
+  const plot = new GlobalView(div, null);
   this.getPlot = () => plot;
 
   // eslint-disable-next-line no-new
-  new globalView.CsvDataset('datasets/iris.data', {
+  new CsvDataset('datasets/iris.data', {
     columnLabels: ['Sepal Length [cm]', 'Sepal Width [cm]', 'Petal Length [cm]', 'Petal Width [cm]', 'Class'],
     imageFilenames: point => `datasets/${point[4]}.png`,
   }, (dataset) => {
