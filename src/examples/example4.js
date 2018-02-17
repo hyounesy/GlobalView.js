@@ -1,5 +1,5 @@
-const globalView = require('../../dist/global-view.js');
-const domready = require('domready'); // eslint-disable-line import/no-extraneous-dependencies
+import domready from 'domready'; // eslint-disable-line import/no-extraneous-dependencies
+import { GlobalView, RandomDataset } from '../../dist/global-view';
 
 domready(() => {
   let tStart;
@@ -20,7 +20,7 @@ domready(() => {
   };
 
   tStart = performance.now();
-  const plot = new globalView.GlobalView(document.getElementById('divGlobalView'), {
+  const plot = new GlobalView(document.getElementById('divGlobalView'), {
     pointSize: 1,
     pointOpacity: 1,
     enableTransparency: false,
@@ -28,7 +28,7 @@ domready(() => {
   });
   measureTime('Initialization', 1);
 
-  new globalView.RandomDataset(1e6, 2, ((dataset) => { // eslint-disable-line no-new
+  new RandomDataset(1e6, 2, ((dataset) => { // eslint-disable-line no-new
     plot.load(dataset, 0, 1, 1, 1);
   }));
   measureTime('Random dataset generation', 1);
