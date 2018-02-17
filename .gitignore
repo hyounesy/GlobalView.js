@@ -1,0 +1,9 @@
+.idea/
+node_modules/
+es/
+dist/
+coverage/
+.nyc_output/
+.vscode/
+lib/
+**/*.min.js
