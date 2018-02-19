@@ -35,6 +35,9 @@ module.exports = {
     new UglifyJSPlugin({
       uglifyOptions: {
         screw_ie8: true,
+        mangle: { // needed for Parallel to work
+          reserved: ['computeDensityMap', 'computeClusterMap', 'ForwardList'],
+        },
       },
     }),
     new webpack.DefinePlugin({

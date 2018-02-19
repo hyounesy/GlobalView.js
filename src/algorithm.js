@@ -1,5 +1,6 @@
 import { isUndefined, download, imageUrlFromBytes, F32toI24flipY,
-  ForwardList as classForwardList } from './utility';
+  ForwardList as classForwardList, // needed for Parallel to work
+} from './utility';
 import { SimpleUniformCostSearch } from './pathFinding';
 
 /**
@@ -1472,7 +1473,7 @@ export function sampleDensityMapChain(densityMapChain) {
   return sample;
 }
 
-const ForwardList = classForwardList;
+const ForwardList = classForwardList; // needed for Parallel to work
 
 /**
  * This function can be computed by an asynchronous worker.
@@ -1590,6 +1591,14 @@ export function computeClusterMap(densityMap, dim0, dim1, options) {
     transform: densityMap.transform,
   };
   return clusterMap;
+}
+
+// Had to add this function to resolve the issues causing syntax issues for Parallel.
+// More specifically, since computeClusterMap is not used elsewhere,
+// without this, function name is removed, and the code is created like:
+// function(densityMap, dim0, dim1, options) in the blob
+export function callComputeClusterMapToHackFixUglifyJS(densityMap, dim0, dim1, options) {
+  return computeClusterMap(densityMap, dim0, dim1, options);
 }
 
 /**

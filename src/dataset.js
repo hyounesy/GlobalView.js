@@ -292,7 +292,8 @@ export class Dataset {
         const computeDensityMap = funcComputeDensityMap;
         parallel.require(computeDensityMap);
         // the following code will be evaled from a blob in Parallel.
-        // eslint-disable-next-line prefer-spread, no-undef
+        // using spread operator, results in error: _toConsumableArray is not defined
+        // eslint-disable-next-line prefer-spread
         parallel.spawn(params => computeDensityMap.apply(null, params))
           .then((pDensityMap) => {
             const computedDensityMap = new DensityMap(pDensityMap);
@@ -447,23 +448,25 @@ export class Dataset {
           // Execute an asynchronous worker that computes clusterMapsArray[d0][d1]
           const parallel = new Parallel([makeCloneable(densityMap), d0, d1,
             new ClusterMapOptions(options)], { evalPath: 'eval.js' });
-          const computeClusterMap = funcComputeClusterMap;
           const ForwardList = classForwardList;
+          const computeClusterMap = funcComputeClusterMap;
           parallel.require(computeClusterMap);
           parallel.require(ForwardList);
           // the following code will be evaled from a blob in Parallel.
-          // eslint-disable-next-line prefer-spread, no-undef
-          parallel.spawn(params => computeClusterMap.apply(null, params)).then((pClusterMap) => {
-            const computedClusterMap = new ClusterMap(pClusterMap);
-            // Set clusterMapsArray[d0][d1]
-            const pending = this.clusterMapsArray[d0][d1].pending;
-            this.clusterMapsArray[d0][d1] = computedClusterMap;
+          // using spread operator, results in error: _toConsumableArray is not defined
+          // eslint-disable-next-line prefer-spread
+          parallel.spawn(params => computeClusterMap.apply(null, params))
+            .then((pClusterMap) => {
+              const computedClusterMap = new ClusterMap(pClusterMap);
+              // Set clusterMapsArray[d0][d1]
+              const pending = this.clusterMapsArray[d0][d1].pending;
+              this.clusterMapsArray[d0][d1] = computedClusterMap;
 
-            // Execute queued 'ondone' functions
-            pending.forEach((ondoneFunc) => {
-              ondoneFunc(computedClusterMap);
+              // Execute queued 'ondone' functions
+              pending.forEach((ondoneFunc) => {
+                ondoneFunc(computedClusterMap);
+              });
             });
-          });
         });
       } else if (!isUndefined(clusterMap.pending)) {
         // If clusterMapsArray[d0][d1] is currently being computed asynchronously
