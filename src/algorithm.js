@@ -1,4 +1,4 @@
-import { isUndefined, download, imageUrlFromBytes, F32toI24flipY,
+import { isUndefined, download, imageUrlFromBytes, F32toI24flipY, defaultTo,
   ForwardList as classForwardList, // needed for Parallel to work
 } from './utility';
 import { SimpleUniformCostSearch } from './pathFinding';
@@ -50,67 +50,67 @@ export class DensityMapOptions {
    * @param {DensityMapOptions=} source If not null, creates a copy of source
    */
   constructor(source) {
+    // Default constructor
+    // Initial density map size (affected by maxExpectedRuntime, inflateToFit and shrinkToFit)
+    /**
+     * @alias maxExpectedRuntime
+     * @memberof DensityMapOptions
+     * @summary If the estimated runtime for computing the density map (in seconds)
+     *          is higher than maxExpectedRuntime, the density map size is reduced
+     * @type {number}
+     * @default
+     */
+    this.maxExpectedRuntime = 1.0;
+    /**
+     * @alias cutoffIntensity
+     * @memberof DensityMapOptions
+     * @summary Densities below cutoffIntensity aren't computed
+     * @type {number}
+     * @default
+     */
+    this.cutoffIntensity = 0.001;
+    /**
+     * @alias gaussScale
+     * @memberof DensityMapOptions
+     * @summary Relative variance (variance normalized by density map size)
+     * @type {number}
+     * @default
+     */
+    this.gaussScale = 1000;
+    /**
+     * @alias logScale
+     * @memberof DensityMapOptions
+     * @summary When true, computes log-densities
+     * @type {boolean}
+     * @default
+     */
+    this.logScale = true;
+    /**
+     * @alias inflateToFit
+     * @memberof DensityMapOptions
+     * @summary When true, increases density map size to fit the full density map
+     * @type {boolean}
+     * @default
+     */
+    this.inflateToFit = true;
+    /**
+     * @alias shrinkToFit
+     * @memberof DensityMapOptions
+     * @summary When true, decreases density map size to the area of non-zero densities
+     *          plus a zero-density border of 1 pixel thickness
+     * @type {boolean}
+     * @default
+     */
+    this.shrinkToFit = true;
+
     if (source) {
       // Copy constructor
-      this.maxExpectedRuntime = source.maxExpectedRuntime;
-      this.cutoffIntensity = source.cutoffIntensity;
-      this.gaussScale = source.gaussScale;
-      this.logScale = source.logScale;
-      this.inflateToFit = source.inflateToFit;
-      this.shrinkToFit = source.shrinkToFit;
-    } else {
-      // Default constructor
-      // Initial density map size (affected by maxExpectedRuntime, inflateToFit and shrinkToFit)
-      /**
-       * @alias maxExpectedRuntime
-       * @memberof DensityMapOptions
-       * @summary If the estimated runtime for computing the density map (in seconds)
-       *          is higher than maxExpectedRuntime, the density map size is reduced
-       * @type {number}
-       * @default
-       */
-      this.maxExpectedRuntime = 1.0;
-      /**
-       * @alias cutoffIntensity
-       * @memberof DensityMapOptions
-       * @summary Densities below cutoffIntensity aren't computed
-       * @type {number}
-       * @default
-       */
-      this.cutoffIntensity = 0.001;
-      /**
-       * @alias gaussScale
-       * @memberof DensityMapOptions
-       * @summary Relative variance (variance normalized by density map size)
-       * @type {number}
-       * @default
-       */
-      this.gaussScale = 1000;
-      /**
-       * @alias logScale
-       * @memberof DensityMapOptions
-       * @summary When true, computes log-densities
-       * @type {boolean}
-       * @default
-       */
-      this.logScale = true;
-      /**
-       * @alias inflateToFit
-       * @memberof DensityMapOptions
-       * @summary When true, increases density map size to fit the full density map
-       * @type {boolean}
-       * @default
-       */
-      this.inflateToFit = true;
-      /**
-       * @alias shrinkToFit
-       * @memberof DensityMapOptions
-       * @summary When true, decreases density map size to the area of non-zero densities
-       *          plus a zero-density border of 1 pixel thickness
-       * @type {boolean}
-       * @default
-       */
-      this.shrinkToFit = true;
+      this.maxExpectedRuntime = defaultTo(source.maxExpectedRuntime, this.maxExpectedRuntime);
+      this.cutoffIntensity = defaultTo(source.cutoffIntensity, this.cutoffIntensity);
+      this.gaussScale = defaultTo(source.gaussScale, this.gaussScale);
+      this.logScale = defaultTo(source.logScale, this.logScale);
+      this.inflateToFit = defaultTo(source.inflateToFit, this.inflateToFit);
+      this.shrinkToFit = defaultTo(source.shrinkToFit, this.shrinkToFit);
     }
   }
 
@@ -176,19 +176,19 @@ export class ClusterMapOptions {
    * @param {ClusterMapOptions=} source If not null, creates a copy of source
    */
   constructor(source) {
+    this.densityMap = null;
+    /**
+     * @alias threshold
+     * @memberof ClusterMapOptions
+     * @summary Densities below threshold * maximum-density are considered outliers
+     * @type {number}
+     * @default
+     */
+    this.threshold = 0.1;
+
     if (source) {
-      this.densityMap = source.densityMap;
-      this.threshold = source.threshold;
-    } else {
-      this.densityMap = null;
-      /**
-       * @alias threshold
-       * @memberof ClusterMapOptions
-       * @summary Densities below threshold * maximum-density are considered outliers
-       * @type {number}
-       * @default
-       */
-      this.threshold = 0.1;
+      this.densityMap = defaultTo(source.densityMap, this.densityMap);
+      this.threshold = defaultTo(source.threshold, this.threshold);
     }
   }
 

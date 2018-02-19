@@ -21,9 +21,6 @@ let ENABLE_CONTINUOUS_RENDERING = false;
 let SHOW_FPS = false;
 const SIMULATE_LOW_FPS = false;
 
-// Image width/height are smaller or equal to IMAGE_SIZE, maintaining aspect ratio
-// var IMAGE_SIZE = 64
-
 /** @typedef {{
  * description: string,
  * default: *,
@@ -31,7 +28,8 @@ const SIMULATE_LOW_FPS = false;
  * requireRedraw: boolean,
  * requireRecompile: boolean
  * }} */
-let OptionDescription; // eslint-disable-line no-unused-vars
+// eslint-disable-next-line no-unused-vars
+let OptionDescription; // <-- used for JSDoc
 
 /**
  * @summary A fast scatterplot rendered with WebGL
@@ -1277,7 +1275,8 @@ export class GlobalView {
     };
 
     const maxNumIterations = 10000;
-    if (maxNumIterations !== 0) {
+    // if (maxNumIterations !== 0) // condition always true
+    {
       const R = imageLocations;
       const overlapThreshold = Math.min(0.15, 4 / imageLocations.length);
 

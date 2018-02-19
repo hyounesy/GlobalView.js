@@ -44,6 +44,11 @@ export function isUndefined(x) {
   return typeof x === 'undefined';
 }
 
+export function defaultTo(value, defaultValue) {
+  return isUndefined(value) ? defaultValue : value;
+}
+
+
 export function isFunction(x) {
   return typeof x === 'function';
 }
