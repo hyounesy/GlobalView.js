@@ -1,6 +1,6 @@
 {
   "name": "global-view",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "NPM distribution of GlobalView.js library.",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -19,7 +19,6 @@
     "bundle": "cross-env BABEL_ENV=es webpack --config webpack.config.js",
     "clean": "rimraf es lib dist",
     "lint": "eslint 'src/**/*.js' --ignore-pattern *.min.js",
-    "nibble": "eslint-nibble src/*.js src/test/*.js src/test/plot.test/*.js src/examples/*.js",
     "preversion": "npm run clean && npm run lint && npm run test",
     "postversion": "git push && git push --tags",
     "transpile:commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir lib --ignore 'examples/*,test/*'",
@@ -28,7 +27,7 @@
     "test:coverage": "cross-env BABEL_ENV=test nyc --reporter=lcov --reporter=text npm test",
     "version": "npm run build && git add .",
     "examples": "webpack --config ./src/examples/webpack.config.js && webpack-dev-server --config ./src/examples/webpack.config.js --open",
-    "plot.test": "webpack --config ./src/test/plot.test/webpack.config.js && webpack-dev-server --config ./src/test/plot.test/webpack.config.js --open",
+    "test:snapshot": "webpack --config ./src/test/plot.test/webpack.config.js && webpack-dev-server --config ./src/test/plot.test/webpack.config.js --open",
     "doc": "jsdoc -c doc/jsdoc_export.json && jsdoc -c doc/jsdoc_full.json"
   },
   "files": [
@@ -56,7 +55,6 @@
     "eslint": "^4.15.0",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-config-airbnb-base": "~12.1",
-    "eslint-nibble": "^4.2.1",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.5.1",
