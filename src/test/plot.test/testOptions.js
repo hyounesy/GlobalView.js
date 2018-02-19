@@ -1,68 +1,74 @@
-import { GlobalView, CsvDataset } from '../../../dist/global-view';
+import { CsvDataset } from '../../../dist/global-view';
+import SnapshotTest from './snapshotTest';
 
-function testCustomOptions(div, options, ondone, timeout = 500) {
-  const plot = new GlobalView(div, options);
-
-  // eslint-disable-next-line no-new
-  new CsvDataset('datasets/iris.data', {}, (dataset) => {
-    plot.load(dataset, 0, 1, 4, 1);
-
-    setTimeout(() => {
-      ondone();
-    }, timeout); // boiler-plate code
-  });
-  return plot;
+class TestCustomOptions extends SnapshotTest {
+  run() {
+    // eslint-disable-next-line no-new
+    new CsvDataset(SnapshotTest.getDatasetName(), {}, (dataset) => {
+      this.getPlot().load(dataset, 0, 1, 4, 1);
+      this.callOnDone();
+    });
+  }
 }
 
-export function testOptionPointSize(div, ondone) {
-  const plot = testCustomOptions(div, { pointSize: 15 }, ondone);
-  this.getPlot = () => plot;
+export class TestOptionPointSize extends TestCustomOptions {
+  getPlotOptions() { // eslint-disable-line class-methods-use-this
+    return { pointSize: 15 };
+  }
 }
 
-export function testOptionPointColor(div, ondone) {
-  const plot = testCustomOptions(
-    div, { pointColor: ['#F25', 'green', [40, 60, 230, 255]] },
-    ondone,
-  );
-  this.getPlot = () => plot;
+export class TestOptionPointColor extends TestCustomOptions {
+  getPlotOptions() { // eslint-disable-line class-methods-use-this
+    return { pointColor: ['#F25', 'green', [40, 60, 230, 255]] };
+  }
 }
 
-export function testOptionColormapVisibility(div, ondone) {
-  const plot = testCustomOptions(div, { showColormap: false }, ondone);
-  this.getPlot = () => plot;
+export class TestOptionColormapVisibility extends TestCustomOptions {
+  getPlotOptions() { // eslint-disable-line class-methods-use-this
+    return { showColormap: false };
+  }
 }
 
-export function testOptionTransparency(div, ondone) {
-  const plot = testCustomOptions(div, { enableTransparency: false }, ondone);
-  this.getPlot = () => plot;
+export class TestOptionTransparency extends TestCustomOptions {
+  getPlotOptions() { // eslint-disable-line class-methods-use-this
+    return { enableTransparency: false };
+  }
 }
 
-export function testOptionPointDensity(div, ondone) {
-  const plot = testCustomOptions(div, { showPointDensity: true }, ondone, 5000);
-  this.getPlot = () => plot;
+export class TestOptionPadding extends TestCustomOptions {
+  getPlotOptions() { // eslint-disable-line class-methods-use-this
+    return { padding: [100, 110, 120, 130] };
+  }
 }
 
-export function testOptionPointClusters(div, ondone) {
-  const plot = testCustomOptions(
-    div,
-    { showPointClusters: true, pointClusterThreshold: 0.2 },
-    ondone, 5000,
-  );
-  this.getPlot = () => plot;
+export class TestOptionPointShape extends TestCustomOptions {
+  getPlotOptions() { // eslint-disable-line class-methods-use-this
+    return { pointShape: 'Cross' };
+  }
 }
 
-export function testOptionPadding(div, ondone) {
-  const plot = testCustomOptions(div, { padding: [100, 110, 120, 130] }, ondone);
-  this.getPlot = () => plot;
+export class TestOptionPointOpacity extends TestCustomOptions {
+  getPlotOptions() { // eslint-disable-line class-methods-use-this
+    return { pointOpacity: 0.3 };
+  }
 }
 
-export function testOptionPointShape(div, ondone) {
-  const plot = testCustomOptions(div, { pointShape: 'Cross' }, ondone);
-  this.getPlot = () => plot;
+export class TestOptionPointDensity extends TestCustomOptions {
+  getPlotOptions() { // eslint-disable-line class-methods-use-this
+    return { showPointDensity: true };
+  }
+
+  getTimeOutMS() {
+    return this.timeOutMS * 10; // need more time to compute the density map
+  }
 }
 
-export function testOptionPointOpacity(div, ondone) {
-  const plot = testCustomOptions(div, { pointOpacity: 0.3 }, ondone);
-  this.getPlot = () => plot;
-}
+export class TestOptionPointClusters extends TestCustomOptions {
+  getPlotOptions() { // eslint-disable-line class-methods-use-this
+    return { showPointClusters: true, pointClusterThreshold: 0.2 };
+  }
 
+  getTimeOutMS() {
+    return this.timeOutMS * 10; // need more time to compute the cluster map
+  }
+}

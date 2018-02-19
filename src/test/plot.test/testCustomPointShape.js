@@ -1,19 +1,22 @@
-import { GlobalView, CsvDataset } from '../../../dist/global-view';
+import { CsvDataset } from '../../../dist/global-view';
+import SnapshotTest from './snapshotTest';
 
-export default function testCustomPointShape(div, ondone) {
-  const plot = new GlobalView(div, {
-    pointShape: 'Custom',
-    pointSize: 15,
-  });
-  this.getPlot = () => plot;
-
-  // eslint-disable-next-line no-new
-  new CsvDataset('datasets/iris.data', {}, (dataset) => {
-    plot.load(dataset, 0, 1, 4, 1);
+export default class TestCustomPointShape extends SnapshotTest {
+  getPlotOptions() { // eslint-disable-line class-methods-use-this
     const numLeafs = 5;
-    plot.setOption('customPointShape', `{ float r = length(p), f = sin(0.5 * ${numLeafs}.0 * atan(p.x, p.y)); return pow(clamp(abs(f) - r, 0.0, 1.0), 0.5); }`);
-    setTimeout(() => {
-      ondone();
-    }, 500);
-  });
+    return {
+      pointShape: 'Custom',
+      pointSize: 15,
+      customPointShape: `{ float r = length(p), f = sin(0.5 * ${numLeafs}.0 * atan(p.x, p.y)); return pow(clamp(abs(f) - r, 0.0, 1.0), 0.5); }`,
+    };
+  }
+
+  run() {
+    // eslint-disable-next-line no-new
+    new CsvDataset('datasets/iris.data', {}, (dataset) => {
+      this.getPlot().load(dataset, 0, 1, 4, 1);
+      this.getPlot().setOption();
+      this.callOnDone();
+    });
+  }
 }
