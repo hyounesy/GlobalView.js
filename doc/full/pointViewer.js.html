@@ -26,12 +26,12 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const libUtility = require('./utility.js');
-const libGraphics = require('./graphics.js');
-const libShaders = require('./shaders.js');
-const Colormap = require('./colormap.js').default;
-const libGlMatrix = require('gl-matrix');
-const Transform = require('./transform').default;
+            <pre class="prettyprint source linenums"><code>import { mat2, vec2 } from 'gl-matrix';
+import { HashSet, consoleWarn, isString, showAlert } from './utility';
+import Shaders from './shaders';
+import { LoadTextureFromByteArray, Shader } from './graphics';
+import Colormap from './colormap';
+import Transform from './transform';
 
 /**
  * A renderable WebGL mesh of ndim-dimensional points
@@ -164,13 +164,13 @@ return offsets + vec{1}({2}) * scales + vec{1}({3}) * animatedScales;
     }
 
     // Compile shaders
-    this.sdr = new libGraphics.Shader(
+    this.sdr = new Shader(
       this.glCtx, [
         this.getPosCode(false),
-        libShaders.Shaders.vsDataPoint],
+        Shaders.vsDataPoint],
       ['precision highp float; uniform float pointSize;',
         opacityMapCoe,
-        libShaders.Shaders.fsDataPoint,
+        Shaders.fsDataPoint,
       ],
     );
     // this.sdr.transform = this.sdr.u1fv("transform");
@@ -186,7 +186,7 @@ return offsets + vec{1}({2}) * scales + vec{1}({3}) * animatedScales;
     }
     this.sdr.posattr = [this.sdr.getAttribLocation('p0'), this.sdr.getAttribLocation('p1'), this.sdr.getAttribLocation('p2'), this.sdr.getAttribLocation('p3')];
     this.sdr.vidattr = this.sdr.getAttribLocation('i');
-    this.sdrLine = new libGraphics.Shader(this.glCtx, [this.getPosCode(true), libShaders.Shaders.vsDataLine], ['precision highp float; uniform float pointSize;', opacityMapCoe, libShaders.Shaders.fsDataLine]);
+    this.sdrLine = new Shader(this.glCtx, [this.getPosCode(true), Shaders.vsDataLine], ['precision highp float; uniform float pointSize;', opacityMapCoe, Shaders.fsDataLine]);
     // this.sdrLine.transform = this.sdrLine.u1fv("transform");
     this.sdrLine.offsets = this.sdrLine.u4f('offsets');
     this.sdrLine.scales = this.sdrLine.u4f('scales');
@@ -340,21 +340,21 @@ return offsets + vec{1}({2}) * scales + vec{1}({3}) * animatedScales;
     }
 
     // Compute line vertices
-    const lineTransform = libGlMatrix.mat2.create();
-    libGlMatrix.mat2.scale(
+    const lineTransform = mat2.create();
+    mat2.scale(
       lineTransform, lineTransform,
-      libGlMatrix.vec2.fromValues(
+      vec2.fromValues(
         Math.sqrt((line[0] * line[0]) + (line[1] * line[1])),
         Math.max(1, this.options.pointSize /* / 10 */),
       ),
     );
-    libGlMatrix.mat2.rotate(
+    mat2.rotate(
       lineTransform, lineTransform,
       Math.atan2(line[1], line[0]),
     );
-    libGlMatrix.mat2.scale(
+    mat2.scale(
       lineTransform, lineTransform,
-      libGlMatrix.vec2.fromValues(1 / this.glCtx.width, 1 / this.glCtx.height),
+      vec2.fromValues(1 / this.glCtx.width, 1 / this.glCtx.height),
     );
     this.sdrLine.lineTransform(lineTransform);
 
@@ -393,14 +393,14 @@ class PointGroup {
   /**
    * @constructor
    * @package
-   * @extends {libUtility.HashSet}
+   * @extends {HashSet}
    */
   constructor(pointViewer, gl, globalView) {
     this.pointViewer = pointViewer;
     this.gl = gl;
     this.globalView = globalView;
     this.idxbuffer = this.gl.createBuffer();
-    libUtility.HashSet.call(this, this.onchange);
+    HashSet.call(this, this.onchange);
   }
 
   onchange() {
@@ -461,8 +461,7 @@ class PointGroup {
 /**
  * A viewer that renders point sets to the global view.
  */
-// eslint-disable-next-line import/prefer-default-export
-export class PointViewer {
+export default class PointViewer {
   /**
    * @constructor
    * @package
@@ -496,12 +495,12 @@ export class PointViewer {
       if (validationResult === true) {
         const c = Colormap.parseColormap(color);
         if (c) {
-          pointSet.colormap = libGraphics.LoadTextureFromByteArray(this.gl, c, c.length / 4, 1);
+          pointSet.colormap = LoadTextureFromByteArray(this.gl, c, c.length / 4, 1);
         }
       } else {
-        libUtility.consoleWarn(`GlobalView warning: Invalid value for point set color: ${color}`);
-        if (libUtility.isString(validationResult)) {
-          libUtility.consoleWarn(`                    ${validationResult}`);
+        consoleWarn(`GlobalView warning: Invalid value for point set color: ${color}`);
+        if (isString(validationResult)) {
+          consoleWarn(`                    ${validationResult}`);
         }
       }
     }
@@ -576,7 +575,7 @@ export class PointViewer {
 
     // Validate numvertices
     if (dataset.fdata.length !== dataset.length * dataset.numColumns) {
-      libUtility.showAlert("'dataset.fdata.length !== dataset.length * dataset.numColumns'");
+      showAlert("'dataset.fdata.length !== dataset.length * dataset.numColumns'");
       return;
     }
 
@@ -634,13 +633,13 @@ export class PointViewer {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClusterMap.html">ClusterMap</a></li><li><a href="ClusterMapOptions.html">ClusterMapOptions</a></li><li><a href="CoordinateSystem.html">CoordinateSystem</a></li><li><a href="CsvDataset.html">CsvDataset</a></li><li><a href="DataMesh.html">DataMesh</a></li><li><a href="Dataset.html">Dataset</a></li><li><a href="DataVector.html">DataVector</a></li><li><a href="DensityMap.html">DensityMap</a></li><li><a href="DensityMapOptions.html">DensityMapOptions</a></li><li><a href="DensityViewer.html">DensityViewer</a></li><li><a href="ForwardList.html">ForwardList</a></li><li><a href="GlobalView.html">GlobalView</a></li><li><a href="HashSet.html">HashSet</a></li><li><a href="HistogramViewer.html">HistogramViewer</a></li><li><a href="ImageViewer.html">ImageViewer</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="module.exports.html">exports</a></li><li><a href="PointGroup.html">PointGroup</a></li><li><a href="PointViewer.html">PointViewer</a></li><li><a href="PriorityQueue.html">PriorityQueue</a></li><li><a href="RandomDataset.html">RandomDataset</a></li><li><a href="Shader.html">Shader</a></li><li><a href="TextRenderContext_TextRenderContext.html">TextRenderContext</a></li><li><a href="Thumbnail.html">Thumbnail</a></li></ul><h3>Namespaces</h3><ul><li><a href="Shaders.html">Shaders</a></li></ul><h3>Interfaces</h3><ul><li><a href="Viewer.html">Viewer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#computeClusterMap">computeClusterMap</a></li><li><a href="global.html#computeDensityMap">computeDensityMap</a></li><li><a href="global.html#computeDensityMapND">computeDensityMapND</a></li><li><a href="global.html#computeHistogram">computeHistogram</a></li><li><a href="global.html#computeHistogram2D">computeHistogram2D</a></li><li><a href="global.html#CSV_DATASET_OPTIONS">CSV_DATASET_OPTIONS</a></li><li><a href="global.html#downloadDensityMap">downloadDensityMap</a></li><li><a href="global.html#downloadStencilMap">downloadStencilMap</a></li><li><a href="global.html#findClosePointOfLowDensity">findClosePointOfLowDensity</a></li><li><a href="global.html#findClosePointOfLowDensityDescend">findClosePointOfLowDensityDescend</a></li><li><a href="global.html#findClosePointOfLowDensityNDDescend">findClosePointOfLowDensityNDDescend</a></li><li><a href="global.html#findRepresentativePoints">findRepresentativePoints</a></li><li><a href="global.html#findRepresentativePoints2">findRepresentativePoints2</a></li><li><a href="global.html#findRepresentativePointsND">findRepresentativePointsND</a></li><li><a href="global.html#findRepresentativePointsND2">findRepresentativePointsND2</a></li><li><a href="global.html#getTexture">getTexture</a></li><li><a href="global.html#getWidth">getWidth</a></li><li><a href="global.html#linesIntersect">linesIntersect</a></li><li><a href="global.html#markPointsInStencilMap">markPointsInStencilMap</a></li><li><a href="global.html#onPlotBoundsChanged">onPlotBoundsChanged</a></li><li><a href="global.html#parseColor">parseColor</a></li><li><a href="global.html#parseColormap">parseColormap</a></li><li><a href="global.html#pointInsidePolygon">pointInsidePolygon</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#sampleDensityMap">sampleDensityMap</a></li><li><a href="global.html#sampleDensityMapChain">sampleDensityMapChain</a></li><li><a href="global.html#sampleDensityMapColumn">sampleDensityMapColumn</a></li><li><a href="global.html#sampleDensityMapRow">sampleDensityMapRow</a></li><li><a href="global.html#setEnumRange">setEnumRange</a></li><li><a href="global.html#setLabel">setLabel</a></li><li><a href="global.html#setNumericRange">setNumericRange</a></li><li><a href="global.html#validateColor">validateColor</a></li><li><a href="global.html#validateColormap">validateColormap</a></li><li><a href="global.html#vectorLineIntersection2D">vectorLineIntersection2D</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClusterMap.html">ClusterMap</a></li><li><a href="ClusterMapOptions.html">ClusterMapOptions</a></li><li><a href="CsvDataset.html">CsvDataset</a></li><li><a href="DataMesh.html">DataMesh</a></li><li><a href="Dataset.html">Dataset</a></li><li><a href="DataVector.html">DataVector</a></li><li><a href="DensityMap.html">DensityMap</a></li><li><a href="DensityMapOptions.html">DensityMapOptions</a></li><li><a href="ForwardList.html">ForwardList</a></li><li><a href="GlobalView.html">GlobalView</a></li><li><a href="HashSet.html">HashSet</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="module.exports.html">exports</a></li><li><a href="PointGroup.html">PointGroup</a></li><li><a href="PriorityQueue.html">PriorityQueue</a></li><li><a href="RandomDataset.html">RandomDataset</a></li><li><a href="Shader.html">Shader</a></li><li><a href="Thumbnail.html">Thumbnail</a></li></ul><h3>Namespaces</h3><ul><li><a href="Shaders.html">Shaders</a></li></ul><h3>Interfaces</h3><ul><li><a href="Viewer.html">Viewer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#clearImages">clearImages</a></li><li><a href="global.html#computeClusterMap">computeClusterMap</a></li><li><a href="global.html#computeDensityMap">computeDensityMap</a></li><li><a href="global.html#computeDensityMapND">computeDensityMapND</a></li><li><a href="global.html#computeHistogram">computeHistogram</a></li><li><a href="global.html#computeHistogram2D">computeHistogram2D</a></li><li><a href="global.html#createPointSet">createPointSet</a></li><li><a href="global.html#CSV_DATASET_OPTIONS">CSV_DATASET_OPTIONS</a></li><li><a href="global.html#downloadDensityMap">downloadDensityMap</a></li><li><a href="global.html#downloadStencilMap">downloadStencilMap</a></li><li><a href="global.html#findClosePointOfLowDensity">findClosePointOfLowDensity</a></li><li><a href="global.html#findClosePointOfLowDensityDescend">findClosePointOfLowDensityDescend</a></li><li><a href="global.html#findClosePointOfLowDensityNDDescend">findClosePointOfLowDensityNDDescend</a></li><li><a href="global.html#findRepresentativePoints">findRepresentativePoints</a></li><li><a href="global.html#findRepresentativePoints2">findRepresentativePoints2</a></li><li><a href="global.html#findRepresentativePointsND">findRepresentativePointsND</a></li><li><a href="global.html#findRepresentativePointsND2">findRepresentativePointsND2</a></li><li><a href="global.html#getClusterMapThreshold">getClusterMapThreshold</a></li><li><a href="global.html#getImages">getImages</a></li><li><a href="global.html#getLabelBounds">getLabelBounds</a></li><li><a href="global.html#getTexture">getTexture</a></li><li><a href="global.html#getWidth">getWidth</a></li><li><a href="global.html#imageFromPoint">imageFromPoint</a></li><li><a href="global.html#labelFromPoint">labelFromPoint</a></li><li><a href="global.html#linesIntersect">linesIntersect</a></li><li><a href="global.html#markPointsInStencilMap">markPointsInStencilMap</a></li><li><a href="global.html#onOptionsChanged">onOptionsChanged</a></li><li><a href="global.html#onPlotBoundsChanged">onPlotBoundsChanged</a></li><li><a href="global.html#parseColor">parseColor</a></li><li><a href="global.html#parseColormap">parseColormap</a></li><li><a href="global.html#pointInsidePolygon">pointInsidePolygon</a></li><li><a href="global.html#removePointSet">removePointSet</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#resolveIntersections">resolveIntersections</a></li><li><a href="global.html#sampleDensityMap">sampleDensityMap</a></li><li><a href="global.html#sampleDensityMapChain">sampleDensityMapChain</a></li><li><a href="global.html#sampleDensityMapColumn">sampleDensityMapColumn</a></li><li><a href="global.html#sampleDensityMapRow">sampleDensityMapRow</a></li><li><a href="global.html#setClusterMapThreshold">setClusterMapThreshold</a></li><li><a href="global.html#setDataset">setDataset</a></li><li><a href="global.html#setEnumRange">setEnumRange</a></li><li><a href="global.html#setLabel">setLabel</a></li><li><a href="global.html#setNumericRange">setNumericRange</a></li><li><a href="global.html#showImage">showImage</a></li><li><a href="global.html#updateColorSchema">updateColorSchema</a></li><li><a href="global.html#updateImages">updateImages</a></li><li><a href="global.html#validateColor">validateColor</a></li><li><a href="global.html#validateColormap">validateColormap</a></li><li><a href="global.html#vectorLineIntersection2D">vectorLineIntersection2D</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Feb 16 2018 15:30:43 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Feb 19 2018 17:17:51 GMT-0800 (PST)
 </footer>
 
 <script> prettyPrint(); </script>

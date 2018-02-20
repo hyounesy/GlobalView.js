@@ -26,7 +26,7 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const libUtility = require('./utility.js');
+            <pre class="prettyprint source linenums"><code>import { isArray, consoleLog, showAlert, consoleWarn } from './utility';
 
 let currentShader = null;
 /**
@@ -46,15 +46,15 @@ export class Shader {
     this.debug = debug;
     let vs = vSh;
     let fs = fSh;
-    if (libUtility.isArray(vs)) {
+    if (isArray(vs)) {
       vs = vs.join('\n');
     }
-    if (libUtility.isArray(fs)) {
+    if (isArray(fs)) {
       fs = fs.join('\n');
     }
     if (debug === true) {
-      libUtility.consoleLog(vs);
-      libUtility.consoleLog(fs);
+      consoleLog(vs);
+      consoleLog(fs);
     }
 
     // Compile vertex shader -> vertexShader
@@ -62,8 +62,8 @@ export class Shader {
     gl.shaderSource(this.vertexShader, vs);
     gl.compileShader(this.vertexShader);
     if (!gl.getShaderParameter(this.vertexShader, gl.COMPILE_STATUS)) {
-      libUtility.consoleLog(vs);
-      libUtility.showAlert(gl.getShaderInfoLog(this.vertexShader));
+      consoleLog(vs);
+      showAlert(gl.getShaderInfoLog(this.vertexShader));
       return null;
     }
 
@@ -72,8 +72,8 @@ export class Shader {
     gl.shaderSource(this.fragmentShader, fs);
     gl.compileShader(this.fragmentShader);
     if (!gl.getShaderParameter(this.fragmentShader, gl.COMPILE_STATUS)) {
-      libUtility.consoleLog(fs);
-      libUtility.showAlert(gl.getShaderInfoLog(this.fragmentShader));
+      consoleLog(fs);
+      showAlert(gl.getShaderInfoLog(this.fragmentShader));
       return null;
     }
 
@@ -83,9 +83,9 @@ export class Shader {
     gl.attachShader(this.sdr, this.fragmentShader);
     gl.linkProgram(this.sdr);
     if (!gl.getProgramParameter(this.sdr, gl.LINK_STATUS)) {
-      libUtility.consoleLog(vs);
-      libUtility.consoleLog(fs);
-      libUtility.showAlert(gl.getProgramInfoLog(this.sdr));
+      consoleLog(vs);
+      consoleLog(fs);
+      showAlert(gl.getProgramInfoLog(this.sdr));
       return null;
     }
 
@@ -113,12 +113,12 @@ export class Shader {
         this.bind();
         this.gl.uniform1i(uniform, i);
         if (this.debug) {
-          libUtility.consoleLog('gl.uniform1i({0}, {1})'.format(uniformString, i));
+          consoleLog('gl.uniform1i({0}, {1})'.format(uniformString, i));
         }
       };
     }
     return this.debug ? i =>
-      libUtility.consoleLog(`Passing value  ${i} to unused uniform ${uniformString}`) : null;
+      consoleLog(`Passing value  ${i} to unused uniform ${uniformString}`) : null;
   }
 
   u1f(uniformString) {
@@ -129,12 +129,12 @@ export class Shader {
         this.bind();
         this.gl.uniform1f(uniform, f);
         if (this.debug) {
-          libUtility.consoleLog('gl.uniform1f({0}, {1})'.format(uniformString, f));
+          consoleLog('gl.uniform1f({0}, {1})'.format(uniformString, f));
         }
       };
     }
     return this.debug ? f =>
-      libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
+      consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
   }
 
   u2f(uniformString) {
@@ -145,12 +145,12 @@ export class Shader {
         this.bind();
         this.gl.uniform2f(uniform, x, y);
         if (this.debug) {
-          libUtility.consoleLog('gl.uniform2f({0}, {1}, {2})'.format(uniformString, x, y));
+          consoleLog('gl.uniform2f({0}, {1}, {2})'.format(uniformString, x, y));
         }
       };
     }
     return this.debug ? f =>
-      libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
+      consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
   }
 
   u2x2f(uniformString) {
@@ -161,12 +161,12 @@ export class Shader {
         this.bind();
         this.gl.uniformMatrix2fv(uniform, false, m);
         if (this.debug) {
-          libUtility.consoleLog('gl.uniformMatrix2fv({0}, {1})'.format(uniformString, m));
+          consoleLog('gl.uniformMatrix2fv({0}, {1})'.format(uniformString, m));
         }
       };
     }
     return this.debug ? f =>
-      libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
+      consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
   }
 
   u3f(uniformString) {
@@ -177,12 +177,12 @@ export class Shader {
         this.bind();
         this.gl.uniform3f(uniform, x, y, z);
         if (this.debug) {
-          libUtility.consoleLog('gl.uniform3f({0}, {1}, {2}, {3})'.format(uniformString, x, y, z));
+          consoleLog('gl.uniform3f({0}, {1}, {2}, {3})'.format(uniformString, x, y, z));
         }
       };
     }
     return this.debug ? f =>
-      libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
+      consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
   }
 
   u4f(uniformString) {
@@ -193,12 +193,12 @@ export class Shader {
         this.bind();
         this.gl.uniform4f(uniform, x, y, z, w);
         if (this.debug) {
-          libUtility.consoleLog('gl.uniform4f({0}, {1}, {2}, {3}, {4})'.format(uniformString, x, y, z, w));
+          consoleLog('gl.uniform4f({0}, {1}, {2}, {3}, {4})'.format(uniformString, x, y, z, w));
         }
       };
     }
     return this.debug ? f =>
-      libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
+      consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
   }
 
   u1fv(uniformString) {
@@ -209,12 +209,12 @@ export class Shader {
         this.bind();
         this.gl.uniform1fv(uniform, v);
         if (this.debug) {
-          libUtility.consoleLog('gl.uniform1fv({0}, {1})'.format(uniformString, v));
+          consoleLog('gl.uniform1fv({0}, {1})'.format(uniformString, v));
         }
       };
     }
     return this.debug ? f =>
-      libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
+      consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
   }
 
   u4fv(uniformString) {
@@ -225,12 +225,12 @@ export class Shader {
         this.bind();
         this.gl.uniform4fv(uniform, v);
         if (this.debug) {
-          libUtility.consoleLog('gl.uniform4fv({0}, {1})'.format(uniformString, v));
+          consoleLog('gl.uniform4fv({0}, {1})'.format(uniformString, v));
         }
       };
     }
     return this.debug ? f =>
-      libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
+      consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
   }
 
   u4x4f(uniformString) {
@@ -241,12 +241,12 @@ export class Shader {
         this.bind();
         this.gl.uniformMatrix4fv(uniform, false, m);
         if (this.debug) {
-          libUtility.consoleLog('gl.uniformMatrix4fv({0}, {1})'.format(uniformString, m));
+          consoleLog('gl.uniformMatrix4fv({0}, {1})'.format(uniformString, m));
         }
       };
     }
     return this.debug ? f =>
-      libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
+      consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
   }
 
   getAttribLocation(attributeName) {
@@ -466,7 +466,7 @@ export class Mesh {
     }
 
     if (texture) {
-      if (libUtility.isArray(texture)) {
+      if (isArray(texture)) {
         if (sdr.samplerArrayUniform) {
           const idxarray = new Array(texture.length);
           for (let i = 0; i &lt; texture.length; i += 1) {
@@ -586,7 +586,7 @@ export function LoadTextureFromByteArray(gl, array, width, height) {
 
 export function LoadTextureFromFloatArray(gl, array, width, height) {
   if (gl.getExtension('OES_texture_float') === null) {
-    libUtility.consoleWarn("GlobalView warning: The browser doesn't support floatingpoint textures");
+    consoleWarn("GlobalView warning: The browser doesn't support floatingpoint textures");
     return null;
   }
   const texture = gl.createTexture();
@@ -611,13 +611,13 @@ export function LoadTextureFromFloatArray(gl, array, width, height) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClusterMap.html">ClusterMap</a></li><li><a href="ClusterMapOptions.html">ClusterMapOptions</a></li><li><a href="CoordinateSystem.html">CoordinateSystem</a></li><li><a href="CsvDataset.html">CsvDataset</a></li><li><a href="DataMesh.html">DataMesh</a></li><li><a href="Dataset.html">Dataset</a></li><li><a href="DataVector.html">DataVector</a></li><li><a href="DensityMap.html">DensityMap</a></li><li><a href="DensityMapOptions.html">DensityMapOptions</a></li><li><a href="DensityViewer.html">DensityViewer</a></li><li><a href="ForwardList.html">ForwardList</a></li><li><a href="GlobalView.html">GlobalView</a></li><li><a href="HashSet.html">HashSet</a></li><li><a href="HistogramViewer.html">HistogramViewer</a></li><li><a href="ImageViewer.html">ImageViewer</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="module.exports.html">exports</a></li><li><a href="PointGroup.html">PointGroup</a></li><li><a href="PointViewer.html">PointViewer</a></li><li><a href="PriorityQueue.html">PriorityQueue</a></li><li><a href="RandomDataset.html">RandomDataset</a></li><li><a href="Shader.html">Shader</a></li><li><a href="TextRenderContext_TextRenderContext.html">TextRenderContext</a></li><li><a href="Thumbnail.html">Thumbnail</a></li></ul><h3>Namespaces</h3><ul><li><a href="Shaders.html">Shaders</a></li></ul><h3>Interfaces</h3><ul><li><a href="Viewer.html">Viewer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#computeClusterMap">computeClusterMap</a></li><li><a href="global.html#computeDensityMap">computeDensityMap</a></li><li><a href="global.html#computeDensityMapND">computeDensityMapND</a></li><li><a href="global.html#computeHistogram">computeHistogram</a></li><li><a href="global.html#computeHistogram2D">computeHistogram2D</a></li><li><a href="global.html#CSV_DATASET_OPTIONS">CSV_DATASET_OPTIONS</a></li><li><a href="global.html#downloadDensityMap">downloadDensityMap</a></li><li><a href="global.html#downloadStencilMap">downloadStencilMap</a></li><li><a href="global.html#findClosePointOfLowDensity">findClosePointOfLowDensity</a></li><li><a href="global.html#findClosePointOfLowDensityDescend">findClosePointOfLowDensityDescend</a></li><li><a href="global.html#findClosePointOfLowDensityNDDescend">findClosePointOfLowDensityNDDescend</a></li><li><a href="global.html#findRepresentativePoints">findRepresentativePoints</a></li><li><a href="global.html#findRepresentativePoints2">findRepresentativePoints2</a></li><li><a href="global.html#findRepresentativePointsND">findRepresentativePointsND</a></li><li><a href="global.html#findRepresentativePointsND2">findRepresentativePointsND2</a></li><li><a href="global.html#getTexture">getTexture</a></li><li><a href="global.html#getWidth">getWidth</a></li><li><a href="global.html#linesIntersect">linesIntersect</a></li><li><a href="global.html#markPointsInStencilMap">markPointsInStencilMap</a></li><li><a href="global.html#onPlotBoundsChanged">onPlotBoundsChanged</a></li><li><a href="global.html#parseColor">parseColor</a></li><li><a href="global.html#parseColormap">parseColormap</a></li><li><a href="global.html#pointInsidePolygon">pointInsidePolygon</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#sampleDensityMap">sampleDensityMap</a></li><li><a href="global.html#sampleDensityMapChain">sampleDensityMapChain</a></li><li><a href="global.html#sampleDensityMapColumn">sampleDensityMapColumn</a></li><li><a href="global.html#sampleDensityMapRow">sampleDensityMapRow</a></li><li><a href="global.html#setEnumRange">setEnumRange</a></li><li><a href="global.html#setLabel">setLabel</a></li><li><a href="global.html#setNumericRange">setNumericRange</a></li><li><a href="global.html#validateColor">validateColor</a></li><li><a href="global.html#validateColormap">validateColormap</a></li><li><a href="global.html#vectorLineIntersection2D">vectorLineIntersection2D</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClusterMap.html">ClusterMap</a></li><li><a href="ClusterMapOptions.html">ClusterMapOptions</a></li><li><a href="CsvDataset.html">CsvDataset</a></li><li><a href="DataMesh.html">DataMesh</a></li><li><a href="Dataset.html">Dataset</a></li><li><a href="DataVector.html">DataVector</a></li><li><a href="DensityMap.html">DensityMap</a></li><li><a href="DensityMapOptions.html">DensityMapOptions</a></li><li><a href="ForwardList.html">ForwardList</a></li><li><a href="GlobalView.html">GlobalView</a></li><li><a href="HashSet.html">HashSet</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="module.exports.html">exports</a></li><li><a href="PointGroup.html">PointGroup</a></li><li><a href="PriorityQueue.html">PriorityQueue</a></li><li><a href="RandomDataset.html">RandomDataset</a></li><li><a href="Shader.html">Shader</a></li><li><a href="Thumbnail.html">Thumbnail</a></li></ul><h3>Namespaces</h3><ul><li><a href="Shaders.html">Shaders</a></li></ul><h3>Interfaces</h3><ul><li><a href="Viewer.html">Viewer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#clearImages">clearImages</a></li><li><a href="global.html#computeClusterMap">computeClusterMap</a></li><li><a href="global.html#computeDensityMap">computeDensityMap</a></li><li><a href="global.html#computeDensityMapND">computeDensityMapND</a></li><li><a href="global.html#computeHistogram">computeHistogram</a></li><li><a href="global.html#computeHistogram2D">computeHistogram2D</a></li><li><a href="global.html#createPointSet">createPointSet</a></li><li><a href="global.html#CSV_DATASET_OPTIONS">CSV_DATASET_OPTIONS</a></li><li><a href="global.html#downloadDensityMap">downloadDensityMap</a></li><li><a href="global.html#downloadStencilMap">downloadStencilMap</a></li><li><a href="global.html#findClosePointOfLowDensity">findClosePointOfLowDensity</a></li><li><a href="global.html#findClosePointOfLowDensityDescend">findClosePointOfLowDensityDescend</a></li><li><a href="global.html#findClosePointOfLowDensityNDDescend">findClosePointOfLowDensityNDDescend</a></li><li><a href="global.html#findRepresentativePoints">findRepresentativePoints</a></li><li><a href="global.html#findRepresentativePoints2">findRepresentativePoints2</a></li><li><a href="global.html#findRepresentativePointsND">findRepresentativePointsND</a></li><li><a href="global.html#findRepresentativePointsND2">findRepresentativePointsND2</a></li><li><a href="global.html#getClusterMapThreshold">getClusterMapThreshold</a></li><li><a href="global.html#getImages">getImages</a></li><li><a href="global.html#getLabelBounds">getLabelBounds</a></li><li><a href="global.html#getTexture">getTexture</a></li><li><a href="global.html#getWidth">getWidth</a></li><li><a href="global.html#imageFromPoint">imageFromPoint</a></li><li><a href="global.html#labelFromPoint">labelFromPoint</a></li><li><a href="global.html#linesIntersect">linesIntersect</a></li><li><a href="global.html#markPointsInStencilMap">markPointsInStencilMap</a></li><li><a href="global.html#onOptionsChanged">onOptionsChanged</a></li><li><a href="global.html#onPlotBoundsChanged">onPlotBoundsChanged</a></li><li><a href="global.html#parseColor">parseColor</a></li><li><a href="global.html#parseColormap">parseColormap</a></li><li><a href="global.html#pointInsidePolygon">pointInsidePolygon</a></li><li><a href="global.html#removePointSet">removePointSet</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#resolveIntersections">resolveIntersections</a></li><li><a href="global.html#sampleDensityMap">sampleDensityMap</a></li><li><a href="global.html#sampleDensityMapChain">sampleDensityMapChain</a></li><li><a href="global.html#sampleDensityMapColumn">sampleDensityMapColumn</a></li><li><a href="global.html#sampleDensityMapRow">sampleDensityMapRow</a></li><li><a href="global.html#setClusterMapThreshold">setClusterMapThreshold</a></li><li><a href="global.html#setDataset">setDataset</a></li><li><a href="global.html#setEnumRange">setEnumRange</a></li><li><a href="global.html#setLabel">setLabel</a></li><li><a href="global.html#setNumericRange">setNumericRange</a></li><li><a href="global.html#showImage">showImage</a></li><li><a href="global.html#updateColorSchema">updateColorSchema</a></li><li><a href="global.html#updateImages">updateImages</a></li><li><a href="global.html#validateColor">validateColor</a></li><li><a href="global.html#validateColormap">validateColormap</a></li><li><a href="global.html#vectorLineIntersection2D">vectorLineIntersection2D</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Feb 16 2018 15:30:43 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Feb 19 2018 17:17:51 GMT-0800 (PST)
 </footer>
 
 <script> prettyPrint(); </script>
