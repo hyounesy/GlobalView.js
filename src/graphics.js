@@ -245,6 +245,11 @@ export class Shader {
   }
 }
 
+/**
+ * validates a glsl shader code
+ * @param {WebGLRenderingContext} gl webgl context
+ * @param {string} code shader code
+ */
 export function validateGLSL(gl, code) {
   const vertexShader = gl.createShader(gl.VERTEX_SHADER);
   gl.shaderSource(vertexShader, `void main() {} ${code}`);
@@ -510,6 +515,11 @@ export class Mesh {
 // >>> Section: Textures
 
 
+/**
+ * @param {WebGLRenderingContext} gl
+ * @param {texture} texture
+ * @param {function} onload callback
+ */
 function handleLoadedTexture(gl, texture, onload) {
   gl.bindTexture(gl.TEXTURE_2D, texture);
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -525,6 +535,12 @@ function handleLoadedTexture(gl, texture, onload) {
   }
 }
 
+/**
+ * Loads texture from file
+ * @param {WebGLRenderingContext} gl
+ * @param {string} filename
+ * @param {function} onload callback
+ */
 export function LoadTexture(gl, filename, onload) {
   const texture = gl.createTexture();
   texture.image = new Image();
@@ -535,6 +551,11 @@ export function LoadTexture(gl, filename, onload) {
   return texture;
 }
 
+/**
+ * Loads a gl texture from an html loaded image
+ * @param {WebGLRenderingContext} gl
+ * @param {HTMLImageElement} image
+ */
 export function LoadTextureFromImage(gl, image) {
   const texture = gl.createTexture();
   texture.image = image;
@@ -542,6 +563,13 @@ export function LoadTextureFromImage(gl, image) {
   return texture;
 }
 
+/**
+ * loads texture from an array of bytes
+ * @param {WebGLRenderingContext} gl
+ * @param {number[]} array pixels byte array
+ * @param {number} width texture width
+ * @param {number} height texture height
+ */
 export function LoadTextureFromByteArray(gl, array, width, height) {
   const texture = gl.createTexture();
   texture.byteArray = array;
@@ -556,6 +584,13 @@ export function LoadTextureFromByteArray(gl, array, width, height) {
   return texture;
 }
 
+/**
+ * loads texture from an array of floats
+ * @param {WebGLRenderingContext} gl
+ * @param {number[]} array pixels float array
+ * @param {number} width texture width
+ * @param {number} height texture height
+ */
 export function LoadTextureFromFloatArray(gl, array, width, height) {
   if (gl.getExtension('OES_texture_float') === null) {
     consoleWarn("GlobalView warning: The browser doesn't support floatingpoint textures");

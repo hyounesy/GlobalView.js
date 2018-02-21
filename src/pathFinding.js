@@ -1,5 +1,9 @@
 import { isUndefined, PriorityQueue } from './utility';
 
+/**
+ * Runs depth first search on the given problem
+ * @param {Problem} problem {forEachSuccessor(), getStartState(), computeHash(), isGoalState()}
+ */
 export function DepthFirstSearch(problem) {
   const fringe = [];
   const closed = {};
@@ -43,6 +47,10 @@ export function DepthFirstSearch(problem) {
   }
 }
 
+/**
+ * Runs breath first search on the given problem
+ * @param {Problem} problem {forEachSuccessor(), getStartState(), computeHash(), isGoalState()}
+ */
 export function BreadthFirstSearch(problem) {
   let fringe = [];
   const closed = {};
@@ -75,6 +83,10 @@ export function BreadthFirstSearch(problem) {
   }
 }
 
+/**
+ * Runs uniform cost search algorithm on the given problem
+ * @param {Problem} problem {forEachSuccessor(), getStartState(), computeHash(), isGoalState()}
+ */
 export function UniformCostSearch(problem) {
   let fringe = new PriorityQueue('cost');
   const closed = {};
@@ -109,6 +121,10 @@ export function UniformCostSearch(problem) {
   }
 }
 
+/**
+ * Runs simple uniform cost search on the given problem
+ * @param {Problem} problem {getStartState(), isGoalState(), forEachSuccessor(), computeHash()}
+ */
 export function SimpleUniformCostSearch(problem) {
   let fringe = new PriorityQueue('cost');
   const closed = {};
@@ -141,6 +157,11 @@ export function SimpleUniformCostSearch(problem) {
   }
 }
 
+/**
+ * Runs simple A* search on the given problem
+ * @param {Problem} problem {getStartState(), isGoalState(),
+ * forEachSuccessor(), computeHash(), heuristic()}
+ */
 export function SimpleAStarSearch(problem) {
   let fringe = new PriorityQueue('cost');
   const closed = {};
@@ -180,6 +201,10 @@ export function SimpleAStarSearch(problem) {
   }
 }
 
+/**
+ * Runs simple greedy search on the given problem
+ * @param {Problem} problem {getStartState(), isGoalState(), forEachSuccessor()}
+ */
 export function SimpleGreedySearch(problem) {
   const startstate = problem.getStartState();
   let state = startstate;

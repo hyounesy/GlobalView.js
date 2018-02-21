@@ -6,8 +6,8 @@ class TextRenderContext {
   /**
    * @constructor
    * @package
-   * @param {Object} glContext // {WebGLRenderingContext}
-   * @param {HTMLCanvasElement} canvas
+   * @param {WebGLRenderingContext} glContext WebGLRenderingContext object
+   * @param {HTMLCanvasElement} canvas html canvas element
    */
   constructor(glContext, canvas) {
     this.gl = glContext;
@@ -29,12 +29,18 @@ class TextRenderContext {
     this.onResize();
   }
 
+  /**
+   * clears the rendering context
+   */
   clear() {
     this.ctx2d.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx2d.strokeStyle = this.gl.foreColorString;
     this.ctx2d.fillStyle = this.gl.foreColorString;
   }
 
+  /**
+   * initializes the gl functions for the text render context
+   */
   setGLFunctions() {
     this.gl.drawText = function (str, px, py, anchor, rotation, color) {
       const x = Math.floor(px);
@@ -171,6 +177,10 @@ class TextRenderContext {
     }.bind(this);
   }
 
+  /**
+   * Sets the font for context
+   * @param {string} font "font-size font-family"
+   */
   setFont(font) {
     this.ctx2d.font = font;
     this.font = font;
@@ -186,6 +196,9 @@ class TextRenderContext {
     body.removeChild(dummy);
   }
 
+  /**
+   * on-resize callback
+   */
   onResize() {
     if (this.offscreenRendering !== null) {
       this.textCanvas.width = this.offscreenRendering.width;
@@ -199,6 +212,11 @@ class TextRenderContext {
     this.setFont(this.font); // Reset canvas font
   }
 
+  /**
+   * Enables rendering to an off-screen buffer of given size
+   * @param {number} width buffer width
+   * @param {number} height buffer height
+   */
   enableOffscreenRendering(width, height) {
     if (this.offscreenRendering !== null) {
       return;
@@ -215,6 +233,9 @@ class TextRenderContext {
     this.onResize();
   }
 
+  /**
+   * Disables off-screen rendering
+   */
   disableOffscreenRendering() {
     if (this.offscreenRendering === null) {
       return;
@@ -226,6 +247,9 @@ class TextRenderContext {
     // this.onResize();
   }
 
+  /**
+   * @returns {HTMLCanvasElement} current text canvas
+   */
   getCanvas() {
     return this.textCanvas;
   }

@@ -86,56 +86,99 @@ class Transform {
     }
   }
 
-  scale(d, factor) {
-    this.dataset.dataVectors[d].scale *= factor;
+  /**
+   * Scales the coordinate system for the specified dimension by the specified factor
+   * @param {number} dim - dataset dimension index
+   * @param {number} factor - scale distance
+   */
+  scale(dim, factor) {
+    this.dataset.dataVectors[dim].scale *= factor;
     this.invalid = true;
 
-    if (d === this.activeInputs[0]) {
+    if (dim === this.activeInputs[0]) {
       this.plot.updateCoorinateSystem(0, this.activeInputs[0]);
     }
-    if (d === this.activeInputs[1]) {
+    if (dim === this.activeInputs[1]) {
       this.plot.updateCoorinateSystem(1, this.activeInputs[1]);
     }
-    if (d === this.activeInputs[2]) {
+    if (dim === this.activeInputs[2]) {
       this.plot.updateColormap(this.activeInputs[2]);
     }
-    if (d === this.activeInputs[0] || d === this.activeInputs[1] || d === this.activeInputs[2]) {
+    if (dim === this.activeInputs[0] ||
+        dim === this.activeInputs[1] ||
+        dim === this.activeInputs[2]) {
       this.plot.invalidate();
     }
   }
 
+  // called by GlobalView when input data (or dimensions) change
   onInputChanged() {
     this.invalid = true;
     return true;
   }
 
   // Getter methods
-  getOffset(d) {
-    return this.dataset.dataVectors[this.activeInputs[d]].offset;
+
+  /**
+   * Get view offset for a given dataset dimension
+   * @param {number} dim dataset dimension index
+   * @returns {number} offset for the given dimension
+   */
+  getOffset(dim) {
+    return this.dataset.dataVectors[this.activeInputs[dim]].offset;
   }
 
-  getScale(d) {
-    return this.dataset.dataVectors[this.activeInputs[d]].scale;
+  /**
+   * Get scale for a given dataset dimension
+   * @param {number} dim dataset dimension index
+   * @returns {number} scale for the given dimension
+   */
+  getScale(dim) {
+    return this.dataset.dataVectors[this.activeInputs[dim]].scale;
   }
 
-  getMinimum(d) {
-    return this.dataset.dataVectors[this.activeInputs[d]].minimum;
+  /**
+   * Gets the minimum dataset (or user specified) value for a given dataset dimension
+   * @param {number} dim dataset dimension index
+   * @returns {number} minimum value for the given dimension
+   */
+  getMinimum(dim) {
+    return this.dataset.dataVectors[this.activeInputs[dim]].minimum;
   }
 
-  getMaximum(d) {
-    return this.dataset.dataVectors[this.activeInputs[d]].maximum;
+  /**
+   * Gets the maximum dataset (or user specified) value for a given dataset dimension
+   * @param {number} dim dataset dimension index
+   * @returns {number} maximum value for the given dimension
+   */
+  getMaximum(dim) {
+    return this.dataset.dataVectors[this.activeInputs[dim]].maximum;
   }
 
-  getVisibleMinimum(d) {
-    return (0 - this.dataset.dataVectors[this.activeInputs[d]].offset) /
-    this.dataset.dataVectors[this.activeInputs[d]].scale;
+  /**
+   * Gets the visible minimum value (considering data and offset) for a given dataset dimension
+   * @param {number} dim dataset dimension index
+   * @returns {number} minimum visible value for the given dimension
+   */
+  getVisibleMinimum(dim) {
+    return (0 - this.dataset.dataVectors[this.activeInputs[dim]].offset) /
+      this.dataset.dataVectors[this.activeInputs[dim]].scale;
   }
 
-  getVisibleMaximum(d) {
-    return (1 - this.dataset.dataVectors[this.activeInputs[d]].offset) /
-      this.dataset.dataVectors[this.activeInputs[d]].scale;
+  /**
+   * Gets the visible maximum value (considering data and offset) for a given dataset dimension
+   * @param {number} dim dataset dimension index
+   * @returns {number} maximum visible value for the given dimension
+   */
+  getVisibleMaximum(dim) {
+    return (1 - this.dataset.dataVectors[this.activeInputs[dim]].offset) /
+      this.dataset.dataVectors[this.activeInputs[dim]].scale;
   }
 
+  /**
+   * Returns offset values of all dataset dimensions.
+   * @returns {number[]} offset values for all dataset dimensions
+   */
   getOffsets() {
     if (this.invalid === true) {
       this.recompute();
@@ -143,6 +186,10 @@ class Transform {
     return this.offsets;
   }
 
+  /**
+   * Returns scale values of all dataset dimensions.
+   * @returns {number[]} scale values for all dataset dimensions
+   */
   getScales() {
     if (this.invalid === true) {
       this.recompute();
@@ -150,6 +197,10 @@ class Transform {
     return this.scales;
   }
 
+  /**
+   * Returns currently animating scale values of all dataset dimensions.
+   * @returns {number[]} current scale values for all dataset dimensions at this frame.
+   */
   getAnimatedScales() {
     if (this.invalid === true) {
       this.recompute();
@@ -158,6 +209,13 @@ class Transform {
   }
 
   // Transformation methods
+
+  /**
+   * Transforms device coordinates to coordinates in the dataset
+   * @param {number[]} vOutCoord output vector in dataset coordinate system
+   * @param {number[]} vInCoord input vector in device coordinate system
+   * @returns output vector in dataset coordiante system
+   */
   deviceCoordToDatasetCoord(vOutCoord, vInCoord) {
     const vOut = vOutCoord;
     const vIn = vInCoord;
@@ -171,6 +229,12 @@ class Transform {
     return vOut;
   }
 
+  /**
+   * Transforms distance in device coordinate system to dataset coordinate system
+   * @param {number[]} vOutCoord output distance vector in dataset coordinate system
+   * @param {number[]} vInCoord input distance vector in device coordinate system
+   * @returns output distance vector in dataset coordinate system
+   */
   deviceDistToDatasetDist(vOutCoord, vInCoord) {
     const vOut = vOutCoord;
     const vIn = vInCoord;
@@ -184,6 +248,12 @@ class Transform {
     return vOut;
   }
 
+  /**
+   * Transforms dataset coordinates to device coordinates
+   * @param {number[]} vOutCoord output vector in device coordinate system
+   * @param {number[]} vInCoord input vector in dataset coordinate system
+   * @returns output vector in device coordinate system
+   */
   datasetCoordToDeviceCoord(vOutCoord, vInCoord) {
     const vOut = vOutCoord;
     const vIn = vInCoord;
@@ -197,6 +267,12 @@ class Transform {
     return vOut;
   }
 
+  /**
+   * Transforms distance in dataset coordinate system to device coordinate system
+   * @param {number[]} vOutCoord output distance vector in device coordinate system
+   * @param {number[]} vInCoord input distance vector in dataset coordinate system
+   * @returns output distance vector in device coordinate system
+   */
   datasetDistToDeviceDist(vOutCoord, vInCoord) {
     const vOut = vOutCoord;
     const vIn = vInCoord;
@@ -210,6 +286,12 @@ class Transform {
     return vOut;
   }
 
+  /**
+   * Transforms position in dataset coordinate system to device coordinate system
+   * @param {number[]} vOutCoord output position vector in device coordinate system
+   * @param {number[]} vInCoord input position vector in dataset coordinate system
+   * @returns output position vector in device coordinate system
+   */
   transformPos(vOutCoord, vInCoord) {
     const vOut = vOutCoord;
     const vIn = vInCoord;
@@ -223,6 +305,12 @@ class Transform {
     return vOut;
   }
 
+  /**
+   * Transforms normal in dataset coordinate system to device coordinate system
+   * @param {number[]} vOutCoord output normal vector in device coordinate system
+   * @param {number[]} vInCoord input normal vector in dataset coordinate system
+   * @returns output position vector in device coordinate system
+   */
   transformNml(vOutCoord, vInCoord) {
     const vOut = vOutCoord;
     const vIn = vInCoord;

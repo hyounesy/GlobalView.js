@@ -2,7 +2,8 @@ import { mat4, vec2 } from 'gl-matrix';
 import { Shader, Mesh, LoadTextureFromByteArray, LoadTextureFromFloatArray } from './graphics';
 import Shaders from './shaders';
 import { ClusterMapOptions } from './algorithm';
-import { hsv2rgb, consoleLog } from './utility';
+import { consoleLog } from './utility';
+import Colormap from './colormap';
 
 /**
  * A viewer that renders point density to the global view.
@@ -137,7 +138,7 @@ class DensityViewer {
               }
 
               let clr = [c, 0.5, 1]; // 0.5 ... Use 50% saturated colors
-              clr = hsv2rgb(clr);
+              clr = Colormap.hsv2rgb(clr);
 
               rgba[(4 * i) + 0] = Math.floor(clr[0] * 255);
               rgba[(4 * i) + 1] = Math.floor(clr[1] * 255);

@@ -1,5 +1,5 @@
 import { mat4 } from 'gl-matrix';
-import { isString, isArray, isNumber, isUndefined, hexToRgb } from './utility';
+import { isString, isArray, isNumber, isUndefined } from './utility';
 import { Shader, LoadTexture, LoadTextureFromByteArray, Mesh } from './graphics';
 import Shaders from './shaders';
 
@@ -402,7 +402,7 @@ class Colormap {
       if (!isUndefined(Colormap.colorNameToHex(color))) {
         return true;
       } // color is known color name
-      const rgb = hexToRgb(color);
+      const rgb = Colormap.hexToRgb(color);
       if (rgb !== null &&
         rgb.r >= 0x00 && rgb.r <= 0xFF &&
         rgb.g >= 0x00 && rgb.g <= 0xFF &&
@@ -430,7 +430,7 @@ class Colormap {
   static parseColor(color) {
     if (isString(color)) {
       const hex = Colormap.colorNameToHex(color);
-      const rgb = hexToRgb(hex || color);
+      const rgb = Colormap.hexToRgb(hex || color);
       return rgb ? new Uint8Array([rgb.r, rgb.g, rgb.b, 255]) : null;
     }
 
@@ -485,7 +485,12 @@ class Colormap {
     return `Unknown colormap ${colormap}`;
   }
 
-  static colorNameToHex(color) {
+  /**
+   * Converts string color name (case insensitive) to the hex string.
+   * @param {string} colorName - color name (e.g. 'red' or 'Red')
+   * @returns {string} - color value in hex format string (e.g. '#ff0000')
+   */
+  static colorNameToHex(colorName) {
     // Source: https://stackoverflow.com/a/1573141
     const colors = {
       aliceblue: '#f0f8ff',
@@ -630,7 +635,71 @@ class Colormap {
       yellow: '#ffff00',
       yellowgreen: '#9acd32',
     };
-    return colors[color.toLowerCase()];
+    return colors[colorName.toLowerCase()];
+  }
+
+  /**
+   * Converts color specified in hex format to {r, g, b} values
+   * @param {string} hexstr color in hex string format (e.g. "#03F" or "0033FF")
+   * @return {Object.<string, number>} rgb values
+   */
+  static hexToRgb(hexstr) {
+    // Source: https://stackoverflow.com/a/5624139
+    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+    const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    const varHex = hexstr.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(varHex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16),
+    } : null;
+  }
+
+  /**
+   * Converts rgb color specified in string format to an array of float values
+   * @param {string} rgbstr color in "r, g, b" string format (e.g. "0,0,255")
+   * @return {number[]} array of rgb values between 0.0 and 1.0
+   */
+  static rgbStringToFloatArray(rgbstr) {
+    const rgb = rgbstr.match(/\d+/g);
+    for (let i = 0; i < 4; i += 1) {
+      rgb[i] = i < rgb.length ? Math.max(0x00, Math.min(0xFF, rgb[i] / 0xFF)) : 1.0;
+    }
+    return rgb;
+  }
+
+  /**
+   * Converts color specified in hsv color space to rgb color space
+   * @param {number[]} hsv array of [h, s, v] numerical values between 0.0 and 1.0
+   * @returns {number[]} array of [r, g, b] numerical values between 0.0 and 1.0
+   */
+  static hsv2rgb(hsv) {
+    // Source: https://stackoverflow.com/a/6930407
+    if (hsv[1] <= 0.000001) {
+      return [hsv[2], hsv[2], hsv[2]];
+    }
+
+    let hh = hsv[0];
+    if (hh >= 1.0) {
+      hh = 0.0;
+    }
+    hh *= 6.0;
+    const i = Math.floor(hh);
+    const ff = hh - i;
+    const p = hsv[2] * (1.0 - hsv[1]);
+    const q = hsv[2] * (1.0 - (hsv[1] * ff));
+    const t = hsv[2] * (1.0 - (hsv[1] * (1.0 - ff)));
+
+    switch (i) {
+      case 0: return [hsv[2], t, p];
+      case 1: return [q, hsv[2], p];
+      case 2: return [p, hsv[2], t];
+      case 3: return [p, q, hsv[2]];
+      case 4: return [t, p, hsv[2]];
+      default: return [hsv[2], p, q];
+    }
   }
 }
 

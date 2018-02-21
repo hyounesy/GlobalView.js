@@ -265,6 +265,13 @@ return offsets + vec{1}({2}) * scales + vec{1}({3}) * animatedScales;
     this.glCtx.drawElements(this.glCtx.POINTS, count, this.glCtx.UNSIGNED_INT, 0);
   }
 
+  /**
+   *
+   * @param {texture} texture
+   * @param {number[]} line
+   * @param {number} offset
+   * @param {number} count
+   */
   drawLines(texture, line, offset, count) {
     let varOffset = offset;
     let varCount = count;
@@ -341,6 +348,9 @@ return offsets + vec{1}({2}) * scales + vec{1}({3}) * animatedScales;
     );
   }
 
+  /**
+   * Free up the buffers.
+   */
   free() {
     this.glCtx.bindBuffer(this.glCtx.ARRAY_BUFFER, null);
 
@@ -375,6 +385,9 @@ class PointGroup {
     HashSet.call(this, this.onchange);
   }
 
+  /**
+   * callback
+   */
   onchange() {
     this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.idxbuffer);
     this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, this.get(), this.gl.STATIC_DRAW);
@@ -383,6 +396,10 @@ class PointGroup {
     this.globalView.invalidate();
   }
 
+  /**
+   * Renders point group with the given texture
+   * @param {texture} texture texture object
+   */
   render(texture) {
     if (this.size() === this.pointViewer.dataset.length) {
       this.pointViewer.meshDataPoints.draw(texture, 0, this.pointViewer.dataset.length);
@@ -391,6 +408,11 @@ class PointGroup {
     }
   }
 
+  /**
+   * Renders lines from data points in the direction of the drag
+   * @param {texture} texture
+   * @param {number[]} pointDrag
+   */
   renderLines(texture, pointDrag) {
     if (this.size() === this.pointViewer.dataset.length) {
       this.pointViewer.meshDataPoints.drawLines(
@@ -421,6 +443,9 @@ class PointGroup {
     }
   }
 
+  /**
+   * Free up the buffers.
+   */
   free() {
     if (this.idxbuffer !== -1) {
       this.gl.deleteBuffer(this.idxbuffer);
@@ -438,8 +463,8 @@ class PointViewer {
    * @constructor
    * @package
    * @implements {Viewer}
-   * @param {Object} gl // {WebGLRenderingContext}
-   * @param {Object} globalView // {GlobalView}
+   * @param {WebGLRenderingContext} gl // {WebGLRenderingContext}
+   * @param {GlobalView} globalView // {GlobalView}
    */
   constructor(gl, globalView) {
     this.gl = gl;
@@ -493,6 +518,13 @@ class PointViewer {
     }
   }
 
+  /**
+   *
+   * @param {boolean} flipY
+   * @param {Transform} transform
+   * @param {texture} colormapTexture
+   * @param {number[]} pointDrag
+   */
   render(flipY, transform, colormapTexture, pointDrag) {
     if (this.meshDataPoints === null) {
       return;
@@ -535,6 +567,11 @@ class PointViewer {
     /* eslint-enable prefer-spread */
   }
 
+  /**
+   * Sets the current datset
+   * @param {Dataset} dataset
+   * @param {OPTIONS} options
+   */
   setDataset(dataset, options) {
     // Remove old mesh
     if (this.meshDataPoints != null) {
@@ -573,6 +610,11 @@ class PointViewer {
     this.points.assignRange(dataset.length);
   }
 
+  /**
+   * callback
+   * @param {OPTIONS} options
+   * @param {boolean} recompileShader
+   */
   onOptionsChanged(options, recompileShader) {
     this.pointOpacity = options.pointOpacity;
     if (this.meshDataPoints) {
@@ -584,6 +626,12 @@ class PointViewer {
     }
   }
 
+  /**
+   * callback
+   * @param {number[][]} activeInputs
+   * @param {number[][]} animatedInputs
+   * @param {OPTIONS} options
+   */
   onInputChanged(activeInputs, animatedInputs, options) {
     this.activeInputVectors = activeInputs.map(i => this.dataset.dataVectors[i]);
     this.animatedInputVectors = animatedInputs.map(animatedInput =>

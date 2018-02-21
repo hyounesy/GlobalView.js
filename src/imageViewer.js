@@ -196,18 +196,30 @@ class ImageViewer {
     this.defaultImageLabelColor = gl.backColor;
   }
 
+  /**
+   * @returns {number} image label height
+   */
   static getLabelHeight() {
     return LABEL_HEIGHT;
   }
 
+  /**
+   * @returns {number} image label width
+   */
   static getLabelWidth() {
     return LABEL_WIDTH;
   }
 
+  /**
+   * @returns {number} pixel aligned x coordinate
+   */
   getPixelAlignX(x) {
     return ((Math.floor((x * this.gl.width) / 2.0) + 0.5) * 2.0) / this.gl.width;
   }
 
+  /**
+   * @returns {number} pixel aligned y coordinate
+   */
   getPixelAlignY(y) {
     return ((Math.floor((y * this.gl.height) / 2.0) + 0.5) * 2.0) / this.gl.height;
   }

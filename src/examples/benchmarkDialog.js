@@ -59,6 +59,20 @@ export default function BenchmarkDialog(paramPlot) {
     tblResultsBody.append(`<tr><td>${row.join('</td><td>')}</td></tr>`);
   }
 
+  // linspace(1, 1.1, 10);
+  function linspace(first, second, last) { // eslint-disable-line no-unused-vars
+    const offset = second - first;
+    const halfOffset = 0.5 * offset;
+    const values = [first];
+    let i = 0;
+    while (values[i] + halfOffset < last) {
+      i += 1;
+      values.push(first + (i * offset));
+    }
+    values[i] = last;
+    // consoleLog(values);
+    return new Float32Array(values);
+  }
 
   /* var benchmarkOptions = {
     enableTransparency: [true, false],

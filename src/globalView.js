@@ -2,7 +2,7 @@ import { vec2, vec3 } from 'gl-matrix';
 import ImageViewer from './imageViewer';
 import TextRenderContext from './textRenderContext';
 import { requestAnimFrame } from './webgl-utils';
-import { rgbStringToFloatArray, showAlert, consoleWarn, addKeyDownHandler, addKeyUpHandler,
+import { showAlert, consoleWarn, addKeyDownHandler, addKeyUpHandler,
   addMouseMoveHandler, addMouseUpHandler, addMouseWheelHandler,
   isArray, isString, isNumber, isFunction, isUndefined } from './utility';
 import { findRepresentativePoints2, findClosePointOfLowDensityNDDescend, findClosePointOfLowDensity,
@@ -46,8 +46,8 @@ export class GlobalView {
 
     this.gl.backColor = divStyle.backgroundColor === 'transparent' ?
       [0, 0, 0, 0] :
-      rgbStringToFloatArray(divStyle.backgroundColor);
-    this.gl.foreColor = rgbStringToFloatArray(this.gl.foreColorString = divStyle.color);
+      Colormap.rgbStringToFloatArray(divStyle.backgroundColor);
+    this.gl.foreColor = Colormap.rgbStringToFloatArray(this.gl.foreColorString = divStyle.color);
 
     this.textRenderContext = new TextRenderContext(this.gl, this.canvas);
     this.textRenderContext.setFont(`${divStyle.fontSize} ${divStyle.fontFamily}`);
@@ -2093,8 +2093,8 @@ export class GlobalView {
   updateColorSchema() {
     const vDivStyle = window.getComputedStyle(this.divElement);
     this.gl.backColor = vDivStyle.backgroundColor === 'transparent' ?
-      [0, 0, 0, 0] : rgbStringToFloatArray(vDivStyle.backgroundColor);
-    this.gl.foreColor = rgbStringToFloatArray(this.gl.foreColorString = vDivStyle.color);
+      [0, 0, 0, 0] : Colormap.rgbStringToFloatArray(vDivStyle.backgroundColor);
+    this.gl.foreColor = Colormap.rgbStringToFloatArray(this.gl.foreColorString = vDivStyle.color);
     this.gl.clearColor(...this.gl.backColor);
     // histogramViewer.updateColorSchema();
     this.coordSys.updateColorSchema();

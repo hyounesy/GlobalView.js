@@ -747,6 +747,10 @@ export class CsvDataset extends Dataset {
     }
   }
 
+  /**
+   * Parse data from csv
+   * @param {string} csv data in csv format
+   */
   parseCsv(csv) {
     // Load csv file
     const dataset = this;

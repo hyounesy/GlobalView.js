@@ -73,16 +73,21 @@ class HistogramViewer {
     ];
   }
 
-  render(flipY, tf, plotBounds) {
+  /**
+   * @param {boolean} flipY
+   * @param {Transform} transform
+   * @param {Object} plotBounds {x, y, width, height}
+   */
+  render(flipY, transform, plotBounds) {
     const mattrans = mat4.create();
 
     const pos = vec3.create();
     const scl = vec3.create();
-    tf.datasetCoordToDeviceCoord(pos, [
+    transform.datasetCoordToDeviceCoord(pos, [
       this.axes[0].histogram ? this.axes[0].histogram.invTransformX(0) : 0.0,
       this.axes[1].histogram ? this.axes[1].histogram.invTransformX(0) : 0.0,
       this.axes[2].histogram ? this.axes[2].histogram.invTransformX(0) : 0.0]);
-    tf.datasetDistToDeviceDist(scl, [
+    transform.datasetDistToDeviceDist(scl, [
       this.axes[0].histogram ?
         this.axes[0].histogram.width / this.axes[0].histogram.transform[0] : 1.0,
       this.axes[1].histogram ?
@@ -245,11 +250,19 @@ class HistogramViewer {
     }
   }
 
+  /**
+   * Sets the input dataset
+   * @param {Dataset} dataset
+   */
   setDataset(dataset /* , options */) {
     this.dataset = dataset;
     this.recreateHistograms();
   }
 
+  /**
+   * callback
+   * @param {OPTIONS} options
+   */
   onOptionsChanged(options /* , recompileShader */) {
     this.options = options;
     this.recreateHistograms();
@@ -277,28 +290,35 @@ class HistogramViewer {
     }
   }
 
-  createHistogram(pAxis, pDataset, d, numBins) {
-    const axis = pAxis;
-    if (d < 0 || d >= pDataset.dataVectors.length) {
+  /**
+   * Creates histogram for a given dataset dimension
+   * @param {Object} axis this.axes[]
+   * @param {Dataset} dataset
+   * @param {number} dim
+   * @param {number} numBins
+   */
+  createHistogram(axis, dataset, dim, numBins) {
+    const varAxis = axis;
+    if (dim < 0 || dim >= dataset.dataVectors.length) {
       return;
     } // Validate inputs
-    if (axis.histogram && axis.histogram.width === numBins && axis.d === d) {
+    if (varAxis.histogram && varAxis.histogram.width === numBins && varAxis.d === dim) {
       return;
     } // Requested histogram already exists
 
-    axis.histogram = computeHistogram(pDataset, axis.d = d, numBins);
+    varAxis.histogram = computeHistogram(dataset, varAxis.d = dim, numBins);
     // Add 2D transformation functions
-    axis.histogram.transformX = function (x) {
-      return (axis.histogram.transform[0] * x) + axis.histogram.transform[1];
+    varAxis.histogram.transformX = function (x) {
+      return (varAxis.histogram.transform[0] * x) + varAxis.histogram.transform[1];
     };
-    axis.histogram.transformY = function (y) {
-      return (axis.histogram.transform[2] * y) + axis.histogram.transform[3];
+    varAxis.histogram.transformY = function (y) {
+      return (varAxis.histogram.transform[2] * y) + varAxis.histogram.transform[3];
     };
-    axis.histogram.invTransformX = function (x) {
-      return (x - axis.histogram.transform[1]) / axis.histogram.transform[0];
+    varAxis.histogram.invTransformX = function (x) {
+      return (x - varAxis.histogram.transform[1]) / varAxis.histogram.transform[0];
     };
-    axis.histogram.invTransformY = function (y) {
-      return (y - axis.histogram.transform[3]) / axis.histogram.transform[2];
+    varAxis.histogram.invTransformY = function (y) {
+      return (y - varAxis.histogram.transform[3]) / varAxis.histogram.transform[2];
     };
 
     let positions = new Float32Array((6 * numBins) * 3);
@@ -309,7 +329,7 @@ class HistogramViewer {
       positions[i] = 0.0; i += 1;
     };
     for (let b = 0, i = -1, xScale = 1 / numBins; b < numBins; b += 1) {
-      const y = axis.histogram.data[b] / axis.histogram.maximum;
+      const y = varAxis.histogram.data[b] / varAxis.histogram.maximum;
 
       v3Set(i += 1, (b + 0) * xScale, 0);
       v3Set(i += 1, (b + 1) * xScale, 0);
@@ -319,18 +339,18 @@ class HistogramViewer {
       v3Set(i += 1, (b + 0) * xScale, y);
       v3Set(i += 1, (b + 0) * xScale, 0);
     }
-    axis.meshHistogram.reset(positions, null, null, null, null, null, this.gl.TRIANGLES);
+    varAxis.meshHistogram.reset(positions, null, null, null, null, null, this.gl.TRIANGLES);
 
     positions = new Float32Array(((3 * numBins) + 1) * 3);
     v3Set(0, 0, 0);
     for (let b = 0, i = 0, xScale = 1 / numBins; b < numBins;) {
-      const y = axis.histogram.data[b] / axis.histogram.maximum;
+      const y = varAxis.histogram.data[b] / varAxis.histogram.maximum;
 
       v3Set(i += 1, b * xScale, y);
       v3Set(i += 1, (b += 1) * xScale, y);
       v3Set(i += 1, b * xScale, 0);
     }
-    axis.meshLineHistogram.reset(positions, null, null, null, null, null, this.gl.LINE_STRIP);
+    varAxis.meshLineHistogram.reset(positions, null, null, null, null, null, this.gl.LINE_STRIP);
   }
 }
 
