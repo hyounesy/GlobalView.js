@@ -2,11 +2,11 @@
  * A helper class for globalview containing variables and functions for
  * transforming data vectors into device space
  */
-export default class Transform {
+class Transform {
   /**
    * @constructor
    * @package
-   * @param {*} plot GlobalView plot
+   * @param {GlobalView} plot GlobalView plot
    */
   constructor(plot) {
     this.plot = plot;
@@ -28,45 +28,60 @@ export default class Transform {
 
   // Setter methods
 
-  setFromMinMax(d, minimum, maximum) {
-    this.dataset.dataVectors[d].scale = maximum - minimum;
-    if (this.dataset.dataVectors[d].scale > -1e-5 && this.dataset.dataVectors[d].scale < 1e-5) {
-      this.dataset.dataVectors[d].offset =
-        0.5 - (0.5 * (minimum + maximum) * (this.dataset.dataVectors[d].scale = 0.5));
+  /**
+   * Updates the transformation for the coordinate systems based on the spacified min and max values
+   * @param {number} dim - dataset dimension index
+   * @param {number} minimum - minimum value
+   * @param {number} maximum - maximum value
+   */
+  setFromMinMax(dim, minimum, maximum) {
+    this.dataset.dataVectors[dim].scale = maximum - minimum;
+    if (this.dataset.dataVectors[dim].scale > -1e-5 && this.dataset.dataVectors[dim].scale < 1e-5) {
+      this.dataset.dataVectors[dim].offset =
+        0.5 - (0.5 * (minimum + maximum) * (this.dataset.dataVectors[dim].scale = 0.5));
     } else {
-      this.dataset.dataVectors[d].offset =
-        -minimum * (this.dataset.dataVectors[d].scale = 1 / this.dataset.dataVectors[d].scale);
+      this.dataset.dataVectors[dim].offset =
+        -minimum * (this.dataset.dataVectors[dim].scale = 1 / this.dataset.dataVectors[dim].scale);
     }
     this.invalid = true;
 
-    if (d === this.activeInputs[0]) {
+    if (dim === this.activeInputs[0]) {
       this.plot.updateCoorinateSystem(0, this.activeInputs[0]);
     }
-    if (d === this.activeInputs[1]) {
+    if (dim === this.activeInputs[1]) {
       this.plot.updateCoorinateSystem(1, this.activeInputs[1]);
     }
-    if (d === this.activeInputs[2]) {
+    if (dim === this.activeInputs[2]) {
       this.plot.updateColormap(this.activeInputs[2]);
     }
-    if (d === this.activeInputs[0] || d === this.activeInputs[1] || d === this.activeInputs[2]) {
+    if (dim === this.activeInputs[0] ||
+        dim === this.activeInputs[1] ||
+        dim === this.activeInputs[2]) {
       this.plot.invalidate();
     }
   }
 
-  translate(d, distance) {
-    this.dataset.dataVectors[d].offset += distance * this.dataset.dataVectors[d].scale;
+  /**
+   * Translates the coordinate system for the specified dimension by the specified distance
+   * @param {number} dim - dataset dimension index
+   * @param {number} distance - translation distance
+   */
+  translate(dim, distance) {
+    this.dataset.dataVectors[dim].offset += distance * this.dataset.dataVectors[dim].scale;
     this.invalid = true;
 
-    if (d === this.activeInputs[0]) {
+    if (dim === this.activeInputs[0]) {
       this.plot.updateCoorinateSystem(0, this.activeInputs[0], false);
     }
-    if (d === this.activeInputs[1]) {
+    if (dim === this.activeInputs[1]) {
       this.plot.updateCoorinateSystem(1, this.activeInputs[1], false);
     }
-    if (d === this.activeInputs[2]) {
+    if (dim === this.activeInputs[2]) {
       this.plot.updateColormap(this.activeInputs[2], false);
     }
-    if (d === this.activeInputs[0] || d === this.activeInputs[1] || d === this.activeInputs[2]) {
+    if (dim === this.activeInputs[0] ||
+        dim === this.activeInputs[1] ||
+        dim === this.activeInputs[2]) {
       this.plot.invalidate();
     }
   }
@@ -307,3 +322,5 @@ export default class Transform {
     return isAnimating;
   }
 }
+
+export default Transform;

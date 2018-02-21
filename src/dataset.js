@@ -636,7 +636,8 @@ export class RandomDataset extends Dataset {
  * }}
 */
 const CSV_DATASET_OPTIONS = {
-  /** When true, tries to infer other options based on the structure of the dataset (slow). */
+  /** When true, tries to infer other options based on the structure of the dataset (slow).
+   * @type {boolean} */
   autoDetect: {
     description: 'When true, tries to infer other options ' +
                  'based on the structure of the dataset (slow).',
@@ -644,14 +645,16 @@ const CSV_DATASET_OPTIONS = {
     valid: [true, false],
   },
 
-  /** When true, interprets the first row of the dataset as column labels. */
+  /** When true, interprets the first row of the dataset as column labels.
+   * @type {boolean} */
   hasHeader: {
     description: 'When true, interprets the first row of the dataset as column labels.',
     default: false,
     valid: [true, false],
   },
 
-  /** Index of a column of the dataset that contains data point names. */
+  /** Index of a column of the dataset that contains data point names.
+   * @type {number} */
   nameColumn: {
     description: 'Index of a column of the dataset that contains data point names.',
     default: null,
@@ -659,7 +662,8 @@ const CSV_DATASET_OPTIONS = {
   },
 
   /** An array of column labels, or a function that takes the column index
-   *  as input and returns the column label. */
+   *  as input and returns the column label.
+   * @type {(string[] | function(number))} */
   columnLabels: {
     description: 'An array of column labels, or a function that takes the ' +
                  'column index as input and returns the column label.',
@@ -668,7 +672,8 @@ const CSV_DATASET_OPTIONS = {
   },
 
   /** An array of image URLs, or a function that takes a row of data and the row index as
-   *  input and returns a URL to an image of the data point. */
+   *  input and returns a URL to an image of the data point.
+   * @type {(string[] | function(Object[], number))} */
   imageFilenames: {
     description: 'An array of image URLs, or a function that takes a row of data ' +
                  'and the row index as input and returns a URL to an image of the data point.',
@@ -685,9 +690,10 @@ export class CsvDataset extends Dataset {
   /**
    * @constructor
    * @export
-   * @param {string|Blob} file File or URL of file, containing the CSV-formatted dataset
-   * @param {Object} options
-   * @param {function(Dataset)} onload Event handler, called after the dataset was created
+   * @param {string|Blob} file File or URL of file, containing the CSV-formatted dataset.
+   * @param {Object.<string, Object>} options - options for opening the csv dataset.
+   *                                            see {@link CSV_DATASET_OPTIONS}
+   * @param {function(Dataset)} onload Event handler, called after the dataset was created.
    */
   constructor(file, options, onload) {
     super();

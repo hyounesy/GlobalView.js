@@ -433,7 +433,7 @@ class PointGroup {
 /**
  * A viewer that renders point sets to the global view.
  */
-export default class PointViewer {
+class PointViewer {
   /**
    * @constructor
    * @package
@@ -595,3 +595,5 @@ export default class PointViewer {
 
   onPlotBoundsChanged() { /* plotBounds */ } // eslint-disable-line class-methods-use-this
 }
+
+export default PointViewer;

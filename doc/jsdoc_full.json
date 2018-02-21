@@ -2,9 +2,11 @@
 	"templates": {
 		"referenceTitle": "GlobalView.js",
 		"default": {
-			"outputSourceFiles": true
+			"outputSourceFiles": true,
+			"includeDate": false
 		}
 	},
+	"sourceType": "module",
 	"opts": {
 		"destination": "./doc/full/",
 		"encoding": "utf8",
@@ -13,6 +15,8 @@
 	},
 	"source": {
 		"include": [
+			"./src/plotOptions.js",
+			"./src/transform.js",
 			"./src/utility.js",
 			"./src/formulaCompiler.js",
 			"./src/pathFinding.js",

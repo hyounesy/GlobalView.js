@@ -13,23 +13,11 @@ import HistogramViewer from './histogramViewer';
 import CoordinateSystem from './coordinateSystem';
 import Colormap from './colormap';
 import Transform from './transform';
-import { Options, setCurrentPlot } from './plotOptions';
-
-// >>> Options
+import { OPTIONS, setCurrentPlot } from './plotOptions';
 
 let ENABLE_CONTINUOUS_RENDERING = false;
 let SHOW_FPS = false;
 const SIMULATE_LOW_FPS = false;
-
-/** @typedef {{
- * description: string,
- * default: *,
- * valid: (function(*)|Array),
- * requireRedraw: boolean,
- * requireRecompile: boolean
- * }} */
-// eslint-disable-next-line no-unused-vars
-let OptionDescription; // <-- used for JSDoc
 
 /**
  * @summary A fast scatterplot rendered with WebGL
@@ -39,8 +27,8 @@ export class GlobalView {
   /**
    * @constructor
    * @export
-   * @param {*} divElement the html div element to contain the canvas
-   * @param {*} startupOptions  startup options
+   * @param {HTMLDivElement} divElement the html div element to contain the canvas
+   * @param {OPTIONS} startupOptions  startup options
    */
   constructor(divElement, startupOptions) {
     if (!(this instanceof GlobalView)) {
@@ -383,7 +371,11 @@ export class GlobalView {
 
   /**
    * @summary Sets the plot bounds with the specified padding
-   * @param {number[]|string} padding : array of length 4 or a string with the percentages
+   * @param {number[]|string[]|number|string} padding
+   * array of length 4 specifying values for [top, right, bottom, left],
+   * or a single value used for all four.
+   * Values can be absolute (e.g. 120 or "120" ) or
+   * percentages (e.g. "20%"" or ["10%", "20%", "10%", "20%""]
    */
   setPlotBounds(padding) {
     let computedPadding;
@@ -502,18 +494,18 @@ export class GlobalView {
   /**
    * Note: When setting multiple options, {@link GlobalView#setOptions} should be prefered.
    * @summary Sets the given option
-   * @see Options
-   * @param  {string} option
-   * @param  {*} value
+   * @see OPTIONS
+   * @param  {string} option - option name
+   * @param  {*} value - a valid value.
    */
   setOption(option, value) {
     setCurrentPlot(this);
     // Validate option
-    if (!Object.prototype.hasOwnProperty.call(Options, option)) {
+    if (!Object.prototype.hasOwnProperty.call(OPTIONS, option)) {
       consoleWarn(`GlobalView warning: Unsupported option: ${option}`);
       return;
     }
-    const optionDefinition = Options[option];
+    const optionDefinition = OPTIONS[option];
 
     // Validate value
     let validationResult;
@@ -541,7 +533,7 @@ export class GlobalView {
 
   /**
    * @summary Sets multiple options
-   * @param  {Object} newOptions A JavaScript object of options
+   * @param  {Object} newOptions A JavaScript object of options. see {@link OPTIONS}.
    */
   setOptions(newOptions) {
     setCurrentPlot(this);
@@ -554,11 +546,11 @@ export class GlobalView {
       }
 
       // Validate option
-      if (!Object.prototype.hasOwnProperty.call(Options, option)) {
+      if (!Object.prototype.hasOwnProperty.call(OPTIONS, option)) {
         consoleWarn(`GlobalView warning: Unsupported option: ${option}`);
         continue; // eslint-disable-line no-continue
       }
-      const optionDefinition = Options[option];
+      const optionDefinition = OPTIONS[option];
 
       // Validate value
       const value = newOptions[option];
@@ -593,11 +585,11 @@ export class GlobalView {
    */
   setDefaultOption(option) {
     // Validate option
-    if (!Object.prototype.hasOwnProperty.call(Options, option)) {
+    if (!Object.prototype.hasOwnProperty.call(OPTIONS, option)) {
       consoleWarn(`GlobalView warning: Unsupported option: ${option}`);
       return;
     }
-    const optionDefinition = Options[option];
+    const optionDefinition = OPTIONS[option];
 
     this.setOption(option, optionDefinition.default);
   }
@@ -607,8 +599,8 @@ export class GlobalView {
    */
   setDefaultOptions() {
     const defaultOptions = {};
-    Object.keys(Options).forEach((option) => {
-      defaultOptions[option] = Options[option].default;
+    Object.keys(OPTIONS).forEach((option) => {
+      defaultOptions[option] = OPTIONS[option].default;
     });
     this.setOptions(defaultOptions);
   }
@@ -621,10 +613,10 @@ export class GlobalView {
    */
   static validateOption(option, value) {
     // Validate option
-    if (!Object.prototype.hasOwnProperty.call(Options, option)) {
+    if (!Object.prototype.hasOwnProperty.call(OPTIONS, option)) {
       return `Unsupported option: ${option}`;
     }
-    const optionDefinition = Options[option];
+    const optionDefinition = OPTIONS[option];
 
     // Validate value
     let validationResult;
@@ -654,11 +646,11 @@ export class GlobalView {
       }
 
       // Validate option
-      if (!Object.prototype.hasOwnProperty.call(Options, option)) {
+      if (!Object.prototype.hasOwnProperty.call(OPTIONS, option)) {
         errors.push(`Unsupported option: ${option}`);
         continue; // eslint-disable-line no-continue
       }
-      const optionDefinition = Options[option];
+      const optionDefinition = OPTIONS[option];
 
       // Validate value
       const value = newOptions[option];

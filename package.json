@@ -28,7 +28,7 @@
     "version": "npm run build && git add .",
     "examples": "webpack --config ./src/examples/webpack.config.js && webpack-dev-server --config ./src/examples/webpack.config.js --open",
     "test:snapshot": "webpack --config ./src/test/plot.test/webpack.config.js && webpack-dev-server --config ./src/test/plot.test/webpack.config.js --open",
-    "doc": "jsdoc -c doc/jsdoc_export.json && jsdoc -c doc/jsdoc_full.json"
+    "doc": "rimraf doc/export doc/full && jsdoc -c doc/jsdoc_export.json && jsdoc -c doc/jsdoc_full.json"
   },
   "files": [
     "es",

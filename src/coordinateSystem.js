@@ -5,7 +5,7 @@ import Shaders from './shaders';
 /**
  * A class drawing x- and y axes to the left- and bottom of the scatter plot.
  */
-export default class CoordinateSystem {
+class CoordinateSystem {
   /**
   * @constructor
   * @package
@@ -434,3 +434,5 @@ export default class CoordinateSystem {
     this.meshLine.free();
   }
 }
+
+export default CoordinateSystem;

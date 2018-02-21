@@ -8,7 +8,7 @@ import Colormap from './colormap';
  * A class drawing histograms for x-, y- and color axes to
  * the left-, bottom- and right of the scatter plot.
  */
-export default class HistogramViewer {
+class HistogramViewer {
   /**
    * @constructor
    * @package
@@ -333,3 +333,5 @@ export default class HistogramViewer {
     axis.meshLineHistogram.reset(positions, null, null, null, null, null, this.gl.LINE_STRIP);
   }
 }
+
+export default HistogramViewer;

@@ -2,7 +2,7 @@
  * A helper class that attaches a 2D canvas to the parent div of the given WebGL canvas.
  * This 2D canvas is used to draw text.
  */
-export default class TextRenderContext {
+class TextRenderContext {
   /**
    * @constructor
    * @package
@@ -230,3 +230,5 @@ export default class TextRenderContext {
     return this.textCanvas;
   }
 }
+
+export default TextRenderContext;

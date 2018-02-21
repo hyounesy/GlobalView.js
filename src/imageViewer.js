@@ -112,7 +112,7 @@ class Thumbnail {
 /**
  * A viewer that renders labels (thumbnails) to the global view.
  */
-export default class ImageViewer {
+class ImageViewer {
   /**
    * @constructor
    * @package
@@ -599,3 +599,5 @@ export default class ImageViewer {
     return selectedImage;
   }
 }
+
+export default ImageViewer;

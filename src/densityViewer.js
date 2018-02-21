@@ -7,7 +7,7 @@ import { hsv2rgb, consoleLog } from './utility';
 /**
  * A viewer that renders point density to the global view.
  */
-export default class DensityViewer {
+class DensityViewer {
   /**
    * @constructor
    * @package
@@ -330,3 +330,5 @@ export default class DensityViewer {
     }
   }
 }
+
+export default DensityViewer;
