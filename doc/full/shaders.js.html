@@ -53,6 +53,12 @@ void main()
   uv = vtexcoord;
 }
 `;
+
+/**
+ * @summary A fragment shader to render with the given input color
+ * @static
+ * @readonly
+*/
 Shaders.fsLine =
 `precision mediump float;
 uniform vec4 color;
@@ -62,6 +68,12 @@ void main()
   gl_FragColor = color;
 }
 `;
+
+/**
+ * @summary A vertex shader for rendering with a texture
+ * @static
+ * @readonly
+ */
 Shaders.vsTextured =
 `attribute vec3 vpos;
 attribute vec2 vtexcoord;
@@ -74,6 +86,13 @@ void main()
   uv = vtexcoord;
 }
 `;
+
+/**
+ * @summary A vertex shader for rendering with a texture
+ *          accepting a world and texture transformation matrix
+ * @static
+ * @readonly
+*/
 Shaders.vsTextured2 =
 `attribute vec3 vpos;
 attribute vec2 vtexcoord;
@@ -87,6 +106,12 @@ void main()
   uv = matTexCoordTransform * vtexcoord;
 }
 `;
+
+/**
+ * @summary Fragmetn shader for rendering with a texture
+ * @static
+ * @readonly
+ */
 Shaders.fsTextured =
 `precision mediump float;
 varying vec2 uv;
@@ -97,6 +122,12 @@ void main()
   gl_FragColor = texture2D(uSampler, uv);
 }
 `;
+
+/**
+ * @summary Fragment shader for rendering with a 1 dimensional texture (colormap)
+ * @static
+ * @readonly
+ */
 Shaders.fsTextured1D =
 `precision mediump float;
 varying vec2 uv;
@@ -107,6 +138,12 @@ void main()
   gl_FragColor = texture2D(uSampler, vec2(uv.y, 0.5));
 }
 `;
+
+/**
+ * @summary fragment shader for rendering the density map
+ * @static
+ * @readonly
+ */
 Shaders.fsViewDensityMap =
 `precision mediump float;
 varying vec2 uv;
@@ -122,6 +159,11 @@ void main()
 }
 `;
 
+/**
+ * @summary vertex shader for rendering the data points with the specified size and opacity
+ * @static
+ * @readonly
+ */
 Shaders.vsDataPoint =
 `uniform sampler2D uSampler;
 uniform float pointOpacity, pointSize;
@@ -137,6 +179,12 @@ void main()
   gl_PointSize = pointSize;
 }
 `;
+
+/**
+ * @summary fragment shader for rendering the data points with the specified color
+ * @static
+ * @readonly
+ */
 Shaders.fsDataPoint =
 `varying vec4 color;
 
@@ -146,6 +194,12 @@ void main()
   gl_FragColor = vec4(color.rgb, color.a * clamp(opacityMap(gl_PointCoord * 2.0 - 1.0), 0.0, 1.0));
 }
 `;
+
+/**
+ * @summary vertex shader for rendering a line give with transformation and color
+ * @static
+ * @readonly
+ */
 Shaders.vsDataLine =
 `uniform sampler2D uSampler;
 uniform float pointOpacity, pointSize;
@@ -163,6 +217,12 @@ void main()
   gl_PointSize = pointSize;
 }
 `;
+
+/**
+ * @summary fragment shader for rendering a line with a given color
+ * @static
+ * @readonly
+ */
 Shaders.fsDataLine =
 `varying vec4 color;
 
@@ -171,6 +231,12 @@ void main()
   gl_FragColor = color;
 }
 `;
+
+/**
+ * @summary vertex shader for rendering the density map
+ * @static
+ * @readonly
+ */
 Shaders.vsDensityMap =
 `void main()
 {
@@ -179,6 +245,12 @@ Shaders.vsDensityMap =
   gl_PointSize = 1.0;
 }
 `;
+
+/**
+ * @summary fragment shader for rendering the density map
+ * @static
+ * @readonly
+ */
 Shaders.fsDensityMap =
 `precision highp float;
 
@@ -187,6 +259,12 @@ void main()
   gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
 }
 `;
+
+/**
+ * @summary vertex shader for bluring the density map
+ * @static
+ * @readonly
+ */
 Shaders.vsBlurDensityMap =
 `attribute vec3 vpos;
 attribute vec2 vtexcoord;
@@ -198,6 +276,12 @@ void main()
   uv = vtexcoord;
 }
 `;
+
+/**
+ * @summary fragment shader for bluring the density map with the given pixel size
+ * @static
+ * @readonly
+ */
 Shaders.fsBlurDensityMap =
 `precision highp float;
 varying vec2 uv;
@@ -253,7 +337,7 @@ void main()
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClusterMap.html">ClusterMap</a></li><li><a href="ClusterMapOptions.html">ClusterMapOptions</a></li><li><a href="Colormap.html">Colormap</a></li><li><a href="CoordinateSystem.html">CoordinateSystem</a></li><li><a href="CsvDataset.html">CsvDataset</a></li><li><a href="DataMesh.html">DataMesh</a></li><li><a href="Dataset.html">Dataset</a></li><li><a href="DataVector.html">DataVector</a></li><li><a href="DensityMap.html">DensityMap</a></li><li><a href="DensityMapOptions.html">DensityMapOptions</a></li><li><a href="DensityViewer.html">DensityViewer</a></li><li><a href="ForwardList.html">ForwardList</a></li><li><a href="GlobalView.html">GlobalView</a></li><li><a href="HashSet.html">HashSet</a></li><li><a href="HistogramViewer.html">HistogramViewer</a></li><li><a href="ImageViewer.html">ImageViewer</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="PointGroup.html">PointGroup</a></li><li><a href="PointViewer.html">PointViewer</a></li><li><a href="PriorityQueue.html">PriorityQueue</a></li><li><a href="RandomDataset.html">RandomDataset</a></li><li><a href="Shader.html">Shader</a></li><li><a href="TextRenderContext.html">TextRenderContext</a></li><li><a href="Thumbnail.html">Thumbnail</a></li><li><a href="Transform.html">Transform</a></li></ul><h3>Namespaces</h3><ul><li><a href="Shaders.html">Shaders</a></li></ul><h3>Interfaces</h3><ul><li><a href="Viewer.html">Viewer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#computeClusterMap">computeClusterMap</a></li><li><a href="global.html#computeDensityMap">computeDensityMap</a></li><li><a href="global.html#computeDensityMapND">computeDensityMapND</a></li><li><a href="global.html#computeHistogram">computeHistogram</a></li><li><a href="global.html#computeHistogram2D">computeHistogram2D</a></li><li><a href="global.html#CSV_DATASET_OPTIONS">CSV_DATASET_OPTIONS</a></li><li><a href="global.html#downloadDensityMap">downloadDensityMap</a></li><li><a href="global.html#downloadStencilMap">downloadStencilMap</a></li><li><a href="global.html#findClosePointOfLowDensity">findClosePointOfLowDensity</a></li><li><a href="global.html#findClosePointOfLowDensityDescend">findClosePointOfLowDensityDescend</a></li><li><a href="global.html#findClosePointOfLowDensityNDDescend">findClosePointOfLowDensityNDDescend</a></li><li><a href="global.html#findRepresentativePoints">findRepresentativePoints</a></li><li><a href="global.html#findRepresentativePoints2">findRepresentativePoints2</a></li><li><a href="global.html#findRepresentativePointsND">findRepresentativePointsND</a></li><li><a href="global.html#findRepresentativePointsND2">findRepresentativePointsND2</a></li><li><a href="global.html#linesIntersect">linesIntersect</a></li><li><a href="global.html#markPointsInStencilMap">markPointsInStencilMap</a></li><li><a href="global.html#OPTIONS">OPTIONS</a></li><li><a href="global.html#pointInsidePolygon">pointInsidePolygon</a></li><li><a href="global.html#sampleDensityMap">sampleDensityMap</a></li><li><a href="global.html#sampleDensityMapChain">sampleDensityMapChain</a></li><li><a href="global.html#sampleDensityMapColumn">sampleDensityMapColumn</a></li><li><a href="global.html#sampleDensityMapRow">sampleDensityMapRow</a></li><li><a href="global.html#vectorLineIntersection2D">vectorLineIntersection2D</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClusterMap.html">ClusterMap</a></li><li><a href="ClusterMapOptions.html">ClusterMapOptions</a></li><li><a href="Colormap.html">Colormap</a></li><li><a href="CoordinateSystem.html">CoordinateSystem</a></li><li><a href="CsvDataset.html">CsvDataset</a></li><li><a href="DataMesh.html">DataMesh</a></li><li><a href="Dataset.html">Dataset</a></li><li><a href="DataVector.html">DataVector</a></li><li><a href="DensityMap.html">DensityMap</a></li><li><a href="DensityMapOptions.html">DensityMapOptions</a></li><li><a href="DensityViewer.html">DensityViewer</a></li><li><a href="ForwardList.html">ForwardList</a></li><li><a href="GlobalView.html">GlobalView</a></li><li><a href="HashSet.html">HashSet</a></li><li><a href="HistogramViewer.html">HistogramViewer</a></li><li><a href="ImageViewer.html">ImageViewer</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="PointGroup.html">PointGroup</a></li><li><a href="PointViewer.html">PointViewer</a></li><li><a href="PriorityQueue.html">PriorityQueue</a></li><li><a href="RandomDataset.html">RandomDataset</a></li><li><a href="Shader.html">Shader</a></li><li><a href="TextRenderContext.html">TextRenderContext</a></li><li><a href="Thumbnail.html">Thumbnail</a></li><li><a href="Transform.html">Transform</a></li></ul><h3>Namespaces</h3><ul><li><a href="Shaders.html">Shaders</a></li></ul><h3>Interfaces</h3><ul><li><a href="Viewer.html">Viewer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addKeyDownHandler">addKeyDownHandler</a></li><li><a href="global.html#addKeyUpHandler">addKeyUpHandler</a></li><li><a href="global.html#addMouseMoveHandler">addMouseMoveHandler</a></li><li><a href="global.html#addMouseUpHandler">addMouseUpHandler</a></li><li><a href="global.html#addMouseWheelHandler">addMouseWheelHandler</a></li><li><a href="global.html#BreadthFirstSearch">BreadthFirstSearch</a></li><li><a href="global.html#computeClusterMap">computeClusterMap</a></li><li><a href="global.html#computeDensityMap">computeDensityMap</a></li><li><a href="global.html#computeDensityMapND">computeDensityMapND</a></li><li><a href="global.html#computeHistogram">computeHistogram</a></li><li><a href="global.html#computeHistogram2D">computeHistogram2D</a></li><li><a href="global.html#consoleError">consoleError</a></li><li><a href="global.html#consoleLog">consoleLog</a></li><li><a href="global.html#consoleWarn">consoleWarn</a></li><li><a href="global.html#createCookie">createCookie</a></li><li><a href="global.html#CSV_DATASET_OPTIONS">CSV_DATASET_OPTIONS</a></li><li><a href="global.html#DepthFirstSearch">DepthFirstSearch</a></li><li><a href="global.html#download">download</a></li><li><a href="global.html#downloadDensityMap">downloadDensityMap</a></li><li><a href="global.html#downloadStencilMap">downloadStencilMap</a></li><li><a href="global.html#enableAlerts">enableAlerts</a></li><li><a href="global.html#enableConsoleOutputs">enableConsoleOutputs</a></li><li><a href="global.html#eraseCookie">eraseCookie</a></li><li><a href="global.html#findClosePointOfLowDensity">findClosePointOfLowDensity</a></li><li><a href="global.html#findClosePointOfLowDensityDescend">findClosePointOfLowDensityDescend</a></li><li><a href="global.html#findClosePointOfLowDensityNDDescend">findClosePointOfLowDensityNDDescend</a></li><li><a href="global.html#findRepresentativePoints">findRepresentativePoints</a></li><li><a href="global.html#findRepresentativePoints2">findRepresentativePoints2</a></li><li><a href="global.html#findRepresentativePointsND">findRepresentativePointsND</a></li><li><a href="global.html#findRepresentativePointsND2">findRepresentativePointsND2</a></li><li><a href="global.html#getParameterByName">getParameterByName</a></li><li><a href="global.html#handleLoadedTexture">handleLoadedTexture</a></li><li><a href="global.html#imageUrlFromBytes">imageUrlFromBytes</a></li><li><a href="global.html#isArray">isArray</a></li><li><a href="global.html#isFunction">isFunction</a></li><li><a href="global.html#isNumber">isNumber</a></li><li><a href="global.html#isObject">isObject</a></li><li><a href="global.html#isString">isString</a></li><li><a href="global.html#isUndefined">isUndefined</a></li><li><a href="global.html#linesIntersect">linesIntersect</a></li><li><a href="global.html#LoadTexture">LoadTexture</a></li><li><a href="global.html#LoadTextureFromByteArray">LoadTextureFromByteArray</a></li><li><a href="global.html#LoadTextureFromFloatArray">LoadTextureFromFloatArray</a></li><li><a href="global.html#LoadTextureFromImage">LoadTextureFromImage</a></li><li><a href="global.html#markPointsInStencilMap">markPointsInStencilMap</a></li><li><a href="global.html#OPTIONS">OPTIONS</a></li><li><a href="global.html#pointInsidePolygon">pointInsidePolygon</a></li><li><a href="global.html#readCookie">readCookie</a></li><li><a href="global.html#readFloatCookie">readFloatCookie</a></li><li><a href="global.html#readIntCookie">readIntCookie</a></li><li><a href="global.html#sampleDensityMap">sampleDensityMap</a></li><li><a href="global.html#sampleDensityMapChain">sampleDensityMapChain</a></li><li><a href="global.html#sampleDensityMapColumn">sampleDensityMapColumn</a></li><li><a href="global.html#sampleDensityMapRow">sampleDensityMapRow</a></li><li><a href="global.html#showAlert">showAlert</a></li><li><a href="global.html#SimpleAStarSearch">SimpleAStarSearch</a></li><li><a href="global.html#SimpleGreedySearch">SimpleGreedySearch</a></li><li><a href="global.html#SimpleUniformCostSearch">SimpleUniformCostSearch</a></li><li><a href="global.html#UniformCostSearch">UniformCostSearch</a></li><li><a href="global.html#urlExists">urlExists</a></li><li><a href="global.html#validateGLSL">validateGLSL</a></li><li><a href="global.html#vectorLineIntersection2D">vectorLineIntersection2D</a></li></ul>
 </nav>
 
 <br class="clear">
