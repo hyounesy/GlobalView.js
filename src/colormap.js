@@ -1,10 +1,10 @@
-const libUtility = require('./utility.js');
-const libGraphics = require('./graphics.js');
-const libShaders = require('./shaders.js');
-const libGlMatrix = require('gl-matrix');
+import { mat4 } from 'gl-matrix';
+import { isString, isArray, isNumber, isUndefined } from './utility';
+import { Shader, LoadTexture, LoadTextureFromByteArray, Mesh } from './graphics';
+import Shaders from './shaders';
 
-const COLORMAP_WIDTH = 10; // [pixel]
-let availableColorMaps = null;
+const COLORMAP_WIDTH = 10; // (pixels) static, accessed through Colormap.getWidth()
+let availableColorMaps = {}; // static, accessed through Colormap.getAvailableColorMaps()
 
 // http://base64online.org/encode
 // http://textmechanic.co/Line-Length-Breaker.html
@@ -32,7 +32,7 @@ const imageRainbow =
  * A class holding the active colormap for the global view.
  * This class also draws a color axis to the right of the scatter plot.
  */
-export default class Colormap {
+class Colormap {
   /**
    * @constructor
    * @package
@@ -48,24 +48,24 @@ export default class Colormap {
     this.NUM_TICKS = 10;
 
     this.sdrLine =
-      new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
+      new Shader(gl, Shaders.vsSimple, Shaders.fsLine);
     this.sdrLine.color = this.sdrLine.u4f('color');
     this.sdrLine.color(...gl.foreColor);
     this.sdrLine.matWorldViewProj = this.sdrLine.u4x4f('matWorldViewProj');
 
-    this.sdrColormap = new libGraphics.Shader(
-      gl, libShaders.Shaders.vsTextured,
-      libShaders.Shaders.fsTextured1D,
+    this.sdrColormap = new Shader(
+      gl, Shaders.vsTextured,
+      Shaders.fsTextured1D,
     );
     this.sdrColormap.matWorldViewProj = this.sdrColormap.u4x4f('matWorldViewProj');
     availableColorMaps = {
-      exhue: libGraphics.LoadTexture(gl, imageExhue, () => {
+      exhue: LoadTexture(gl, imageExhue, () => {
         this.plot.invalidate();
       }),
-      rainbow: libGraphics.LoadTexture(gl, imageRainbow, () => {
+      rainbow: LoadTexture(gl, imageRainbow, () => {
         this.plot.invalidate();
       }),
-      2: libGraphics.LoadTextureFromByteArray(
+      2: LoadTextureFromByteArray(
         gl,
         new Uint8Array([255, 0, 0, 255, 0, 255, 0, 255]),
         2, 1,
@@ -75,14 +75,14 @@ export default class Colormap {
     this.texColormap = availableColorMaps.exhue;
 
     // Create a 2D line mesh
-    this.meshLine = new libGraphics.Mesh(gl, new Float32Array([
+    this.meshLine = new Mesh(gl, new Float32Array([
       // Positions
       0, 0, 0,
       1, 0, 0,
     ]), null, null, null, null, null, gl.LINES);
 
     // Create a 2D line quad mesh
-    this.meshLineQuad = new libGraphics.Mesh(gl, new Float32Array([
+    this.meshLineQuad = new Mesh(gl, new Float32Array([
       // Positions
       0, 0, 0,
       1, 0, 0,
@@ -91,7 +91,7 @@ export default class Colormap {
     ]), null, null, null, null, null, gl.LINE_LOOP);
 
     // Create a 2D quad mesh
-    this.meshQuad = new libGraphics.Mesh(gl, new Float32Array([
+    this.meshQuad = new Mesh(gl, new Float32Array([
       // Positions
       0, 1, 0,
       0, 0, 0,
@@ -149,19 +149,19 @@ export default class Colormap {
     this.sdrColormap.bind();
     this.meshQuad.bind(this.sdrColormap, this.texColormap);
 
-    const mattrans = libGlMatrix.mat4.create();
-    libGlMatrix.mat4.identity(mattrans);
+    const mattrans = mat4.create();
+    mat4.identity(mattrans);
     if (flipY === true) {
-      libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+      mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
     }
-    libGlMatrix.mat4.translate(
+    mat4.translate(
       mattrans, mattrans,
       [((2 * (plotBounds.x + plotBounds.width + 0.5)) / this.gl.width) - 1,
         ((2 * (plotBounds.y + 0.5)) / this.gl.height) - 1, 0],
     ); // 0.5 ... center inside pixel
-    libGlMatrix.mat4.scale(
+    mat4.scale(
       mattrans, mattrans,
-      [(2 * COLORMAP_WIDTH) / this.gl.width, (2 * plotBounds.height) / this.gl.height, 1],
+      [(2 * Colormap.getWidth()) / this.gl.width, (2 * plotBounds.height) / this.gl.height, 1],
     );
     this.sdrColormap.matWorldViewProj(mattrans);
     this.meshQuad.draw();
@@ -178,46 +178,46 @@ export default class Colormap {
 
     // Draw y-axis ticks and tick labels
     let tickLabelLeft = 0.0;
-    libGlMatrix.mat4.identity(mattrans);
+    mat4.identity(mattrans);
     if (flipY === true) {
-      libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+      mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
     }
-    libGlMatrix.mat4.translate(
+    mat4.translate(
       mattrans, mattrans,
-      [((2 * (plotBounds.x + plotBounds.width + COLORMAP_WIDTH + 0.5)) / this.gl.width) - 1,
+      [((2 * (plotBounds.x + plotBounds.width + Colormap.getWidth() + 0.5)) / this.gl.width) - 1,
         ((2 * (plotBounds.y + 0.5)) / this.gl.height) - 1, 0],
     ); // 0.5 ... center inside pixel
-    libGlMatrix.mat4.scale(
+    mat4.scale(
       mattrans, mattrans,
       [(2 * this.axis.tickLength) / this.gl.width, (2 * plotBounds.height) / this.gl.height, 1],
     );
     this.sdrLine.matWorldViewProj(mattrans);
     this.meshLine.draw();
-    libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, 1.0, 0.0]);
+    mat4.translate(mattrans, mattrans, [0.0, 1.0, 0.0]);
     this.sdrLine.matWorldViewProj(mattrans);
     this.meshLine.draw();
-    libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -1.0, 0.0]);
+    mat4.translate(mattrans, mattrans, [0.0, -1.0, 0.0]);
 
     for (let i = 0; i < this.axis.tickCount; i += 1) {
       const y = this.axis.tickOffset + (i * this.axis.tickDistance);
       const tickPos = (y - this.axis.minimum) / (this.axis.maximum - this.axis.minimum);
 
-      libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, tickPos, 0.0]);
+      mat4.translate(mattrans, mattrans, [0.0, tickPos, 0.0]);
       this.sdrLine.matWorldViewProj(mattrans);
       this.meshLine.draw();
-      libGlMatrix.mat4.translate(mattrans, mattrans, [0.0, -tickPos, 0.0]);
+      mat4.translate(mattrans, mattrans, [0.0, -tickPos, 0.0]);
 
       const tickLabel = this.axis.values ? this.axis.values[y] : y.toPrecision(6) / 1;
       tickLabelLeft = Math.max(tickLabelLeft, this.gl.measureTextWidth(tickLabel));
       this.gl.drawText(
         tickLabel,
-        plotBounds.x + plotBounds.width + COLORMAP_WIDTH + this.axis.tickLength + 2,
+        plotBounds.x + plotBounds.width + Colormap.getWidth() + this.axis.tickLength + 2,
         this.gl.height - plotBounds.y - (plotBounds.height * tickPos),
         'middleleft',
       );
     }
     tickLabelLeft = Math.ceil(plotBounds.x +
-      plotBounds.width + COLORMAP_WIDTH +
+      plotBounds.width + Colormap.getWidth() +
       this.axis.tickLength + 10 + tickLabelLeft);
 
     // >>> Draw axis label
@@ -334,7 +334,7 @@ export default class Colormap {
       } else {
         const c = Colormap.parseColormap(this.pointColor);
         if (c) {
-          this.texColormap = libGraphics.LoadTextureFromByteArray(this.gl, c, c.length / 4, 1);
+          this.texColormap = LoadTextureFromByteArray(this.gl, c, c.length / 4, 1);
         }
       }
     }
@@ -365,15 +365,15 @@ export default class Colormap {
    * @returns {Uint8Array} Colormap colors as an array of size [colormapLength * 4]
    */
   static parseColormap(colormap) {
-    if (libUtility.isString(colormap)) {
+    if (isString(colormap)) {
       return Colormap.parseColor(colormap);
     }
 
-    if (libUtility.isArray(colormap)) {
+    if (isArray(colormap)) {
       if (colormap.length === 0) {
         return null;
       }
-      if (libUtility.isString(colormap[0])) {
+      if (isString(colormap[0])) {
         const array = [];
         for (let i = 0; i < colormap.length; i += 1) {
           const color = Colormap.parseColor(colormap[i]);
@@ -384,7 +384,7 @@ export default class Colormap {
           }
         }
         return new Uint8Array(array);
-      } else if (libUtility.isNumber(colormap[0])) {
+      } else if (isNumber(colormap[0])) {
         return new Uint8Array(colormap);
       }
     }
@@ -398,11 +398,11 @@ export default class Colormap {
    * @returns {(boolean|string)} true of a valid color, otherwise the string error message
    */
   static validateColor(color) {
-    if (libUtility.isString(color)) {
-      if (!libUtility.isUndefined(libUtility.colorNameToHex(color))) {
+    if (isString(color)) {
+      if (!isUndefined(Colormap.colorNameToHex(color))) {
         return true;
       } // color is known color name
-      const rgb = libUtility.hexToRgb(color);
+      const rgb = Colormap.hexToRgb(color);
       if (rgb !== null &&
         rgb.r >= 0x00 && rgb.r <= 0xFF &&
         rgb.g >= 0x00 && rgb.g <= 0xFF &&
@@ -412,7 +412,7 @@ export default class Colormap {
       return `Unknown color ${color}`;
     }
 
-    if (libUtility.isArray(color)) {
+    if (isArray(color)) {
       if (color.length !== 4) {
         return 'Color array needs to have 4 components (RGBA).';
       }
@@ -428,13 +428,13 @@ export default class Colormap {
    * @returns {Uint8Array} Unit8Array of length 4: [r, g, b, a]
    */
   static parseColor(color) {
-    if (libUtility.isString(color)) {
-      const hex = libUtility.colorNameToHex(color);
-      const rgb = libUtility.hexToRgb(hex || color);
+    if (isString(color)) {
+      const hex = Colormap.colorNameToHex(color);
+      const rgb = Colormap.hexToRgb(hex || color);
       return rgb ? new Uint8Array([rgb.r, rgb.g, rgb.b, 255]) : null;
     }
 
-    if (libUtility.isArray(color)) {
+    if (isArray(color)) {
       return color.length >= 4 ? new Uint8Array([color[0], color[1], color[2], color[3]]) : null;
     }
 
@@ -451,18 +451,18 @@ export default class Colormap {
     if (colormap === null) {
       return true;
     }
-    if (libUtility.isString(colormap)) {
+    if (isString(colormap)) {
       if (Colormap.getAvailableColorMaps()[colormap]) {
         return true;
       }
       return Colormap.validateColor(colormap);
     }
 
-    if (libUtility.isArray(colormap)) {
+    if (isArray(colormap)) {
       if (colormap.length === 0) {
         return 'Colormap array cannot be empty.';
       }
-      if (libUtility.isString(colormap[0])) {
+      if (isString(colormap[0])) {
         for (let i = 0; i < colormap.length; i += 1) {
           const err = Colormap.validateColor(colormap[i]);
           if (err !== true) {
@@ -475,7 +475,7 @@ export default class Colormap {
         return 'Colormap array length must be multiple of 4.';
       }
       for (let i = 0; i < colormap.length; i += 1) {
-        if (!libUtility.isNumber(colormap[i]) || colormap[i] < 0x00 || colormap[i] > 0xFF) {
+        if (!isNumber(colormap[i]) || colormap[i] < 0x00 || colormap[i] > 0xFF) {
           return 'Colormap array must contain numbers between 0 and 255.';
         }
       }
@@ -484,4 +484,223 @@ export default class Colormap {
 
     return `Unknown colormap ${colormap}`;
   }
+
+  /**
+   * Converts string color name (case insensitive) to the hex string.
+   * @param {string} colorName - color name (e.g. 'red' or 'Red')
+   * @returns {string} - color value in hex format string (e.g. '#ff0000')
+   */
+  static colorNameToHex(colorName) {
+    // Source: https://stackoverflow.com/a/1573141
+    const colors = {
+      aliceblue: '#f0f8ff',
+      antiquewhite: '#faebd7',
+      aqua: '#00ffff',
+      aquamarine: '#7fffd4',
+      azure: '#f0ffff',
+      beige: '#f5f5dc',
+      bisque: '#ffe4c4',
+      black: '#000000',
+      blanchedalmond: '#ffebcd',
+      blue: '#0000ff',
+      blueviolet: '#8a2be2',
+      brown: '#a52a2a',
+      burlywood: '#deb887',
+      cadetblue: '#5f9ea0',
+      chartreuse: '#7fff00',
+      chocolate: '#d2691e',
+      coral: '#ff7f50',
+      cornflowerblue: '#6495ed',
+      cornsilk: '#fff8dc',
+      crimson: '#dc143c',
+      cyan: '#00ffff',
+      darkblue: '#00008b',
+      darkcyan: '#008b8b',
+      darkgoldenrod: '#b8860b',
+      darkgray: '#a9a9a9',
+      darkgreen: '#006400',
+      darkkhaki: '#bdb76b',
+      darkmagenta: '#8b008b',
+      darkolivegreen: '#556b2f',
+      darkorange: '#ff8c00',
+      darkorchid: '#9932cc',
+      darkred: '#8b0000',
+      darksalmon: '#e9967a',
+      darkseagreen: '#8fbc8f',
+      darkslateblue: '#483d8b',
+      darkslategray: '#2f4f4f',
+      darkturquoise: '#00ced1',
+      darkviolet: '#9400d3',
+      deeppink: '#ff1493',
+      deepskyblue: '#00bfff',
+      dimgray: '#696969',
+      dodgerblue: '#1e90ff',
+      firebrick: '#b22222',
+      floralwhite: '#fffaf0',
+      forestgreen: '#228b22',
+      fuchsia: '#ff00ff',
+      gainsboro: '#dcdcdc',
+      ghostwhite: '#f8f8ff',
+      gold: '#ffd700',
+      goldenrod: '#daa520',
+      gray: '#808080',
+      green: '#008000',
+      greenyellow: '#adff2f',
+      honeydew: '#f0fff0',
+      hotpink: '#ff69b4',
+      indianred: '#cd5c5c',
+      indigo: '#4b0082',
+      ivory: '#fffff0',
+      khaki: '#f0e68c',
+      lavender: '#e6e6fa',
+      lavenderblush: '#fff0f5',
+      lawngreen: '#7cfc00',
+      lemonchiffon: '#fffacd',
+      lightblue: '#add8e6',
+      lightcoral: '#f08080',
+      lightcyan: '#e0ffff',
+      lightgoldenrodyellow: '#fafad2',
+      lightgray: '#d3d3d3',
+      lightgreen: '#90ee90',
+      lightpink: '#ffb6c1',
+      lightsalmon: '#ffa07a',
+      lightseagreen: '#20b2aa',
+      lightskyblue: '#87cefa',
+      lightslategray: '#778899',
+      lightsteelblue: '#b0c4de',
+      lightyellow: '#ffffe0',
+      lime: '#00ff00',
+      limegreen: '#32cd32',
+      linen: '#faf0e6',
+      magenta: '#ff00ff',
+      maroon: '#800000',
+      mediumaquamarine: '#66cdaa',
+      mediumblue: '#0000cd',
+      mediumorchid: '#ba55d3',
+      mediumpurple: '#9370d8',
+      mediumseagreen: '#3cb371',
+      mediumslateblue: '#7b68ee',
+      mediumspringgreen: '#00fa9a',
+      mediumturquoise: '#48d1cc',
+      mediumvioletred: '#c71585',
+      midnightblue: '#191970',
+      mintcream: '#f5fffa',
+      mistyrose: '#ffe4e1',
+      moccasin: '#ffe4b5',
+      navajowhite: '#ffdead',
+      navy: '#000080',
+      oldlace: '#fdf5e6',
+      olive: '#808000',
+      olivedrab: '#6b8e23',
+      orange: '#ffa500',
+      orangered: '#ff4500',
+      orchid: '#da70d6',
+      palegoldenrod: '#eee8aa',
+      palegreen: '#98fb98',
+      paleturquoise: '#afeeee',
+      palevioletred: '#d87093',
+      papayawhip: '#ffefd5',
+      peachpuff: '#ffdab9',
+      peru: '#cd853f',
+      pink: '#ffc0cb',
+      plum: '#dda0dd',
+      powderblue: '#b0e0e6',
+      purple: '#800080',
+      rebeccapurple: '#663399',
+      red: '#ff0000',
+      rosybrown: '#bc8f8f',
+      royalblue: '#4169e1',
+      saddlebrown: '#8b4513',
+      salmon: '#fa8072',
+      sandybrown: '#f4a460',
+      seagreen: '#2e8b57',
+      seashell: '#fff5ee',
+      sienna: '#a0522d',
+      silver: '#c0c0c0',
+      skyblue: '#87ceeb',
+      slateblue: '#6a5acd',
+      slategray: '#708090',
+      snow: '#fffafa',
+      springgreen: '#00ff7f',
+      steelblue: '#4682b4',
+      tan: '#d2b48c',
+      teal: '#008080',
+      thistle: '#d8bfd8',
+      tomato: '#ff6347',
+      turquoise: '#40e0d0',
+      violet: '#ee82ee',
+      wheat: '#f5deb3',
+      white: '#ffffff',
+      whitesmoke: '#f5f5f5',
+      yellow: '#ffff00',
+      yellowgreen: '#9acd32',
+    };
+    return colors[colorName.toLowerCase()];
+  }
+
+  /**
+   * Converts color specified in hex format to {r, g, b} values
+   * @param {string} hexstr color in hex string format (e.g. "#03F" or "0033FF")
+   * @return {Object.<string, number>} rgb values
+   */
+  static hexToRgb(hexstr) {
+    // Source: https://stackoverflow.com/a/5624139
+    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+    const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    const varHex = hexstr.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(varHex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16),
+    } : null;
+  }
+
+  /**
+   * Converts rgb color specified in string format to an array of float values
+   * @param {string} rgbstr color in "r, g, b" string format (e.g. "0,0,255")
+   * @return {number[]} array of rgb values between 0.0 and 1.0
+   */
+  static rgbStringToFloatArray(rgbstr) {
+    const rgb = rgbstr.match(/\d+/g);
+    for (let i = 0; i < 4; i += 1) {
+      rgb[i] = i < rgb.length ? Math.max(0x00, Math.min(0xFF, rgb[i] / 0xFF)) : 1.0;
+    }
+    return rgb;
+  }
+
+  /**
+   * Converts color specified in hsv color space to rgb color space
+   * @param {number[]} hsv array of [h, s, v] numerical values between 0.0 and 1.0
+   * @returns {number[]} array of [r, g, b] numerical values between 0.0 and 1.0
+   */
+  static hsv2rgb(hsv) {
+    // Source: https://stackoverflow.com/a/6930407
+    if (hsv[1] <= 0.000001) {
+      return [hsv[2], hsv[2], hsv[2]];
+    }
+
+    let hh = hsv[0];
+    if (hh >= 1.0) {
+      hh = 0.0;
+    }
+    hh *= 6.0;
+    const i = Math.floor(hh);
+    const ff = hh - i;
+    const p = hsv[2] * (1.0 - hsv[1]);
+    const q = hsv[2] * (1.0 - (hsv[1] * ff));
+    const t = hsv[2] * (1.0 - (hsv[1] * (1.0 - ff)));
+
+    switch (i) {
+      case 0: return [hsv[2], t, p];
+      case 1: return [q, hsv[2], p];
+      case 2: return [p, hsv[2], t];
+      case 3: return [p, q, hsv[2]];
+      case 4: return [t, p, hsv[2]];
+      default: return [hsv[2], p, q];
+    }
+  }
 }
+
+export default Colormap;

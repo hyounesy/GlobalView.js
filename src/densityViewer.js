@@ -1,14 +1,14 @@
-const libGraphics = require('./graphics.js');
-const libShaders = require('./shaders.js');
-const libAlgorithm = require('./algorithm.js');
-const libGlMatrix = require('gl-matrix');
-const libUtility = require('./utility.js');
+import { mat4, vec2 } from 'gl-matrix';
+import { Shader, Mesh, LoadTextureFromByteArray, LoadTextureFromFloatArray } from './graphics';
+import Shaders from './shaders';
+import { ClusterMapOptions } from './algorithm';
+import { consoleLog } from './utility';
+import Colormap from './colormap';
 
 /**
  * A viewer that renders point density to the global view.
  */
-// eslint-disable-next-line import/prefer-default-export
-export class DensityViewer {
+class DensityViewer {
   /**
    * @constructor
    * @package
@@ -20,9 +20,9 @@ export class DensityViewer {
     this.gl = gl;
     this.plot = plot;
 
-    this.sdrDensityMap = new libGraphics.Shader(
-      gl, libShaders.Shaders.vsTextured2,
-      libShaders.Shaders.fsViewDensityMap,
+    this.sdrDensityMap = new Shader(
+      gl, Shaders.vsTextured2,
+      Shaders.fsViewDensityMap,
     );
     this.sdrDensityMap.matWorldViewProj = this.sdrDensityMap.u4x4f('matWorldViewProj');
     this.sdrDensityMap.matTexCoordTransform = this.sdrDensityMap.u2x2f('matTexCoordTransform');
@@ -30,12 +30,12 @@ export class DensityViewer {
     this.sdrDensityMap.color = this.sdrDensityMap.u3f('color');
 
     this.sdrClusterMap =
-      new libGraphics.Shader(gl, libShaders.Shaders.vsTextured2, libShaders.Shaders.fsTextured);
+      new Shader(gl, Shaders.vsTextured2, Shaders.fsTextured);
     this.sdrClusterMap.matWorldViewProj = this.sdrClusterMap.u4x4f('matWorldViewProj');
     this.sdrClusterMap.matTexCoordTransform = this.sdrClusterMap.u2x2f('matTexCoordTransform');
 
     // Create a 2D quad mesh
-    this.meshQuad = new libGraphics.Mesh(gl, new Float32Array([
+    this.meshQuad = new Mesh(gl, new Float32Array([
       // Positions
       0, 1, 0,
       0, 0, 0,
@@ -51,7 +51,7 @@ export class DensityViewer {
 
     this.dataset = null;
 
-    this.clusterMapOptions = new libAlgorithm.ClusterMapOptions();
+    this.clusterMapOptions = new ClusterMapOptions();
 
     this.showDensityMap = false;
     this.showClusterMap = false;
@@ -96,7 +96,7 @@ export class DensityViewer {
    * @param {number} dim1 second dimension index
    */
   render(flipY, transform, dim0, dim1) {
-    const pos = libGlMatrix.vec2.create();
+    const pos = vec2.create();
 
     if (this.showClusterMap) {
       if (this.dataset && this.dataset.isClusterMapReady(dim0, dim1)) {
@@ -138,7 +138,7 @@ export class DensityViewer {
               }
 
               let clr = [c, 0.5, 1]; // 0.5 ... Use 50% saturated colors
-              clr = libUtility.hsv2rgb(clr);
+              clr = Colormap.hsv2rgb(clr);
 
               rgba[(4 * i) + 0] = Math.floor(clr[0] * 255);
               rgba[(4 * i) + 1] = Math.floor(clr[1] * 255);
@@ -146,7 +146,7 @@ export class DensityViewer {
               rgba[(4 * i) + 3] = Math.floor(d * 255);
             }
           }
-          texture = libGraphics.LoadTextureFromByteArray(
+          texture = LoadTextureFromByteArray(
             this.gl, rgba,
             clusterMap.width, clusterMap.height,
           );
@@ -160,20 +160,20 @@ export class DensityViewer {
         this.sdrClusterMap.bind();
         this.meshQuad.bind(this.sdrClusterMap, texture);
 
-        const mattrans = libGlMatrix.mat4.create();
+        const mattrans = mat4.create();
         if (flipY === true) {
-          libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+          mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
         }
         transform.datasetCoordToDeviceCoord(pos, dim0 > dim1 ?
           [clusterMap.invTransformY(0), clusterMap.invTransformX(0)] :
           [clusterMap.invTransformX(0), clusterMap.invTransformY(0)]);
-        libGlMatrix.mat4.translate(mattrans, mattrans, [pos[0], pos[1], 0.0]);
+        mat4.translate(mattrans, mattrans, [pos[0], pos[1], 0.0]);
         transform.datasetDistToDeviceDist(pos, dim0 > dim1 ?
           [clusterMap.height / clusterMap.transform[2],
             clusterMap.width / clusterMap.transform[0]] :
           [clusterMap.width / clusterMap.transform[0],
             clusterMap.height / clusterMap.transform[2]]);
-        libGlMatrix.mat4.scale(mattrans, mattrans, [pos[0], pos[1], 1.0]);
+        mat4.scale(mattrans, mattrans, [pos[0], pos[1], 1.0]);
         this.sdrClusterMap.matWorldViewProj(mattrans);
 
         this.sdrClusterMap.matTexCoordTransform(new Float32Array(dim0 > dim1 ?
@@ -196,7 +196,7 @@ export class DensityViewer {
 
         // Create texture if it wasn't already created
         if (!densityMap.texture) {
-          densityMap.texture = libGraphics.LoadTextureFromFloatArray(
+          densityMap.texture = LoadTextureFromFloatArray(
             this.gl, densityMap.data, densityMap.width,
             densityMap.height,
           );
@@ -205,20 +205,20 @@ export class DensityViewer {
         this.sdrDensityMap.bind();
         this.meshQuad.bind(this.sdrDensityMap, [densityMap.texture]);
 
-        const mattrans = libGlMatrix.mat4.create();
+        const mattrans = mat4.create();
         if (flipY === true) {
-          libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+          mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
         }
         transform.datasetCoordToDeviceCoord(pos, dim0 > dim1 ?
           [densityMap.invTransformY(0), densityMap.invTransformX(0)] :
           [densityMap.invTransformX(0), densityMap.invTransformY(0)]);
-        libGlMatrix.mat4.translate(mattrans, mattrans, [pos[0], pos[1], 0.0]);
+        mat4.translate(mattrans, mattrans, [pos[0], pos[1], 0.0]);
         transform.datasetDistToDeviceDist(pos, dim0 > dim1 ?
           [densityMap.height / densityMap.transform[2],
             densityMap.width / densityMap.transform[0]] :
           [densityMap.width / densityMap.transform[0],
             densityMap.height / densityMap.transform[2]]);
-        libGlMatrix.mat4.scale(mattrans, mattrans, [pos[0], pos[1], 1.0]);
+        mat4.scale(mattrans, mattrans, [pos[0], pos[1], 1.0]);
         this.sdrDensityMap.matWorldViewProj(mattrans);
 
         this.sdrDensityMap.matTexCoordTransform(new Float32Array(dim0 > dim1 ?
@@ -318,7 +318,7 @@ export class DensityViewer {
           bodies[i].x + bestDir[0], bodies[i].y + bestDir[1],
           Number.MIN_VALUE, 0, 0.0, density,
         );
-        libUtility.consoleLog(density);
+        consoleLog(density);
       }
     }
     const varImages = images;
@@ -331,3 +331,5 @@ export class DensityViewer {
     }
   }
 }
+
+export default DensityViewer;

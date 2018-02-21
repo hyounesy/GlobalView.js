@@ -1,6 +1,8 @@
-const globalView = require('../../dist/global-view.js');
-const domready = require('domready'); // eslint-disable-line import/no-extraneous-dependencies
-const BenchmarkDialog = require('./benchmarkDialog').default;
+import domready from 'domready'; // eslint-disable-line import/no-extraneous-dependencies
+import { GlobalView, CsvDataset, RandomDataset, readIntCookie,
+  urlExists, createCookie, showAlert, DensityMapOptions,
+  consoleLog, DataVector, download } from '../../dist/global-view';
+import BenchmarkDialog from './benchmarkDialog';
 
 // Global variables
 // var gl;
@@ -25,36 +27,36 @@ domready(() => {
   const DATASETS = [
     {
       name: '10 random points',
-      create: () => new globalView.RandomDataset(10, 3, datasetOnLoad),
+      create: () => new RandomDataset(10, 3, datasetOnLoad),
     },
     {
       name: '100 random points',
-      create: () => new globalView.RandomDataset(100, 3, datasetOnLoad),
+      create: () => new RandomDataset(100, 3, datasetOnLoad),
     },
     {
       name: '1.000 random points',
-      create: () => new globalView.RandomDataset(1000, 3, datasetOnLoad),
+      create: () => new RandomDataset(1000, 3, datasetOnLoad),
     },
     {
       name: '10.000 random points',
-      create: () => new globalView.RandomDataset(10000, 3, datasetOnLoad),
+      create: () => new RandomDataset(10000, 3, datasetOnLoad),
     },
     {
       name: '100.000 random points',
-      create: () => new globalView.RandomDataset(100000, 3, datasetOnLoad),
+      create: () => new RandomDataset(100000, 3, datasetOnLoad),
     },
     {
       name: '1.000.000 random points',
-      create: () => new globalView.RandomDataset(1000000, 3, datasetOnLoad),
+      create: () => new RandomDataset(1000000, 3, datasetOnLoad),
     },
     {
       name: '10.000.000 random points',
-      create: () => new globalView.RandomDataset(10000000, 3, datasetOnLoad),
+      create: () => new RandomDataset(10000000, 3, datasetOnLoad),
     },
     {
       name: 'iris',
       url: 'datasets/iris.data',
-      create: () => new globalView.CsvDataset(
+      create: () => new CsvDataset(
         'datasets/iris.data', {
           columnLabels: ['Sepal Length [cm]',
             'Sepal Width [cm]', 'Petal Length [cm]', 'Petal Width [cm]', 'Class'],
@@ -65,7 +67,7 @@ domready(() => {
     {
       name: 'allencell',
       url: 'datasets/AICS_Cell-feature-analysis_v1.5.csv',
-      create: () => new globalView.CsvDataset('datasets/AICS_Cell-feature-analysis_v1.5.csv', {
+      create: () => new CsvDataset('datasets/AICS_Cell-feature-analysis_v1.5.csv', {
         hasHeader: true,
         nameColumn: 1,
         imageFilenames(data) {
@@ -115,7 +117,7 @@ domready(() => {
   ];
 
   const divGlobalView = document.getElementById('divGlobalView');
-  plot = new globalView.GlobalView(divGlobalView, {
+  plot = new GlobalView(divGlobalView, {
     // showXAxisHistogram: true,
     // showYAxisHistogram: true,
     // showColormapHistogram: true,
@@ -183,21 +185,21 @@ domready(() => {
       cbDataset.add(option);
       if (cbDataset.options.length === DATASETS.length) {
         // Load dataset
-        const datasetIndex = globalView.readIntCookie('datasetIndex');
+        const datasetIndex = readIntCookie('datasetIndex');
         if (datasetIndex !== null) {
           cbDataset.selectedIndex = datasetIndex;
         }
         cbDatasetOnChange(); // Load even if cookie isn't set
       }
     } else {
-      globalView.urlExists(vDataset.url, () => {
+      urlExists(vDataset.url, () => {
         const option = document.createElement('option');
         option.text = vDataset.name;
         option.createDataset = vDataset.create;
         cbDataset.add(option);
         if (cbDataset.options.length === DATASETS.length) {
           // Load dataset
-          const datasetIndex = globalView.readIntCookie('datasetIndex');
+          const datasetIndex = readIntCookie('datasetIndex');
           if (datasetIndex !== null) {
             cbDataset.selectedIndex = datasetIndex;
           }
@@ -291,7 +293,7 @@ function onResize() {
 window.onResize = onResize;
 
 function cbDatasetOnChange() {
-  globalView.createCookie('datasetIndex', cbDataset.selectedIndex);
+  createCookie('datasetIndex', cbDataset.selectedIndex);
   if (cbDataset.selectedIndex >= 0 && cbDataset.options[cbDataset.selectedIndex].createDataset) {
     cbDataset.options[cbDataset.selectedIndex].createDataset();
   }
@@ -302,7 +304,7 @@ window.cbDatasetOnChange = cbDatasetOnChange;
 function datasetOnLoad(_dataset) {
   dataset = _dataset;
   if (dataset.columns.length < 2) {
-    globalView.showAlert(`Invalid dataset\nDataset has ${dataset.columns.length} column(s) (at least 2 required).`);
+    showAlert(`Invalid dataset\nDataset has ${dataset.columns.length} column(s) (at least 2 required).`);
     return;
   }
 
@@ -334,7 +336,7 @@ function datasetOnLoad(_dataset) {
     cbColumnS.add(option);
   }
   if (dataset.numColumns > 3) {
-    dataset.dataVectors.push(new globalView.DataVector(dataset, '0.0'/* "0.5 * c1 + 0.5 * c3" */));// "i"));
+    dataset.dataVectors.push(new DataVector(dataset, '0.0'/* "0.5 * c1 + 0.5 * c3" */));// "i"));
     let option = document.createElement('option');
     option.text = 'formula';
     cbColumnX.add(option);
@@ -348,10 +350,10 @@ function datasetOnLoad(_dataset) {
     option.text = 'formula';
     cbColumnS.add(option);
   }
-  const activeColumnX = globalView.readIntCookie('activeColumnX');
-  const activeColumnY = globalView.readIntCookie('activeColumnY');
-  const activeColumnC = globalView.readIntCookie('activeColumnC');
-  const activeColumnS = globalView.readIntCookie('activeColumnS');
+  const activeColumnX = readIntCookie('activeColumnX');
+  const activeColumnY = readIntCookie('activeColumnY');
+  const activeColumnC = readIntCookie('activeColumnC');
+  const activeColumnS = readIntCookie('activeColumnS');
   cbColumnX.selectedIndex = Math.max(0, Math.min(
     dataset.numColumns - 1,
     activeColumnX !== null && activeColumnX < dataset.numColumns ?
@@ -381,19 +383,19 @@ function datasetOnLoad(_dataset) {
   );
 }
 function cbColumnXOnChange() {
-  globalView.createCookie('activeColumnX', cbColumnX.selectedIndex);
+  createCookie('activeColumnX', cbColumnX.selectedIndex);
   plot.setActiveColumn(0, cbColumnX.selectedIndex);
 }
 function cbColumnYOnChange() {
-  globalView.createCookie('activeColumnY', cbColumnY.selectedIndex);
+  createCookie('activeColumnY', cbColumnY.selectedIndex);
   plot.setActiveColumn(1, cbColumnY.selectedIndex);
 }
 function cbColumnCOnChange() {
-  globalView.createCookie('activeColumnC', cbColumnC.selectedIndex);
+  createCookie('activeColumnC', cbColumnC.selectedIndex);
   plot.setActiveColumn(2, cbColumnC.selectedIndex);
 }
 function cbColumnSOnChange() {
-  globalView.createCookie('activeColumnS', cbColumnS.selectedIndex);
+  createCookie('activeColumnS', cbColumnS.selectedIndex);
   plot.setActiveColumn(3, cbColumnS.selectedIndex);
 }
 
@@ -415,7 +417,7 @@ function rPointSizeOnChange(sender) {
   plot.setOption('pointSize', Number.parseFloat(sender.value));
 }
 
-const densityMapOptions = new globalView.DensityMapOptions();
+const densityMapOptions = new DensityMapOptions();
 // densityMapOptions.logScale = false;
 function cbShowDensityOnChange(sender) {
   if (sender.checked) {
@@ -577,7 +579,7 @@ function ondragover(event) {
 }
 let dragOverCanvas = null;
 function ondragenter(/* event */) {
-  globalView.consoleLog('ondragenter');
+  consoleLog('ondragenter');
   if (!dragOverCanvas) {
     const padding = plot.getOption('padding');
 
@@ -601,7 +603,7 @@ function ondragenter(/* event */) {
   }
 }
 function ondragleave(/* event */) {
-  globalView.consoleLog('ondragleave');
+  consoleLog('ondragleave');
   if (dragOverCanvas) {
     document.getElementById('divGlobalView').removeChild(dragOverCanvas);
     dragOverCanvas = null;
@@ -609,7 +611,7 @@ function ondragleave(/* event */) {
 }
 function ondrop(pEvent) {
   let event = pEvent;
-  globalView.consoleLog('ondrop');
+  consoleLog('ondrop');
   ondragleave(event);
   event.preventDefault();
   event = event || window.event;
@@ -621,7 +623,7 @@ function ondrop(pEvent) {
     var eventY = event.clientY - targetRect.top;
     var fileExt = files[0].name; */
     // eslint-disable-next-line no-new
-    new globalView.CsvDataset(files[0], { autoDetect: true }, datasetOnLoad);
+    new CsvDataset(files[0], { autoDetect: true }, datasetOnLoad);
   }
 }
 
@@ -642,7 +644,7 @@ function handleKeyDown(event) {
     case 36: // HOME key
       plot.enableOffscreenRendering(1024, 1024);
       plot.renderOffscreenBuffer();
-      globalView.download('globalView.png', plot.saveOffscreenBuffer());
+      download('globalView.png', plot.saveOffscreenBuffer());
       plot.disableOffscreenRendering();
       break;
 

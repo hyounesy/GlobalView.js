@@ -155,7 +155,7 @@
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">boolean</span>
 
 
             
@@ -178,7 +178,7 @@
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">boolean</span>
 
 
             
@@ -201,7 +201,7 @@
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">number</span>
 
 
             
@@ -224,7 +224,10 @@
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">Array.&lt;string></span>
+|
+
+<span class="param-type">function</span>
 
 
             
@@ -248,7 +251,10 @@
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">Array.&lt;string></span>
+|
+
+<span class="param-type">function</span>
 
 
             
@@ -298,7 +304,729 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="dataset.js.html">dataset.js</a>, <a href="dataset.js.html#line627">line 627</a>
+        <a href="dataset.js.html">dataset.js</a>, <a href="dataset.js.html#line638">line 638</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="OPTIONS"><span class="type-signature">(constant) </span>OPTIONS<span class="type-signature"> :Object</span></h4>
+
+
+
+
+<div class="description">
+    <p>A map of valid options with option descriptions,
+validation functions and flags about side effects</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>padding</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+|
+
+<span class="param-type">Array.&lt;string></span>
+|
+
+<span class="param-type">number</span>
+|
+
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The space around the drawing area. X-axis, y-axis and colormap are drawn within padding space.
+Values can be specified as array of length 4 for [top, right, bottom, left],
+or as a single value specifying all four corners.
+Values can be absolute (e.g. 120 or &quot;120&quot; ) or
+percentages (e.g. &quot;20%&quot;&quot; or [&quot;10%&quot;, &quot;20%&quot;, &quot;10%&quot;, &quot;20%&quot;&quot;]
+(default: [50, 60, 50, 50])</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>showColormap</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>When enabled, shows a colormap to the right of the plot.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>enableScrolling</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>When enabled, scrolling above the plot zooms in or out of the data. (default: true)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>enableThumbnailDragging</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>When enabled, thumbnails can be dragged with the mouse. (default: true)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>enableContinuousRendering</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>When enabled, the canvas is continuously rerendered at up to 60 frames per second.
+Keep this setting disabled to save processing resources. (default: false)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>enableTransparency</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Enables/disables blending in WebGL. Whenever using any kind of transparency,
+this setting should be kept enabled. (default: true)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>showPointDensity</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>When enabled, draws an image into the background, that shows density of points.
+(can be combined with 'showPointClusters') (default: false)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>showPointClusters</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>When enabled, draws an image into the background, that shows colored clusters of points.
+(can be combined with 'showPointDensity')  (default: false)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pointClusterThreshold</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Specifies the density threshold ratio.
+Densities below threshold * maximum-density are considered outliers. (default: 0.1).
+See <a href="ClusterMapOptions.html">ClusterMapOptions</a></p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>showXAxisHistogram</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>When enabled, shows a histogram between the x-axis and the plot. (default: false)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>showYAxisHistogram</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>When enabled, shows a histogram between the y-axis and the plot. (default: false)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>showColormapHistogram</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>When enabled, shows a histogram between the colormap and the plot. (default: false)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>numHistogramBins</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Controls the number of bins within each histogram in the scatterplot.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>histogramHeight</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Controls the height of each histogram in the scatterplot (in pixels). (default: 64)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pointShape</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Controls the shape of data points in the scatterplot.
+Acceptable values are 'Rectangle', 'Circle', 'Cross', 'Diamond', 'Gaussian', 'Custom'.
+(default: 'Circle')</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>customPointShape</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>When 'pointShape' is set to 'Custom', this defines a GLSL function given vec2 p,
+that returns opacity in the range [0.0 ... 1.0] at location p. (default: '{ return 1.0; }')</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pointSize</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Controls the diameter of data points in the scatterplot (in pixels). (default: 6)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pointOpacity</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Controls the visibility of data points in the scatterplot between
+ 0 (invisible) and 1 (fully opaque). (default: 1.0)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pointColor</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+|
+
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Controls the color of data points in the scatterplot.
+Valid values are an array of bytes ( 0 .. 255) in RGBA order, a color name (e.g. &quot;red&quot;),
+or a colormap name (&quot;exhue&quot; or &quot;rainbow&quot;). (default: &quot;exhue&quot;)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>thumbnailSize</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Controls the width/height of thumbnails in the scatterplot (in pixels). (default: 64)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>thumbnailBorderWidth</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Controls the width of thumbnail borders in the scatterplot. (default: 1)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>thumbnailBorderColor</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+|
+
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Controls the color of thumbnail borders in the scatterplot.
+Valid values are an array of bytes in RGBA order, a color name or 'null'.
+If set to 'null', the CSS foreground color will be used. (default: null)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>thumbnailLineColor</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+|
+
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Controls the color of thumbnail line in the scatterplot.
+Valid values are an array of bytes in RGBA order, a color name or 'null'.
+If set to 'null', the CSS foreground color will be used. (default: null)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>thumbnailLabelColor</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+|
+
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Controls the color of thumbnail labels in the scatterplot.
+Valid values are an array of bytes in RGBA order, a color name or 'null'.
+If set to 'null', the CSS background color will be used. (default: null)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>labelThumbnails</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>When enabled, links thumbnails to points using unique labels instead of lines.
+(default: false)</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="plotOptions.js.html">plotOptions.js</a>, <a href="plotOptions.js.html#line21">line 21</a>
     </li></ul></dd>
     
 
@@ -319,6 +1047,796 @@
 
     
         <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="addKeyDownHandler"><span class="type-signature"></span>addKeyDownHandler<span class="signature">(onkeydown)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>onkeydown</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utility.js.html">utility.js</a>, <a href="utility.js.html#line458">line 458</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="addKeyUpHandler"><span class="type-signature"></span>addKeyUpHandler<span class="signature">(onkeyup)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>onkeyup</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utility.js.html">utility.js</a>, <a href="utility.js.html#line469">line 469</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="addMouseMoveHandler"><span class="type-signature"></span>addMouseMoveHandler<span class="signature">(onmousemove)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>onmousemove</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utility.js.html">utility.js</a>, <a href="utility.js.html#line436">line 436</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="addMouseUpHandler"><span class="type-signature"></span>addMouseUpHandler<span class="signature">(onmouseup)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>onmouseup</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utility.js.html">utility.js</a>, <a href="utility.js.html#line447">line 447</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="addMouseWheelHandler"><span class="type-signature"></span>addMouseWheelHandler<span class="signature">(onmousewheel)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>onmousewheel</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utility.js.html">utility.js</a>, <a href="utility.js.html#line423">line 423</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="BreadthFirstSearch"><span class="type-signature"></span>BreadthFirstSearch<span class="signature">(problem)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Runs breath first search on the given problem</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>problem</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Problem</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>{forEachSuccessor(), getStartState(), computeHash(), isGoalState()}</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="pathFinding.js.html">pathFinding.js</a>, <a href="pathFinding.js.html#line54">line 54</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         
             
@@ -505,7 +2023,7 @@ the main thread and an asynchronous worker has to be primitive
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line1496">line 1496</a>
+        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line1497">line 1497</a>
     </li></ul></dd>
     
 
@@ -692,7 +2210,7 @@ because data passed between the main thread and an asynchronous worker has to be
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line301">line 301</a>
+        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line303">line 303</a>
     </li></ul></dd>
     
 
@@ -917,7 +2435,7 @@ because data passed between the main thread and an asynchronous worker has to be
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line636">line 636</a>
+        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line638">line 638</a>
     </li></ul></dd>
     
 
@@ -1121,7 +2639,7 @@ because data passed between the main thread and an asynchronous worker has to be
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line215">line 215</a>
+        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line217">line 217</a>
     </li></ul></dd>
     
 
@@ -1370,7 +2888,7 @@ because data passed between the main thread and an asynchronous worker has to be
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line254">line 254</a>
+        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line256">line 256</a>
     </li></ul></dd>
     
 
@@ -1415,6 +2933,877 @@ because data passed between the main thread and an asynchronous worker has to be
 </dl>
 
     
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="consoleError"><span class="type-signature"></span>consoleError<span class="signature">(message)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Outputs a console error message</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>message</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>error message</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utility.js.html">utility.js</a>, <a href="utility.js.html#line44">line 44</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="consoleLog"><span class="type-signature"></span>consoleLog<span class="signature">(message)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Outputs a console log message</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>message</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>log message</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utility.js.html">utility.js</a>, <a href="utility.js.html#line24">line 24</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="consoleWarn"><span class="type-signature"></span>consoleWarn<span class="signature">(message)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Outputs a console warn message</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>message</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>warning message</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utility.js.html">utility.js</a>, <a href="utility.js.html#line34">line 34</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="createCookie"><span class="type-signature"></span>createCookie<span class="signature">(name, value, days)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>days</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>expiry date in days</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utility.js.html">utility.js</a>, <a href="utility.js.html#line333">line 333</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="DepthFirstSearch"><span class="type-signature"></span>DepthFirstSearch<span class="signature">(problem)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Runs depth first search on the given problem</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>problem</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Problem</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>{forEachSuccessor(), getStartState(), computeHash(), isGoalState()}</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="pathFinding.js.html">pathFinding.js</a>, <a href="pathFinding.js.html#line7">line 7</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="download"><span class="type-signature"></span>download<span class="signature">(filename, contentUrl)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>filename</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>contentUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utility.js.html">utility.js</a>, <a href="utility.js.html#line290">line 290</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1580,7 +3969,7 @@ because data passed between the main thread and an asynchronous worker has to be
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line1680">line 1680</a>
+        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line1610">line 1610</a>
     </li></ul></dd>
     
 
@@ -1768,7 +4157,408 @@ because data passed between the main thread and an asynchronous worker has to be
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line1079">line 1079</a>
+        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line1081">line 1081</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="enableAlerts"><span class="type-signature"></span>enableAlerts<span class="signature">(enable)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Enables or disables alert messages generated by the GlobalView.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>enable</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>whether to enable or disable alert messages</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utility.js.html">utility.js</a>, <a href="utility.js.html#line16">line 16</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="enableConsoleOutputs"><span class="type-signature"></span>enableConsoleOutputs<span class="signature">(enable)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Enables or disables console outputs generated by the GlobalView.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>enable</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>whether to enable or disable console outputs</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utility.js.html">utility.js</a>, <a href="utility.js.html#line8">line 8</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="eraseCookie"><span class="type-signature"></span>eraseCookie<span class="signature">(name)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utility.js.html">utility.js</a>, <a href="utility.js.html#line391">line 391</a>
     </li></ul></dd>
     
 
@@ -2067,7 +4857,7 @@ because data passed between the main thread and an asynchronous worker has to be
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line910">line 910</a>
+        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line912">line 912</a>
     </li></ul></dd>
     
 
@@ -2371,7 +5161,7 @@ because data passed between the main thread and an asynchronous worker has to be
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line1117">line 1117</a>
+        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line1119">line 1119</a>
     </li></ul></dd>
     
 
@@ -2599,7 +5389,7 @@ because data passed between the main thread and an asynchronous worker has to be
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line1214">line 1214</a>
+        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line1216">line 1216</a>
     </li></ul></dd>
     
 
@@ -2903,7 +5693,7 @@ given that all returned points are at least 'dist' apart.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line674">line 674</a>
+        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line676">line 676</a>
     </li></ul></dd>
     
 
@@ -3181,7 +5971,7 @@ then iteratively shrinks the distance by half until the full k number of points 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line759">line 759</a>
+        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line761">line 761</a>
     </li></ul></dd>
     
 
@@ -3406,7 +6196,7 @@ then iteratively shrinks the distance by half until the full k number of points 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line793">line 793</a>
+        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line795">line 795</a>
     </li></ul></dd>
     
 
@@ -3607,7 +6397,7 @@ then iteratively shrinks the distance by half until the full k number of points 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line880">line 880</a>
+        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line882">line 882</a>
     </li></ul></dd>
     
 
@@ -3663,16 +6453,13 @@ then iteratively shrinks the distance by half until the full k number of points 
     
 
     
-    <h4 class="name" id="getTexture"><span class="type-signature"></span>getTexture<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="getParameterByName"><span class="type-signature"></span>getParameterByName<span class="signature">(name, url)</span><span class="type-signature"> &rarr; {string}</span></h4>
     
 
     
 
 
 
-<div class="description">
-    <p>Returns the texture used for the colormap</p>
-</div>
 
 
 
@@ -3680,6 +6467,77 @@ then iteratively shrinks the distance by half until the full k number of points 
 
 
 
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>url</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -3715,7 +6573,202 @@ then iteratively shrinks the distance by half until the full k number of points 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="colormap.js.html">colormap.js</a>, <a href="colormap.js.html#line353">line 353</a>
+        <a href="utility.js.html">utility.js</a>, <a href="utility.js.html#line402">line 402</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="handleLoadedTexture"><span class="type-signature"></span>handleLoadedTexture<span class="signature">(gl, texture, onload)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>gl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">WebGLRenderingContext</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>texture</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">texture</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>onload</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>callback</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="graphics.js.html">graphics.js</a>, <a href="graphics.js.html#line523">line 523</a>
     </li></ul></dd>
     
 
@@ -3749,16 +6802,13 @@ then iteratively shrinks the distance by half until the full k number of points 
     
 
     
-    <h4 class="name" id="getWidth"><span class="type-signature"></span>getWidth<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="imageUrlFromBytes"><span class="type-signature"></span>imageUrlFromBytes<span class="signature">(bytes, width, height)</span><span class="type-signature"></span></h4>
     
 
     
 
 
 
-<div class="description">
-    <p>Returns the colormap width in pixels</p>
-</div>
 
 
 
@@ -3766,6 +6816,100 @@ then iteratively shrinks the distance by half until the full k number of points 
 
 
 
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bytes</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>width</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>height</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -3801,7 +6945,7 @@ then iteratively shrinks the distance by half until the full k number of points 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="colormap.js.html">colormap.js</a>, <a href="colormap.js.html#line291">line 291</a>
+        <a href="utility.js.html">utility.js</a>, <a href="utility.js.html#line306">line 306</a>
     </li></ul></dd>
     
 
@@ -3824,6 +6968,948 @@ then iteratively shrinks the distance by half until the full k number of points 
 
 
 
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="isArray"><span class="type-signature"></span>isArray<span class="signature">(x)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Checks if a variable is an array</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>variable to check</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utility.js.html">utility.js</a>, <a href="utility.js.html#line88">line 88</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>true if variable is an array</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="isFunction"><span class="type-signature"></span>isFunction<span class="signature">(x)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Checks if a variable is a function</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>variable to check</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utility.js.html">utility.js</a>, <a href="utility.js.html#line79">line 79</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>true if variable is a function</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="isNumber"><span class="type-signature"></span>isNumber<span class="signature">(x)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Checks if a variable is a number</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>variable to check</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utility.js.html">utility.js</a>, <a href="utility.js.html#line106">line 106</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>true if variable is a number</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="isObject"><span class="type-signature"></span>isObject<span class="signature">(x)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Checks if a variable is an instanced object</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>variable to check</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utility.js.html">utility.js</a>, <a href="utility.js.html#line115">line 115</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>true if variable is an instanced object</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="isString"><span class="type-signature"></span>isString<span class="signature">(x)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Checks if a variable is a string</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>variable to check</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utility.js.html">utility.js</a>, <a href="utility.js.html#line97">line 97</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>true if variable is a string</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="isUndefined"><span class="type-signature"></span>isUndefined<span class="signature">(x)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Checks if a variable is undefined</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>variable to check</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utility.js.html">utility.js</a>, <a href="utility.js.html#line65">line 65</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>true if variable is undefined</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 
@@ -4007,7 +8093,7 @@ then iteratively shrinks the distance by half until the full k number of points 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line1748">line 1748</a>
+        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line1675">line 1675</a>
     </li></ul></dd>
     
 
@@ -4052,6 +8138,753 @@ then iteratively shrinks the distance by half until the full k number of points 
 </dl>
 
     
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="LoadTexture"><span class="type-signature"></span>LoadTexture<span class="signature">(gl, filename, onload)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Loads texture from file</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>gl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">WebGLRenderingContext</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>filename</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>onload</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>callback</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="graphics.js.html">graphics.js</a>, <a href="graphics.js.html#line544">line 544</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="LoadTextureFromByteArray"><span class="type-signature"></span>LoadTextureFromByteArray<span class="signature">(gl, array, width, height)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>loads texture from an array of bytes</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>gl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">WebGLRenderingContext</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>array</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>pixels byte array</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>width</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>texture width</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>height</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>texture height</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="graphics.js.html">graphics.js</a>, <a href="graphics.js.html#line573">line 573</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="LoadTextureFromFloatArray"><span class="type-signature"></span>LoadTextureFromFloatArray<span class="signature">(gl, array, width, height)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>loads texture from an array of floats</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>gl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">WebGLRenderingContext</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>array</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>pixels float array</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>width</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>texture width</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>height</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>texture height</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="graphics.js.html">graphics.js</a>, <a href="graphics.js.html#line594">line 594</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="LoadTextureFromImage"><span class="type-signature"></span>LoadTextureFromImage<span class="signature">(gl, image)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Loads a gl texture from an html loaded image</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>gl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">WebGLRenderingContext</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>image</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">HTMLImageElement</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="graphics.js.html">graphics.js</a>, <a href="graphics.js.html#line559">line 559</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4334,7 +9167,7 @@ using <a href="global.html#findClosePointOfLowDensity">findClosePointOfLowDensit
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line1030">line 1030</a>
+        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line1032">line 1032</a>
     </li></ul></dd>
     
 
@@ -4357,413 +9190,6 @@ using <a href="global.html#findClosePointOfLowDensity">findClosePointOfLowDensit
 
 
 
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="onPlotBoundsChanged"><span class="type-signature"></span>onPlotBoundsChanged<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Eventhandler: recompute the axis ranges</p>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="colormap.js.html">colormap.js</a>, <a href="colormap.js.html#line344">line 344</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="parseColor"><span class="type-signature"></span>parseColor<span class="signature">(color)</span><span class="type-signature"> &rarr; {Uint8Array}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Converts color parameter to a Uint8Array [r, g, b, a]</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>color</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-|
-
-<span class="param-type">Array.&lt;number></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="colormap.js.html">colormap.js</a>, <a href="colormap.js.html#line430">line 430</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>Unit8Array of length 4: [r, g, b, a]</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Uint8Array</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="parseColormap"><span class="type-signature"></span>parseColormap<span class="signature">(colormap)</span><span class="type-signature"> &rarr; {Uint8Array}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Parses the colormap and returns an array of Uint8Array</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>colormap</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-|
-
-<span class="param-type">Array.&lt;number></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>either the color map name or an array.
-Colormap array length must be multiple of 4 and contain numbers between 0 and 255.</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="colormap.js.html">colormap.js</a>, <a href="colormap.js.html#line367">line 367</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>Colormap colors as an array of size [colormapLength * 4]</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Uint8Array</span>
-
-
-    </dd>
-</dl>
-
-    
 
 
 
@@ -4909,7 +9335,7 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line1792">line 1792</a>
+        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line1719">line 1719</a>
     </li></ul></dd>
     
 
@@ -4965,16 +9391,12 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
     
 
     
-    <h4 class="name" id="render"><span class="type-signature"></span>render<span class="signature">(flipY, plotBounds)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="readCookie"><span class="type-signature"></span>readCookie<span class="signature">(name)</span><span class="type-signature"> &rarr; {string}</span></h4>
     
 
     
 
 
-
-<div class="description">
-    <p>Draws the colormap</p>
-</div>
 
 
 
@@ -5009,13 +9431,13 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
 
         <tr>
             
-                <td class="name"><code>flipY</code></td>
+                <td class="name"><code>name</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">boolean</span>
+<span class="param-type">string</span>
 
 
             
@@ -5026,147 +9448,6 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
             
 
             <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>plotBounds</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>-</p>
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>x</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>-</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>y</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>-</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>width</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>-</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>height</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>-</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
         </tr>
 
     
@@ -5207,7 +9488,7 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="colormap.js.html">colormap.js</a>, <a href="colormap.js.html#line142">line 142</a>
+        <a href="utility.js.html">utility.js</a>, <a href="utility.js.html#line349">line 349</a>
     </li></ul></dd>
     
 
@@ -5230,6 +9511,322 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
 
 
 
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="readFloatCookie"><span class="type-signature"></span>readFloatCookie<span class="signature">(name)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utility.js.html">utility.js</a>, <a href="utility.js.html#line370">line 370</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="readIntCookie"><span class="type-signature"></span>readIntCookie<span class="signature">(name)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utility.js.html">utility.js</a>, <a href="utility.js.html#line381">line 381</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 
@@ -5344,7 +9941,7 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line1347">line 1347</a>
+        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line1349">line 1349</a>
     </li></ul></dd>
     
 
@@ -5504,7 +10101,7 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line1438">line 1438</a>
+        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line1440">line 1440</a>
     </li></ul></dd>
     
 
@@ -5710,7 +10307,7 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line1406">line 1406</a>
+        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line1408">line 1408</a>
     </li></ul></dd>
     
 
@@ -5916,7 +10513,7 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line1375">line 1375</a>
+        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line1377">line 1377</a>
     </li></ul></dd>
     
 
@@ -5973,7 +10570,7 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
     
 
     
-    <h4 class="name" id="setEnumRange"><span class="type-signature"></span>setEnumRange<span class="signature">(rangeMin, rangeMax, values)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="showAlert"><span class="type-signature"></span>showAlert<span class="signature">(message)</span><span class="type-signature"></span></h4>
     
 
     
@@ -5981,7 +10578,7 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
 
 
 <div class="description">
-    <p>Sets color map axis by specifying an enumerated labels for tick values</p>
+    <p>Outputs an alert message</p>
 </div>
 
 
@@ -6017,13 +10614,13 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
 
         <tr>
             
-                <td class="name"><code>rangeMin</code></td>
+                <td class="name"><code>message</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type">string</span>
 
 
             
@@ -6033,53 +10630,7 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
 
             
 
-            <td class="description last"><p>axis range minimum</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>rangeMax</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>axis range maximum</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>values</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object.&lt;number, string></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>tick labels</p></td>
+            <td class="description last"><p>alert message</p></td>
         </tr>
 
     
@@ -6120,7 +10671,7 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="colormap.js.html">colormap.js</a>, <a href="colormap.js.html#line301">line 301</a>
+        <a href="utility.js.html">utility.js</a>, <a href="utility.js.html#line54">line 54</a>
     </li></ul></dd>
     
 
@@ -6154,7 +10705,7 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
     
 
     
-    <h4 class="name" id="setLabel"><span class="type-signature"></span>setLabel<span class="signature">(label)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="SimpleAStarSearch"><span class="type-signature"></span>SimpleAStarSearch<span class="signature">(problem)</span><span class="type-signature"></span></h4>
     
 
     
@@ -6162,7 +10713,7 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
 
 
 <div class="description">
-    <p>Sets the axis label</p>
+    <p>Runs simple A* search on the given problem</p>
 </div>
 
 
@@ -6198,7 +10749,548 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
 
         <tr>
             
-                <td class="name"><code>label</code></td>
+                <td class="name"><code>problem</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Problem</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>{getStartState(), isGoalState(),
+forEachSuccessor(), computeHash(), heuristic()}</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="pathFinding.js.html">pathFinding.js</a>, <a href="pathFinding.js.html#line165">line 165</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="SimpleGreedySearch"><span class="type-signature"></span>SimpleGreedySearch<span class="signature">(problem)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Runs simple greedy search on the given problem</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>problem</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Problem</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>{getStartState(), isGoalState(), forEachSuccessor()}</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="pathFinding.js.html">pathFinding.js</a>, <a href="pathFinding.js.html#line208">line 208</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="SimpleUniformCostSearch"><span class="type-signature"></span>SimpleUniformCostSearch<span class="signature">(problem)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Runs simple uniform cost search on the given problem</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>problem</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Problem</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>{getStartState(), isGoalState(), forEachSuccessor(), computeHash()}</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="pathFinding.js.html">pathFinding.js</a>, <a href="pathFinding.js.html#line128">line 128</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="UniformCostSearch"><span class="type-signature"></span>UniformCostSearch<span class="signature">(problem)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Runs uniform cost search algorithm on the given problem</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>problem</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Problem</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>{forEachSuccessor(), getStartState(), computeHash(), isGoalState()}</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="pathFinding.js.html">pathFinding.js</a>, <a href="pathFinding.js.html#line90">line 90</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="urlExists"><span class="type-signature"></span>urlExists<span class="signature">(url, onTrue, onFalse, isAsync)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Check if a url exists</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>url</code></td>
             
 
             <td class="type">
@@ -6218,151 +11310,23 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
         </tr>
 
     
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="colormap.js.html">colormap.js</a>, <a href="colormap.js.html#line321">line 321</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="setNumericRange"><span class="type-signature"></span>setNumericRange<span class="signature">(minimum, maximum, changeTickDistance<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Sets the color map axis by specifying a numeric range</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
 
         <tr>
             
-                <td class="name"><code>minimum</code></td>
+                <td class="name"><code>onTrue</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type">function</span>
 
 
             
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"></td>
@@ -6372,32 +11336,20 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
 
         <tr>
             
-                <td class="name"><code>maximum</code></td>
+                <td class="name"><code>onFalse</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type">function</span>
 
 
             
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"></td>
@@ -6407,7 +11359,7 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
 
         <tr>
             
-                <td class="name"><code>changeTickDistance</code></td>
+                <td class="name"><code>isAsync</code></td>
             
 
             <td class="type">
@@ -6420,160 +11372,6 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
             </td>
 
             
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    true
-                
-                </td>
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="colormap.js.html">colormap.js</a>, <a href="colormap.js.html#line247">line 247</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="validateColor"><span class="type-signature"></span>validateColor<span class="signature">(color)</span><span class="type-signature"> &rarr; {boolean|string}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Checks if the specified parameter is a valid color</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>color</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-|
-
-<span class="param-type">Array.&lt;number></span>
-
-
-            
-            </td>
-
-            
 
             
 
@@ -6618,7 +11416,7 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="colormap.js.html">colormap.js</a>, <a href="colormap.js.html#line400">line 400</a>
+        <a href="utility.js.html">utility.js</a>, <a href="utility.js.html#line268">line 268</a>
     </li></ul></dd>
     
 
@@ -6641,31 +11439,6 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
 
 
 
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>true of a valid color, otherwise the string error message</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">boolean</span>
-|
-
-<span class="param-type">string</span>
-
-
-    </dd>
-</dl>
-
-    
 
 
 
@@ -6677,7 +11450,7 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
     
 
     
-    <h4 class="name" id="validateColormap"><span class="type-signature"></span>validateColormap<span class="signature">(colormap)</span><span class="type-signature"> &rarr; {boolean|string}</span></h4>
+    <h4 class="name" id="validateGLSL"><span class="type-signature"></span>validateGLSL<span class="signature">(gl, code)</span><span class="type-signature"></span></h4>
     
 
     
@@ -6685,7 +11458,7 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
 
 
 <div class="description">
-    <p>validates the colormap parameters</p>
+    <p>validates a glsl shader code</p>
 </div>
 
 
@@ -6721,16 +11494,13 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
 
         <tr>
             
-                <td class="name"><code>colormap</code></td>
+                <td class="name"><code>gl</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
-|
-
-<span class="param-type">Array.&lt;number></span>
+<span class="param-type">WebGLRenderingContext</span>
 
 
             
@@ -6740,8 +11510,30 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
 
             
 
-            <td class="description last"><p>either the color map name or an array.
-Colormap array length must be multiple of 4 and contain numbers between 0 and 255.</p></td>
+            <td class="description last"><p>webgl context</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>code</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>shader code</p></td>
         </tr>
 
     
@@ -6782,7 +11574,7 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="colormap.js.html">colormap.js</a>, <a href="colormap.js.html#line450">line 450</a>
+        <a href="graphics.js.html">graphics.js</a>, <a href="graphics.js.html#line253">line 253</a>
     </li></ul></dd>
     
 
@@ -6805,31 +11597,6 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
 
 
 
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>true of a valid color map, otherwise the string error message</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">boolean</span>
-|
-
-<span class="param-type">string</span>
-
-
-    </dd>
-</dl>
-
-    
 
 
 
@@ -7009,7 +11776,7 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line1705">line 1705</a>
+        <a href="algorithm.js.html">algorithm.js</a>, <a href="algorithm.js.html#line1635">line 1635</a>
     </li></ul></dd>
     
 
@@ -7218,7 +11985,7 @@ by the lasso relative to the location of the plot</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="globalView.js.html">globalView.js</a>, <a href="globalView.js.html#line182">line 182</a>
+        <a href="globalView.js.html">globalView.js</a>, <a href="globalView.js.html#line171">line 171</a>
     </li></ul></dd>
     
 
@@ -7349,7 +12116,7 @@ by the lasso relative to the location of the plot</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="globalView.js.html">globalView.js</a>, <a href="globalView.js.html#line1423">line 1423</a>
+        <a href="globalView.js.html">globalView.js</a>, <a href="globalView.js.html#line1417">line 1417</a>
     </li></ul></dd>
     
 
@@ -7504,7 +12271,7 @@ by the lasso relative to the location of the plot</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="globalView.js.html">globalView.js</a>, <a href="globalView.js.html#line147">line 147</a>
+        <a href="globalView.js.html">globalView.js</a>, <a href="globalView.js.html#line136">line 136</a>
     </li></ul></dd>
     
 
@@ -7658,7 +12425,7 @@ by the lasso relative to the location of the plot</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="globalView.js.html">globalView.js</a>, <a href="globalView.js.html#line129">line 129</a>
+        <a href="globalView.js.html">globalView.js</a>, <a href="globalView.js.html#line118">line 118</a>
     </li></ul></dd>
     
 
@@ -7812,7 +12579,7 @@ by the lasso relative to the location of the plot</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="globalView.js.html">globalView.js</a>, <a href="globalView.js.html#line167">line 167</a>
+        <a href="globalView.js.html">globalView.js</a>, <a href="globalView.js.html#line156">line 156</a>
     </li></ul></dd>
     
 
@@ -7966,7 +12733,7 @@ by the lasso relative to the location of the plot</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="globalView.js.html">globalView.js</a>, <a href="globalView.js.html#line200">line 200</a>
+        <a href="globalView.js.html">globalView.js</a>, <a href="globalView.js.html#line189">line 189</a>
     </li></ul></dd>
     
 
@@ -7988,74 +12755,6 @@ by the lasso relative to the location of the plot</p></td>
 
 
 
-
-
-
-
-
-
-            
-                
-<h4 class="name" id="OptionDescription">OptionDescription</h4>
-
-
-
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">Object</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="globalView.js.html">globalView.js</a>, <a href="globalView.js.html#line31">line 31</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
 
 
 
@@ -8076,13 +12775,13 @@ by the lasso relative to the location of the plot</p></td>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClusterMap.html">ClusterMap</a></li><li><a href="ClusterMapOptions.html">ClusterMapOptions</a></li><li><a href="CoordinateSystem.html">CoordinateSystem</a></li><li><a href="CsvDataset.html">CsvDataset</a></li><li><a href="DataMesh.html">DataMesh</a></li><li><a href="Dataset.html">Dataset</a></li><li><a href="DataVector.html">DataVector</a></li><li><a href="DensityMap.html">DensityMap</a></li><li><a href="DensityMapOptions.html">DensityMapOptions</a></li><li><a href="DensityViewer.html">DensityViewer</a></li><li><a href="ForwardList.html">ForwardList</a></li><li><a href="GlobalView.html">GlobalView</a></li><li><a href="HashSet.html">HashSet</a></li><li><a href="HistogramViewer.html">HistogramViewer</a></li><li><a href="ImageViewer.html">ImageViewer</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="module.exports.html">exports</a></li><li><a href="PointGroup.html">PointGroup</a></li><li><a href="PointViewer.html">PointViewer</a></li><li><a href="PriorityQueue.html">PriorityQueue</a></li><li><a href="RandomDataset.html">RandomDataset</a></li><li><a href="Shader.html">Shader</a></li><li><a href="TextRenderContext_TextRenderContext.html">TextRenderContext</a></li><li><a href="Thumbnail.html">Thumbnail</a></li></ul><h3>Namespaces</h3><ul><li><a href="Shaders.html">Shaders</a></li></ul><h3>Interfaces</h3><ul><li><a href="Viewer.html">Viewer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#computeClusterMap">computeClusterMap</a></li><li><a href="global.html#computeDensityMap">computeDensityMap</a></li><li><a href="global.html#computeDensityMapND">computeDensityMapND</a></li><li><a href="global.html#computeHistogram">computeHistogram</a></li><li><a href="global.html#computeHistogram2D">computeHistogram2D</a></li><li><a href="global.html#CSV_DATASET_OPTIONS">CSV_DATASET_OPTIONS</a></li><li><a href="global.html#downloadDensityMap">downloadDensityMap</a></li><li><a href="global.html#downloadStencilMap">downloadStencilMap</a></li><li><a href="global.html#findClosePointOfLowDensity">findClosePointOfLowDensity</a></li><li><a href="global.html#findClosePointOfLowDensityDescend">findClosePointOfLowDensityDescend</a></li><li><a href="global.html#findClosePointOfLowDensityNDDescend">findClosePointOfLowDensityNDDescend</a></li><li><a href="global.html#findRepresentativePoints">findRepresentativePoints</a></li><li><a href="global.html#findRepresentativePoints2">findRepresentativePoints2</a></li><li><a href="global.html#findRepresentativePointsND">findRepresentativePointsND</a></li><li><a href="global.html#findRepresentativePointsND2">findRepresentativePointsND2</a></li><li><a href="global.html#getTexture">getTexture</a></li><li><a href="global.html#getWidth">getWidth</a></li><li><a href="global.html#linesIntersect">linesIntersect</a></li><li><a href="global.html#markPointsInStencilMap">markPointsInStencilMap</a></li><li><a href="global.html#onPlotBoundsChanged">onPlotBoundsChanged</a></li><li><a href="global.html#parseColor">parseColor</a></li><li><a href="global.html#parseColormap">parseColormap</a></li><li><a href="global.html#pointInsidePolygon">pointInsidePolygon</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#sampleDensityMap">sampleDensityMap</a></li><li><a href="global.html#sampleDensityMapChain">sampleDensityMapChain</a></li><li><a href="global.html#sampleDensityMapColumn">sampleDensityMapColumn</a></li><li><a href="global.html#sampleDensityMapRow">sampleDensityMapRow</a></li><li><a href="global.html#setEnumRange">setEnumRange</a></li><li><a href="global.html#setLabel">setLabel</a></li><li><a href="global.html#setNumericRange">setNumericRange</a></li><li><a href="global.html#validateColor">validateColor</a></li><li><a href="global.html#validateColormap">validateColormap</a></li><li><a href="global.html#vectorLineIntersection2D">vectorLineIntersection2D</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClusterMap.html">ClusterMap</a></li><li><a href="ClusterMapOptions.html">ClusterMapOptions</a></li><li><a href="Colormap.html">Colormap</a></li><li><a href="CoordinateSystem.html">CoordinateSystem</a></li><li><a href="CsvDataset.html">CsvDataset</a></li><li><a href="DataMesh.html">DataMesh</a></li><li><a href="Dataset.html">Dataset</a></li><li><a href="DataVector.html">DataVector</a></li><li><a href="DensityMap.html">DensityMap</a></li><li><a href="DensityMapOptions.html">DensityMapOptions</a></li><li><a href="DensityViewer.html">DensityViewer</a></li><li><a href="ForwardList.html">ForwardList</a></li><li><a href="GlobalView.html">GlobalView</a></li><li><a href="HashSet.html">HashSet</a></li><li><a href="HistogramViewer.html">HistogramViewer</a></li><li><a href="ImageViewer.html">ImageViewer</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="PointGroup.html">PointGroup</a></li><li><a href="PointViewer.html">PointViewer</a></li><li><a href="PriorityQueue.html">PriorityQueue</a></li><li><a href="RandomDataset.html">RandomDataset</a></li><li><a href="Shader.html">Shader</a></li><li><a href="TextRenderContext.html">TextRenderContext</a></li><li><a href="Thumbnail.html">Thumbnail</a></li><li><a href="Transform.html">Transform</a></li></ul><h3>Namespaces</h3><ul><li><a href="Shaders.html">Shaders</a></li></ul><h3>Interfaces</h3><ul><li><a href="Viewer.html">Viewer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addKeyDownHandler">addKeyDownHandler</a></li><li><a href="global.html#addKeyUpHandler">addKeyUpHandler</a></li><li><a href="global.html#addMouseMoveHandler">addMouseMoveHandler</a></li><li><a href="global.html#addMouseUpHandler">addMouseUpHandler</a></li><li><a href="global.html#addMouseWheelHandler">addMouseWheelHandler</a></li><li><a href="global.html#BreadthFirstSearch">BreadthFirstSearch</a></li><li><a href="global.html#computeClusterMap">computeClusterMap</a></li><li><a href="global.html#computeDensityMap">computeDensityMap</a></li><li><a href="global.html#computeDensityMapND">computeDensityMapND</a></li><li><a href="global.html#computeHistogram">computeHistogram</a></li><li><a href="global.html#computeHistogram2D">computeHistogram2D</a></li><li><a href="global.html#consoleError">consoleError</a></li><li><a href="global.html#consoleLog">consoleLog</a></li><li><a href="global.html#consoleWarn">consoleWarn</a></li><li><a href="global.html#createCookie">createCookie</a></li><li><a href="global.html#CSV_DATASET_OPTIONS">CSV_DATASET_OPTIONS</a></li><li><a href="global.html#DepthFirstSearch">DepthFirstSearch</a></li><li><a href="global.html#download">download</a></li><li><a href="global.html#downloadDensityMap">downloadDensityMap</a></li><li><a href="global.html#downloadStencilMap">downloadStencilMap</a></li><li><a href="global.html#enableAlerts">enableAlerts</a></li><li><a href="global.html#enableConsoleOutputs">enableConsoleOutputs</a></li><li><a href="global.html#eraseCookie">eraseCookie</a></li><li><a href="global.html#findClosePointOfLowDensity">findClosePointOfLowDensity</a></li><li><a href="global.html#findClosePointOfLowDensityDescend">findClosePointOfLowDensityDescend</a></li><li><a href="global.html#findClosePointOfLowDensityNDDescend">findClosePointOfLowDensityNDDescend</a></li><li><a href="global.html#findRepresentativePoints">findRepresentativePoints</a></li><li><a href="global.html#findRepresentativePoints2">findRepresentativePoints2</a></li><li><a href="global.html#findRepresentativePointsND">findRepresentativePointsND</a></li><li><a href="global.html#findRepresentativePointsND2">findRepresentativePointsND2</a></li><li><a href="global.html#getParameterByName">getParameterByName</a></li><li><a href="global.html#handleLoadedTexture">handleLoadedTexture</a></li><li><a href="global.html#imageUrlFromBytes">imageUrlFromBytes</a></li><li><a href="global.html#isArray">isArray</a></li><li><a href="global.html#isFunction">isFunction</a></li><li><a href="global.html#isNumber">isNumber</a></li><li><a href="global.html#isObject">isObject</a></li><li><a href="global.html#isString">isString</a></li><li><a href="global.html#isUndefined">isUndefined</a></li><li><a href="global.html#linesIntersect">linesIntersect</a></li><li><a href="global.html#LoadTexture">LoadTexture</a></li><li><a href="global.html#LoadTextureFromByteArray">LoadTextureFromByteArray</a></li><li><a href="global.html#LoadTextureFromFloatArray">LoadTextureFromFloatArray</a></li><li><a href="global.html#LoadTextureFromImage">LoadTextureFromImage</a></li><li><a href="global.html#markPointsInStencilMap">markPointsInStencilMap</a></li><li><a href="global.html#OPTIONS">OPTIONS</a></li><li><a href="global.html#pointInsidePolygon">pointInsidePolygon</a></li><li><a href="global.html#readCookie">readCookie</a></li><li><a href="global.html#readFloatCookie">readFloatCookie</a></li><li><a href="global.html#readIntCookie">readIntCookie</a></li><li><a href="global.html#sampleDensityMap">sampleDensityMap</a></li><li><a href="global.html#sampleDensityMapChain">sampleDensityMapChain</a></li><li><a href="global.html#sampleDensityMapColumn">sampleDensityMapColumn</a></li><li><a href="global.html#sampleDensityMapRow">sampleDensityMapRow</a></li><li><a href="global.html#showAlert">showAlert</a></li><li><a href="global.html#SimpleAStarSearch">SimpleAStarSearch</a></li><li><a href="global.html#SimpleGreedySearch">SimpleGreedySearch</a></li><li><a href="global.html#SimpleUniformCostSearch">SimpleUniformCostSearch</a></li><li><a href="global.html#UniformCostSearch">UniformCostSearch</a></li><li><a href="global.html#urlExists">urlExists</a></li><li><a href="global.html#validateGLSL">validateGLSL</a></li><li><a href="global.html#vectorLineIntersection2D">vectorLineIntersection2D</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Feb 16 2018 15:30:43 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
 </footer>
 
 <script> prettyPrint(); </script>

@@ -26,8 +26,10 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const libUtility = require('./utility.js');
-const libPathFinding = require('./pathFinding.js');
+            <pre class="prettyprint source linenums"><code>import { isUndefined, download, imageUrlFromBytes, F32toI24flipY, defaultTo,
+  ForwardList as classForwardList, // needed for Parallel to work
+} from './utility';
+import { SimpleUniformCostSearch } from './pathFinding';
 
 /**
  * Represents a density map.
@@ -76,67 +78,67 @@ export class DensityMapOptions {
    * @param {DensityMapOptions=} source If not null, creates a copy of source
    */
   constructor(source) {
+    // Default constructor
+    // Initial density map size (affected by maxExpectedRuntime, inflateToFit and shrinkToFit)
+    /**
+     * @alias maxExpectedRuntime
+     * @memberof DensityMapOptions
+     * @summary If the estimated runtime for computing the density map (in seconds)
+     *          is higher than maxExpectedRuntime, the density map size is reduced
+     * @type {number}
+     * @default
+     */
+    this.maxExpectedRuntime = 1.0;
+    /**
+     * @alias cutoffIntensity
+     * @memberof DensityMapOptions
+     * @summary Densities below cutoffIntensity aren't computed
+     * @type {number}
+     * @default
+     */
+    this.cutoffIntensity = 0.001;
+    /**
+     * @alias gaussScale
+     * @memberof DensityMapOptions
+     * @summary Relative variance (variance normalized by density map size)
+     * @type {number}
+     * @default
+     */
+    this.gaussScale = 1000;
+    /**
+     * @alias logScale
+     * @memberof DensityMapOptions
+     * @summary When true, computes log-densities
+     * @type {boolean}
+     * @default
+     */
+    this.logScale = true;
+    /**
+     * @alias inflateToFit
+     * @memberof DensityMapOptions
+     * @summary When true, increases density map size to fit the full density map
+     * @type {boolean}
+     * @default
+     */
+    this.inflateToFit = true;
+    /**
+     * @alias shrinkToFit
+     * @memberof DensityMapOptions
+     * @summary When true, decreases density map size to the area of non-zero densities
+     *          plus a zero-density border of 1 pixel thickness
+     * @type {boolean}
+     * @default
+     */
+    this.shrinkToFit = true;
+
     if (source) {
       // Copy constructor
-      this.maxExpectedRuntime = source.maxExpectedRuntime;
-      this.cutoffIntensity = source.cutoffIntensity;
-      this.gaussScale = source.gaussScale;
-      this.logScale = source.logScale;
-      this.inflateToFit = source.inflateToFit;
-      this.shrinkToFit = source.shrinkToFit;
-    } else {
-      // Default constructor
-      // Initial density map size (affected by maxExpectedRuntime, inflateToFit and shrinkToFit)
-      /**
-       * @alias maxExpectedRuntime
-       * @memberof DensityMapOptions
-       * @summary If the estimated runtime for computing the density map (in seconds)
-       *          is higher than maxExpectedRuntime, the density map size is reduced
-       * @type {number}
-       * @default
-       */
-      this.maxExpectedRuntime = 1.0;
-      /**
-       * @alias cutoffIntensity
-       * @memberof DensityMapOptions
-       * @summary Densities below cutoffIntensity aren't computed
-       * @type {number}
-       * @default
-       */
-      this.cutoffIntensity = 0.001;
-      /**
-       * @alias gaussScale
-       * @memberof DensityMapOptions
-       * @summary Relative variance (variance normalized by density map size)
-       * @type {number}
-       * @default
-       */
-      this.gaussScale = 1000;
-      /**
-       * @alias logScale
-       * @memberof DensityMapOptions
-       * @summary When true, computes log-densities
-       * @type {boolean}
-       * @default
-       */
-      this.logScale = true;
-      /**
-       * @alias inflateToFit
-       * @memberof DensityMapOptions
-       * @summary When true, increases density map size to fit the full density map
-       * @type {boolean}
-       * @default
-       */
-      this.inflateToFit = true;
-      /**
-       * @alias shrinkToFit
-       * @memberof DensityMapOptions
-       * @summary When true, decreases density map size to the area of non-zero densities
-       *          plus a zero-density border of 1 pixel thickness
-       * @type {boolean}
-       * @default
-       */
-      this.shrinkToFit = true;
+      this.maxExpectedRuntime = defaultTo(source.maxExpectedRuntime, this.maxExpectedRuntime);
+      this.cutoffIntensity = defaultTo(source.cutoffIntensity, this.cutoffIntensity);
+      this.gaussScale = defaultTo(source.gaussScale, this.gaussScale);
+      this.logScale = defaultTo(source.logScale, this.logScale);
+      this.inflateToFit = defaultTo(source.inflateToFit, this.inflateToFit);
+      this.shrinkToFit = defaultTo(source.shrinkToFit, this.shrinkToFit);
     }
   }
 
@@ -202,19 +204,19 @@ export class ClusterMapOptions {
    * @param {ClusterMapOptions=} source If not null, creates a copy of source
    */
   constructor(source) {
+    this.densityMap = null;
+    /**
+     * @alias threshold
+     * @memberof ClusterMapOptions
+     * @summary Densities below threshold * maximum-density are considered outliers
+     * @type {number}
+     * @default
+     */
+    this.threshold = 0.1;
+
     if (source) {
-      this.densityMap = source.densityMap;
-      this.threshold = source.threshold;
-    } else {
-      this.densityMap = null;
-      /**
-       * @alias threshold
-       * @memberof ClusterMapOptions
-       * @summary Densities below threshold * maximum-density are considered outliers
-       * @type {number}
-       * @default
-       */
-      this.threshold = 0.1;
+      this.densityMap = defaultTo(source.densityMap, this.densityMap);
+      this.threshold = defaultTo(source.threshold, this.threshold);
     }
   }
 
@@ -397,7 +399,7 @@ export function computeDensityMap(histogram, options) {
     0.011447356659209 * (expectedRuntime ** 0.508796587646921) :
     0.017471566555264 * (expectedRuntime ** 0.466050299746328);
   expectedRuntime *= t1;
-  // libUtility.consoleLog("Expected runtime: " + expectedRuntime + "s");
+  // consoleLog("Expected runtime: " + expectedRuntime + "s");
 
   while (expectedRuntime > options.maxExpectedRuntime &amp;&amp; width >= 2 &amp;&amp; height >= 2) {
     // Downscale density map size by a factor of 2
@@ -790,7 +792,7 @@ export function findRepresentativePoints2(
 ) {
   let varK = numPointsToReturn;
   let varTargetRatio = targetRatio;
-  if (libUtility.isUndefined(varTargetRatio)) {
+  if (isUndefined(varTargetRatio)) {
     varTargetRatio = 0.5;
   } // Default ratio is "fifty-fifty"
 
@@ -1117,9 +1119,9 @@ export function downloadStencilMap(stencilMap, outputFileName) {
     bytes[(i * 4) + 2] = bytes[(i * 4) + 0];
     bytes[(i * 4) + 3] = 255;
   }
-  libUtility.download(
+  download(
     fileName,
-    libUtility.imageUrlFromBytes(bytes, stencilMap.width, stencilMap.height),
+    imageUrlFromBytes(bytes, stencilMap.width, stencilMap.height),
   );
 }
 
@@ -1216,7 +1218,7 @@ export function findClosePointOfLowDensityDescend(
       return (densityOffset + (densities[(state.y * width) + state.x] * densityScale)) ** 2;
     },
   };
-  libPathFinding.SimpleUniformCostSearch(searchProblem);
+  SimpleUniformCostSearch(searchProblem);
   const closestPoint = [bestState.x, bestState.y];
 
   // Transform closestPoint back from density map space to data space
@@ -1349,12 +1351,12 @@ export function findClosePointOfLowDensityNDDescend(dataset, refIndex, densityMa
     },
   };
 
-  libPathFinding.SimpleUniformCostSearch(searchProblem);
+  SimpleUniformCostSearch(searchProblem);
   // Other options for search algorithms:
-  //  libPathFinding.BreadthFirstSearch
-  //  libPathFinding.DepthFirstSearch
-  //  libPathFinding.SimpleAStarSearch
-  //  libPathFinding.SimpleGreedySearch
+  //  BreadthFirstSearch
+  //  DepthFirstSearch
+  //  SimpleAStarSearch
+  //  SimpleGreedySearch
   const closestPoint = bestState.p;
 
   // Transform closestPoint back from [0 ... size] space to data space
@@ -1402,7 +1404,7 @@ export function sampleDensityMap(densityMap) {
  */
 export function sampleDensityMapRow(densityMap, sampleCol, maxIterations) {
   let varMaxIterations = maxIterations;
-  if (libUtility.isUndefined(varMaxIterations)) {
+  if (isUndefined(varMaxIterations)) {
     varMaxIterations = Number.MAX_SAFE_INTEGER;
   }
 
@@ -1433,7 +1435,7 @@ export function sampleDensityMapRow(densityMap, sampleCol, maxIterations) {
  */
 export function sampleDensityMapColumn(densityMap, sampleRow, maxIterations) {
   let varMaxIterations = maxIterations;
-  if (libUtility.isUndefined(varMaxIterations)) {
+  if (isUndefined(varMaxIterations)) {
     varMaxIterations = Number.MAX_SAFE_INTEGER;
   }
 
@@ -1499,8 +1501,7 @@ export function sampleDensityMapChain(densityMapChain) {
   return sample;
 }
 
-const ForwardList = libUtility.ForwardList;
-const PriorityQueue = libUtility.PriorityQueue;
+const ForwardList = classForwardList; // needed for Parallel to work
 
 /**
  * This function can be computed by an asynchronous worker.
@@ -1607,81 +1608,6 @@ export function computeClusterMap(densityMap, dim0, dim1, options) {
   const clusterMinDensities = Array.apply(null, Array(numClusters))
     .map(Number.prototype.valueOf, densityThreshold);
 
-  const enableExtensionToZeroDensity = false;
-  if (enableExtensionToZeroDensity) {
-    // Extend clusters to fill entire density != 0 area
-
-    // Queue of all neighbors of clusters (candidates ro be included in the cluster)
-    const neighborQueue = new PriorityQueue('d');
-
-    for (let y = 0; y &lt; height; y += 1) {
-      for (let x = 0; x &lt; width; x += 1) {
-        if (clustermap[(y * width) + x] !== 0 &amp;&amp;
-          (
-            (x &lt; width - 1 &amp;&amp; clustermap[((y * width) + x) - 1] === 0) ||
-            (x > 0 &amp;&amp; clustermap[(y * width) + x + 1] === 0) ||
-            (y > 0 &amp;&amp; clustermap[((y - 1) * width) + x] === 0) ||
-            (y &lt; height - 1 &amp;&amp; clustermap[((y + 1) * width) + x] === 0)
-          )) {
-          neighborQueue.push({
-            c: clustermap[(y * width) + x], x, y, d: densities[(y * width) + x],
-          });
-        }
-      }
-    }
-
-    while (neighborQueue.length) {
-      const neighbor = neighborQueue.shift();
-      let x = neighbor.x;
-      let y = neighbor.y;
-      const id = neighbor.c;
-      x -= 1;
-      if (x !== -1) {
-        let nd = densities[(y * width) + x];
-        if (nd !== 0 &amp;&amp; clustermap[(y * width) + x] === 0) {
-          neighborQueue.push({
-            c: clustermap[(y * width) + x] = id, x, y, d: nd = densities[(y * width) + x],
-          });
-          clusterMinDensities[id - 1] = Math.min(clusterMinDensities[id - 1], nd);
-        }
-      }
-
-      x += 2;
-      if (x !== width) {
-        let nd = densities[(y * width) + x];
-        if (nd !== 0 &amp;&amp; clustermap[(y * width) + x] === 0) {
-          neighborQueue.push({
-            c: clustermap[(y * width) + x] = id, x, y, d: nd = densities[(y * width) + x],
-          });
-          clusterMinDensities[id - 1] = Math.min(clusterMinDensities[id - 1], nd);
-        }
-      }
-
-      x -= 1;
-      y -= 1;
-      if (y !== -1) {
-        let nd = densities[(y * width) + x];
-        if (nd !== 0 &amp;&amp; clustermap[(y * width) + x] === 0) {
-          neighborQueue.push({
-            c: clustermap[(y * width) + x] = id, x, y, d: nd = densities[(y * width) + x],
-          });
-          clusterMinDensities[id - 1] = Math.min(clusterMinDensities[id - 1], nd);
-        }
-      }
-
-      y += 2;
-      if (y !== height) {
-        let nd = densities[(y * width) + x];
-        if (nd !== 0 &amp;&amp; clustermap[(y * width) + x] === 0) {
-          neighborQueue.push({
-            c: clustermap[(y * width) + x] = id, x, y, d: nd = densities[(y * width) + x],
-          });
-          clusterMinDensities[id - 1] = Math.min(clusterMinDensities[id - 1], nd);
-        }
-      }
-    }
-  }
-
   const clusterMap = {
     data: clustermap,
     densities: clusterDensities,
@@ -1691,12 +1617,16 @@ export function computeClusterMap(densityMap, dim0, dim1, options) {
     width,
     height,
     transform: densityMap.transform,
-    /* transformX: densityMap.transformX,
-    transformY: densityMap.transformY,
-    invTransformX: densityMap.invTransformX,
-    invTransformY: densityMap.invTransformY */
   };
   return clusterMap;
+}
+
+// Had to add this function to resolve the issues causing syntax issues for Parallel.
+// More specifically, since computeClusterMap is not used elsewhere,
+// without this, function name is removed, and the code is created like:
+// function(densityMap, dim0, dim1, options) in the blob
+export function callComputeClusterMapToHackFixUglifyJS(densityMap, dim0, dim1, options) {
+  return computeClusterMap(densityMap, dim0, dim1, options);
 }
 
 /**
@@ -1711,8 +1641,8 @@ export function downloadDensityMap(densityMap, outputFileName) {
     fileName = 'densityMap.png';
   }
 
-  libUtility.download(fileName, libUtility.imageUrlFromBytes(
-    libUtility.F32toI24flipY(
+  download(fileName, imageUrlFromBytes(
+    F32toI24flipY(
       densityMap.data,
       [densityMap.minimum, densityMap.maximum],
       densityMap.width, densityMap.height,
@@ -1745,8 +1675,6 @@ export function vectorLineIntersection2D(vecPos, vecDir, lineP1, lineP2) {
     return null;
   } // Line and vector are parallel or coincident
 
-  // libUtility.consoleLog([(x1 * y2 - y1 * x2) / denom, (x3 * y4 - y3 * x4) / denom]);
-
   const xi = ((((x1 * y2) - (y1 * x2)) * (x3 - x4)) -
                ((x1 - x2) * ((x3 * y4) - (y3 * x4)))) / denom;
   const yi = ((((x1 * y2) - (y1 * x2)) * (y3 - y4)) -
@@ -1754,7 +1682,6 @@ export function vectorLineIntersection2D(vecPos, vecDir, lineP1, lineP2) {
 
 
   const u = Math.abs(x4 - x3) > Math.abs(y4 - y3) ? (xi - x3) / (x4 - x3) : (yi - y3) / (y4 - y3);
-  // libUtility.consoleLog(u);
   if (u &lt; 0.0 || u > 1.0) {
     return null;
   } // Intersection lies outside the range a...b
@@ -1858,13 +1785,13 @@ export function pointInsidePolygon(point, polygon) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClusterMap.html">ClusterMap</a></li><li><a href="ClusterMapOptions.html">ClusterMapOptions</a></li><li><a href="CoordinateSystem.html">CoordinateSystem</a></li><li><a href="CsvDataset.html">CsvDataset</a></li><li><a href="DataMesh.html">DataMesh</a></li><li><a href="Dataset.html">Dataset</a></li><li><a href="DataVector.html">DataVector</a></li><li><a href="DensityMap.html">DensityMap</a></li><li><a href="DensityMapOptions.html">DensityMapOptions</a></li><li><a href="DensityViewer.html">DensityViewer</a></li><li><a href="ForwardList.html">ForwardList</a></li><li><a href="GlobalView.html">GlobalView</a></li><li><a href="HashSet.html">HashSet</a></li><li><a href="HistogramViewer.html">HistogramViewer</a></li><li><a href="ImageViewer.html">ImageViewer</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="module.exports.html">exports</a></li><li><a href="PointGroup.html">PointGroup</a></li><li><a href="PointViewer.html">PointViewer</a></li><li><a href="PriorityQueue.html">PriorityQueue</a></li><li><a href="RandomDataset.html">RandomDataset</a></li><li><a href="Shader.html">Shader</a></li><li><a href="TextRenderContext_TextRenderContext.html">TextRenderContext</a></li><li><a href="Thumbnail.html">Thumbnail</a></li></ul><h3>Namespaces</h3><ul><li><a href="Shaders.html">Shaders</a></li></ul><h3>Interfaces</h3><ul><li><a href="Viewer.html">Viewer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#computeClusterMap">computeClusterMap</a></li><li><a href="global.html#computeDensityMap">computeDensityMap</a></li><li><a href="global.html#computeDensityMapND">computeDensityMapND</a></li><li><a href="global.html#computeHistogram">computeHistogram</a></li><li><a href="global.html#computeHistogram2D">computeHistogram2D</a></li><li><a href="global.html#CSV_DATASET_OPTIONS">CSV_DATASET_OPTIONS</a></li><li><a href="global.html#downloadDensityMap">downloadDensityMap</a></li><li><a href="global.html#downloadStencilMap">downloadStencilMap</a></li><li><a href="global.html#findClosePointOfLowDensity">findClosePointOfLowDensity</a></li><li><a href="global.html#findClosePointOfLowDensityDescend">findClosePointOfLowDensityDescend</a></li><li><a href="global.html#findClosePointOfLowDensityNDDescend">findClosePointOfLowDensityNDDescend</a></li><li><a href="global.html#findRepresentativePoints">findRepresentativePoints</a></li><li><a href="global.html#findRepresentativePoints2">findRepresentativePoints2</a></li><li><a href="global.html#findRepresentativePointsND">findRepresentativePointsND</a></li><li><a href="global.html#findRepresentativePointsND2">findRepresentativePointsND2</a></li><li><a href="global.html#getTexture">getTexture</a></li><li><a href="global.html#getWidth">getWidth</a></li><li><a href="global.html#linesIntersect">linesIntersect</a></li><li><a href="global.html#markPointsInStencilMap">markPointsInStencilMap</a></li><li><a href="global.html#onPlotBoundsChanged">onPlotBoundsChanged</a></li><li><a href="global.html#parseColor">parseColor</a></li><li><a href="global.html#parseColormap">parseColormap</a></li><li><a href="global.html#pointInsidePolygon">pointInsidePolygon</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#sampleDensityMap">sampleDensityMap</a></li><li><a href="global.html#sampleDensityMapChain">sampleDensityMapChain</a></li><li><a href="global.html#sampleDensityMapColumn">sampleDensityMapColumn</a></li><li><a href="global.html#sampleDensityMapRow">sampleDensityMapRow</a></li><li><a href="global.html#setEnumRange">setEnumRange</a></li><li><a href="global.html#setLabel">setLabel</a></li><li><a href="global.html#setNumericRange">setNumericRange</a></li><li><a href="global.html#validateColor">validateColor</a></li><li><a href="global.html#validateColormap">validateColormap</a></li><li><a href="global.html#vectorLineIntersection2D">vectorLineIntersection2D</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClusterMap.html">ClusterMap</a></li><li><a href="ClusterMapOptions.html">ClusterMapOptions</a></li><li><a href="Colormap.html">Colormap</a></li><li><a href="CoordinateSystem.html">CoordinateSystem</a></li><li><a href="CsvDataset.html">CsvDataset</a></li><li><a href="DataMesh.html">DataMesh</a></li><li><a href="Dataset.html">Dataset</a></li><li><a href="DataVector.html">DataVector</a></li><li><a href="DensityMap.html">DensityMap</a></li><li><a href="DensityMapOptions.html">DensityMapOptions</a></li><li><a href="DensityViewer.html">DensityViewer</a></li><li><a href="ForwardList.html">ForwardList</a></li><li><a href="GlobalView.html">GlobalView</a></li><li><a href="HashSet.html">HashSet</a></li><li><a href="HistogramViewer.html">HistogramViewer</a></li><li><a href="ImageViewer.html">ImageViewer</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="PointGroup.html">PointGroup</a></li><li><a href="PointViewer.html">PointViewer</a></li><li><a href="PriorityQueue.html">PriorityQueue</a></li><li><a href="RandomDataset.html">RandomDataset</a></li><li><a href="Shader.html">Shader</a></li><li><a href="TextRenderContext.html">TextRenderContext</a></li><li><a href="Thumbnail.html">Thumbnail</a></li><li><a href="Transform.html">Transform</a></li></ul><h3>Namespaces</h3><ul><li><a href="Shaders.html">Shaders</a></li></ul><h3>Interfaces</h3><ul><li><a href="Viewer.html">Viewer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addKeyDownHandler">addKeyDownHandler</a></li><li><a href="global.html#addKeyUpHandler">addKeyUpHandler</a></li><li><a href="global.html#addMouseMoveHandler">addMouseMoveHandler</a></li><li><a href="global.html#addMouseUpHandler">addMouseUpHandler</a></li><li><a href="global.html#addMouseWheelHandler">addMouseWheelHandler</a></li><li><a href="global.html#BreadthFirstSearch">BreadthFirstSearch</a></li><li><a href="global.html#computeClusterMap">computeClusterMap</a></li><li><a href="global.html#computeDensityMap">computeDensityMap</a></li><li><a href="global.html#computeDensityMapND">computeDensityMapND</a></li><li><a href="global.html#computeHistogram">computeHistogram</a></li><li><a href="global.html#computeHistogram2D">computeHistogram2D</a></li><li><a href="global.html#consoleError">consoleError</a></li><li><a href="global.html#consoleLog">consoleLog</a></li><li><a href="global.html#consoleWarn">consoleWarn</a></li><li><a href="global.html#createCookie">createCookie</a></li><li><a href="global.html#CSV_DATASET_OPTIONS">CSV_DATASET_OPTIONS</a></li><li><a href="global.html#DepthFirstSearch">DepthFirstSearch</a></li><li><a href="global.html#download">download</a></li><li><a href="global.html#downloadDensityMap">downloadDensityMap</a></li><li><a href="global.html#downloadStencilMap">downloadStencilMap</a></li><li><a href="global.html#enableAlerts">enableAlerts</a></li><li><a href="global.html#enableConsoleOutputs">enableConsoleOutputs</a></li><li><a href="global.html#eraseCookie">eraseCookie</a></li><li><a href="global.html#findClosePointOfLowDensity">findClosePointOfLowDensity</a></li><li><a href="global.html#findClosePointOfLowDensityDescend">findClosePointOfLowDensityDescend</a></li><li><a href="global.html#findClosePointOfLowDensityNDDescend">findClosePointOfLowDensityNDDescend</a></li><li><a href="global.html#findRepresentativePoints">findRepresentativePoints</a></li><li><a href="global.html#findRepresentativePoints2">findRepresentativePoints2</a></li><li><a href="global.html#findRepresentativePointsND">findRepresentativePointsND</a></li><li><a href="global.html#findRepresentativePointsND2">findRepresentativePointsND2</a></li><li><a href="global.html#getParameterByName">getParameterByName</a></li><li><a href="global.html#handleLoadedTexture">handleLoadedTexture</a></li><li><a href="global.html#imageUrlFromBytes">imageUrlFromBytes</a></li><li><a href="global.html#isArray">isArray</a></li><li><a href="global.html#isFunction">isFunction</a></li><li><a href="global.html#isNumber">isNumber</a></li><li><a href="global.html#isObject">isObject</a></li><li><a href="global.html#isString">isString</a></li><li><a href="global.html#isUndefined">isUndefined</a></li><li><a href="global.html#linesIntersect">linesIntersect</a></li><li><a href="global.html#LoadTexture">LoadTexture</a></li><li><a href="global.html#LoadTextureFromByteArray">LoadTextureFromByteArray</a></li><li><a href="global.html#LoadTextureFromFloatArray">LoadTextureFromFloatArray</a></li><li><a href="global.html#LoadTextureFromImage">LoadTextureFromImage</a></li><li><a href="global.html#markPointsInStencilMap">markPointsInStencilMap</a></li><li><a href="global.html#OPTIONS">OPTIONS</a></li><li><a href="global.html#pointInsidePolygon">pointInsidePolygon</a></li><li><a href="global.html#readCookie">readCookie</a></li><li><a href="global.html#readFloatCookie">readFloatCookie</a></li><li><a href="global.html#readIntCookie">readIntCookie</a></li><li><a href="global.html#sampleDensityMap">sampleDensityMap</a></li><li><a href="global.html#sampleDensityMapChain">sampleDensityMapChain</a></li><li><a href="global.html#sampleDensityMapColumn">sampleDensityMapColumn</a></li><li><a href="global.html#sampleDensityMapRow">sampleDensityMapRow</a></li><li><a href="global.html#showAlert">showAlert</a></li><li><a href="global.html#SimpleAStarSearch">SimpleAStarSearch</a></li><li><a href="global.html#SimpleGreedySearch">SimpleGreedySearch</a></li><li><a href="global.html#SimpleUniformCostSearch">SimpleUniformCostSearch</a></li><li><a href="global.html#UniformCostSearch">UniformCostSearch</a></li><li><a href="global.html#urlExists">urlExists</a></li><li><a href="global.html#validateGLSL">validateGLSL</a></li><li><a href="global.html#vectorLineIntersection2D">vectorLineIntersection2D</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Feb 16 2018 15:30:43 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
 </footer>
 
 <script> prettyPrint(); </script>

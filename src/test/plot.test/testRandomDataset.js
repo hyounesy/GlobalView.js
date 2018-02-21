@@ -1,19 +1,16 @@
-const globalView = require('../../../dist/global-view.js');
 // eslint-disable-next-line import/no-extraneous-dependencies
-const seedrandom = require('seedrandom');
+import seedrandom from 'seedrandom';
+import { RandomDataset } from '../../../dist/global-view';
+import SnapshotTest from './snapshotTest';
 
-export default function testRandomDataSet(div, ondone) {
-  // replaces Math.random(). only required as the test needs the same random dataset.
-  seedrandom('1337', { global: true });
-  const plot = new globalView.GlobalView(div, null);
-  this.getPlot = () => plot;
-
-  // eslint-disable-next-line no-new
-  new globalView.RandomDataset(1000, 3, (dataset) => {
-    plot.load(dataset, 0, 1, 2, 2);
-
-    setTimeout(() => {
-      ondone();
-    }, 500);
-  });
+export default class TestRandomDataSet extends SnapshotTest {
+  run() {
+    // replaces Math.random(). only required as the test needs a consistent random dataset.
+    seedrandom('1337', { global: true });
+    // eslint-disable-next-line no-new
+    new RandomDataset(1000, 3, (dataset) => {
+      this.getPlot().load(dataset, 0, 1, 2, 2);
+      this.callOnDone();
+    });
+  }
 }

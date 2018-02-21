@@ -1,15 +1,14 @@
-const libGraphics = require('./graphics.js');
-const libShaders = require('./shaders.js');
-const libAlgorithm = require('./algorithm.js');
-const Colormap = require('./colormap.js').default;
-const libGlMatrix = require('gl-matrix');
-// const libUtility = require('./utility.js');
+import { mat4, vec3 } from 'gl-matrix';
+import { Shader, Mesh } from './graphics';
+import Shaders from './shaders';
+import { computeHistogram } from './algorithm';
+import Colormap from './colormap';
 
 /**
  * A class drawing histograms for x-, y- and color axes to
  * the left-, bottom- and right of the scatter plot.
  */
-export class HistogramViewer { // eslint-disable-line import/prefer-default-export, no-unused-vars
+class HistogramViewer {
   /**
    * @constructor
    * @package
@@ -19,13 +18,13 @@ export class HistogramViewer { // eslint-disable-line import/prefer-default-expo
   constructor(gl) {
     this.gl = gl;
     this.sdrLine =
-      new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
+      new Shader(gl, Shaders.vsSimple, Shaders.fsLine);
     this.sdrLine.color = this.sdrLine.u4f('color');
     this.sdrLine.color(...gl.foreColor);
     this.sdrLine.matWorldViewProj = this.sdrLine.u4x4f('matWorldViewProj');
 
     // Create a 2D line mesh
-    this.meshLine = new libGraphics.Mesh(gl, new Float32Array([
+    this.meshLine = new Mesh(gl, new Float32Array([
       // Positions
       0, 0, 0,
       1, 0, 0,
@@ -38,11 +37,11 @@ export class HistogramViewer { // eslint-disable-line import/prefer-default-expo
       {
         histogram: null,
         d: -1,
-        meshHistogram: new libGraphics.Mesh(
+        meshHistogram: new Mesh(
           gl,
           new Float32Array(0), null, null, null, null, null, gl.TRIANGLES,
         ),
-        meshLineHistogram: new libGraphics.Mesh(
+        meshLineHistogram: new Mesh(
           gl,
           new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP,
         ),
@@ -50,11 +49,11 @@ export class HistogramViewer { // eslint-disable-line import/prefer-default-expo
       {
         histogram: null,
         d: -1,
-        meshHistogram: new libGraphics.Mesh(
+        meshHistogram: new Mesh(
           gl,
           new Float32Array(0), null, null, null, null, null, gl.TRIANGLES,
         ),
-        meshLineHistogram: new libGraphics.Mesh(
+        meshLineHistogram: new Mesh(
           gl,
           new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP,
         ),
@@ -62,11 +61,11 @@ export class HistogramViewer { // eslint-disable-line import/prefer-default-expo
       {
         histogram: null,
         d: -1,
-        meshHistogram: new libGraphics.Mesh(
+        meshHistogram: new Mesh(
           gl,
           new Float32Array(0), null, null, null, null, null, gl.TRIANGLES,
         ),
-        meshLineHistogram: new libGraphics.Mesh(
+        meshLineHistogram: new Mesh(
           gl,
           new Float32Array(0), null, null, null, null, null, gl.LINE_STRIP,
         ),
@@ -74,16 +73,21 @@ export class HistogramViewer { // eslint-disable-line import/prefer-default-expo
     ];
   }
 
-  render(flipY, tf, plotBounds) {
-    const mattrans = libGlMatrix.mat4.create();
+  /**
+   * @param {boolean} flipY
+   * @param {Transform} transform
+   * @param {Object} plotBounds {x, y, width, height}
+   */
+  render(flipY, transform, plotBounds) {
+    const mattrans = mat4.create();
 
-    const pos = libGlMatrix.vec3.create();
-    const scl = libGlMatrix.vec3.create();
-    tf.datasetCoordToDeviceCoord(pos, [
+    const pos = vec3.create();
+    const scl = vec3.create();
+    transform.datasetCoordToDeviceCoord(pos, [
       this.axes[0].histogram ? this.axes[0].histogram.invTransformX(0) : 0.0,
       this.axes[1].histogram ? this.axes[1].histogram.invTransformX(0) : 0.0,
       this.axes[2].histogram ? this.axes[2].histogram.invTransformX(0) : 0.0]);
-    tf.datasetDistToDeviceDist(scl, [
+    transform.datasetDistToDeviceDist(scl, [
       this.axes[0].histogram ?
         this.axes[0].histogram.width / this.axes[0].histogram.transform[0] : 1.0,
       this.axes[1].histogram ?
@@ -104,30 +108,30 @@ export class HistogramViewer { // eslint-disable-line import/prefer-default-expo
 
       this.sdrLine.bind();
       this.meshLine.bind(this.sdrLine, null);
-      libGlMatrix.mat4.identity(mattrans);
+      mat4.identity(mattrans);
       if (flipY === true) {
-        libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+        mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
       }
-      libGlMatrix.mat4.translate(
+      mat4.translate(
         mattrans,
         mattrans,
         [((2 * (plotBounds.x + 0.5)) / this.gl.width) - 1,
           ((2 * ((plotBounds.y + 0.5) - 64)) / this.gl.height) - 1, 0],
       ); // 0.5 ... center inside pixel
-      libGlMatrix.mat4.scale(mattrans, mattrans, [(2 * plotBounds.width) / this.gl.width, 1, 1]);
+      mat4.scale(mattrans, mattrans, [(2 * plotBounds.width) / this.gl.width, 1, 1]);
       this.sdrLine.matWorldViewProj(mattrans);
       this.meshLine.draw();
 
-      libGlMatrix.mat4.identity(mattrans);
+      mat4.identity(mattrans);
       if (flipY === true) {
-        libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+        mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
       }
-      libGlMatrix.mat4.translate(
+      mat4.translate(
         mattrans, mattrans,
         [pos[0] + ((0.5 * 2) / this.gl.width),
           ((2 * (plotBounds.y + 0.5)) / this.gl.height) - 1, 0.0],
       ); // 0.5 ... center inside pixel
-      libGlMatrix.mat4.scale(mattrans, mattrans, [scl[0], (-64 * 2) / this.gl.height, 1.0]);
+      mat4.scale(mattrans, mattrans, [scl[0], (-64 * 2) / this.gl.height, 1.0]);
 
       this.sdrLine.bind();
       this.sdrLine.matWorldViewProj(mattrans);
@@ -153,31 +157,31 @@ export class HistogramViewer { // eslint-disable-line import/prefer-default-expo
 
       this.sdrLine.bind();
       this.meshLine.bind(this.sdrLine, null);
-      libGlMatrix.mat4.identity(mattrans);
+      mat4.identity(mattrans);
       if (flipY === true) {
-        libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+        mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
       }
-      libGlMatrix.mat4.translate(
+      mat4.translate(
         mattrans,
         mattrans, [((2 * ((plotBounds.x + 0.5) - 64)) / this.gl.width) - 1,
           ((2 * (plotBounds.y + 0.5)) / this.gl.height) - 1, 0],
       ); // 0.5 ... center inside pixel
-      libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
-      libGlMatrix.mat4.scale(mattrans, mattrans, [(2 * plotBounds.height) / this.gl.height, 1, 1]);
+      mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
+      mat4.scale(mattrans, mattrans, [(2 * plotBounds.height) / this.gl.height, 1, 1]);
       this.sdrLine.matWorldViewProj(mattrans);
       this.meshLine.draw();
 
-      libGlMatrix.mat4.identity(mattrans);
+      mat4.identity(mattrans);
       if (flipY === true) {
-        libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+        mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
       }
-      libGlMatrix.mat4.translate(
+      mat4.translate(
         mattrans, mattrans,
         [((2 * (plotBounds.x + 0.5)) / this.gl.width) - 1,
           pos[1] + ((0.5 * 2) / this.gl.height), 0.0],
       ); // 0.5 ... center inside pixel
-      libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
-      libGlMatrix.mat4.scale(mattrans, mattrans, [scl[1], (64 * 2) / this.gl.width, 1.0]);
+      mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
+      mat4.scale(mattrans, mattrans, [scl[1], (64 * 2) / this.gl.width, 1.0]);
 
       this.sdrLine.bind();
       this.sdrLine.matWorldViewProj(mattrans);
@@ -203,33 +207,33 @@ export class HistogramViewer { // eslint-disable-line import/prefer-default-expo
 
       this.sdrLine.bind();
       this.meshLine.bind(this.sdrLine, null);
-      libGlMatrix.mat4.identity(mattrans);
+      mat4.identity(mattrans);
       if (flipY === true) {
-        libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+        mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
       }
-      libGlMatrix.mat4.translate(
+      mat4.translate(
         mattrans, mattrans,
         [((2 * (plotBounds.x + plotBounds.width + Colormap.getWidth() + 0.5 + 64)) /
           this.gl.width) - 1,
         ((2 * (plotBounds.y + 0.5)) / this.gl.height) - 1, 0],
       ); // 0.5 ... center inside pixel
-      libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
-      libGlMatrix.mat4.scale(mattrans, mattrans, [(2 * plotBounds.height) / this.gl.height, 1, 1]);
+      mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
+      mat4.scale(mattrans, mattrans, [(2 * plotBounds.height) / this.gl.height, 1, 1]);
       this.sdrLine.matWorldViewProj(mattrans);
       this.meshLine.draw();
 
-      libGlMatrix.mat4.identity(mattrans);
+      mat4.identity(mattrans);
       if (flipY === true) {
-        libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+        mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
       }
-      libGlMatrix.mat4.translate(
+      mat4.translate(
         mattrans, mattrans,
         [((2 * (plotBounds.x + plotBounds.width + Colormap.getWidth() + 0.5)) /
           this.gl.width) - 1,
         pos[2] + ((0.5 * 2) / this.gl.height), 0.0],
       ); // 0.5 ... center inside pixel
-      libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
-      libGlMatrix.mat4.scale(mattrans, mattrans, [scl[2], (-64 * 2) / this.gl.width, 1.0]);
+      mat4.rotateZ(mattrans, mattrans, Math.PI / 2.0);
+      mat4.scale(mattrans, mattrans, [scl[2], (-64 * 2) / this.gl.width, 1.0]);
 
       this.sdrLine.bind();
       this.sdrLine.matWorldViewProj(mattrans);
@@ -246,11 +250,19 @@ export class HistogramViewer { // eslint-disable-line import/prefer-default-expo
     }
   }
 
+  /**
+   * Sets the input dataset
+   * @param {Dataset} dataset
+   */
   setDataset(dataset /* , options */) {
     this.dataset = dataset;
     this.recreateHistograms();
   }
 
+  /**
+   * callback
+   * @param {OPTIONS} options
+   */
   onOptionsChanged(options /* , recompileShader */) {
     this.options = options;
     this.recreateHistograms();
@@ -278,28 +290,35 @@ export class HistogramViewer { // eslint-disable-line import/prefer-default-expo
     }
   }
 
-  createHistogram(pAxis, pDataset, d, numBins) {
-    const axis = pAxis;
-    if (d < 0 || d >= pDataset.dataVectors.length) {
+  /**
+   * Creates histogram for a given dataset dimension
+   * @param {Object} axis this.axes[]
+   * @param {Dataset} dataset
+   * @param {number} dim
+   * @param {number} numBins
+   */
+  createHistogram(axis, dataset, dim, numBins) {
+    const varAxis = axis;
+    if (dim < 0 || dim >= dataset.dataVectors.length) {
       return;
     } // Validate inputs
-    if (axis.histogram && axis.histogram.width === numBins && axis.d === d) {
+    if (varAxis.histogram && varAxis.histogram.width === numBins && varAxis.d === dim) {
       return;
     } // Requested histogram already exists
 
-    axis.histogram = libAlgorithm.computeHistogram(pDataset, axis.d = d, numBins);
+    varAxis.histogram = computeHistogram(dataset, varAxis.d = dim, numBins);
     // Add 2D transformation functions
-    axis.histogram.transformX = function (x) {
-      return (axis.histogram.transform[0] * x) + axis.histogram.transform[1];
+    varAxis.histogram.transformX = function (x) {
+      return (varAxis.histogram.transform[0] * x) + varAxis.histogram.transform[1];
     };
-    axis.histogram.transformY = function (y) {
-      return (axis.histogram.transform[2] * y) + axis.histogram.transform[3];
+    varAxis.histogram.transformY = function (y) {
+      return (varAxis.histogram.transform[2] * y) + varAxis.histogram.transform[3];
     };
-    axis.histogram.invTransformX = function (x) {
-      return (x - axis.histogram.transform[1]) / axis.histogram.transform[0];
+    varAxis.histogram.invTransformX = function (x) {
+      return (x - varAxis.histogram.transform[1]) / varAxis.histogram.transform[0];
     };
-    axis.histogram.invTransformY = function (y) {
-      return (y - axis.histogram.transform[3]) / axis.histogram.transform[2];
+    varAxis.histogram.invTransformY = function (y) {
+      return (y - varAxis.histogram.transform[3]) / varAxis.histogram.transform[2];
     };
 
     let positions = new Float32Array((6 * numBins) * 3);
@@ -310,7 +329,7 @@ export class HistogramViewer { // eslint-disable-line import/prefer-default-expo
       positions[i] = 0.0; i += 1;
     };
     for (let b = 0, i = -1, xScale = 1 / numBins; b < numBins; b += 1) {
-      const y = axis.histogram.data[b] / axis.histogram.maximum;
+      const y = varAxis.histogram.data[b] / varAxis.histogram.maximum;
 
       v3Set(i += 1, (b + 0) * xScale, 0);
       v3Set(i += 1, (b + 1) * xScale, 0);
@@ -320,17 +339,19 @@ export class HistogramViewer { // eslint-disable-line import/prefer-default-expo
       v3Set(i += 1, (b + 0) * xScale, y);
       v3Set(i += 1, (b + 0) * xScale, 0);
     }
-    axis.meshHistogram.reset(positions, null, null, null, null, null, this.gl.TRIANGLES);
+    varAxis.meshHistogram.reset(positions, null, null, null, null, null, this.gl.TRIANGLES);
 
     positions = new Float32Array(((3 * numBins) + 1) * 3);
     v3Set(0, 0, 0);
     for (let b = 0, i = 0, xScale = 1 / numBins; b < numBins;) {
-      const y = axis.histogram.data[b] / axis.histogram.maximum;
+      const y = varAxis.histogram.data[b] / varAxis.histogram.maximum;
 
       v3Set(i += 1, b * xScale, y);
       v3Set(i += 1, (b += 1) * xScale, y);
       v3Set(i += 1, b * xScale, 0);
     }
-    axis.meshLineHistogram.reset(positions, null, null, null, null, null, this.gl.LINE_STRIP);
+    varAxis.meshLineHistogram.reset(positions, null, null, null, null, null, this.gl.LINE_STRIP);
   }
 }
+
+export default HistogramViewer;

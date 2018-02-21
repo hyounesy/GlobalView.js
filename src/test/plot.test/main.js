@@ -1,10 +1,12 @@
-const globalView = require('../../../dist/global-view.js');
-const $ = require('jquery');
-const JSZip = require('jszip');
-const FileSaver = require('file-saver');
-const allTests = require('./all').default;
-const pixelmatch = require('pixelmatch'); // eslint-disable-line import/no-extraneous-dependencies
-const domready = require('domready'); // eslint-disable-line import/no-extraneous-dependencies
+import $ from 'jquery';
+import JSZip from 'jszip';// eslint-disable-line import/no-extraneous-dependencies
+import FileSaver from 'file-saver';// eslint-disable-line import/no-extraneous-dependencies
+import pixelmatch from 'pixelmatch'; // eslint-disable-line import/no-extraneous-dependencies
+import domready from 'domready'; // eslint-disable-line import/no-extraneous-dependencies
+import { consoleError, consoleLog } from '../../../dist/global-view';
+import allTests from './all';
+
+window.$ = $;
 
 function urlToBase64(dataUrl) {
   // remove the png or jpg header
@@ -24,7 +26,7 @@ function getImageDataFromUrl(url, callback) {
         ctx.drawImage(this, 0, 0);
         result = ctx.getImageData(0, 0, canvas.width, canvas.height);
       } catch (error) {
-        globalView.consoleError(error);
+        consoleError(error);
         result = null;
       }
       // Get raw image data
@@ -35,7 +37,7 @@ function getImageDataFromUrl(url, callback) {
     };
     image.src = url;
   } catch (error) {
-    globalView.consoleError(error);
+    consoleError(error);
     callback(null);
   }
 }
@@ -116,7 +118,7 @@ domready(() => {
     testResults.push(testResult);
     testResult.name = allTests[i].name;
     const logText = `Running test (${i + 1} of ${allTests.length}): ${testResult.name} ...`;
-    globalView.consoleLog(logText);
+    consoleLog(logText);
     progress.text(logText);
 
     const imageWidth = 300;
@@ -166,9 +168,9 @@ domready(() => {
             );
             if (errorPixels === 0) {
               testResult.success = true;
-              globalView.consoleLog(`[Ok] Output of ${testResult.name} matches the expected output.`);
+              consoleLog(`[Ok] Output of ${testResult.name} matches the expected output.`);
             } else {
-              globalView.consoleError(`[Fail] Output of ${testResult.name} does not match the expected output.`);
+              consoleError(`[Fail] Output of ${testResult.name} does not match the expected output.`);
             }
             const canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
             canvas.width = imageWidth;
@@ -179,7 +181,7 @@ domready(() => {
           });
         });
       } catch (error) {
-        globalView.consoleError(error);
+        consoleError(error);
       }
       runTest(i + 1);
     });

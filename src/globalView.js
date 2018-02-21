@@ -1,34 +1,23 @@
-const webglUtils = require('./webgl-utils.js');
-const libUtility = require('./utility.js');
-const libTextRenderContext = require('./textRenderContext.js');
-const libPointViewer = require('./pointViewer.js');
-const libImageViewer = require('./imageViewer');
-const libDensityViewer = require('./densityViewer.js');
-const libHistogramViewer = require('./histogramViewer.js');
-const libCoordinateSystem = require('./coordinateSystem.js');
-const Colormap = require('./colormap.js').default;
-const libAlgorithm = require('./algorithm.js');
-const libGlMatrix = require('gl-matrix');
-const Transform = require('./transform').default;
-const PlotOptions = require('./plotOptions');
-
-// >>> Options
+import { vec2, vec3 } from 'gl-matrix';
+import ImageViewer from './imageViewer';
+import TextRenderContext from './textRenderContext';
+import { requestAnimFrame } from './webgl-utils';
+import { showAlert, consoleWarn, addKeyDownHandler, addKeyUpHandler,
+  addMouseMoveHandler, addMouseUpHandler, addMouseWheelHandler,
+  isArray, isString, isNumber, isFunction, isUndefined } from './utility';
+import { findRepresentativePoints2, findClosePointOfLowDensityNDDescend, findClosePointOfLowDensity,
+  markPointsInStencilMap, vectorLineIntersection2D, pointInsidePolygon } from './algorithm';
+import PointViewer from './pointViewer';
+import DensityViewer from './densityViewer';
+import HistogramViewer from './histogramViewer';
+import CoordinateSystem from './coordinateSystem';
+import Colormap from './colormap';
+import Transform from './transform';
+import { OPTIONS, setCurrentPlot } from './plotOptions';
 
 let ENABLE_CONTINUOUS_RENDERING = false;
 let SHOW_FPS = false;
 const SIMULATE_LOW_FPS = false;
-
-// Image width/height are smaller or equal to IMAGE_SIZE, maintaining aspect ratio
-// var IMAGE_SIZE = 64
-
-/** @typedef {{
- * description: string,
- * default: *,
- * valid: (function(*)|Array),
- * requireRedraw: boolean,
- * requireRecompile: boolean
- * }} */
-let OptionDescription; // eslint-disable-line no-unused-vars
 
 /**
  * @summary A fast scatterplot rendered with WebGL
@@ -38,8 +27,8 @@ export class GlobalView {
   /**
    * @constructor
    * @export
-   * @param {*} divElement the html div element to contain the canvas
-   * @param {*} startupOptions  startup options
+   * @param {HTMLDivElement} divElement the html div element to contain the canvas
+   * @param {OPTIONS} startupOptions  startup options
    */
   constructor(divElement, startupOptions) {
     if (!(this instanceof GlobalView)) {
@@ -57,10 +46,10 @@ export class GlobalView {
 
     this.gl.backColor = divStyle.backgroundColor === 'transparent' ?
       [0, 0, 0, 0] :
-      libUtility.rgbStringToFloatArray(divStyle.backgroundColor);
-    this.gl.foreColor = libUtility.rgbStringToFloatArray(this.gl.foreColorString = divStyle.color);
+      Colormap.rgbStringToFloatArray(divStyle.backgroundColor);
+    this.gl.foreColor = Colormap.rgbStringToFloatArray(this.gl.foreColorString = divStyle.color);
 
-    this.textRenderContext = new libTextRenderContext.TextRenderContext(this.gl, this.canvas);
+    this.textRenderContext = new TextRenderContext(this.gl, this.canvas);
     this.textRenderContext.setFont(`${divStyle.fontSize} ${divStyle.fontFamily}`);
 
     this.timeNow = performance.now();
@@ -69,11 +58,11 @@ export class GlobalView {
     this.fpsStart = this.timeNow;
     this.frameCounter = 0;
 
-    this.pointViewer = new libPointViewer.PointViewer(this.gl, this);
-    this.imageViewer = new libImageViewer.ImageViewer(this.gl, this);
-    this.densityViewer = new libDensityViewer.DensityViewer(this.gl, this);
-    this.histogramViewer = new libHistogramViewer.HistogramViewer(this.gl, this);
-    this.coordSys = new libCoordinateSystem.CoordinateSystem(this.gl, this);
+    this.pointViewer = new PointViewer(this.gl, this);
+    this.imageViewer = new ImageViewer(this.gl, this);
+    this.densityViewer = new DensityViewer(this.gl, this);
+    this.histogramViewer = new HistogramViewer(this.gl, this);
+    this.coordSys = new CoordinateSystem(this.gl, this);
     this.colormap = new Colormap(this.gl, this);
     /** @type  {Array<Viewer>} */
     this.viewers = [
@@ -264,17 +253,17 @@ export class GlobalView {
 
     this.gl = this.canvas.getContext('webgl');
     if (!this.gl) {
-      libUtility.showAlert('Error: WebGL not supported');
+      showAlert('Error: WebGL not supported');
       return;
     }
     const OESElementIndexUint = this.gl.getExtension('OES_element_index_uint');
     if (!OESElementIndexUint) {
-      libUtility.consoleWarn('GlobalView warning: ' +
+      consoleWarn('GlobalView warning: ' +
         'Unsupported WebGL extension: OES_element_index_uint');
     }
     this.gl.ext = this.gl.getExtension('ANGLE_instanced_arrays');
     if (!this.gl.ext) {
-      libUtility.consoleWarn('GlobalView warning: ' +
+      consoleWarn('GlobalView warning: ' +
         'Unsupported WebGL extension: ANGLE_instanced_arrays');
     }
   }
@@ -293,7 +282,7 @@ export class GlobalView {
 
   /** Add the event handlers */
   addEventHanders() {
-    libUtility.addKeyDownHandler((event) => {
+    addKeyDownHandler((event) => {
       if (event.keyCode === this.keyCodeCtrl) {
         this.ctrlPressed = true;
       } else if (event.keyCode === this.keyCodeShift) {
@@ -301,7 +290,7 @@ export class GlobalView {
       }
     });
 
-    libUtility.addKeyUpHandler((event) => {
+    addKeyUpHandler((event) => {
       if (event.which === this.keyCodeCtrl) {
         this.ctrlPressed = false;
       } else if (event.keyCode === this.keyCodeShift) {
@@ -315,10 +304,10 @@ export class GlobalView {
 
     // add mouse event handlers
     this.canvas.onmousedown = this.onCanvasMouseDown.bind(this);
-    libUtility.addMouseMoveHandler(this.onMouseMove.bind(this));
-    libUtility.addMouseUpHandler(this.onMouseUp.bind(this));
+    addMouseMoveHandler(this.onMouseMove.bind(this));
+    addMouseUpHandler(this.onMouseUp.bind(this));
     this.canvas.onmouseleave = this.onMouseLeave.bind(this);
-    libUtility.addMouseWheelHandler(this.onMouseWheel.bind(this));
+    addMouseWheelHandler(this.onMouseWheel.bind(this));
 
     this.canvas.ondragover = function (event) {
       if (this.ondragover !== null) {
@@ -342,7 +331,7 @@ export class GlobalView {
     }
     if (this.invalidating === false && this.offscreenRendering === null) {
       this.invalidating = true;
-      webglUtils.requestAnimFrame(this.render.bind(this));
+      requestAnimFrame(this.render.bind(this));
     }
   }
 
@@ -363,7 +352,7 @@ export class GlobalView {
       }
       if (this.invalidating === false && this.offscreenRendering === null) {
         this.invalidating = true;
-        webglUtils.requestAnimFrame(this.render.bind(this));
+        requestAnimFrame(this.render.bind(this));
       }
 
       // Refire event after 100ms in case another resize handler queued
@@ -382,17 +371,21 @@ export class GlobalView {
 
   /**
    * @summary Sets the plot bounds with the specified padding
-   * @param {number[]|string} padding : array of length 4 or a string with the percentages
+   * @param {number[]|string[]|number|string} padding
+   * array of length 4 specifying values for [top, right, bottom, left],
+   * or a single value used for all four.
+   * Values can be absolute (e.g. 120 or "120" ) or
+   * percentages (e.g. "20%"" or ["10%", "20%", "10%", "20%""]
    */
   setPlotBounds(padding) {
     let computedPadding;
-    if (libUtility.isArray(padding) && padding.length === 4) {
-      computedPadding = padding.map((v, i) => Math.floor(libUtility.isString(v) ?
+    if (isArray(padding) && padding.length === 4) {
+      computedPadding = padding.map((v, i) => Math.floor(isString(v) ?
         Number.parseFloat(v) *
           (v.endsWith('%') ? (i % 2 === 0 ? this.canvas.width : this.canvas.height) / 100 : 1) :
         padding[i]));
-    } else if (libUtility.isNumber(padding) || libUtility.isString(padding)) {
-      computedPadding = Array.create(4, i => Math.floor(libUtility.isString(padding) ?
+    } else if (isNumber(padding) || isString(padding)) {
+      computedPadding = Array.create(4, i => Math.floor(isString(padding) ?
         Number.parseFloat(padding) * (padding.endsWith('%') ?
           (i % 2 === 0 ? this.canvas.width : this.canvas.height) / 100 : 1) :
         padding));
@@ -501,29 +494,29 @@ export class GlobalView {
   /**
    * Note: When setting multiple options, {@link GlobalView#setOptions} should be prefered.
    * @summary Sets the given option
-   * @see PlotOptions.Options
-   * @param  {string} option
-   * @param  {*} value
+   * @see OPTIONS
+   * @param  {string} option - option name
+   * @param  {*} value - a valid value.
    */
   setOption(option, value) {
-    PlotOptions.setCurrentPlot(this);
+    setCurrentPlot(this);
     // Validate option
-    if (!Object.prototype.hasOwnProperty.call(PlotOptions.Options, option)) {
-      libUtility.consoleWarn(`GlobalView warning: Unsupported option: ${option}`);
+    if (!Object.prototype.hasOwnProperty.call(OPTIONS, option)) {
+      consoleWarn(`GlobalView warning: Unsupported option: ${option}`);
       return;
     }
-    const optionDefinition = PlotOptions.Options[option];
+    const optionDefinition = OPTIONS[option];
 
     // Validate value
     let validationResult;
     // eslint-disable-next-line no-cond-assign
-    if ((libUtility.isArray(optionDefinition.valid) &&
+    if ((isArray(optionDefinition.valid) &&
       optionDefinition.valid.indexOf(value) === -1) ||
-      (libUtility.isFunction(optionDefinition.valid) &&
+      (isFunction(optionDefinition.valid) &&
       (validationResult = optionDefinition.valid(value)) !== true)) {
-      libUtility.consoleWarn(`GlobalView warning: Invalid value for option ${option}: ${value}`);
-      if (libUtility.isString(validationResult)) {
-        libUtility.consoleWarn(`                    ${validationResult}`);
+      consoleWarn(`GlobalView warning: Invalid value for option ${option}: ${value}`);
+      if (isString(validationResult)) {
+        consoleWarn(`                    ${validationResult}`);
       }
       return;
     }
@@ -540,10 +533,10 @@ export class GlobalView {
 
   /**
    * @summary Sets multiple options
-   * @param  {Object} newOptions A JavaScript object of options
+   * @param  {Object} newOptions A JavaScript object of options. see {@link OPTIONS}.
    */
   setOptions(newOptions) {
-    PlotOptions.setCurrentPlot(this);
+    setCurrentPlot(this);
     let requireRecompile = false;
     let requireRedraw = false;
     // eslint-disable-next-line no-restricted-syntax
@@ -553,25 +546,25 @@ export class GlobalView {
       }
 
       // Validate option
-      if (!Object.prototype.hasOwnProperty.call(PlotOptions.Options, option)) {
-        libUtility.consoleWarn(`GlobalView warning: Unsupported option: ${option}`);
+      if (!Object.prototype.hasOwnProperty.call(OPTIONS, option)) {
+        consoleWarn(`GlobalView warning: Unsupported option: ${option}`);
         continue; // eslint-disable-line no-continue
       }
-      const optionDefinition = PlotOptions.Options[option];
+      const optionDefinition = OPTIONS[option];
 
       // Validate value
       const value = newOptions[option];
       let validationResult;
       // eslint-disable-next-line no-cond-assign
-      if ((libUtility.isArray(optionDefinition.valid) &&
+      if ((isArray(optionDefinition.valid) &&
       optionDefinition.valid.indexOf(value) === -1) ||
-        (libUtility.isFunction(optionDefinition.valid) &&
+        (isFunction(optionDefinition.valid) &&
         (validationResult = optionDefinition.valid(value)) !== true)) {
-        libUtility.consoleWarn(`GlobalView warning: Invalid value for option ${option}: ${value}`);
-        if (libUtility.isString(validationResult)) {
+        consoleWarn(`GlobalView warning: Invalid value for option ${option}: ${value}`);
+        if (isString(validationResult)) {
           // HY:
           validationResult = optionDefinition.valid(value);
-          libUtility.consoleWarn(`                    ${validationResult}`);
+          consoleWarn(`                    ${validationResult}`);
         }
         continue; // eslint-disable-line no-continue
       }
@@ -592,11 +585,11 @@ export class GlobalView {
    */
   setDefaultOption(option) {
     // Validate option
-    if (!Object.prototype.hasOwnProperty.call(PlotOptions.Options, option)) {
-      libUtility.consoleWarn(`GlobalView warning: Unsupported option: ${option}`);
+    if (!Object.prototype.hasOwnProperty.call(OPTIONS, option)) {
+      consoleWarn(`GlobalView warning: Unsupported option: ${option}`);
       return;
     }
-    const optionDefinition = PlotOptions.Options[option];
+    const optionDefinition = OPTIONS[option];
 
     this.setOption(option, optionDefinition.default);
   }
@@ -606,8 +599,8 @@ export class GlobalView {
    */
   setDefaultOptions() {
     const defaultOptions = {};
-    Object.keys(PlotOptions.Options).forEach((option) => {
-      defaultOptions[option] = PlotOptions.Options[option].default;
+    Object.keys(OPTIONS).forEach((option) => {
+      defaultOptions[option] = OPTIONS[option].default;
     });
     this.setOptions(defaultOptions);
   }
@@ -620,20 +613,20 @@ export class GlobalView {
    */
   static validateOption(option, value) {
     // Validate option
-    if (!Object.prototype.hasOwnProperty.call(PlotOptions.Options, option)) {
+    if (!Object.prototype.hasOwnProperty.call(OPTIONS, option)) {
       return `Unsupported option: ${option}`;
     }
-    const optionDefinition = PlotOptions.Options[option];
+    const optionDefinition = OPTIONS[option];
 
     // Validate value
     let validationResult;
     // eslint-disable-next-line no-cond-assign
-    if ((libUtility.isArray(optionDefinition.valid) &&
+    if ((isArray(optionDefinition.valid) &&
       optionDefinition.valid.indexOf(value) === -1) ||
-      (libUtility.isFunction(optionDefinition.valid) &&
+      (isFunction(optionDefinition.valid) &&
       (validationResult = optionDefinition.valid(value)) !== true)) {
       return `Invalid value for option ${option}: ${value}${
-        libUtility.isString(validationResult)}` ? `\n    ${validationResult}` : '';
+        isString(validationResult)}` ? `\n    ${validationResult}` : '';
     }
 
     return true;
@@ -653,22 +646,22 @@ export class GlobalView {
       }
 
       // Validate option
-      if (!Object.prototype.hasOwnProperty.call(PlotOptions.Options, option)) {
+      if (!Object.prototype.hasOwnProperty.call(OPTIONS, option)) {
         errors.push(`Unsupported option: ${option}`);
         continue; // eslint-disable-line no-continue
       }
-      const optionDefinition = PlotOptions.Options[option];
+      const optionDefinition = OPTIONS[option];
 
       // Validate value
       const value = newOptions[option];
       let validationResult;
       // eslint-disable-next-line no-cond-assign
-      if ((libUtility.isArray(optionDefinition.valid) &&
+      if ((isArray(optionDefinition.valid) &&
         optionDefinition.valid.indexOf(value) === -1) ||
-        (libUtility.isFunction(optionDefinition.valid) &&
+        (isFunction(optionDefinition.valid) &&
         (validationResult = optionDefinition.valid(value)) !== true)) {
         errors.push(`Invalid value for option ${option}: ${value}${
-          libUtility.isString(validationResult) ? `\n    ${validationResult}` : ''}`);
+          isString(validationResult) ? `\n    ${validationResult}` : ''}`);
         continue; // eslint-disable-line no-continue
       }
     }
@@ -857,7 +850,7 @@ export class GlobalView {
         d1 = temp;
       }
 
-      const characteristicPoints = libAlgorithm.findRepresentativePoints2(
+      const characteristicPoints = findRepresentativePoints2(
         this.dataset, d0, d1, densityMap,
         numPointsToReturn, densityRatio,
       );
@@ -907,7 +900,7 @@ export class GlobalView {
         densityMap.stencilMap = {};
       }
 
-      this.pointViewer.representativePoints.assign(libAlgorithm.findRepresentativePoints2(
+      this.pointViewer.representativePoints.assign(findRepresentativePoints2(
         this.dataset,
         d0, d1, densityMap, 16, 0.3,
       ));
@@ -917,11 +910,11 @@ export class GlobalView {
           if (this.dataset.imageFilenames[r]) {
             const dataPos = this.dataset.dataVectors.map(v => v.getValue(r));
             const imagePos = dataPos.slice(0);
-            const p = libAlgorithm.findClosePointOfLowDensity(
+            const p = findClosePointOfLowDensity(
               this.dataset, d0, d1, r,
               densityMap, densityMap.stencilMap,
               (0.6 * this.options.thumbnailSize) / this.gl.width,
-              (0.6 * (this.options.thumbnailSize + libImageViewer.getLabelHeight())) /
+              (0.6 * (this.options.thumbnailSize + ImageViewer.getLabelHeight())) /
                 this.gl.height,
             ); // EDIT: Factor 0.6: WHY?
             imagePos[d0] = p[0];
@@ -950,7 +943,7 @@ export class GlobalView {
       this.dataset.requestDensityMap(d0, d1, undefined, undefined, (pDensityMap) => {
         const densityMap = pDensityMap;
         let imageWidth = (0.6 * this.options.thumbnailSize) / this.gl.width;
-        let imageHeight = ((0.6 * this.options.thumbnailSize) + libImageViewer.getLabelHeight()) /
+        let imageHeight = ((0.6 * this.options.thumbnailSize) + ImageViewer.getLabelHeight()) /
           this.gl.height; // EDIT: Factor 0.6: WHY?
         if (d1 < d0) {
           // Swap d0 <-> d1
@@ -966,8 +959,8 @@ export class GlobalView {
 
         const dataPos = this.dataset.dataVectors.map(v => v.getValue(index));
         let imagePos;
-        if (libUtility.isUndefined(densityMap.data)) { // If densityMap is nD
-          imagePos = libAlgorithm.findClosePointOfLowDensityNDDescend(
+        if (isUndefined(densityMap.data)) { // If densityMap is nD
+          imagePos = findClosePointOfLowDensityNDDescend(
             this.dataset, index, densityMap,
             (0.6 * this.options.thumbnailSize) / Math.min(this.gl.width, this.gl.height),
           );
@@ -977,7 +970,7 @@ export class GlobalView {
           if (!densityMap.stencilMap) {
             densityMap.stencilMap = {};
           }
-          const p = libAlgorithm.findClosePointOfLowDensity(
+          const p = findClosePointOfLowDensity(
             this.dataset, d0, d1, index, densityMap,
             densityMap.stencilMap, imageWidth, imageHeight,
           );
@@ -1014,7 +1007,7 @@ export class GlobalView {
       this.dataset.requestDensityMap(d0, d1, undefined, undefined, (pDensityMap) => {
         const densityMap = pDensityMap;
         let imageWidth = (0.6 * this.options.thumbnailSize) / this.gl.width;
-        let imageHeight = ((0.6 * this.options.thumbnailSize) + libImageViewer.getLabelHeight()) /
+        let imageHeight = ((0.6 * this.options.thumbnailSize) + ImageViewer.getLabelHeight()) /
           this.gl.height; // EDIT: Factor 0.6: WHY?
         if (d1 < d0) {
           // Swap d0 <-> d1
@@ -1030,7 +1023,7 @@ export class GlobalView {
         if (!densityMap.stencilMap) {
           densityMap.stencilMap = {};
         }
-        libAlgorithm.markPointsInStencilMap(
+        markPointsInStencilMap(
           this.dataset, d0, d1, points,
           densityMap, densityMap.stencilMap,
           imageWidth, imageHeight,
@@ -1139,9 +1132,9 @@ export class GlobalView {
     // Define corners of AABB (axis-aligned bounding box)
     const imageSize = this.dataset.dataVectors.map(v =>
       this.options.thumbnailSize * (v.maximum - v.minimum));
-    const labelHeightOffset = 1.0 + (libImageViewer.getLabelHeight() / this.options.thumbnailSize);
+    const labelHeightOffset = 1.0 + (ImageViewer.getLabelHeight() / this.options.thumbnailSize);
     const labelWidthOffset = 1.0 +
-      ((libImageViewer.getLabelHeight() + (2 * libImageViewer.getLabelWidth()))
+      ((ImageViewer.getLabelHeight() + (2 * ImageViewer.getLabelWidth()))
         / this.options.thumbnailSize);
     const bl = [ // bottom-left
       this.plotTransform.getMinimum(0) - ((imageSize[d0] * 0.6) / this.plotBounds.width),
@@ -1223,22 +1216,22 @@ export class GlobalView {
       //                v1.getValue(p) * scales[1] + offsets[1]];
       this.plotTransform.datasetCoordToDeviceCoord(src, src);
 
-      if (libGlMatrix.vec2.dot(
+      if (vec2.dot(
         [src[0] - offsets[0] - E[0], src[1] - offsets[1] - E[1]],
         eigenvec,
       ) > 0.0) {
         // If src is above E in direction eigenvec
         // Project src in direction eigenvec onto line from bl, to tl
-        dest = libAlgorithm.vectorLineIntersection2D(src, eigenvec, bl, tl);
+        dest = vectorLineIntersection2D(src, eigenvec, bl, tl);
         if (!dest) {
-          dest = libAlgorithm.vectorLineIntersection2D(src, eigenvec, tl, tr);
+          dest = vectorLineIntersection2D(src, eigenvec, tl, tr);
         } // Project src in direction eigenvec onto line from tl, to tr
       } else {
         // If src is below E in direction eigenvec
         // Project src in direction -eigenvec onto line from bl, to br
-        dest = libAlgorithm.vectorLineIntersection2D(src, eigenvec, bl, br);
+        dest = vectorLineIntersection2D(src, eigenvec, bl, br);
         if (!dest) {
-          dest = libAlgorithm.vectorLineIntersection2D(src, eigenvec, br, tr);
+          dest = vectorLineIntersection2D(src, eigenvec, br, tr);
         } // Project src in direction -eigenvec onto line from br, to tr
       }
       if (!dest) {
@@ -1274,7 +1267,8 @@ export class GlobalView {
     };
 
     const maxNumIterations = 10000;
-    if (maxNumIterations !== 0) {
+    // if (maxNumIterations !== 0) // condition always true
+    {
       const R = imageLocations;
       const overlapThreshold = Math.min(0.15, 4 / imageLocations.length);
 
@@ -1294,7 +1288,7 @@ export class GlobalView {
         P.forEach(pair => removeOverlap(R, pair[0], pair[1], rank, overlapThreshold + 0.0001));
         P = detectOverlap(R, overlapThreshold);
       }
-      // libUtility.consoleLog(iter, overlapThreshold);
+      // consoleLog(iter, overlapThreshold);
 
       // Repair order
       const newRank = Array.create(R.length, i => i);
@@ -1355,11 +1349,11 @@ export class GlobalView {
       case 'lowDensity':
         return this.showImageLowDensity(index);
       case 'project':
-        libUtility.consoleWarn('GlobalView warning: ' +
+        consoleWarn('GlobalView warning: ' +
           "Can't place a single image using the 'project'-strategy");
         return false;
       default:
-        libUtility.consoleWarn('GlobalView warning:' +
+        consoleWarn('GlobalView warning:' +
           `Unknown image placement strategy: ${placement}`);
         return false;
     }
@@ -1386,7 +1380,7 @@ export class GlobalView {
       case 'project':
         return this.showImagesProject(points);
       default:
-        libUtility.consoleWarn('GlobalView warning: ' +
+        consoleWarn('GlobalView warning: ' +
           `Unknown image placement strategy: ${placement}`);
         return false;
     }
@@ -1400,7 +1394,7 @@ export class GlobalView {
    */
   highlightImage(image) {
     const images = this.imageViewer.getImages();
-    if (libUtility.isNumber(image)) {
+    if (isNumber(image)) {
       for (let i = 0; i < images.length; i += 1) {
         images[i].highlighted = i === image;
       }
@@ -1639,7 +1633,7 @@ export class GlobalView {
         (this.dataset.dataVectors[this.activeInputs[3]]
           .getValue(this.pointDragDownPos[2]) * this.plotTransform.getScale(3))) +
         this.plotTransform.getOffset(3);
-      // libUtility.consoleLog(scale);
+      // consoleLog(scale);
 
       this.pointDrag = [
         scale * (p[0] - this.pointDragDownPos[0]),
@@ -1673,10 +1667,10 @@ export class GlobalView {
 
     if (this.viewDragStartPos) {
       const d2 = this.activeInputs[2];
-      const viewDelta = libGlMatrix.vec3.create();
+      const viewDelta = vec3.create();
       this.plotTransform.deviceDistToDatasetDist(
         viewDelta,
-        libGlMatrix.vec3.subtract(viewDelta, p, this.viewDragStartPos),
+        vec3.subtract(viewDelta, p, this.viewDragStartPos),
       );
 
       if (this.viewDragX) {
@@ -1693,10 +1687,10 @@ export class GlobalView {
     }
 
     if (this.imageDragStartPos) {
-      const imageDelta = libGlMatrix.vec2.create();
+      const imageDelta = vec2.create();
       this.plotTransform.deviceDistToDatasetDist(
         imageDelta,
-        libGlMatrix.vec2.subtract(imageDelta, p, this.imageDragStartPos),
+        vec2.subtract(imageDelta, p, this.imageDragStartPos),
       );
       this.imageDragImages.forEach((image) => {
         // eslint-disable-next-line no-param-reassign
@@ -1821,7 +1815,7 @@ export class GlobalView {
         this.pointViewer.points.forEach((i) => {
           const px = v0.getValue(i);
           const py = v1.getValue(i);
-          if (libAlgorithm.pointInsidePolygon([px, py], this.mousePolygon)) {
+          if (pointInsidePolygon([px, py], this.mousePolygon)) {
             selection.push(i);
           }
         });
@@ -1958,7 +1952,7 @@ export class GlobalView {
     // Zoom towards mouse position
     const zoom = 1.0 - (deltaZ / 50.0);
     // Offset is difference between p in current zoom level and p after zooming
-    libGlMatrix.vec3.scaleAndAdd(p, p, p, -zoom);
+    vec3.scaleAndAdd(p, p, p, -zoom);
     if (scrollX) {
       this.plotTransform.translate(d0, p[0]);
       this.plotTransform.scale(d0, zoom);
@@ -2099,8 +2093,8 @@ export class GlobalView {
   updateColorSchema() {
     const vDivStyle = window.getComputedStyle(this.divElement);
     this.gl.backColor = vDivStyle.backgroundColor === 'transparent' ?
-      [0, 0, 0, 0] : libUtility.rgbStringToFloatArray(vDivStyle.backgroundColor);
-    this.gl.foreColor = libUtility.rgbStringToFloatArray(this.gl.foreColorString = vDivStyle.color);
+      [0, 0, 0, 0] : Colormap.rgbStringToFloatArray(vDivStyle.backgroundColor);
+    this.gl.foreColor = Colormap.rgbStringToFloatArray(this.gl.foreColorString = vDivStyle.color);
     this.gl.clearColor(...this.gl.backColor);
     // histogramViewer.updateColorSchema();
     this.coordSys.updateColorSchema();

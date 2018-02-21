@@ -1,5 +1,5 @@
-const globalView = require('../../dist/global-view.js');
-const domready = require('domready'); // eslint-disable-line import/no-extraneous-dependencies
+import domready from 'domready'; // eslint-disable-line import/no-extraneous-dependencies
+import { GlobalView, CsvDataset, HashSet } from '../../dist/global-view';
 
 const COLUMN_NAMES = [
   'Tagged Protein',
@@ -23,7 +23,7 @@ let plot;
 const pointsByProtein = {};
 
 domready(() => {
-  plot = new globalView.GlobalView(document.getElementById('divPlot'), {
+  plot = new GlobalView(document.getElementById('divPlot'), {
     pointShape: 'Circle',
     pointSize: 8,
     pointOpacity: 0.3,
@@ -39,7 +39,7 @@ domready(() => {
   plot.highlightedPoints = plot.createPointSet('red', 1);
   const csvPath = 'datasets/AICS_Cell-feature-analysis_v1.5.csv'; // 'http://homepage.univie.ac.at/a0929188/GlobalView/AICS_Cell-feature-analysis_v1.5.csv"
   const imagesPath = 'datasets/AICS_Cell-feature-analysis_v1.5_images/'; // 'http://homepage.univie.ac.at/a0929188/GlobalView/images/"
-  new globalView.CsvDataset( // eslint-disable-line no-new
+  new CsvDataset( // eslint-disable-line no-new
     csvPath, {
       hasHeader: true,
       nameColumn: 1,
@@ -58,7 +58,7 @@ domready(() => {
         const protein = dataset.data[(i * nc) + 0];
         let proteinPoints = pointsByProtein[protein];
         if (!proteinPoints) {
-          proteinPoints = new globalView.HashSet();
+          proteinPoints = new HashSet();
           pointsByProtein[protein] = proteinPoints;
         }
         proteinPoints.push(i);

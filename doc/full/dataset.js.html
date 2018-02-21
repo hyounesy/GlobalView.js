@@ -26,14 +26,20 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const libUtility = require('./utility.js');
-const libAlgorithm = require('./algorithm.js');
-const libFormulaCompiler = require('./formulaCompiler.js');
-const Parallel = require('paralleljs');
-const $ = require('jquery');
+            <pre class="prettyprint source linenums"><code>import Parallel from 'paralleljs';
+import $ from 'jquery';
+import { isNumber, isString, consoleError, isUndefined,
+  consoleWarn, isFunction, makeCloneable, download, consoleLog, isArray,
+  ForwardList as classForwardList, // need this for Parallel to work
+} from './utility';
+import { DensityMapOptions, computeHistogram2D, DensityMap, ClusterMapOptions, ClusterMap,
+  computeDensityMap as funcComputeDensityMap, // need this for Parallel to work
+  computeClusterMap as funcComputeClusterMap, // need this for Parallel to work
+} from './algorithm';
+import FormulaCompiler from './formulaCompiler';
 
 window.jQuery = $;
-require('jquery-csv');
+require('jquery-csv'); // could not get this working using es6 import.
 
 
 /**
@@ -53,7 +59,7 @@ export class DataVector {
   constructor(dataset, source) {
     this.dataset = dataset;
     this.isSourceNumeric = false;
-    if (libUtility.isNumber(source)) {
+    if (isNumber(source)) {
       this.isSourceNumeric = true;
       this.columnIndex = Math.round(source);
       this.getValueCode = `c${this.columnIndex}`;
@@ -66,22 +72,22 @@ export class DataVector {
     } else {
       this.stack = new Array(16);
       const globalTypes = {
-        n: libFormulaCompiler.FormulaCompiler.types.float,
-        PI: libFormulaCompiler.FormulaCompiler.types.float,
-        i: libFormulaCompiler.FormulaCompiler.types.float,
+        n: FormulaCompiler.types.float,
+        PI: FormulaCompiler.types.float,
+        i: FormulaCompiler.types.float,
       };
       for (let c = 0; c &lt; this.dataset.numColumns; c += 1) {
-        globalTypes[`c${c}`] = libFormulaCompiler.FormulaCompiler.types.float;
+        globalTypes[`c${c}`] = FormulaCompiler.types.float;
       }
       this.globals = {
         n: dataset.length,
         PI: Math.PI,
       };
 
-      this.code = libFormulaCompiler.FormulaCompiler.compile(`${source};`, globalTypes);
-      if (libUtility.isString(this.code)) {
-        libUtility.consoleError("GlobalView error: Error while parsing data vector formula '{0}'".format(source));
-        libUtility.consoleError(`                  ${this.code}`);
+      this.code = FormulaCompiler.compile(`${source};`, globalTypes);
+      if (isString(this.code)) {
+        consoleError("GlobalView error: Error while parsing data vector formula '{0}'".format(source));
+        consoleError(`                  ${this.code}`);
         return;
       }
       const formula = source;
@@ -115,7 +121,7 @@ export class DataVector {
       this.globals[`c${c}`] = this.dataset.fdata[(i * this.dataset.numColumns) + c];
     }
 
-    return libFormulaCompiler.FormulaCompiler.run(this.code, this.stack, this.globals);
+    return FormulaCompiler.run(this.code, this.stack, this.globals);
   }
 }
 /**
@@ -222,7 +228,7 @@ export class Dataset {
 
     return this.densityMapsArray.length > d0 &amp;&amp;
     this.densityMapsArray[d0].length > d1 &amp;&amp; this.densityMapsArray[d0][d1] &amp;&amp;
-      (libUtility.isUndefined(this.densityMapsArray[d0][d1].pending) ||
+      (isUndefined(this.densityMapsArray[d0][d1].pending) ||
                               this.densityMapsArray[d0][d1].old);
   }
 
@@ -233,7 +239,7 @@ export class Dataset {
   iterateDensityMaps(callback) {
     this.densityMapsArray.forEach((densityMaps) => {
       densityMaps.forEach((densityMap) => {
-        if (densityMap &amp;&amp; (libUtility.isUndefined(densityMap.pending) || densityMap.old)) {
+        if (densityMap &amp;&amp; (isUndefined(densityMap.pending) || densityMap.old)) {
           callback(densityMap.old || densityMap);
         }
       });
@@ -261,12 +267,12 @@ export class Dataset {
     let size = mapSize;
     // Validate inputs
     if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) {
-      libUtility.consoleWarn(('GlobalView warning: Requesting density map for dimensions {0}, {1} on a dataset with only {2} data vectors')
+      consoleWarn(('GlobalView warning: Requesting density map for dimensions {0}, {1} on a dataset with only {2} data vectors')
         .format(d0, d1, this.dataVectors.length));
       return null;
     }
     // Firefox tends to crash with Parallel.js
-    const isAsync = libUtility.isFunction(ondone);// &amp;&amp; !/Firefox/i.test(navigator.userAgent);
+    const isAsync = isFunction(ondone);// &amp;&amp; !/Firefox/i.test(navigator.userAgent);
 
     // Assure d0 &lt; d1
     if (d0 === d1) {
@@ -292,7 +298,7 @@ export class Dataset {
     }
 
     if (densityMap &amp;&amp; options &amp;&amp; densityMap.options &amp;&amp;
-      !libAlgorithm.DensityMapOptions.equals(options, densityMap.options)) {
+      !DensityMapOptions.equals(options, densityMap.options)) {
       // If options changed
       densityMap = null;
     } // Recompute density map
@@ -306,41 +312,43 @@ export class Dataset {
         this.densityMapsArray[d0][d1] = { pending: [ondone], old: this.densityMapsArray[d0][d1] };
 
         // Compute histogram synchronously
-        let histogram = libAlgorithm.computeHistogram2D(this, d0, d1, size, size);
+        let histogram = computeHistogram2D(this, d0, d1, size, size);
 
         // Execute an asynchronous worker that computes densityMapsArray[d0][d1]
-        const parallel = new Parallel([libUtility.makeCloneable(histogram),
-          new libAlgorithm.DensityMapOptions(options)], { evalPath: 'eval.js' });
-        parallel.require(libAlgorithm.DensityMap);
-        parallel.require(libAlgorithm.computeDensityMap);
-        // the following code will be evaled from a blob in Parallel. so no need for libAlgorithm.
-        // eslint-disable-next-line prefer-spread, no-undef
-        parallel.spawn(params => computeDensityMap.apply(null, params)).then((pDensityMap) => {
-          const computedDensityMap = new libAlgorithm.DensityMap(pDensityMap);
-          // Free histogram
-          histogram = null;
+        const parallel = new Parallel([makeCloneable(histogram),
+          new DensityMapOptions(options)], { evalPath: 'eval.js' });
+        const computeDensityMap = funcComputeDensityMap;
+        parallel.require(computeDensityMap);
+        // the following code will be evaled from a blob in Parallel.
+        // using spread operator, results in error: _toConsumableArray is not defined
+        // eslint-disable-next-line prefer-spread
+        parallel.spawn(params => computeDensityMap.apply(null, params))
+          .then((pDensityMap) => {
+            const computedDensityMap = new DensityMap(pDensityMap);
+            // Free histogram
+            histogram = null;
 
-          // Set densityMapsArray[d0][d1]
-          this.densityMapsArray[d0][d1].old = null;
-          const pending = this.densityMapsArray[d0][d1].pending;
-          this.densityMapsArray[d0][d1] = computedDensityMap;
+            // Set densityMapsArray[d0][d1]
+            this.densityMapsArray[d0][d1].old = null;
+            const pending = this.densityMapsArray[d0][d1].pending;
+            this.densityMapsArray[d0][d1] = computedDensityMap;
 
-          if (this.clusterMapsArray.length > d0 &amp;&amp;
-              this.clusterMapsArray[d0].length > d1 &amp;&amp;
-              this.clusterMapsArray[d0][d1] &amp;&amp;
-              libUtility.isUndefined(this.clusterMapsArray[d0][d1].pending)) {
-            this.clusterMapsArray[d0][d1] = null;
-          }
+            if (this.clusterMapsArray.length > d0 &amp;&amp;
+                this.clusterMapsArray[d0].length > d1 &amp;&amp;
+                this.clusterMapsArray[d0][d1] &amp;&amp;
+                isUndefined(this.clusterMapsArray[d0][d1].pending)) {
+              this.clusterMapsArray[d0][d1] = null;
+            }
 
-          // Execute queued 'ondone' functions
-          pending.forEach((ondoneFunction) => {
-            ondoneFunction(computedDensityMap);
+            // Execute queued 'ondone' functions
+            pending.forEach((ondoneFunction) => {
+              ondoneFunction(computedDensityMap);
+            });
           });
-        });
-      } else if (!libUtility.isUndefined(densityMap.pending)) {
+      } else if (!isUndefined(densityMap.pending)) {
         // If densityMapsArray[d0][d1] is currently being computed asynchronously
         if (densityMap.old &amp;&amp;
-          (!options || libAlgorithm.DensityMapOptions.equals(densityMap.old.options, options))) {
+          (!options || DensityMapOptions.equals(densityMap.old.options, options))) {
           // If the deprecated densityMap satisfies our requested options
           ondone(/** @type {DensityMap} */(densityMap.old));
         } else {
@@ -354,22 +362,22 @@ export class Dataset {
     }
     if (!densityMap) {
       // If densityMapsArray[d0][d1] isn't computed or being computed yet
-      let histogram = libAlgorithm.computeHistogram2D(this, d0, d1, size, size);
-      densityMap = new libAlgorithm.DensityMap(libAlgorithm.computeDensityMap(
+      let histogram = computeHistogram2D(this, d0, d1, size, size);
+      densityMap = new DensityMap(funcComputeDensityMap(
         histogram,
-        new libAlgorithm.DensityMapOptions(options),
+        new DensityMapOptions(options),
       ));
       this.densityMapsArray[d0][d1] = densityMap;
       histogram = null; // Free histogram
     } else if (densityMap.old &amp;&amp;
-        (!options || libAlgorithm.DensityMapOptions.equals(densityMap.old.options, options))) {
+        (!options || DensityMapOptions.equals(densityMap.old.options, options))) {
       // If the deprecated densityMap satisfies our requested options
       densityMap = densityMap.old;
     } else {
-      while (!libUtility.isUndefined(this.densityMapsArray[d0][d1].pending)) { /* empty */ }
+      while (!isUndefined(this.densityMapsArray[d0][d1].pending)) { /* empty */ }
     } // Wait while densityMapsArray[d0][d1] is being computed asynchronously
 
-    if (libUtility.isFunction(ondone)) {
+    if (isFunction(ondone)) {
       ondone(/** @type {DensityMap} */(densityMap));
     }
     return /** @type {DensityMap} */(densityMap);
@@ -404,8 +412,8 @@ export class Dataset {
     return this.clusterMapsArray.length > d0 &amp;&amp;
            this.clusterMapsArray[d0].length > d1 &amp;&amp;
            this.clusterMapsArray[d0][d1] &amp;&amp;
-           (libUtility.isUndefined(this.clusterMapsArray[d0][d1].pending) ||
-                                   this.clusterMapsArray[d0][d1].old);
+           (isUndefined(this.clusterMapsArray[d0][d1].pending) ||
+                        this.clusterMapsArray[d0][d1].old);
   }
 
   /**
@@ -425,11 +433,11 @@ export class Dataset {
     let d1 = dim1;
     // Validate inputs
     if (d0 >= this.dataVectors.length || d1 >= this.dataVectors.length) {
-      libUtility.consoleWarn('GlobalView warning: Requesting cluster map for dimensions {0}, {1} on a dataset with only {2} data vectors'.format(d0, d1, this.dataVectors.length));
+      consoleWarn('GlobalView warning: Requesting cluster map for dimensions {0}, {1} on a dataset with only {2} data vectors'.format(d0, d1, this.dataVectors.length));
       return null;
     }
     // Firefox tends to crash with Parallel.js
-    const isAsync = libUtility.isFunction(ondone);// &amp;&amp; !/Firefox/i.test(navigator.userAgent);
+    const isAsync = isFunction(ondone);// &amp;&amp; !/Firefox/i.test(navigator.userAgent);
 
     // Assure d0 &lt; d1
     if (d0 === d1) {
@@ -451,7 +459,7 @@ export class Dataset {
     let clusterMap = this.clusterMapsArray[d0][d1];
 
     if (clusterMap &amp;&amp; options &amp;&amp; clusterMap.options &amp;&amp;
-      !libAlgorithm.ClusterMapOptions.equals(options, clusterMap.options)) {
+      !ClusterMapOptions.equals(options, clusterMap.options)) {
       // If options changed
       clusterMap = null;
     } // Recompute density map
@@ -466,29 +474,32 @@ export class Dataset {
 
         this.requestDensityMap(d0, d1, undefined, undefined, (densityMap) => {
           // Execute an asynchronous worker that computes clusterMapsArray[d0][d1]
-          const parallel = new Parallel([libUtility.makeCloneable(densityMap), d0, d1,
-            new libAlgorithm.ClusterMapOptions(options)], { evalPath: 'eval.js' });
-          parallel.require(libAlgorithm.computeClusterMap);
-          parallel.require(libUtility.ForwardList);
-          parallel.require(libUtility.PriorityQueue);
-          // the following code will be evaled from a blob in Parallel. so no need for libAlgorithm.
-          // eslint-disable-next-line prefer-spread, no-undef
-          parallel.spawn(params => computeClusterMap.apply(null, params)).then((pClusterMap) => {
-            const computedClusterMap = new libAlgorithm.ClusterMap(pClusterMap);
-            // Set clusterMapsArray[d0][d1]
-            const pending = this.clusterMapsArray[d0][d1].pending;
-            this.clusterMapsArray[d0][d1] = computedClusterMap;
+          const parallel = new Parallel([makeCloneable(densityMap), d0, d1,
+            new ClusterMapOptions(options)], { evalPath: 'eval.js' });
+          const ForwardList = classForwardList;
+          const computeClusterMap = funcComputeClusterMap;
+          parallel.require(computeClusterMap);
+          parallel.require(ForwardList);
+          // the following code will be evaled from a blob in Parallel.
+          // using spread operator, results in error: _toConsumableArray is not defined
+          // eslint-disable-next-line prefer-spread
+          parallel.spawn(params => computeClusterMap.apply(null, params))
+            .then((pClusterMap) => {
+              const computedClusterMap = new ClusterMap(pClusterMap);
+              // Set clusterMapsArray[d0][d1]
+              const pending = this.clusterMapsArray[d0][d1].pending;
+              this.clusterMapsArray[d0][d1] = computedClusterMap;
 
-            // Execute queued 'ondone' functions
-            pending.forEach((ondoneFunc) => {
-              ondoneFunc(computedClusterMap);
+              // Execute queued 'ondone' functions
+              pending.forEach((ondoneFunc) => {
+                ondoneFunc(computedClusterMap);
+              });
             });
-          });
         });
-      } else if (!libUtility.isUndefined(clusterMap.pending)) {
+      } else if (!isUndefined(clusterMap.pending)) {
         // If clusterMapsArray[d0][d1] is currently being computed asynchronously
         if (clusterMap.old &amp;&amp;
-          (!options || libAlgorithm.ClusterMapOptions.equals(clusterMap.old.options, options))) {
+          (!options || ClusterMapOptions.equals(clusterMap.old.options, options))) {
           // If the deprecated clusterMap satisfies our requested options
           ondone(/** @type {ClusterMap} */(clusterMap.old));
         } else {
@@ -504,25 +515,25 @@ export class Dataset {
         const densityMap = this.requestDensityMap(d0, d1, undefined, undefined);
         if (densityMap) {
           // var tStart = performance.now();
-          clusterMap = new libAlgorithm.ClusterMap(libAlgorithm.computeClusterMap(
+          clusterMap = new ClusterMap(funcComputeClusterMap(
             densityMap, d0, d1,
-            new libAlgorithm.ClusterMapOptions(options),
+            new ClusterMapOptions(options),
           ));
           this.clusterMapsArray[d0][d1] = clusterMap;
-          // libUtility.consoleLog(performance.now() - tStart + "ms");
+          // consoleLog(performance.now() - tStart + "ms");
         } else {
           this.clusterMapsArray[d0][d1] = null;
           clusterMap = null;
         }
       } else if (clusterMap.old &amp;&amp;
-        (!options || libAlgorithm.ClusterMapOptions.equals(clusterMap.old.options, options))) {
+        (!options || ClusterMapOptions.equals(clusterMap.old.options, options))) {
         // If the deprecated clusterMap satisfies our requested options
         clusterMap = clusterMap.old;
       } else {
-        while (!libUtility.isUndefined(clusterMap.pending)) { /* empty */ }
+        while (!isUndefined(clusterMap.pending)) { /* empty */ }
       } // Wait while clusterMapsArray[d0][d1] is being computed asynchronously
 
-      if (libUtility.isFunction(ondone)) {
+      if (isFunction(ondone)) {
         ondone(clusterMap);
       }
       return clusterMap;
@@ -543,7 +554,7 @@ export class Dataset {
     const nc = this.numColumns;
     let csvNumCols;
     if (this.names &amp;&amp;
-      !libUtility.isUndefined(nameColumn) &amp;&amp; !libUtility.isUndefined(nameColumnLabel)) {
+      !isUndefined(nameColumn) &amp;&amp; !isUndefined(nameColumnLabel)) {
       csvNumCols = nc + 1;
     } else {
       nameColumn = -1;
@@ -578,7 +589,7 @@ export class Dataset {
       csv[i + 1] = row; // +1 ... Header row
     }
 
-    libUtility.download(filename, `data:text/csv;charset=utf-8,${encodeURIComponent($.csv.fromArrays(csv))}`);
+    download(filename, `data:text/csv;charset=utf-8,${encodeURIComponent($.csv.fromArrays(csv))}`);
   }
   /**
    * Creates an auto-generated column name.
@@ -653,7 +664,8 @@ export class RandomDataset extends Dataset {
  * }}
 */
 const CSV_DATASET_OPTIONS = {
-  /** When true, tries to infer other options based on the structure of the dataset (slow). */
+  /** When true, tries to infer other options based on the structure of the dataset (slow).
+   * @type {boolean} */
   autoDetect: {
     description: 'When true, tries to infer other options ' +
                  'based on the structure of the dataset (slow).',
@@ -661,14 +673,16 @@ const CSV_DATASET_OPTIONS = {
     valid: [true, false],
   },
 
-  /** When true, interprets the first row of the dataset as column labels. */
+  /** When true, interprets the first row of the dataset as column labels.
+   * @type {boolean} */
   hasHeader: {
     description: 'When true, interprets the first row of the dataset as column labels.',
     default: false,
     valid: [true, false],
   },
 
-  /** Index of a column of the dataset that contains data point names. */
+  /** Index of a column of the dataset that contains data point names.
+   * @type {number} */
   nameColumn: {
     description: 'Index of a column of the dataset that contains data point names.',
     default: null,
@@ -676,7 +690,8 @@ const CSV_DATASET_OPTIONS = {
   },
 
   /** An array of column labels, or a function that takes the column index
-   *  as input and returns the column label. */
+   *  as input and returns the column label.
+   * @type {(string[] | function(number))} */
   columnLabels: {
     description: 'An array of column labels, or a function that takes the ' +
                  'column index as input and returns the column label.',
@@ -685,7 +700,8 @@ const CSV_DATASET_OPTIONS = {
   },
 
   /** An array of image URLs, or a function that takes a row of data and the row index as
-   *  input and returns a URL to an image of the data point. */
+   *  input and returns a URL to an image of the data point.
+   * @type {(string[] | function(Object[], number))} */
   imageFilenames: {
     description: 'An array of image URLs, or a function that takes a row of data ' +
                  'and the row index as input and returns a URL to an image of the data point.',
@@ -702,9 +718,10 @@ export class CsvDataset extends Dataset {
   /**
    * @constructor
    * @export
-   * @param {string|Blob} file File or URL of file, containing the CSV-formatted dataset
-   * @param {Object} options
-   * @param {function(Dataset)} onload Event handler, called after the dataset was created
+   * @param {string|Blob} file File or URL of file, containing the CSV-formatted dataset.
+   * @param {Object.&lt;string, Object>} options - options for opening the csv dataset.
+   *                                            see {@link CSV_DATASET_OPTIONS}
+   * @param {function(Dataset)} onload Event handler, called after the dataset was created.
    */
   constructor(file, options, onload) {
     super();
@@ -721,7 +738,7 @@ export class CsvDataset extends Dataset {
 
       // Validate option
       if (!Object.prototype.hasOwnProperty.call(CSV_DATASET_OPTIONS, option)) {
-        libUtility.consoleWarn(`CsvDataset warning: Unsupported option: ${option}`);
+        consoleWarn(`CsvDataset warning: Unsupported option: ${option}`);
         continue; // eslint-disable-line no-continue
       }
       const optionDefinition = CSV_DATASET_OPTIONS[option];
@@ -731,14 +748,14 @@ export class CsvDataset extends Dataset {
       if ((optionDefinition.valid &amp;&amp; optionDefinition.valid.indexOf(value) === -1) ||
         (optionDefinition.validRange &amp;&amp;
           (value &lt; optionDefinition.validRange[0] || value > optionDefinition.validRange[1]))) {
-        libUtility.consoleWarn(`CsvDataset warning: Invalid value for option ${option}: ${value}`);
+        consoleWarn(`CsvDataset warning: Invalid value for option ${option}: ${value}`);
         delete this.varOptions[option];
         continue; // eslint-disable-line no-continue
       }
     }
 
     const dataset = this;
-    if (libUtility.isString(file)) {
+    if (isString(file)) {
       // $.get(file, parseCsv, "text");
       const request = new XMLHttpRequest();
       request.onreadystatechange = function fOnReadyStateChange() {
@@ -758,13 +775,17 @@ export class CsvDataset extends Dataset {
     }
   }
 
+  /**
+   * Parse data from csv
+   * @param {string} csv data in csv format
+   */
   parseCsv(csv) {
     // Load csv file
     const dataset = this;
     const data = $.csv.toArrays(csv);
 
     if (this.varOptions.autoDetect) {
-      if (libUtility.isUndefined(this.varOptions.hasHeader)) {
+      if (isUndefined(this.varOptions.hasHeader)) {
         // Assume no-header by default
         this.varOptions.hasHeader = false;
 
@@ -776,9 +797,9 @@ export class CsvDataset extends Dataset {
         if (firstRowOnlyStrings &amp;&amp; secondRowHasNumbers) {
           this.varOptions.hasHeader = true;
         }
-        libUtility.consoleLog(`Assuming hasHeader = ${this.varOptions.hasHeader}`);
+        consoleLog(`Assuming hasHeader = ${this.varOptions.hasHeader}`);
       }
-      if (libUtility.isUndefined(this.varOptions.nameColumn)) {
+      if (isUndefined(this.varOptions.nameColumn)) {
         // Assume no name column by default
         this.varOptions.nameColumn = null;
 
@@ -798,7 +819,7 @@ export class CsvDataset extends Dataset {
             break;
           }
         }
-        libUtility.consoleLog(`Assuming nameColumn = ${this.varOptions.nameColumn}`);
+        consoleLog(`Assuming nameColumn = ${this.varOptions.nameColumn}`);
       }
     }
 
@@ -810,7 +831,7 @@ export class CsvDataset extends Dataset {
 
     // Generate column labels
     let columnLabels;
-    if (libUtility.isFunction(this.varOptions.columnLabels)) {
+    if (isFunction(this.varOptions.columnLabels)) {
       columnLabels = new Array(n);
       for (let c = 0, ci = 0; c &lt; data[0].length; c += 1, ci += 1) {
         if (c === this.varOptions.nameColumn) {
@@ -820,9 +841,9 @@ export class CsvDataset extends Dataset {
 
         columnLabels[ci] = this.varOptions.columnLabels(c);
       }
-    } else if (libUtility.isArray(this.varOptions.columnLabels)) {
+    } else if (isArray(this.varOptions.columnLabels)) {
       if (this.varOptions.columnLabels.length !== nc) {
-        libUtility.consoleWarn(`CsvDataset warning: Number of provided column labels (${
+        consoleWarn(`CsvDataset warning: Number of provided column labels (${
           this.varOptions.columnLabels.length
         }) differs from number of data columns in the dataset (${nc})`);
         columnLabels = null;
@@ -965,7 +986,7 @@ export class CsvDataset extends Dataset {
     }
 
     // Generate image filenames
-    if (libUtility.isFunction(this.varOptions.imageFilenames)) {
+    if (isFunction(this.varOptions.imageFilenames)) {
       dataset.imageFilenames = new Array(n);
       for (i = firstRow, di = 0; i &lt; data.length; i += 1, di += 1) {
         // Skip blank lines
@@ -976,9 +997,9 @@ export class CsvDataset extends Dataset {
 
         dataset.imageFilenames[di] = this.varOptions.imageFilenames(data[i], i);
       }
-    } else if (libUtility.isArray(this.varOptions.imageFilenames)) {
+    } else if (isArray(this.varOptions.imageFilenames)) {
       if (this.varOptions.imageFilenames.length !== n) {
-        libUtility.consoleWarn(`CsvDataset warning: Number of provided image filenames (${this.varOptions.imageFilenames.length}) differs from number of data points (${n})`);
+        consoleWarn(`CsvDataset warning: Number of provided image filenames (${this.varOptions.imageFilenames.length}) differs from number of data points (${n})`);
         dataset.imageFilenames = null;
       } else {
         dataset.imageFilenames = this.varOptions.imageFilenames;
@@ -1003,13 +1024,13 @@ export class CsvDataset extends Dataset {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClusterMap.html">ClusterMap</a></li><li><a href="ClusterMapOptions.html">ClusterMapOptions</a></li><li><a href="CoordinateSystem.html">CoordinateSystem</a></li><li><a href="CsvDataset.html">CsvDataset</a></li><li><a href="DataMesh.html">DataMesh</a></li><li><a href="Dataset.html">Dataset</a></li><li><a href="DataVector.html">DataVector</a></li><li><a href="DensityMap.html">DensityMap</a></li><li><a href="DensityMapOptions.html">DensityMapOptions</a></li><li><a href="DensityViewer.html">DensityViewer</a></li><li><a href="ForwardList.html">ForwardList</a></li><li><a href="GlobalView.html">GlobalView</a></li><li><a href="HashSet.html">HashSet</a></li><li><a href="HistogramViewer.html">HistogramViewer</a></li><li><a href="ImageViewer.html">ImageViewer</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="module.exports.html">exports</a></li><li><a href="PointGroup.html">PointGroup</a></li><li><a href="PointViewer.html">PointViewer</a></li><li><a href="PriorityQueue.html">PriorityQueue</a></li><li><a href="RandomDataset.html">RandomDataset</a></li><li><a href="Shader.html">Shader</a></li><li><a href="TextRenderContext_TextRenderContext.html">TextRenderContext</a></li><li><a href="Thumbnail.html">Thumbnail</a></li></ul><h3>Namespaces</h3><ul><li><a href="Shaders.html">Shaders</a></li></ul><h3>Interfaces</h3><ul><li><a href="Viewer.html">Viewer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#computeClusterMap">computeClusterMap</a></li><li><a href="global.html#computeDensityMap">computeDensityMap</a></li><li><a href="global.html#computeDensityMapND">computeDensityMapND</a></li><li><a href="global.html#computeHistogram">computeHistogram</a></li><li><a href="global.html#computeHistogram2D">computeHistogram2D</a></li><li><a href="global.html#CSV_DATASET_OPTIONS">CSV_DATASET_OPTIONS</a></li><li><a href="global.html#downloadDensityMap">downloadDensityMap</a></li><li><a href="global.html#downloadStencilMap">downloadStencilMap</a></li><li><a href="global.html#findClosePointOfLowDensity">findClosePointOfLowDensity</a></li><li><a href="global.html#findClosePointOfLowDensityDescend">findClosePointOfLowDensityDescend</a></li><li><a href="global.html#findClosePointOfLowDensityNDDescend">findClosePointOfLowDensityNDDescend</a></li><li><a href="global.html#findRepresentativePoints">findRepresentativePoints</a></li><li><a href="global.html#findRepresentativePoints2">findRepresentativePoints2</a></li><li><a href="global.html#findRepresentativePointsND">findRepresentativePointsND</a></li><li><a href="global.html#findRepresentativePointsND2">findRepresentativePointsND2</a></li><li><a href="global.html#getTexture">getTexture</a></li><li><a href="global.html#getWidth">getWidth</a></li><li><a href="global.html#linesIntersect">linesIntersect</a></li><li><a href="global.html#markPointsInStencilMap">markPointsInStencilMap</a></li><li><a href="global.html#onPlotBoundsChanged">onPlotBoundsChanged</a></li><li><a href="global.html#parseColor">parseColor</a></li><li><a href="global.html#parseColormap">parseColormap</a></li><li><a href="global.html#pointInsidePolygon">pointInsidePolygon</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#sampleDensityMap">sampleDensityMap</a></li><li><a href="global.html#sampleDensityMapChain">sampleDensityMapChain</a></li><li><a href="global.html#sampleDensityMapColumn">sampleDensityMapColumn</a></li><li><a href="global.html#sampleDensityMapRow">sampleDensityMapRow</a></li><li><a href="global.html#setEnumRange">setEnumRange</a></li><li><a href="global.html#setLabel">setLabel</a></li><li><a href="global.html#setNumericRange">setNumericRange</a></li><li><a href="global.html#validateColor">validateColor</a></li><li><a href="global.html#validateColormap">validateColormap</a></li><li><a href="global.html#vectorLineIntersection2D">vectorLineIntersection2D</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClusterMap.html">ClusterMap</a></li><li><a href="ClusterMapOptions.html">ClusterMapOptions</a></li><li><a href="Colormap.html">Colormap</a></li><li><a href="CoordinateSystem.html">CoordinateSystem</a></li><li><a href="CsvDataset.html">CsvDataset</a></li><li><a href="DataMesh.html">DataMesh</a></li><li><a href="Dataset.html">Dataset</a></li><li><a href="DataVector.html">DataVector</a></li><li><a href="DensityMap.html">DensityMap</a></li><li><a href="DensityMapOptions.html">DensityMapOptions</a></li><li><a href="DensityViewer.html">DensityViewer</a></li><li><a href="ForwardList.html">ForwardList</a></li><li><a href="GlobalView.html">GlobalView</a></li><li><a href="HashSet.html">HashSet</a></li><li><a href="HistogramViewer.html">HistogramViewer</a></li><li><a href="ImageViewer.html">ImageViewer</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="PointGroup.html">PointGroup</a></li><li><a href="PointViewer.html">PointViewer</a></li><li><a href="PriorityQueue.html">PriorityQueue</a></li><li><a href="RandomDataset.html">RandomDataset</a></li><li><a href="Shader.html">Shader</a></li><li><a href="TextRenderContext.html">TextRenderContext</a></li><li><a href="Thumbnail.html">Thumbnail</a></li><li><a href="Transform.html">Transform</a></li></ul><h3>Namespaces</h3><ul><li><a href="Shaders.html">Shaders</a></li></ul><h3>Interfaces</h3><ul><li><a href="Viewer.html">Viewer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addKeyDownHandler">addKeyDownHandler</a></li><li><a href="global.html#addKeyUpHandler">addKeyUpHandler</a></li><li><a href="global.html#addMouseMoveHandler">addMouseMoveHandler</a></li><li><a href="global.html#addMouseUpHandler">addMouseUpHandler</a></li><li><a href="global.html#addMouseWheelHandler">addMouseWheelHandler</a></li><li><a href="global.html#BreadthFirstSearch">BreadthFirstSearch</a></li><li><a href="global.html#computeClusterMap">computeClusterMap</a></li><li><a href="global.html#computeDensityMap">computeDensityMap</a></li><li><a href="global.html#computeDensityMapND">computeDensityMapND</a></li><li><a href="global.html#computeHistogram">computeHistogram</a></li><li><a href="global.html#computeHistogram2D">computeHistogram2D</a></li><li><a href="global.html#consoleError">consoleError</a></li><li><a href="global.html#consoleLog">consoleLog</a></li><li><a href="global.html#consoleWarn">consoleWarn</a></li><li><a href="global.html#createCookie">createCookie</a></li><li><a href="global.html#CSV_DATASET_OPTIONS">CSV_DATASET_OPTIONS</a></li><li><a href="global.html#DepthFirstSearch">DepthFirstSearch</a></li><li><a href="global.html#download">download</a></li><li><a href="global.html#downloadDensityMap">downloadDensityMap</a></li><li><a href="global.html#downloadStencilMap">downloadStencilMap</a></li><li><a href="global.html#enableAlerts">enableAlerts</a></li><li><a href="global.html#enableConsoleOutputs">enableConsoleOutputs</a></li><li><a href="global.html#eraseCookie">eraseCookie</a></li><li><a href="global.html#findClosePointOfLowDensity">findClosePointOfLowDensity</a></li><li><a href="global.html#findClosePointOfLowDensityDescend">findClosePointOfLowDensityDescend</a></li><li><a href="global.html#findClosePointOfLowDensityNDDescend">findClosePointOfLowDensityNDDescend</a></li><li><a href="global.html#findRepresentativePoints">findRepresentativePoints</a></li><li><a href="global.html#findRepresentativePoints2">findRepresentativePoints2</a></li><li><a href="global.html#findRepresentativePointsND">findRepresentativePointsND</a></li><li><a href="global.html#findRepresentativePointsND2">findRepresentativePointsND2</a></li><li><a href="global.html#getParameterByName">getParameterByName</a></li><li><a href="global.html#handleLoadedTexture">handleLoadedTexture</a></li><li><a href="global.html#imageUrlFromBytes">imageUrlFromBytes</a></li><li><a href="global.html#isArray">isArray</a></li><li><a href="global.html#isFunction">isFunction</a></li><li><a href="global.html#isNumber">isNumber</a></li><li><a href="global.html#isObject">isObject</a></li><li><a href="global.html#isString">isString</a></li><li><a href="global.html#isUndefined">isUndefined</a></li><li><a href="global.html#linesIntersect">linesIntersect</a></li><li><a href="global.html#LoadTexture">LoadTexture</a></li><li><a href="global.html#LoadTextureFromByteArray">LoadTextureFromByteArray</a></li><li><a href="global.html#LoadTextureFromFloatArray">LoadTextureFromFloatArray</a></li><li><a href="global.html#LoadTextureFromImage">LoadTextureFromImage</a></li><li><a href="global.html#markPointsInStencilMap">markPointsInStencilMap</a></li><li><a href="global.html#OPTIONS">OPTIONS</a></li><li><a href="global.html#pointInsidePolygon">pointInsidePolygon</a></li><li><a href="global.html#readCookie">readCookie</a></li><li><a href="global.html#readFloatCookie">readFloatCookie</a></li><li><a href="global.html#readIntCookie">readIntCookie</a></li><li><a href="global.html#sampleDensityMap">sampleDensityMap</a></li><li><a href="global.html#sampleDensityMapChain">sampleDensityMapChain</a></li><li><a href="global.html#sampleDensityMapColumn">sampleDensityMapColumn</a></li><li><a href="global.html#sampleDensityMapRow">sampleDensityMapRow</a></li><li><a href="global.html#showAlert">showAlert</a></li><li><a href="global.html#SimpleAStarSearch">SimpleAStarSearch</a></li><li><a href="global.html#SimpleGreedySearch">SimpleGreedySearch</a></li><li><a href="global.html#SimpleUniformCostSearch">SimpleUniformCostSearch</a></li><li><a href="global.html#UniformCostSearch">UniformCostSearch</a></li><li><a href="global.html#urlExists">urlExists</a></li><li><a href="global.html#validateGLSL">validateGLSL</a></li><li><a href="global.html#vectorLineIntersection2D">vectorLineIntersection2D</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Feb 16 2018 15:30:43 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
 </footer>
 
 <script> prettyPrint(); </script>
