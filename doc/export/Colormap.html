@@ -296,6 +296,634 @@ This class also draws a color axis to the right of the scatter plot.</p></div>
     
 
     
+    <h4 class="name" id=".parseColor"><span class="type-signature">(static) </span>parseColor<span class="signature">(color)</span><span class="type-signature"> &rarr; {Uint8Array}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Converts color parameter to a Uint8Array [r, g, b, a]</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>color</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+|
+
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Unit8Array of length 4: [r, g, b, a]</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Uint8Array</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".parseColormap"><span class="type-signature">(static) </span>parseColormap<span class="signature">(colormap)</span><span class="type-signature"> &rarr; {Uint8Array}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Parses the colormap and returns an array of Uint8Array</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>colormap</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+|
+
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>either the color map name or an array.
+Colormap array length must be multiple of 4 and contain numbers between 0 and 255.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Colormap colors as an array of size [colormapLength * 4]</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Uint8Array</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".validateColor"><span class="type-signature">(static) </span>validateColor<span class="signature">(color)</span><span class="type-signature"> &rarr; {boolean|string}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Checks if the specified parameter is a valid color</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>color</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+|
+
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>true of a valid color, otherwise the string error message</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+|
+
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".validateColormap"><span class="type-signature">(static) </span>validateColormap<span class="signature">(colormap)</span><span class="type-signature"> &rarr; {boolean|string}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>validates the colormap parameters</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>colormap</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+|
+
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>either the color map name or an array.
+Colormap array length must be multiple of 4 and contain numbers between 0 and 255.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>true of a valid color map, otherwise the string error message</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+|
+
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="getTexture"><span class="type-signature"></span>getTexture<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
@@ -377,6 +1005,174 @@ This class also draws a color axis to the right of the scatter plot.</p></div>
     
 
     
+    <h4 class="name" id="onInputChanged"><span class="type-signature"></span>onInputChanged<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="implements">Implements:</dt>
+    <dd class="implements"><ul>
+        
+            <li><a href="Viewer.html#onInputChanged">Viewer#onInputChanged</a></li>
+        
+    </ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="onOptionsChanged"><span class="type-signature"></span>onOptionsChanged<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="implements">Implements:</dt>
+    <dd class="implements"><ul>
+        
+            <li><a href="Viewer.html#onOptionsChanged">Viewer#onOptionsChanged</a></li>
+        
+    </ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="onPlotBoundsChanged"><span class="type-signature"></span>onPlotBoundsChanged<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
@@ -412,6 +1208,13 @@ This class also draws a color axis to the right of the scatter plot.</p></div>
 
     
 
+    
+    <dt class="implements">Implements:</dt>
+    <dd class="implements"><ul>
+        
+            <li><a href="Viewer.html#onPlotBoundsChanged">Viewer#onPlotBoundsChanged</a></li>
+        
+    </ul></dd>
     
 
     
@@ -683,6 +1486,97 @@ This class also draws a color axis to the right of the scatter plot.</p></div>
 
     
 
+    
+    <dt class="implements">Implements:</dt>
+    <dd class="implements"><ul>
+        
+            <li><a href="Viewer.html#render">Viewer#render</a></li>
+        
+    </ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="setDataset"><span class="type-signature"></span>setDataset<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="implements">Implements:</dt>
+    <dd class="implements"><ul>
+        
+            <li><a href="Viewer.html#setDataset">Viewer#setDataset</a></li>
+        
+    </ul></dd>
     
 
     
@@ -1265,13 +2159,13 @@ This class also draws a color axis to the right of the scatter plot.</p></div>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClusterMap.html">ClusterMap</a></li><li><a href="ClusterMapOptions.html">ClusterMapOptions</a></li><li><a href="Colormap.html">Colormap</a></li><li><a href="CoordinateSystem.html">CoordinateSystem</a></li><li><a href="CsvDataset.html">CsvDataset</a></li><li><a href="Dataset.html">Dataset</a></li><li><a href="DataVector.html">DataVector</a></li><li><a href="DensityMap.html">DensityMap</a></li><li><a href="DensityMapOptions.html">DensityMapOptions</a></li><li><a href="GlobalView.html">GlobalView</a></li><li><a href="HashSet.html">HashSet</a></li><li><a href="RandomDataset.html">RandomDataset</a></li><li><a href="Thumbnail.html">Thumbnail</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CSV_DATASET_OPTIONS">CSV_DATASET_OPTIONS</a></li><li><a href="global.html#generateColumnName">generateColumnName</a></li><li><a href="global.html#parseColor">parseColor</a></li><li><a href="global.html#parseColormap">parseColormap</a></li><li><a href="global.html#validateColor">validateColor</a></li><li><a href="global.html#validateColormap">validateColormap</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClusterMap.html">ClusterMap</a></li><li><a href="ClusterMapOptions.html">ClusterMapOptions</a></li><li><a href="Colormap.html">Colormap</a></li><li><a href="CoordinateSystem.html">CoordinateSystem</a></li><li><a href="CsvDataset.html">CsvDataset</a></li><li><a href="DataMesh.html">DataMesh</a></li><li><a href="Dataset.html">Dataset</a></li><li><a href="DataVector.html">DataVector</a></li><li><a href="DensityMap.html">DensityMap</a></li><li><a href="DensityMapOptions.html">DensityMapOptions</a></li><li><a href="DensityViewer.html">DensityViewer</a></li><li><a href="GlobalView.html">GlobalView</a></li><li><a href="HashSet.html">HashSet</a></li><li><a href="HistogramViewer.html">HistogramViewer</a></li><li><a href="ImageViewer.html">ImageViewer</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="PointGroup.html">PointGroup</a></li><li><a href="PointViewer.html">PointViewer</a></li><li><a href="RandomDataset.html">RandomDataset</a></li><li><a href="Shader.html">Shader</a></li><li><a href="TextRenderContext.html">TextRenderContext</a></li><li><a href="Thumbnail.html">Thumbnail</a></li><li><a href="Transform.html">Transform</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CSV_DATASET_OPTIONS">CSV_DATASET_OPTIONS</a></li><li><a href="global.html#OPTIONS">OPTIONS</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Feb 13 2018 14:47:59 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
 </footer>
 
 <script> prettyPrint(); </script>

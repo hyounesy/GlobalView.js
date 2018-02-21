@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: Shader</title>
+    <title>JSDoc: Class: TextRenderContext</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: Shader</h1>
+    <h1 class="page-title">Class: TextRenderContext</h1>
 
     
 
@@ -28,9 +28,10 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>Shader<span class="signature">(gl, vSh, fSh, debug<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>TextRenderContext<span class="signature">(glContext, canvas)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description"><p>A WebGL shader</p></div>
+            <div class="class-description"><p>A helper class that attaches a 2D canvas to the parent div of the given WebGL canvas.
+This 2D canvas is used to draw text.</p></div>
         
     
 </header>
@@ -45,7 +46,7 @@
     
 
     
-    <h4 class="name" id="Shader"><span class="type-signature"></span>new Shader<span class="signature">(gl, vSh, fSh, debug<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="TextRenderContext"><span class="type-signature"></span>new TextRenderContext<span class="signature">(glContext, canvas)</span><span class="type-signature"></span></h4>
     
 
     
@@ -73,8 +74,6 @@
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
         
 
@@ -87,7 +86,7 @@
 
         <tr>
             
-                <td class="name"><code>gl</code></td>
+                <td class="name"><code>glContext</code></td>
             
 
             <td class="type">
@@ -100,14 +99,6 @@
             </td>
 
             
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
 
             
 
@@ -118,101 +109,23 @@
 
         <tr>
             
-                <td class="name"><code>vSh</code></td>
+                <td class="name"><code>canvas</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
-|
-
-<span class="param-type">Array.&lt;string></span>
+<span class="param-type">HTMLCanvasElement</span>
 
 
             
             </td>
 
             
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
 
             
 
-            <td class="description last"><p>vertex shader code</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>fSh</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-|
-
-<span class="param-type">Array.&lt;string></span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>fragment shader code</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>debug</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>= false</p></td>
+            <td class="description last"></td>
         </tr>
 
     

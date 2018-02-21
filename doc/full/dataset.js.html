@@ -664,7 +664,8 @@ export class RandomDataset extends Dataset {
  * }}
 */
 const CSV_DATASET_OPTIONS = {
-  /** When true, tries to infer other options based on the structure of the dataset (slow). */
+  /** When true, tries to infer other options based on the structure of the dataset (slow).
+   * @type {boolean} */
   autoDetect: {
     description: 'When true, tries to infer other options ' +
                  'based on the structure of the dataset (slow).',
@@ -672,14 +673,16 @@ const CSV_DATASET_OPTIONS = {
     valid: [true, false],
   },
 
-  /** When true, interprets the first row of the dataset as column labels. */
+  /** When true, interprets the first row of the dataset as column labels.
+   * @type {boolean} */
   hasHeader: {
     description: 'When true, interprets the first row of the dataset as column labels.',
     default: false,
     valid: [true, false],
   },
 
-  /** Index of a column of the dataset that contains data point names. */
+  /** Index of a column of the dataset that contains data point names.
+   * @type {number} */
   nameColumn: {
     description: 'Index of a column of the dataset that contains data point names.',
     default: null,
@@ -687,7 +690,8 @@ const CSV_DATASET_OPTIONS = {
   },
 
   /** An array of column labels, or a function that takes the column index
-   *  as input and returns the column label. */
+   *  as input and returns the column label.
+   * @type {(string[] | function(number))} */
   columnLabels: {
     description: 'An array of column labels, or a function that takes the ' +
                  'column index as input and returns the column label.',
@@ -696,7 +700,8 @@ const CSV_DATASET_OPTIONS = {
   },
 
   /** An array of image URLs, or a function that takes a row of data and the row index as
-   *  input and returns a URL to an image of the data point. */
+   *  input and returns a URL to an image of the data point.
+   * @type {(string[] | function(Object[], number))} */
   imageFilenames: {
     description: 'An array of image URLs, or a function that takes a row of data ' +
                  'and the row index as input and returns a URL to an image of the data point.',
@@ -713,9 +718,10 @@ export class CsvDataset extends Dataset {
   /**
    * @constructor
    * @export
-   * @param {string|Blob} file File or URL of file, containing the CSV-formatted dataset
-   * @param {Object} options
-   * @param {function(Dataset)} onload Event handler, called after the dataset was created
+   * @param {string|Blob} file File or URL of file, containing the CSV-formatted dataset.
+   * @param {Object.&lt;string, Object>} options - options for opening the csv dataset.
+   *                                            see {@link CSV_DATASET_OPTIONS}
+   * @param {function(Dataset)} onload Event handler, called after the dataset was created.
    */
   constructor(file, options, onload) {
     super();
@@ -1014,13 +1020,13 @@ export class CsvDataset extends Dataset {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClusterMap.html">ClusterMap</a></li><li><a href="ClusterMapOptions.html">ClusterMapOptions</a></li><li><a href="CsvDataset.html">CsvDataset</a></li><li><a href="DataMesh.html">DataMesh</a></li><li><a href="Dataset.html">Dataset</a></li><li><a href="DataVector.html">DataVector</a></li><li><a href="DensityMap.html">DensityMap</a></li><li><a href="DensityMapOptions.html">DensityMapOptions</a></li><li><a href="ForwardList.html">ForwardList</a></li><li><a href="GlobalView.html">GlobalView</a></li><li><a href="HashSet.html">HashSet</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="module.exports.html">exports</a></li><li><a href="PointGroup.html">PointGroup</a></li><li><a href="PriorityQueue.html">PriorityQueue</a></li><li><a href="RandomDataset.html">RandomDataset</a></li><li><a href="Shader.html">Shader</a></li><li><a href="Thumbnail.html">Thumbnail</a></li></ul><h3>Namespaces</h3><ul><li><a href="Shaders.html">Shaders</a></li></ul><h3>Interfaces</h3><ul><li><a href="Viewer.html">Viewer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#clearImages">clearImages</a></li><li><a href="global.html#computeClusterMap">computeClusterMap</a></li><li><a href="global.html#computeDensityMap">computeDensityMap</a></li><li><a href="global.html#computeDensityMapND">computeDensityMapND</a></li><li><a href="global.html#computeHistogram">computeHistogram</a></li><li><a href="global.html#computeHistogram2D">computeHistogram2D</a></li><li><a href="global.html#createPointSet">createPointSet</a></li><li><a href="global.html#CSV_DATASET_OPTIONS">CSV_DATASET_OPTIONS</a></li><li><a href="global.html#downloadDensityMap">downloadDensityMap</a></li><li><a href="global.html#downloadStencilMap">downloadStencilMap</a></li><li><a href="global.html#findClosePointOfLowDensity">findClosePointOfLowDensity</a></li><li><a href="global.html#findClosePointOfLowDensityDescend">findClosePointOfLowDensityDescend</a></li><li><a href="global.html#findClosePointOfLowDensityNDDescend">findClosePointOfLowDensityNDDescend</a></li><li><a href="global.html#findRepresentativePoints">findRepresentativePoints</a></li><li><a href="global.html#findRepresentativePoints2">findRepresentativePoints2</a></li><li><a href="global.html#findRepresentativePointsND">findRepresentativePointsND</a></li><li><a href="global.html#findRepresentativePointsND2">findRepresentativePointsND2</a></li><li><a href="global.html#getClusterMapThreshold">getClusterMapThreshold</a></li><li><a href="global.html#getImages">getImages</a></li><li><a href="global.html#getLabelBounds">getLabelBounds</a></li><li><a href="global.html#getTexture">getTexture</a></li><li><a href="global.html#getWidth">getWidth</a></li><li><a href="global.html#imageFromPoint">imageFromPoint</a></li><li><a href="global.html#labelFromPoint">labelFromPoint</a></li><li><a href="global.html#linesIntersect">linesIntersect</a></li><li><a href="global.html#markPointsInStencilMap">markPointsInStencilMap</a></li><li><a href="global.html#onOptionsChanged">onOptionsChanged</a></li><li><a href="global.html#onPlotBoundsChanged">onPlotBoundsChanged</a></li><li><a href="global.html#parseColor">parseColor</a></li><li><a href="global.html#parseColormap">parseColormap</a></li><li><a href="global.html#pointInsidePolygon">pointInsidePolygon</a></li><li><a href="global.html#removePointSet">removePointSet</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#resolveIntersections">resolveIntersections</a></li><li><a href="global.html#sampleDensityMap">sampleDensityMap</a></li><li><a href="global.html#sampleDensityMapChain">sampleDensityMapChain</a></li><li><a href="global.html#sampleDensityMapColumn">sampleDensityMapColumn</a></li><li><a href="global.html#sampleDensityMapRow">sampleDensityMapRow</a></li><li><a href="global.html#setClusterMapThreshold">setClusterMapThreshold</a></li><li><a href="global.html#setDataset">setDataset</a></li><li><a href="global.html#setEnumRange">setEnumRange</a></li><li><a href="global.html#setLabel">setLabel</a></li><li><a href="global.html#setNumericRange">setNumericRange</a></li><li><a href="global.html#showImage">showImage</a></li><li><a href="global.html#updateColorSchema">updateColorSchema</a></li><li><a href="global.html#updateImages">updateImages</a></li><li><a href="global.html#validateColor">validateColor</a></li><li><a href="global.html#validateColormap">validateColormap</a></li><li><a href="global.html#vectorLineIntersection2D">vectorLineIntersection2D</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClusterMap.html">ClusterMap</a></li><li><a href="ClusterMapOptions.html">ClusterMapOptions</a></li><li><a href="Colormap.html">Colormap</a></li><li><a href="CoordinateSystem.html">CoordinateSystem</a></li><li><a href="CsvDataset.html">CsvDataset</a></li><li><a href="DataMesh.html">DataMesh</a></li><li><a href="Dataset.html">Dataset</a></li><li><a href="DataVector.html">DataVector</a></li><li><a href="DensityMap.html">DensityMap</a></li><li><a href="DensityMapOptions.html">DensityMapOptions</a></li><li><a href="DensityViewer.html">DensityViewer</a></li><li><a href="ForwardList.html">ForwardList</a></li><li><a href="GlobalView.html">GlobalView</a></li><li><a href="HashSet.html">HashSet</a></li><li><a href="HistogramViewer.html">HistogramViewer</a></li><li><a href="ImageViewer.html">ImageViewer</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="PointGroup.html">PointGroup</a></li><li><a href="PointViewer.html">PointViewer</a></li><li><a href="PriorityQueue.html">PriorityQueue</a></li><li><a href="RandomDataset.html">RandomDataset</a></li><li><a href="Shader.html">Shader</a></li><li><a href="TextRenderContext.html">TextRenderContext</a></li><li><a href="Thumbnail.html">Thumbnail</a></li><li><a href="Transform.html">Transform</a></li></ul><h3>Namespaces</h3><ul><li><a href="Shaders.html">Shaders</a></li></ul><h3>Interfaces</h3><ul><li><a href="Viewer.html">Viewer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#computeClusterMap">computeClusterMap</a></li><li><a href="global.html#computeDensityMap">computeDensityMap</a></li><li><a href="global.html#computeDensityMapND">computeDensityMapND</a></li><li><a href="global.html#computeHistogram">computeHistogram</a></li><li><a href="global.html#computeHistogram2D">computeHistogram2D</a></li><li><a href="global.html#CSV_DATASET_OPTIONS">CSV_DATASET_OPTIONS</a></li><li><a href="global.html#downloadDensityMap">downloadDensityMap</a></li><li><a href="global.html#downloadStencilMap">downloadStencilMap</a></li><li><a href="global.html#findClosePointOfLowDensity">findClosePointOfLowDensity</a></li><li><a href="global.html#findClosePointOfLowDensityDescend">findClosePointOfLowDensityDescend</a></li><li><a href="global.html#findClosePointOfLowDensityNDDescend">findClosePointOfLowDensityNDDescend</a></li><li><a href="global.html#findRepresentativePoints">findRepresentativePoints</a></li><li><a href="global.html#findRepresentativePoints2">findRepresentativePoints2</a></li><li><a href="global.html#findRepresentativePointsND">findRepresentativePointsND</a></li><li><a href="global.html#findRepresentativePointsND2">findRepresentativePointsND2</a></li><li><a href="global.html#linesIntersect">linesIntersect</a></li><li><a href="global.html#markPointsInStencilMap">markPointsInStencilMap</a></li><li><a href="global.html#OPTIONS">OPTIONS</a></li><li><a href="global.html#pointInsidePolygon">pointInsidePolygon</a></li><li><a href="global.html#sampleDensityMap">sampleDensityMap</a></li><li><a href="global.html#sampleDensityMapChain">sampleDensityMapChain</a></li><li><a href="global.html#sampleDensityMapColumn">sampleDensityMapColumn</a></li><li><a href="global.html#sampleDensityMapRow">sampleDensityMapRow</a></li><li><a href="global.html#vectorLineIntersection2D">vectorLineIntersection2D</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Feb 19 2018 17:17:51 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
 </footer>
 
 <script> prettyPrint(); </script>

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: transform.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: transform.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * A helper class for globalview containing variables and functions for
+ * transforming data vectors into device space
+ */
+class Transform {
+  /**
+   * @constructor
+   * @package
+   * @param {GlobalView} plot GlobalView plot
+   */
+  constructor(plot) {
+    this.plot = plot;
+    this.dataset = plot.dataset;
+    this.activeInputs = plot.activeInputs;
+    this.animatedInputs = plot.animatedInputs;
+    this.plotBounds = plot.plotBounds;
+    this.gl = plot.gl;
+
+    this.offsets = new Float32Array(Transform.NumDim);
+    this.scales = new Float32Array(Transform.NumDim);
+    this.animatedScales = new Float32Array(Transform.NumDim);
+    this.invalid = false;
+  }
+
+  static get NumDim() {
+    return 4;
+  }
+
+  // Setter methods
+
+  /**
+   * Updates the transformation for the coordinate systems based on the spacified min and max values
+   * @param {number} dim - dataset dimension index
+   * @param {number} minimum - minimum value
+   * @param {number} maximum - maximum value
+   */
+  setFromMinMax(dim, minimum, maximum) {
+    this.dataset.dataVectors[dim].scale = maximum - minimum;
+    if (this.dataset.dataVectors[dim].scale > -1e-5 &amp;&amp; this.dataset.dataVectors[dim].scale &lt; 1e-5) {
+      this.dataset.dataVectors[dim].offset =
+        0.5 - (0.5 * (minimum + maximum) * (this.dataset.dataVectors[dim].scale = 0.5));
+    } else {
+      this.dataset.dataVectors[dim].offset =
+        -minimum * (this.dataset.dataVectors[dim].scale = 1 / this.dataset.dataVectors[dim].scale);
+    }
+    this.invalid = true;
+
+    if (dim === this.activeInputs[0]) {
+      this.plot.updateCoorinateSystem(0, this.activeInputs[0]);
+    }
+    if (dim === this.activeInputs[1]) {
+      this.plot.updateCoorinateSystem(1, this.activeInputs[1]);
+    }
+    if (dim === this.activeInputs[2]) {
+      this.plot.updateColormap(this.activeInputs[2]);
+    }
+    if (dim === this.activeInputs[0] ||
+        dim === this.activeInputs[1] ||
+        dim === this.activeInputs[2]) {
+      this.plot.invalidate();
+    }
+  }
+
+  /**
+   * Translates the coordinate system for the specified dimension by the specified distance
+   * @param {number} dim - dataset dimension index
+   * @param {number} distance - translation distance
+   */
+  translate(dim, distance) {
+    this.dataset.dataVectors[dim].offset += distance * this.dataset.dataVectors[dim].scale;
+    this.invalid = true;
+
+    if (dim === this.activeInputs[0]) {
+      this.plot.updateCoorinateSystem(0, this.activeInputs[0], false);
+    }
+    if (dim === this.activeInputs[1]) {
+      this.plot.updateCoorinateSystem(1, this.activeInputs[1], false);
+    }
+    if (dim === this.activeInputs[2]) {
+      this.plot.updateColormap(this.activeInputs[2], false);
+    }
+    if (dim === this.activeInputs[0] ||
+        dim === this.activeInputs[1] ||
+        dim === this.activeInputs[2]) {
+      this.plot.invalidate();
+    }
+  }
+
+  scale(d, factor) {
+    this.dataset.dataVectors[d].scale *= factor;
+    this.invalid = true;
+
+    if (d === this.activeInputs[0]) {
+      this.plot.updateCoorinateSystem(0, this.activeInputs[0]);
+    }
+    if (d === this.activeInputs[1]) {
+      this.plot.updateCoorinateSystem(1, this.activeInputs[1]);
+    }
+    if (d === this.activeInputs[2]) {
+      this.plot.updateColormap(this.activeInputs[2]);
+    }
+    if (d === this.activeInputs[0] || d === this.activeInputs[1] || d === this.activeInputs[2]) {
+      this.plot.invalidate();
+    }
+  }
+
+  onInputChanged() {
+    this.invalid = true;
+    return true;
+  }
+
+  // Getter methods
+  getOffset(d) {
+    return this.dataset.dataVectors[this.activeInputs[d]].offset;
+  }
+
+  getScale(d) {
+    return this.dataset.dataVectors[this.activeInputs[d]].scale;
+  }
+
+  getMinimum(d) {
+    return this.dataset.dataVectors[this.activeInputs[d]].minimum;
+  }
+
+  getMaximum(d) {
+    return this.dataset.dataVectors[this.activeInputs[d]].maximum;
+  }
+
+  getVisibleMinimum(d) {
+    return (0 - this.dataset.dataVectors[this.activeInputs[d]].offset) /
+    this.dataset.dataVectors[this.activeInputs[d]].scale;
+  }
+
+  getVisibleMaximum(d) {
+    return (1 - this.dataset.dataVectors[this.activeInputs[d]].offset) /
+      this.dataset.dataVectors[this.activeInputs[d]].scale;
+  }
+
+  getOffsets() {
+    if (this.invalid === true) {
+      this.recompute();
+    }
+    return this.offsets;
+  }
+
+  getScales() {
+    if (this.invalid === true) {
+      this.recompute();
+    }
+    return this.scales;
+  }
+
+  getAnimatedScales() {
+    if (this.invalid === true) {
+      this.recompute();
+    }
+    return this.animatedScales;
+  }
+
+  // Transformation methods
+  deviceCoordToDatasetCoord(vOutCoord, vInCoord) {
+    const vOut = vOutCoord;
+    const vIn = vInCoord;
+    if (this.invalid === true) {
+      this.invalid = false;
+      this.recompute();
+    }
+    for (let d = 0, nd = Math.min(vIn.length, vOut.length, Transform.NumDim); d &lt; nd; d += 1) {
+      vOut[d] = (vIn[d] - this.offsets[d]) / this.scales[d];
+    }
+    return vOut;
+  }
+
+  deviceDistToDatasetDist(vOutCoord, vInCoord) {
+    const vOut = vOutCoord;
+    const vIn = vInCoord;
+    if (this.invalid === true) {
+      this.invalid = false;
+      this.recompute();
+    }
+    for (let d = 0, nd = Math.min(vIn.length, vOut.length, Transform.NumDim); d &lt; nd; d += 1) {
+      vOut[d] = vIn[d] / this.scales[d];
+    }
+    return vOut;
+  }
+
+  datasetCoordToDeviceCoord(vOutCoord, vInCoord) {
+    const vOut = vOutCoord;
+    const vIn = vInCoord;
+    if (this.invalid === true) {
+      this.invalid = false;
+      this.recompute();
+    }
+    for (let d = 0, nd = Math.min(vIn.length, vOut.length, Transform.NumDim); d &lt; nd; d += 1) {
+      vOut[d] = this.offsets[d] + (vIn[d] * this.scales[d]);
+    }
+    return vOut;
+  }
+
+  datasetDistToDeviceDist(vOutCoord, vInCoord) {
+    const vOut = vOutCoord;
+    const vIn = vInCoord;
+    if (this.invalid === true) {
+      this.invalid = false;
+      this.recompute();
+    }
+    for (let d = 0, nd = Math.min(vIn.length, vOut.length, Transform.NumDim); d &lt; nd; d += 1) {
+      vOut[d] = vIn[d] * this.scales[d];
+    }
+    return vOut;
+  }
+
+  transformPos(vOutCoord, vInCoord) {
+    const vOut = vOutCoord;
+    const vIn = vInCoord;
+    if (this.invalid === true) {
+      this.invalid = false;
+      this.recompute();
+    }
+    for (let d = 0, nd = vOut.length; d &lt; nd; d += 1) {
+      vOut[d] = this.offsets[d] + (vIn[this.activeInputs[d]] * this.scales[d]);
+    }
+    return vOut;
+  }
+
+  transformNml(vOutCoord, vInCoord) {
+    const vOut = vOutCoord;
+    const vIn = vInCoord;
+    if (this.invalid === true) {
+      this.invalid = false;
+      this.recompute();
+    }
+    for (let d = 0, nd = vOut.length; d &lt; nd; d += 1) {
+      vOut[d] = vIn[this.activeInputs[d]] * this.scales[d];
+    }
+    return vOut;
+  }
+
+  transformNml2(vOutCoord, vInCoord) {
+    const vOut = vOutCoord;
+    const vIn = vInCoord;
+    if (this.invalid === true) {
+      this.invalid = false;
+      this.recompute();
+    }
+    for (let d = 0, nd = vOut.length; d &lt; nd; d += 1) {
+      vOut[d] = vIn[this.activeInputs[d]] * this.dataset.dataVectors[this.activeInputs[d]].scale;
+    }
+    return vOut;
+  }
+
+  // Methods modifying offsets, scales and animatedScales
+  recompute() {
+    this.invalid = false;
+
+    // Compute offsets and scales for active inputs
+    for (let d = 0; d &lt; Transform.NumDim; d += 1) {
+      this.offsets[d] = this.dataset.dataVectors[this.activeInputs[d]].offset;
+      this.scales[d] = this.dataset.dataVectors[this.activeInputs[d]].scale;
+      this.animatedScales[d] = 0;
+    }
+
+    // Transform first two dimensions offsets and scales into device coordinates
+    this.offsets[0] *= (2 * this.plotBounds.width) / this.gl.width;
+    this.offsets[0] += ((2 * this.plotBounds.x) / this.gl.width) - 1;
+    this.offsets[1] *= (2 * this.plotBounds.height) / this.gl.height;
+    this.offsets[1] += ((2 * this.plotBounds.y) / this.gl.height) - 1;
+    this.scales[0] *= (2 * this.plotBounds.width) / this.gl.width;
+    this.scales[1] *= (2 * this.plotBounds.height) / this.gl.height;
+    this.animatedScales[0] *= (2 * this.plotBounds.width) / this.gl.width;
+    this.animatedScales[1] *= (2 * this.plotBounds.height) / this.gl.height;
+
+    return this.offsets;
+  }
+
+  animate() {
+    this.invalid = false;
+
+    let isAnimating = false;
+
+    // Compute offsets and scales, either static based on activeInputs,
+    // or animated between activeInputs and animatedInputs
+    const oi = this.animatedInputs.map(anim => anim.origin);
+    const di = this.activeInputs;
+    for (let d = 0; d &lt; Transform.NumDim; d += 1) {
+      const ts = this.dataset.dataVectors[di[d]].scale;
+      const tt = this.dataset.dataVectors[di[d]].offset;
+
+      if (this.animatedInputs[d].origin === this.activeInputs[d]) {
+        this.scales[d] = ts;
+        this.offsets[d] = tt;
+        this.animatedScales[d] = 0;
+      } else {
+        const os = this.dataset.dataVectors[oi[d]].scale;
+        const ot = this.dataset.dataVectors[oi[d]].offset;
+
+        let alpha = this.animatedInputs[d].f;
+        this.offsets[d] = (alpha * tt) + ((1 - alpha) * ot);
+        alpha *= Math.PI / 2.0;
+        this.scales[d] = Math.sin(alpha) * ts;
+        this.animatedScales[d] = Math.cos(alpha) * os;
+
+        this.animatedInputs[d].f += this.plot.deltaTime * 0.001;
+        if (this.animatedInputs[d].f >= 1.0) {
+          this.animatedInputs[d].origin = this.activeInputs[d];
+        }
+
+        isAnimating = true;
+      }
+    }
+
+    // Transform first two dimensions offsets and scales into device coordinates
+    this.offsets[0] *= (2 * this.plotBounds.width) / this.gl.width;
+    this.offsets[0] += ((2 * this.plotBounds.x) / this.gl.width) - 1;
+    this.offsets[1] *= (2 * this.plotBounds.height) / this.gl.height;
+    this.offsets[1] += ((2 * this.plotBounds.y) / this.gl.height) - 1;
+    this.scales[0] *= (2 * this.plotBounds.width) / this.gl.width;
+    this.scales[1] *= (2 * this.plotBounds.height) / this.gl.height;
+    this.animatedScales[0] *= (2 * this.plotBounds.width) / this.gl.width;
+    this.animatedScales[1] *= (2 * this.plotBounds.height) / this.gl.height;
+
+    return isAnimating;
+  }
+}
+
+export default Transform;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClusterMap.html">ClusterMap</a></li><li><a href="ClusterMapOptions.html">ClusterMapOptions</a></li><li><a href="Colormap.html">Colormap</a></li><li><a href="CoordinateSystem.html">CoordinateSystem</a></li><li><a href="CsvDataset.html">CsvDataset</a></li><li><a href="DataMesh.html">DataMesh</a></li><li><a href="Dataset.html">Dataset</a></li><li><a href="DataVector.html">DataVector</a></li><li><a href="DensityMap.html">DensityMap</a></li><li><a href="DensityMapOptions.html">DensityMapOptions</a></li><li><a href="DensityViewer.html">DensityViewer</a></li><li><a href="ForwardList.html">ForwardList</a></li><li><a href="GlobalView.html">GlobalView</a></li><li><a href="HashSet.html">HashSet</a></li><li><a href="HistogramViewer.html">HistogramViewer</a></li><li><a href="ImageViewer.html">ImageViewer</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="PointGroup.html">PointGroup</a></li><li><a href="PointViewer.html">PointViewer</a></li><li><a href="PriorityQueue.html">PriorityQueue</a></li><li><a href="RandomDataset.html">RandomDataset</a></li><li><a href="Shader.html">Shader</a></li><li><a href="TextRenderContext.html">TextRenderContext</a></li><li><a href="Thumbnail.html">Thumbnail</a></li><li><a href="Transform.html">Transform</a></li></ul><h3>Namespaces</h3><ul><li><a href="Shaders.html">Shaders</a></li></ul><h3>Interfaces</h3><ul><li><a href="Viewer.html">Viewer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#computeClusterMap">computeClusterMap</a></li><li><a href="global.html#computeDensityMap">computeDensityMap</a></li><li><a href="global.html#computeDensityMapND">computeDensityMapND</a></li><li><a href="global.html#computeHistogram">computeHistogram</a></li><li><a href="global.html#computeHistogram2D">computeHistogram2D</a></li><li><a href="global.html#CSV_DATASET_OPTIONS">CSV_DATASET_OPTIONS</a></li><li><a href="global.html#downloadDensityMap">downloadDensityMap</a></li><li><a href="global.html#downloadStencilMap">downloadStencilMap</a></li><li><a href="global.html#findClosePointOfLowDensity">findClosePointOfLowDensity</a></li><li><a href="global.html#findClosePointOfLowDensityDescend">findClosePointOfLowDensityDescend</a></li><li><a href="global.html#findClosePointOfLowDensityNDDescend">findClosePointOfLowDensityNDDescend</a></li><li><a href="global.html#findRepresentativePoints">findRepresentativePoints</a></li><li><a href="global.html#findRepresentativePoints2">findRepresentativePoints2</a></li><li><a href="global.html#findRepresentativePointsND">findRepresentativePointsND</a></li><li><a href="global.html#findRepresentativePointsND2">findRepresentativePointsND2</a></li><li><a href="global.html#linesIntersect">linesIntersect</a></li><li><a href="global.html#markPointsInStencilMap">markPointsInStencilMap</a></li><li><a href="global.html#OPTIONS">OPTIONS</a></li><li><a href="global.html#pointInsidePolygon">pointInsidePolygon</a></li><li><a href="global.html#sampleDensityMap">sampleDensityMap</a></li><li><a href="global.html#sampleDensityMapChain">sampleDensityMapChain</a></li><li><a href="global.html#sampleDensityMapColumn">sampleDensityMapColumn</a></li><li><a href="global.html#sampleDensityMapRow">sampleDensityMapRow</a></li><li><a href="global.html#vectorLineIntersection2D">vectorLineIntersection2D</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

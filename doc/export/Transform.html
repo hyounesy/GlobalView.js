@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: HistogramViewer</title>
+    <title>JSDoc: Class: Transform</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: HistogramViewer</h1>
+    <h1 class="page-title">Class: Transform</h1>
 
     
 
@@ -28,10 +28,10 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>HistogramViewer<span class="signature">(gl)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>Transform<span class="signature">(plot)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description"><p>A class drawing histograms for x-, y- and color axes to
-the left-, bottom- and right of the scatter plot.</p></div>
+            <div class="class-description"><p>A helper class for globalview containing variables and functions for
+transforming data vectors into device space</p></div>
         
     
 </header>
@@ -46,7 +46,7 @@ the left-, bottom- and right of the scatter plot.</p></div>
     
 
     
-    <h4 class="name" id="HistogramViewer"><span class="type-signature"></span>new HistogramViewer<span class="signature">(gl)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Transform"><span class="type-signature"></span>new Transform<span class="signature">(plot)</span><span class="type-signature"></span></h4>
     
 
     
@@ -86,13 +86,13 @@ the left-, bottom- and right of the scatter plot.</p></div>
 
         <tr>
             
-                <td class="name"><code>gl</code></td>
+                <td class="name"><code>plot</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type"><a href="GlobalView.html">GlobalView</a></span>
 
 
             
@@ -102,7 +102,7 @@ the left-, bottom- and right of the scatter plot.</p></div>
 
             
 
-            <td class="description last"><p>// {WebGLRenderingContext}</p></td>
+            <td class="description last"><p>GlobalView plot</p></td>
         </tr>
 
     
@@ -192,19 +192,118 @@ the left-, bottom- and right of the scatter plot.</p></div>
     
 
     
-    <h4 class="name" id="onInputChanged"><span class="type-signature"></span>onInputChanged<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="setFromMinMax"><span class="type-signature"></span>setFromMinMax<span class="signature">(dim, minimum, maximum)</span><span class="type-signature"></span></h4>
     
 
     
 
 
 
+<div class="description">
+    <p>Updates the transformation for the coordinate systems based on the spacified min and max values</p>
+</div>
 
 
 
 
 
 
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>dim</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>dataset dimension index</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>minimum</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>minimum value</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>maximum</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>maximum value</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -223,13 +322,6 @@ the left-, bottom- and right of the scatter plot.</p></div>
 
     
 
-    
-    <dt class="implements">Implements:</dt>
-    <dd class="implements"><ul>
-        
-            <li><a href="Viewer.html#onInputChanged">Viewer#onInputChanged</a></li>
-        
-    </ul></dd>
     
 
     
@@ -276,13 +368,16 @@ the left-, bottom- and right of the scatter plot.</p></div>
     
 
     
-    <h4 class="name" id="onOptionsChanged"><span class="type-signature"></span>onOptionsChanged<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="translate"><span class="type-signature"></span>translate<span class="signature">(dim, distance)</span><span class="type-signature"></span></h4>
     
 
     
 
 
 
+<div class="description">
+    <p>Translates the coordinate system for the specified dimension by the specified distance</p>
+</div>
 
 
 
@@ -292,255 +387,76 @@ the left-, bottom- and right of the scatter plot.</p></div>
 
 
 
-
-
-
-<dl class="details">
-
+    <h5>Parameters:</h5>
     
 
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="implements">Implements:</dt>
-    <dd class="implements"><ul>
+<table class="params">
+    <thead>
+    <tr>
         
-            <li><a href="Viewer.html#onOptionsChanged">Viewer#onOptionsChanged</a></li>
+        <th>Name</th>
         
-    </ul></dd>
-    
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        <th>Type</th>
 
         
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>dim</code></td>
             
 
-    
-
-    
-    <h4 class="name" id="onPlotBoundsChanged"><span class="type-signature"></span>onPlotBoundsChanged<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-
-    
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
 
 
+            
+            </td>
 
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="implements">Implements:</dt>
-    <dd class="implements"><ul>
-        
-            <li><a href="Viewer.html#onPlotBoundsChanged">Viewer#onPlotBoundsChanged</a></li>
-        
-    </ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
             
 
-    
-
-    
-    <h4 class="name" id="render"><span class="type-signature"></span>render<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="implements">Implements:</dt>
-    <dd class="implements"><ul>
-        
-            <li><a href="Viewer.html#render">Viewer#render</a></li>
-        
-    </ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
             
 
-    
-
-    
-    <h4 class="name" id="setDataset"><span class="type-signature"></span>setDataset<span class="signature">()</span><span class="type-signature"></span></h4>
-    
+            <td class="description last"><p>dataset dimension index</p></td>
+        </tr>
 
     
 
+        <tr>
+            
+                <td class="name"><code>distance</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
 
 
+            
+            </td>
 
+            
 
+            
 
+            <td class="description last"><p>translation distance</p></td>
+        </tr>
 
-
-
+    
+    </tbody>
+</table>
 
 
 
@@ -559,13 +475,6 @@ the left-, bottom- and right of the scatter plot.</p></div>
 
     
 
-    
-    <dt class="implements">Implements:</dt>
-    <dd class="implements"><ul>
-        
-            <li><a href="Viewer.html#setDataset">Viewer#setDataset</a></li>
-        
-    </ul></dd>
     
 
     
