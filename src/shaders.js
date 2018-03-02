@@ -6,9 +6,7 @@
  * @namespace
 */
 const Shaders = {};
-module.exports = {
-  Shaders,
-};
+export default Shaders;
 
 /**
  * @summary A simple vertex shader for meshes with positions and texture coordinates.
@@ -27,6 +25,12 @@ void main()
   uv = vtexcoord;
 }
 `;
+
+/**
+ * @summary A fragment shader to render with the given input color
+ * @static
+ * @readonly
+*/
 Shaders.fsLine =
 `precision mediump float;
 uniform vec4 color;
@@ -36,6 +40,12 @@ void main()
   gl_FragColor = color;
 }
 `;
+
+/**
+ * @summary A vertex shader for rendering with a texture
+ * @static
+ * @readonly
+ */
 Shaders.vsTextured =
 `attribute vec3 vpos;
 attribute vec2 vtexcoord;
@@ -48,6 +58,13 @@ void main()
   uv = vtexcoord;
 }
 `;
+
+/**
+ * @summary A vertex shader for rendering with a texture
+ *          accepting a world and texture transformation matrix
+ * @static
+ * @readonly
+*/
 Shaders.vsTextured2 =
 `attribute vec3 vpos;
 attribute vec2 vtexcoord;
@@ -61,6 +78,12 @@ void main()
   uv = matTexCoordTransform * vtexcoord;
 }
 `;
+
+/**
+ * @summary Fragmetn shader for rendering with a texture
+ * @static
+ * @readonly
+ */
 Shaders.fsTextured =
 `precision mediump float;
 varying vec2 uv;
@@ -71,6 +94,12 @@ void main()
   gl_FragColor = texture2D(uSampler, uv);
 }
 `;
+
+/**
+ * @summary Fragment shader for rendering with a 1 dimensional texture (colormap)
+ * @static
+ * @readonly
+ */
 Shaders.fsTextured1D =
 `precision mediump float;
 varying vec2 uv;
@@ -81,6 +110,12 @@ void main()
   gl_FragColor = texture2D(uSampler, vec2(uv.y, 0.5));
 }
 `;
+
+/**
+ * @summary fragment shader for rendering the density map
+ * @static
+ * @readonly
+ */
 Shaders.fsViewDensityMap =
 `precision mediump float;
 varying vec2 uv;
@@ -96,6 +131,11 @@ void main()
 }
 `;
 
+/**
+ * @summary vertex shader for rendering the data points with the specified size and opacity
+ * @static
+ * @readonly
+ */
 Shaders.vsDataPoint =
 `uniform sampler2D uSampler;
 uniform float pointOpacity, pointSize;
@@ -111,6 +151,12 @@ void main()
   gl_PointSize = pointSize;
 }
 `;
+
+/**
+ * @summary fragment shader for rendering the data points with the specified color
+ * @static
+ * @readonly
+ */
 Shaders.fsDataPoint =
 `varying vec4 color;
 
@@ -120,6 +166,12 @@ void main()
   gl_FragColor = vec4(color.rgb, color.a * clamp(opacityMap(gl_PointCoord * 2.0 - 1.0), 0.0, 1.0));
 }
 `;
+
+/**
+ * @summary vertex shader for rendering a line give with transformation and color
+ * @static
+ * @readonly
+ */
 Shaders.vsDataLine =
 `uniform sampler2D uSampler;
 uniform float pointOpacity, pointSize;
@@ -137,6 +189,12 @@ void main()
   gl_PointSize = pointSize;
 }
 `;
+
+/**
+ * @summary fragment shader for rendering a line with a given color
+ * @static
+ * @readonly
+ */
 Shaders.fsDataLine =
 `varying vec4 color;
 
@@ -145,6 +203,12 @@ void main()
   gl_FragColor = color;
 }
 `;
+
+/**
+ * @summary vertex shader for rendering the density map
+ * @static
+ * @readonly
+ */
 Shaders.vsDensityMap =
 `void main()
 {
@@ -153,6 +217,12 @@ Shaders.vsDensityMap =
   gl_PointSize = 1.0;
 }
 `;
+
+/**
+ * @summary fragment shader for rendering the density map
+ * @static
+ * @readonly
+ */
 Shaders.fsDensityMap =
 `precision highp float;
 
@@ -161,6 +231,12 @@ void main()
   gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
 }
 `;
+
+/**
+ * @summary vertex shader for bluring the density map
+ * @static
+ * @readonly
+ */
 Shaders.vsBlurDensityMap =
 `attribute vec3 vpos;
 attribute vec2 vtexcoord;
@@ -172,6 +248,12 @@ void main()
   uv = vtexcoord;
 }
 `;
+
+/**
+ * @summary fragment shader for bluring the density map with the given pixel size
+ * @static
+ * @readonly
+ */
 Shaders.fsBlurDensityMap =
 `precision highp float;
 varying vec2 uv;

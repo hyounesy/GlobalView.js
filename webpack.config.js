@@ -11,11 +11,6 @@ module.exports = {
     libraryTarget: 'umd',
     path: path.resolve(__dirname, 'dist'),
   },
-  resolve: {
-    alias: {
-      node_modules: path.join(__dirname, 'node_modules'),
-    },
-  },
   devtool: 'inline-source-map',
   module: {
     rules: [
@@ -35,6 +30,9 @@ module.exports = {
     new UglifyJSPlugin({
       uglifyOptions: {
         screw_ie8: true,
+        mangle: { // needed for Parallel to work
+          reserved: ['computeDensityMap', 'computeClusterMap', 'ForwardList'],
+        },
       },
     }),
     new webpack.DefinePlugin({

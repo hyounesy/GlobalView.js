@@ -1,21 +1,12 @@
-const libGraphics = require('./graphics.js');
-const libShaders = require('./shaders.js');
-const libAlgorithm = require('./algorithm.js');
-const Colormap = require('./colormap.js').default;
-const libGlMatrix = require('gl-matrix');
+import { mat4, vec2 } from 'gl-matrix';
+import { Shader, Mesh, LoadTexture } from './graphics';
+import Shaders from './shaders';
+import { linesIntersect } from './algorithm';
+import Colormap from './colormap';
 
-// const LABEL_HEIGHT = 12, LABEL_WIDTH = 16.5;
-let LABEL_HEIGHT = 12;
-let LABEL_WIDTH = 16.5;
+let LABEL_HEIGHT = 12; // class variable. accessed through ImageViewer.getLabelHeight()
+let LABEL_WIDTH = 16.5; // class variable. accessed through ImageViewer.getLabelWidth()
 const LABEL_TEXT_PADDING = 2;
-
-export function getLabelHeight() {
-  return LABEL_HEIGHT;
-}
-
-export function getLabelWidth() {
-  return LABEL_WIDTH;
-}
 
 /**
  * An image label associated to a single datapoint of the dataset
@@ -121,7 +112,7 @@ class Thumbnail {
 /**
  * A viewer that renders labels (thumbnails) to the global view.
  */
-export class ImageViewer {
+class ImageViewer {
   /**
    * @constructor
    * @package
@@ -133,24 +124,24 @@ export class ImageViewer {
     this.gl = gl;
     this.globalView = globalView;
     this.sdrImage =
-      new libGraphics.Shader(gl, libShaders.Shaders.vsTextured, libShaders.Shaders.fsTextured);
+      new Shader(gl, Shaders.vsTextured, Shaders.fsTextured);
     this.sdrImage.matWorldViewProj = this.sdrImage.u4x4f('matWorldViewProj');
 
     this.sdrLine =
-      new libGraphics.Shader(gl, libShaders.Shaders.vsSimple, libShaders.Shaders.fsLine);
+      new Shader(gl, Shaders.vsSimple, Shaders.fsLine);
     this.sdrLine.color = this.sdrLine.u4f('color');
     this.sdrLine.color(...gl.foreColor);
     this.sdrLine.matWorldViewProj = this.sdrLine.u4x4f('matWorldViewProj');
 
     // Create a 2D line mesh
-    this.meshLine = new libGraphics.Mesh(gl, new Float32Array([
+    this.meshLine = new Mesh(gl, new Float32Array([
       // Positions
       0, 0, 0,
       1, 0, 0,
     ]), null, null, null, null, null, gl.LINES);
 
     // Create a 2D quad mesh
-    this.meshQuad = new libGraphics.Mesh(gl, new Float32Array([
+    this.meshQuad = new Mesh(gl, new Float32Array([
       // Positions
       0, 1, 0,
       0, 0, 0,
@@ -165,7 +156,7 @@ export class ImageViewer {
     ]));
 
     // Create a 2D line quad mesh
-    this.meshLineQuad = new libGraphics.Mesh(gl, new Float32Array([
+    this.meshLineQuad = new Mesh(gl, new Float32Array([
       // Positions
       0, 0, 0,
       0, 1, 0,
@@ -176,7 +167,7 @@ export class ImageViewer {
     // Create a 2D arrow mesh
     LABEL_HEIGHT = gl.measureTextHeight() + (2 * LABEL_TEXT_PADDING);
     LABEL_WIDTH = gl.measureTextWidth('888') + (2 * LABEL_TEXT_PADDING);
-    this.meshLabel = new libGraphics.Mesh(gl, new Float32Array([
+    this.meshLabel = new Mesh(gl, new Float32Array([
       // Positions
       0.0, 0.0, 0,
       (0.5 * LABEL_HEIGHT), 0.5 * LABEL_HEIGHT, 0,
@@ -186,7 +177,7 @@ export class ImageViewer {
     ]), null, null, null, null, null, gl.TRIANGLE_FAN);
 
     // Create a 2D line arrow mesh
-    this.meshLineLabel = new libGraphics.Mesh(gl, new Float32Array([
+    this.meshLineLabel = new Mesh(gl, new Float32Array([
       // Positions
       0.0, 0.0, 0,
       (0.5 * LABEL_HEIGHT), 0.5 * LABEL_HEIGHT, 0,
@@ -205,10 +196,30 @@ export class ImageViewer {
     this.defaultImageLabelColor = gl.backColor;
   }
 
+  /**
+   * @returns {number} image label height
+   */
+  static getLabelHeight() {
+    return LABEL_HEIGHT;
+  }
+
+  /**
+   * @returns {number} image label width
+   */
+  static getLabelWidth() {
+    return LABEL_WIDTH;
+  }
+
+  /**
+   * @returns {number} pixel aligned x coordinate
+   */
   getPixelAlignX(x) {
     return ((Math.floor((x * this.gl.width) / 2.0) + 0.5) * 2.0) / this.gl.width;
   }
 
+  /**
+   * @returns {number} pixel aligned y coordinate
+   */
   getPixelAlignY(y) {
     return ((Math.floor((y * this.gl.height) / 2.0) + 0.5) * 2.0) / this.gl.height;
   }
@@ -222,10 +233,10 @@ export class ImageViewer {
     if (this.images.length === 0) {
       return;
     }
-    const mattrans = libGlMatrix.mat4.create();
-    const imagePos = libGlMatrix.vec2.create();
-    const refPos = libGlMatrix.vec2.create();
-    const imageSize = libGlMatrix.vec2.create();
+    const mattrans = mat4.create();
+    const imagePos = vec2.create();
+    const refPos = vec2.create();
+    const imageSize = vec2.create();
 
     if (this.options.labelThumbnails) {
       // Draw labels at image.refPos
@@ -237,14 +248,14 @@ export class ImageViewer {
         transform.transformPos(refPos, image.refPos);
 
         this.sdrLine.bind();
-        libGlMatrix.mat4.identity(mattrans);
+        mat4.identity(mattrans);
         if (flipY === true) {
-          libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+          mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
         }
         refPos[0] = this.getPixelAlignX(refPos[0]);
         refPos[1] = this.getPixelAlignY(refPos[1]);
-        libGlMatrix.mat4.translate(mattrans, mattrans, [refPos[0], refPos[1], 0]);
-        libGlMatrix.mat4.scale(mattrans, mattrans, [2 / this.gl.width, 2 / this.gl.height, 1]);
+        mat4.translate(mattrans, mattrans, [refPos[0], refPos[1], 0]);
+        mat4.scale(mattrans, mattrans, [2 / this.gl.width, 2 / this.gl.height, 1]);
         this.sdrLine.matWorldViewProj(mattrans);
 
         let imageLabelColor = this.defaultImageLabelColor;
@@ -276,17 +287,17 @@ export class ImageViewer {
         if (!image.imagePos || image.imagePos === image.refPos) {
           return;
         }
-        libGlMatrix.mat4.identity(mattrans);
+        mat4.identity(mattrans);
         if (flipY === true) {
-          libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+          mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
         }
         transform.transformPos(imagePos, image.imagePos);
         transform.transformPos(refPos, image.refPos);
-        libGlMatrix.mat4.translate(mattrans, mattrans, [imagePos[0], imagePos[1], 0.0]);
+        mat4.translate(mattrans, mattrans, [imagePos[0], imagePos[1], 0.0]);
         const dx = refPos[0] - imagePos[0];
         const dy = refPos[1] - imagePos[1];
-        libGlMatrix.mat4.rotateZ(mattrans, mattrans, Math.atan2(dy, dx));
-        libGlMatrix.mat4.scale(mattrans, mattrans, [Math.sqrt((dx * dx) + (dy * dy)), 1.0, 1.0]);
+        mat4.rotateZ(mattrans, mattrans, Math.atan2(dy, dx));
+        mat4.scale(mattrans, mattrans, [Math.sqrt((dx * dx) + (dy * dy)), 1.0, 1.0]);
         this.sdrLine.matWorldViewProj(mattrans);
         this.sdrLine.color(...image.lineColor ? image.lineColor : this.defaultImageLineColor);
         this.meshLine.draw();
@@ -324,18 +335,18 @@ export class ImageViewer {
         scale[1] += (2 * borderWidth) / this.gl.height;
 
         this.meshQuad.bind(this.sdrLine);
-        libGlMatrix.mat4.identity(mattrans);
+        mat4.identity(mattrans);
         if (flipY === true) {
-          libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+          mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
         }
         imagePos[0] = this.getPixelAlignX(imagePos[0]);
-        libGlMatrix.mat4.translate(
+        mat4.translate(
           mattrans, mattrans,
           [imagePos[0], this.getPixelAlignY(imagePos[1]), 0.0],
         );
-        libGlMatrix.mat4.scale(mattrans, mattrans, scale);
+        mat4.scale(mattrans, mattrans, scale);
         // Move anchor to imageAnchor
-        libGlMatrix.mat4.translate(mattrans, mattrans, image.imageAnchor);
+        mat4.translate(mattrans, mattrans, image.imageAnchor);
         this.sdrLine.matWorldViewProj(mattrans);
         this.sdrLine.color(...image.borderColor ? image.borderColor : this.defaultImageBorderColor);
         this.meshQuad.draw();
@@ -345,39 +356,39 @@ export class ImageViewer {
       }
 
       this.meshQuad.bind(this.sdrImage, image.tex);
-      libGlMatrix.mat4.identity(mattrans);
+      mat4.identity(mattrans);
       if (flipY === true) {
-        libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+        mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
       }
       imagePos[0] = this.getPixelAlignX(imagePos[0]);
-      libGlMatrix.mat4.translate(mattrans, mattrans, [
+      mat4.translate(mattrans, mattrans, [
         imagePos[0], this.getPixelAlignY(imagePos[1]), 0.0]);
-      libGlMatrix.mat4.scale(mattrans, mattrans, scale);
+      mat4.scale(mattrans, mattrans, scale);
       // Move anchor to imageAnchor
-      libGlMatrix.mat4.translate(mattrans, mattrans, image.imageAnchor);
+      mat4.translate(mattrans, mattrans, image.imageAnchor);
       this.sdrImage.matWorldViewProj(mattrans);
       this.meshQuad.draw();
 
       if (this.options.labelThumbnails) {
         // Draw thumbnail label below thumbnail
-        libGlMatrix.mat4.identity(mattrans);
+        mat4.identity(mattrans);
         if (flipY === true) {
-          libGlMatrix.mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
+          mat4.scale(mattrans, mattrans, [1.0, -1.0, 1.0]);
         }
         // Move stripe position depending on image anchor
         imagePos[0] += image.imageAnchor[0] * scale[0];
         // Move stripe position depending on image anchor
         imagePos[1] += image.imageAnchor[1] * scale[1];
 
-        libGlMatrix.mat4.translate(
+        mat4.translate(
           mattrans, mattrans,
           [imagePos[0], this.getPixelAlignY(imagePos[1]), 0.0],
         );
         scale[1] = (2 * LABEL_HEIGHT) / this.gl.height;
         scale[1] = this.getPixelAlignY(scale[1]);
-        libGlMatrix.mat4.scale(mattrans, mattrans, scale);
+        mat4.scale(mattrans, mattrans, scale);
         // Move anchor to top of stripe
-        libGlMatrix.mat4.translate(mattrans, mattrans, [-0.0, -1.0, 0.0]);
+        mat4.translate(mattrans, mattrans, [-0.0, -1.0, 0.0]);
         this.sdrLine.matWorldViewProj(mattrans);
 
         let imageLabelColor = this.defaultImageLabelColor;
@@ -464,7 +475,7 @@ export class ImageViewer {
     }
 
     const newImage = new Thumbnail(this.globalView);
-    newImage.tex = libGraphics.LoadTexture(this.gl, imageFilename, () => {
+    newImage.tex = LoadTexture(this.gl, imageFilename, () => {
       this.globalView.invalidate();
     });
     newImage.imagePos = imagePos;
@@ -496,10 +507,10 @@ export class ImageViewer {
    * @param {Transform} transform the plots Transform object
    */
   resolveIntersections(transform) {
-    const a = libGlMatrix.vec2.create();
-    const b = libGlMatrix.vec2.create();
-    const c = libGlMatrix.vec2.create();
-    const d = libGlMatrix.vec2.create();
+    const a = vec2.create();
+    const b = vec2.create();
+    const c = vec2.create();
+    const d = vec2.create();
     for (let i = 1; i < this.images.length; i += 1) {
       if (this.images[i].imagePos) {
         transform.transformPos(a, this.images[i].imagePos);
@@ -509,9 +520,9 @@ export class ImageViewer {
             transform.transformPos(c, this.images[j].imagePos);
             transform.transformPos(d, this.images[j].refPos);
 
-            if (libGlMatrix.vec2.sqrDist(a, b) + libGlMatrix.vec2.sqrDist(c, d) >
-                libGlMatrix.vec2.sqrDist(a, d) + libGlMatrix.vec2.sqrDist(c, b) &&
-              !libAlgorithm.linesIntersect(a, d, c, b)) {
+            if (vec2.sqrDist(a, b) + vec2.sqrDist(c, d) >
+                vec2.sqrDist(a, d) + vec2.sqrDist(c, b) &&
+              !linesIntersect(a, d, c, b)) {
               // libUtility.consoleLog("exchange {0} - {1}".format(i, j));
               const tmp = this.images[j].imagePos;
               this.images[j].imagePos = this.images[i].imagePos;
@@ -533,7 +544,7 @@ export class ImageViewer {
             transform.transformPos(c, this.images[j].imagePos);
             transform.transformPos(d, this.images[j].refPos);
 
-            if (libAlgorithm.linesIntersect(a, b, c, d)) {
+            if (linesIntersect(a, b, c, d)) {
             // libUtility.consoleLog("intersection {0} - {1}".format(i, j));
               const tmp = this.images[j].imagePos;
               this.images[j].imagePos = this.images[i].imagePos;
@@ -555,9 +566,9 @@ export class ImageViewer {
    * @return {Thumbnail}
    */
   imageFromPoint(transform, point) {
-    const imagePos = libGlMatrix.vec2.create();
-    // const refPos = libGlMatrix.vec2.create();
-    const imageSize = libGlMatrix.vec2.create();
+    const imagePos = vec2.create();
+    // const refPos = vec2.create();
+    const imageSize = vec2.create();
 
     let selectedImage = null;
     this.images.forEach((image) => {
@@ -600,3 +611,5 @@ export class ImageViewer {
     return selectedImage;
   }
 }
+
+export default ImageViewer;

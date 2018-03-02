@@ -1,10 +1,10 @@
-const globalView = require('../../dist/global-view.js');
-const domready = require('domready'); // eslint-disable-line import/no-extraneous-dependencies
+import domready from 'domready'; // eslint-disable-line import/no-extraneous-dependencies
+import { GlobalView, CsvDataset } from '../../dist/global-view';
 
 let plot;
 
 domready(() => {
-  plot = new globalView.GlobalView(document.getElementById('divGlobalView'), {
+  plot = new GlobalView(document.getElementById('divGlobalView'), {
     pointShape: 'Custom',
     pointSize: 15,
 
@@ -19,7 +19,7 @@ domready(() => {
   });
 
   // eslint-disable-next-line no-new
-  new globalView.CsvDataset('datasets/iris.data', {
+  new CsvDataset('datasets/iris.data', {
     columnLabels: ['Sepal Length [cm]', 'Sepal Width [cm]', 'Petal Length [cm]', 'Petal Width [cm]', 'Class'],
   }, ((dataset) => {
       plot.load(dataset, 0, 1, 4, 1);

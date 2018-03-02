@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: Colormap</title>
+    <title>JSDoc: Class: Transform</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: Colormap</h1>
+    <h1 class="page-title">Class: Transform</h1>
 
     
 
@@ -28,10 +28,10 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>Colormap<span class="signature">(gl, plot)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>Transform<span class="signature">(plot)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description"><p>A class holding the active colormap for the global view.
-This class also draws a color axis to the right of the scatter plot.</p></div>
+            <div class="class-description"><p>A helper class for globalview containing variables and functions for
+transforming data vectors into device space</p></div>
         
     
 </header>
@@ -46,7 +46,7 @@ This class also draws a color axis to the right of the scatter plot.</p></div>
     
 
     
-    <h4 class="name" id="Colormap"><span class="type-signature"></span>new Colormap<span class="signature">(gl, plot)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Transform"><span class="type-signature"></span>new Transform<span class="signature">(plot)</span><span class="type-signature"></span></h4>
     
 
     
@@ -82,29 +82,6 @@ This class also draws a color axis to the right of the scatter plot.</p></div>
     </thead>
 
     <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>gl</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">WebGLRenderingContext</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>webgl render context</p></td>
-        </tr>
-
     
 
         <tr>
@@ -215,7 +192,7 @@ This class also draws a color axis to the right of the scatter plot.</p></div>
     
 
     
-    <h4 class="name" id=".colorNameToHex"><span class="type-signature">(static) </span>colorNameToHex<span class="signature">(colorName)</span><span class="type-signature"> &rarr; {string}</span></h4>
+    <h4 class="name" id="datasetCoordToDeviceCoord"><span class="type-signature"></span>datasetCoordToDeviceCoord<span class="signature">(vOutCoord, vInCoord)</span><span class="type-signature"></span></h4>
     
 
     
@@ -223,7 +200,7 @@ This class also draws a color axis to the right of the scatter plot.</p></div>
 
 
 <div class="description">
-    <p>Converts string color name (case insensitive) to the hex string.</p>
+    <p>Transforms dataset coordinates to device coordinates</p>
 </div>
 
 
@@ -259,394 +236,7 @@ This class also draws a color axis to the right of the scatter plot.</p></div>
 
         <tr>
             
-                <td class="name"><code>colorName</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>color name (e.g. 'red' or 'Red')</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <ul>
-<li>color value in hex format string (e.g. '#ff0000')</li>
-</ul>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">string</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id=".getWidth"><span class="type-signature">(static) </span>getWidth<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Returns the colormap width in pixels</p>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id=".hexToRgb"><span class="type-signature">(static) </span>hexToRgb<span class="signature">(hexstr)</span><span class="type-signature"> &rarr; {Object.&lt;string, number>}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Converts color specified in hex format to {r, g, b} values</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>hexstr</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>color in hex string format (e.g. &quot;#03F&quot; or &quot;0033FF&quot;)</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>rgb values</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Object.&lt;string, number></span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id=".hsv2rgb"><span class="type-signature">(static) </span>hsv2rgb<span class="signature">(hsv)</span><span class="type-signature"> &rarr; {Array.&lt;number>}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Converts color specified in hsv color space to rgb color space</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>hsv</code></td>
+                <td class="name"><code>vOutCoord</code></td>
             
 
             <td class="type">
@@ -662,7 +252,30 @@ This class also draws a color axis to the right of the scatter plot.</p></div>
 
             
 
-            <td class="description last"><p>array of [h, s, v] numerical values between 0.0 and 1.0</p></td>
+            <td class="description last"><p>output vector in device coordinate system</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vInCoord</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>input vector in dataset coordinate system</p></td>
         </tr>
 
     
@@ -725,22 +338,10 @@ This class also draws a color axis to the right of the scatter plot.</p></div>
 
         
 <div class="param-desc">
-    <p>array of [r, g, b] numerical values between 0.0 and 1.0</p>
+    <p>output vector in device coordinate system</p>
 </div>
 
 
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Array.&lt;number></span>
-
-
-    </dd>
-</dl>
 
     
 
@@ -754,7 +355,7 @@ This class also draws a color axis to the right of the scatter plot.</p></div>
     
 
     
-    <h4 class="name" id=".parseColor"><span class="type-signature">(static) </span>parseColor<span class="signature">(color)</span><span class="type-signature"> &rarr; {Uint8Array}</span></h4>
+    <h4 class="name" id="datasetDistToDeviceDist"><span class="type-signature"></span>datasetDistToDeviceDist<span class="signature">(vOutCoord, vInCoord)</span><span class="type-signature"></span></h4>
     
 
     
@@ -762,7 +363,7 @@ This class also draws a color axis to the right of the scatter plot.</p></div>
 
 
 <div class="description">
-    <p>Converts color parameter to a Uint8Array [r, g, b, a]</p>
+    <p>Transforms distance in dataset coordinate system to device coordinate system</p>
 </div>
 
 
@@ -798,15 +399,12 @@ This class also draws a color axis to the right of the scatter plot.</p></div>
 
         <tr>
             
-                <td class="name"><code>color</code></td>
+                <td class="name"><code>vOutCoord</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
-|
-
 <span class="param-type">Array.&lt;number></span>
 
 
@@ -817,7 +415,30 @@ This class also draws a color axis to the right of the scatter plot.</p></div>
 
             
 
-            <td class="description last"></td>
+            <td class="description last"><p>output distance vector in device coordinate system</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vInCoord</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>input distance vector in dataset coordinate system</p></td>
         </tr>
 
     
@@ -880,22 +501,10 @@ This class also draws a color axis to the right of the scatter plot.</p></div>
 
         
 <div class="param-desc">
-    <p>Unit8Array of length 4: [r, g, b, a]</p>
+    <p>output distance vector in device coordinate system</p>
 </div>
 
 
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Uint8Array</span>
-
-
-    </dd>
-</dl>
 
     
 
@@ -909,7 +518,7 @@ This class also draws a color axis to the right of the scatter plot.</p></div>
     
 
     
-    <h4 class="name" id=".parseColormap"><span class="type-signature">(static) </span>parseColormap<span class="signature">(colormap)</span><span class="type-signature"> &rarr; {Uint8Array}</span></h4>
+    <h4 class="name" id="deviceCoordToDatasetCoord"><span class="type-signature"></span>deviceCoordToDatasetCoord<span class="signature">(vOutCoord, vInCoord)</span><span class="type-signature"></span></h4>
     
 
     
@@ -917,7 +526,7 @@ This class also draws a color axis to the right of the scatter plot.</p></div>
 
 
 <div class="description">
-    <p>Parses the colormap and returns an array of Uint8Array</p>
+    <p>Transforms device coordinates to coordinates in the dataset</p>
 </div>
 
 
@@ -953,15 +562,12 @@ This class also draws a color axis to the right of the scatter plot.</p></div>
 
         <tr>
             
-                <td class="name"><code>colormap</code></td>
+                <td class="name"><code>vOutCoord</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
-|
-
 <span class="param-type">Array.&lt;number></span>
 
 
@@ -972,8 +578,30 @@ This class also draws a color axis to the right of the scatter plot.</p></div>
 
             
 
-            <td class="description last"><p>either the color map name or an array.
-Colormap array length must be multiple of 4 and contain numbers between 0 and 255.</p></td>
+            <td class="description last"><p>output vector in dataset coordinate system</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vInCoord</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>input vector in device coordinate system</p></td>
         </tr>
 
     
@@ -1036,22 +664,10 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
 
         
 <div class="param-desc">
-    <p>Colormap colors as an array of size [colormapLength * 4]</p>
+    <p>output vector in dataset coordiante system</p>
 </div>
 
 
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Uint8Array</span>
-
-
-    </dd>
-</dl>
 
     
 
@@ -1065,7 +681,7 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
     
 
     
-    <h4 class="name" id=".rgbStringToFloatArray"><span class="type-signature">(static) </span>rgbStringToFloatArray<span class="signature">(rgbstr)</span><span class="type-signature"> &rarr; {Array.&lt;number>}</span></h4>
+    <h4 class="name" id="deviceDistToDatasetDist"><span class="type-signature"></span>deviceDistToDatasetDist<span class="signature">(vOutCoord, vInCoord)</span><span class="type-signature"></span></h4>
     
 
     
@@ -1073,7 +689,7 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
 
 
 <div class="description">
-    <p>Converts rgb color specified in string format to an array of float values</p>
+    <p>Transforms distance in device coordinate system to dataset coordinate system</p>
 </div>
 
 
@@ -1109,13 +725,13 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
 
         <tr>
             
-                <td class="name"><code>rgbstr</code></td>
+                <td class="name"><code>vOutCoord</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">Array.&lt;number></span>
 
 
             
@@ -1125,7 +741,30 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
 
             
 
-            <td class="description last"><p>color in &quot;r, g, b&quot; string format (e.g. &quot;0,0,255&quot;)</p></td>
+            <td class="description last"><p>output distance vector in dataset coordinate system</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vInCoord</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>input distance vector in device coordinate system</p></td>
         </tr>
 
     
@@ -1188,7 +827,98 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
 
         
 <div class="param-desc">
-    <p>array of rgb values between 0.0 and 1.0</p>
+    <p>output distance vector in dataset coordinate system</p>
+</div>
+
+
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getAnimatedScales"><span class="type-signature"></span>getAnimatedScales<span class="signature">()</span><span class="type-signature"> &rarr; {Array.&lt;number>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Returns currently animating scale values of all dataset dimensions.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>current scale values for all dataset dimensions at this frame.</p>
 </div>
 
 
@@ -1217,7 +947,7 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
     
 
     
-    <h4 class="name" id=".validateColor"><span class="type-signature">(static) </span>validateColor<span class="signature">(color)</span><span class="type-signature"> &rarr; {boolean|string}</span></h4>
+    <h4 class="name" id="getMaximum"><span class="type-signature"></span>getMaximum<span class="signature">(dim)</span><span class="type-signature"> &rarr; {number}</span></h4>
     
 
     
@@ -1225,7 +955,7 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
 
 
 <div class="description">
-    <p>Checks if the specified parameter is a valid color</p>
+    <p>Gets the maximum dataset (or user specified) value for a given dataset dimension</p>
 </div>
 
 
@@ -1261,1023 +991,7 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
 
         <tr>
             
-                <td class="name"><code>color</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-|
-
-<span class="param-type">Array.&lt;number></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>true of a valid color, otherwise the string error message</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">boolean</span>
-|
-
-<span class="param-type">string</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id=".validateColormap"><span class="type-signature">(static) </span>validateColormap<span class="signature">(colormap)</span><span class="type-signature"> &rarr; {boolean|string}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>validates the colormap parameters</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>colormap</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-|
-
-<span class="param-type">Array.&lt;number></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>either the color map name or an array.
-Colormap array length must be multiple of 4 and contain numbers between 0 and 255.</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>true of a valid color map, otherwise the string error message</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">boolean</span>
-|
-
-<span class="param-type">string</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="getTexture"><span class="type-signature"></span>getTexture<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Returns the texture used for the colormap</p>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="onInputChanged"><span class="type-signature"></span>onInputChanged<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="implements">Implements:</dt>
-    <dd class="implements"><ul>
-        
-            <li><a href="Viewer.html#onInputChanged">Viewer#onInputChanged</a></li>
-        
-    </ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="onOptionsChanged"><span class="type-signature"></span>onOptionsChanged<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="implements">Implements:</dt>
-    <dd class="implements"><ul>
-        
-            <li><a href="Viewer.html#onOptionsChanged">Viewer#onOptionsChanged</a></li>
-        
-    </ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="onPlotBoundsChanged"><span class="type-signature"></span>onPlotBoundsChanged<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Eventhandler: recompute the axis ranges</p>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="implements">Implements:</dt>
-    <dd class="implements"><ul>
-        
-            <li><a href="Viewer.html#onPlotBoundsChanged">Viewer#onPlotBoundsChanged</a></li>
-        
-    </ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="render"><span class="type-signature"></span>render<span class="signature">(flipY, plotBounds)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Draws the colormap</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>flipY</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>plotBounds</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>-</p>
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>x</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>-</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>y</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>-</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>width</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>-</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>height</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>-</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="implements">Implements:</dt>
-    <dd class="implements"><ul>
-        
-            <li><a href="Viewer.html#render">Viewer#render</a></li>
-        
-    </ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="setDataset"><span class="type-signature"></span>setDataset<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="implements">Implements:</dt>
-    <dd class="implements"><ul>
-        
-            <li><a href="Viewer.html#setDataset">Viewer#setDataset</a></li>
-        
-    </ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="setEnumRange"><span class="type-signature"></span>setEnumRange<span class="signature">(rangeMin, rangeMax, values)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Sets color map axis by specifying an enumerated labels for tick values</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>rangeMin</code></td>
+                <td class="name"><code>dim</code></td>
             
 
             <td class="type">
@@ -2293,14 +1007,143 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
 
             
 
-            <td class="description last"><p>axis range minimum</p></td>
+            <td class="description last"><p>dataset dimension index</p></td>
         </tr>
 
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>maximum value for the given dimension</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getMinimum"><span class="type-signature"></span>getMinimum<span class="signature">(dim)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Gets the minimum dataset (or user specified) value for a given dataset dimension</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
     
 
         <tr>
             
-                <td class="name"><code>rangeMax</code></td>
+                <td class="name"><code>dim</code></td>
             
 
             <td class="type">
@@ -2316,20 +1159,149 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
 
             
 
-            <td class="description last"><p>axis range maximum</p></td>
+            <td class="description last"><p>dataset dimension index</p></td>
         </tr>
 
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>minimum value for the given dimension</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getOffset"><span class="type-signature"></span>getOffset<span class="signature">(dim)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Get view offset for a given dataset dimension</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
     
 
         <tr>
             
-                <td class="name"><code>values</code></td>
+                <td class="name"><code>dim</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Object.&lt;number, string></span>
+<span class="param-type">number</span>
 
 
             
@@ -2339,7 +1311,844 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
 
             
 
-            <td class="description last"><p>tick labels</p></td>
+            <td class="description last"><p>dataset dimension index</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>offset for the given dimension</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getOffsets"><span class="type-signature"></span>getOffsets<span class="signature">()</span><span class="type-signature"> &rarr; {Array.&lt;number>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Returns offset values of all dataset dimensions.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>offset values for all dataset dimensions</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;number></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getScale"><span class="type-signature"></span>getScale<span class="signature">(dim)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Get scale for a given dataset dimension</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>dim</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>dataset dimension index</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>scale for the given dimension</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getScales"><span class="type-signature"></span>getScales<span class="signature">()</span><span class="type-signature"> &rarr; {Array.&lt;number>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Returns scale values of all dataset dimensions.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>scale values for all dataset dimensions</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;number></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getVisibleMaximum"><span class="type-signature"></span>getVisibleMaximum<span class="signature">(dim)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Gets the visible maximum value (considering data and offset) for a given dataset dimension</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>dim</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>dataset dimension index</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>maximum visible value for the given dimension</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getVisibleMinimum"><span class="type-signature"></span>getVisibleMinimum<span class="signature">(dim)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Gets the visible minimum value (considering data and offset) for a given dataset dimension</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>dim</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>dataset dimension index</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>minimum visible value for the given dimension</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="scale"><span class="type-signature"></span>scale<span class="signature">(dim, factor)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Scales the coordinate system for the specified dimension by the specified factor</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>dim</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>dataset dimension index</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>factor</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>scale distance</p></td>
         </tr>
 
     
@@ -2409,7 +2218,7 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
     
 
     
-    <h4 class="name" id="setLabel"><span class="type-signature"></span>setLabel<span class="signature">(label)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="setFromMinMax"><span class="type-signature"></span>setFromMinMax<span class="signature">(dim, minimum, maximum)</span><span class="type-signature"></span></h4>
     
 
     
@@ -2417,7 +2226,7 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
 
 
 <div class="description">
-    <p>Sets the axis label</p>
+    <p>Updates the transformation for the coordinate systems based on the spacified min and max values</p>
 </div>
 
 
@@ -2453,13 +2262,13 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
 
         <tr>
             
-                <td class="name"><code>label</code></td>
+                <td class="name"><code>dim</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">number</span>
 
 
             
@@ -2469,120 +2278,9 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
 
             
 
-            <td class="description last"></td>
+            <td class="description last"><p>dataset dimension index</p></td>
         </tr>
 
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="setNumericRange"><span class="type-signature"></span>setNumericRange<span class="signature">(minimum, maximum, changeTickDistance<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Sets the color map axis by specifying a numeric range</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
     
 
         <tr>
@@ -2600,22 +2298,10 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
             </td>
 
             
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
 
             
-                <td class="default">
-                
-                </td>
-            
 
-            <td class="description last"></td>
+            <td class="description last"><p>minimum value</p></td>
         </tr>
 
     
@@ -2635,61 +2321,489 @@ Colormap array length must be multiple of 4 and contain numbers between 0 and 25
             </td>
 
             
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
 
             
-                <td class="default">
-                
-                </td>
-            
 
-            <td class="description last"></td>
+            <td class="description last"><p>maximum value</p></td>
         </tr>
 
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="transformNml"><span class="type-signature"></span>transformNml<span class="signature">(vOutCoord, vInCoord)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Transforms normal in dataset coordinate system to device coordinate system</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
     
 
         <tr>
             
-                <td class="name"><code>changeTickDistance</code></td>
+                <td class="name"><code>vOutCoord</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">boolean</span>
+<span class="param-type">Array.&lt;number></span>
 
 
             
             </td>
 
             
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
 
-                
+            
 
+            <td class="description last"><p>output normal vector in device coordinate system</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vInCoord</code></td>
+            
+
+            <td class="type">
+            
                 
-                </td>
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
             
 
             
-                <td class="default">
-                
-                    true
-                
-                </td>
+
+            <td class="description last"><p>input normal vector in dataset coordinate system</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>output position vector in device coordinate system</p>
+</div>
+
+
+
+    
+
+
+
+
+
+        
             
 
-            <td class="description last"></td>
+    
+
+    
+    <h4 class="name" id="transformPos"><span class="type-signature"></span>transformPos<span class="signature">(vOutCoord, vInCoord)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Transforms position in dataset coordinate system to device coordinate system</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>vOutCoord</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>output position vector in device coordinate system</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vInCoord</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>input position vector in dataset coordinate system</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>output position vector in device coordinate system</p>
+</div>
+
+
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="translate"><span class="type-signature"></span>translate<span class="signature">(dim, distance)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Translates the coordinate system for the specified dimension by the specified distance</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>dim</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>dataset dimension index</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>distance</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>translation distance</p></td>
         </tr>
 
     

@@ -1,5 +1,5 @@
-const globalView = require('../../dist/global-view.js');
-const domready = require('domready'); // eslint-disable-line import/no-extraneous-dependencies
+import domready from 'domready'; // eslint-disable-line import/no-extraneous-dependencies
+import { GlobalView, CsvDataset, consoleLog } from '../../dist/global-view';
 
 const COLUMN_NAMES = [
   'Tagged Protein',
@@ -41,7 +41,7 @@ domready(() => {
   // 'http://homepage.univie.ac.at/a0929188/GlobalView/images/"
   const imagesPath = 'datasets/AICS_Cell-feature-analysis_v1.5_images/';
 
-  new globalView.CsvDataset(csvPath, { // eslint-disable-line no-new
+  new CsvDataset(csvPath, { // eslint-disable-line no-new
     hasHeader: true,
     nameColumn: 1,
     columnLabels: COLUMN_NAMES,
@@ -71,9 +71,9 @@ domready(() => {
         const thumbnailHeight = (OPTIONS.thumbnailSize *
         (dataset.dataVectors[y].maximum - dataset.dataVectors[y].minimum)) /
       (PLOT_SIZE - OPTIONS.padding[0] - OPTIONS.padding[2]);
-        globalView.consoleLog(thumbnailWidth, thumbnailHeight);
+        consoleLog(thumbnailWidth, thumbnailHeight);
 
-        const plot = new globalView.GlobalView(divPlots, OPTIONS);
+        const plot = new GlobalView(divPlots, OPTIONS);
         plot.load(dataset, x, y, 0, 0);
         plot.zoomRect({
           l: dataset.dataVectors[x].minimum - thumbnailWidth,

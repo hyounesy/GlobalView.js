@@ -1,4 +1,4 @@
-const libUtility = require('./utility.js');
+import { isArray, consoleLog, showAlert, consoleWarn } from './utility';
 
 let currentShader = null;
 /**
@@ -18,15 +18,15 @@ export class Shader {
     this.debug = debug;
     let vs = vSh;
     let fs = fSh;
-    if (libUtility.isArray(vs)) {
+    if (isArray(vs)) {
       vs = vs.join('\n');
     }
-    if (libUtility.isArray(fs)) {
+    if (isArray(fs)) {
       fs = fs.join('\n');
     }
     if (debug === true) {
-      libUtility.consoleLog(vs);
-      libUtility.consoleLog(fs);
+      consoleLog(vs);
+      consoleLog(fs);
     }
 
     // Compile vertex shader -> vertexShader
@@ -34,8 +34,8 @@ export class Shader {
     gl.shaderSource(this.vertexShader, vs);
     gl.compileShader(this.vertexShader);
     if (!gl.getShaderParameter(this.vertexShader, gl.COMPILE_STATUS)) {
-      libUtility.consoleLog(vs);
-      libUtility.showAlert(gl.getShaderInfoLog(this.vertexShader));
+      consoleLog(vs);
+      showAlert(gl.getShaderInfoLog(this.vertexShader));
       return null;
     }
 
@@ -44,8 +44,8 @@ export class Shader {
     gl.shaderSource(this.fragmentShader, fs);
     gl.compileShader(this.fragmentShader);
     if (!gl.getShaderParameter(this.fragmentShader, gl.COMPILE_STATUS)) {
-      libUtility.consoleLog(fs);
-      libUtility.showAlert(gl.getShaderInfoLog(this.fragmentShader));
+      consoleLog(fs);
+      showAlert(gl.getShaderInfoLog(this.fragmentShader));
       return null;
     }
 
@@ -55,9 +55,9 @@ export class Shader {
     gl.attachShader(this.sdr, this.fragmentShader);
     gl.linkProgram(this.sdr);
     if (!gl.getProgramParameter(this.sdr, gl.LINK_STATUS)) {
-      libUtility.consoleLog(vs);
-      libUtility.consoleLog(fs);
-      libUtility.showAlert(gl.getProgramInfoLog(this.sdr));
+      consoleLog(vs);
+      consoleLog(fs);
+      showAlert(gl.getProgramInfoLog(this.sdr));
       return null;
     }
 
@@ -85,12 +85,12 @@ export class Shader {
         this.bind();
         this.gl.uniform1i(uniform, i);
         if (this.debug) {
-          libUtility.consoleLog('gl.uniform1i({0}, {1})'.format(uniformString, i));
+          consoleLog('gl.uniform1i({0}, {1})'.format(uniformString, i));
         }
       };
     }
     return this.debug ? i =>
-      libUtility.consoleLog(`Passing value  ${i} to unused uniform ${uniformString}`) : null;
+      consoleLog(`Passing value  ${i} to unused uniform ${uniformString}`) : null;
   }
 
   u1f(uniformString) {
@@ -101,12 +101,12 @@ export class Shader {
         this.bind();
         this.gl.uniform1f(uniform, f);
         if (this.debug) {
-          libUtility.consoleLog('gl.uniform1f({0}, {1})'.format(uniformString, f));
+          consoleLog('gl.uniform1f({0}, {1})'.format(uniformString, f));
         }
       };
     }
     return this.debug ? f =>
-      libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
+      consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
   }
 
   u2f(uniformString) {
@@ -117,12 +117,12 @@ export class Shader {
         this.bind();
         this.gl.uniform2f(uniform, x, y);
         if (this.debug) {
-          libUtility.consoleLog('gl.uniform2f({0}, {1}, {2})'.format(uniformString, x, y));
+          consoleLog('gl.uniform2f({0}, {1}, {2})'.format(uniformString, x, y));
         }
       };
     }
     return this.debug ? f =>
-      libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
+      consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
   }
 
   u2x2f(uniformString) {
@@ -133,12 +133,12 @@ export class Shader {
         this.bind();
         this.gl.uniformMatrix2fv(uniform, false, m);
         if (this.debug) {
-          libUtility.consoleLog('gl.uniformMatrix2fv({0}, {1})'.format(uniformString, m));
+          consoleLog('gl.uniformMatrix2fv({0}, {1})'.format(uniformString, m));
         }
       };
     }
     return this.debug ? f =>
-      libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
+      consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
   }
 
   u3f(uniformString) {
@@ -149,12 +149,12 @@ export class Shader {
         this.bind();
         this.gl.uniform3f(uniform, x, y, z);
         if (this.debug) {
-          libUtility.consoleLog('gl.uniform3f({0}, {1}, {2}, {3})'.format(uniformString, x, y, z));
+          consoleLog('gl.uniform3f({0}, {1}, {2}, {3})'.format(uniformString, x, y, z));
         }
       };
     }
     return this.debug ? f =>
-      libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
+      consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
   }
 
   u4f(uniformString) {
@@ -165,12 +165,12 @@ export class Shader {
         this.bind();
         this.gl.uniform4f(uniform, x, y, z, w);
         if (this.debug) {
-          libUtility.consoleLog('gl.uniform4f({0}, {1}, {2}, {3}, {4})'.format(uniformString, x, y, z, w));
+          consoleLog('gl.uniform4f({0}, {1}, {2}, {3}, {4})'.format(uniformString, x, y, z, w));
         }
       };
     }
     return this.debug ? f =>
-      libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
+      consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
   }
 
   u1fv(uniformString) {
@@ -181,12 +181,12 @@ export class Shader {
         this.bind();
         this.gl.uniform1fv(uniform, v);
         if (this.debug) {
-          libUtility.consoleLog('gl.uniform1fv({0}, {1})'.format(uniformString, v));
+          consoleLog('gl.uniform1fv({0}, {1})'.format(uniformString, v));
         }
       };
     }
     return this.debug ? f =>
-      libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
+      consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
   }
 
   u4fv(uniformString) {
@@ -197,12 +197,12 @@ export class Shader {
         this.bind();
         this.gl.uniform4fv(uniform, v);
         if (this.debug) {
-          libUtility.consoleLog('gl.uniform4fv({0}, {1})'.format(uniformString, v));
+          consoleLog('gl.uniform4fv({0}, {1})'.format(uniformString, v));
         }
       };
     }
     return this.debug ? f =>
-      libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
+      consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
   }
 
   u4x4f(uniformString) {
@@ -213,12 +213,12 @@ export class Shader {
         this.bind();
         this.gl.uniformMatrix4fv(uniform, false, m);
         if (this.debug) {
-          libUtility.consoleLog('gl.uniformMatrix4fv({0}, {1})'.format(uniformString, m));
+          consoleLog('gl.uniformMatrix4fv({0}, {1})'.format(uniformString, m));
         }
       };
     }
     return this.debug ? f =>
-      libUtility.consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
+      consoleLog(`Passing value ${f} to unused uniform ${uniformString}`) : null;
   }
 
   getAttribLocation(attributeName) {
@@ -245,6 +245,11 @@ export class Shader {
   }
 }
 
+/**
+ * validates a glsl shader code
+ * @param {WebGLRenderingContext} gl webgl context
+ * @param {string} code shader code
+ */
 export function validateGLSL(gl, code) {
   const vertexShader = gl.createShader(gl.VERTEX_SHADER);
   gl.shaderSource(vertexShader, `void main() {} ${code}`);
@@ -438,7 +443,7 @@ export class Mesh {
     }
 
     if (texture) {
-      if (libUtility.isArray(texture)) {
+      if (isArray(texture)) {
         if (sdr.samplerArrayUniform) {
           const idxarray = new Array(texture.length);
           for (let i = 0; i < texture.length; i += 1) {
@@ -510,6 +515,11 @@ export class Mesh {
 // >>> Section: Textures
 
 
+/**
+ * @param {WebGLRenderingContext} gl
+ * @param {texture} texture
+ * @param {function} onload callback
+ */
 function handleLoadedTexture(gl, texture, onload) {
   gl.bindTexture(gl.TEXTURE_2D, texture);
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -525,6 +535,12 @@ function handleLoadedTexture(gl, texture, onload) {
   }
 }
 
+/**
+ * Loads texture from file
+ * @param {WebGLRenderingContext} gl
+ * @param {string} filename
+ * @param {function} onload callback
+ */
 export function LoadTexture(gl, filename, onload) {
   const texture = gl.createTexture();
   texture.image = new Image();
@@ -535,6 +551,11 @@ export function LoadTexture(gl, filename, onload) {
   return texture;
 }
 
+/**
+ * Loads a gl texture from an html loaded image
+ * @param {WebGLRenderingContext} gl
+ * @param {HTMLImageElement} image
+ */
 export function LoadTextureFromImage(gl, image) {
   const texture = gl.createTexture();
   texture.image = image;
@@ -542,6 +563,13 @@ export function LoadTextureFromImage(gl, image) {
   return texture;
 }
 
+/**
+ * loads texture from an array of bytes
+ * @param {WebGLRenderingContext} gl
+ * @param {number[]} array pixels byte array
+ * @param {number} width texture width
+ * @param {number} height texture height
+ */
 export function LoadTextureFromByteArray(gl, array, width, height) {
   const texture = gl.createTexture();
   texture.byteArray = array;
@@ -556,9 +584,16 @@ export function LoadTextureFromByteArray(gl, array, width, height) {
   return texture;
 }
 
+/**
+ * loads texture from an array of floats
+ * @param {WebGLRenderingContext} gl
+ * @param {number[]} array pixels float array
+ * @param {number} width texture width
+ * @param {number} height texture height
+ */
 export function LoadTextureFromFloatArray(gl, array, width, height) {
   if (gl.getExtension('OES_texture_float') === null) {
-    libUtility.consoleWarn("GlobalView warning: The browser doesn't support floatingpoint textures");
+    consoleWarn("GlobalView warning: The browser doesn't support floatingpoint textures");
     return null;
   }
   const texture = gl.createTexture();

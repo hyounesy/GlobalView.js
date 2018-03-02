@@ -2,13 +2,12 @@
  * A helper class that attaches a 2D canvas to the parent div of the given WebGL canvas.
  * This 2D canvas is used to draw text.
  */
-// eslint-disable-next-line import/prefer-default-export
-export class TextRenderContext {
+class TextRenderContext {
   /**
    * @constructor
    * @package
-   * @param {Object} glContext // {WebGLRenderingContext}
-   * @param {HTMLCanvasElement} canvas
+   * @param {WebGLRenderingContext} glContext WebGLRenderingContext object
+   * @param {HTMLCanvasElement} canvas html canvas element
    */
   constructor(glContext, canvas) {
     this.gl = glContext;
@@ -30,12 +29,18 @@ export class TextRenderContext {
     this.onResize();
   }
 
+  /**
+   * clears the rendering context
+   */
   clear() {
     this.ctx2d.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx2d.strokeStyle = this.gl.foreColorString;
     this.ctx2d.fillStyle = this.gl.foreColorString;
   }
 
+  /**
+   * initializes the gl functions for the text render context
+   */
   setGLFunctions() {
     this.gl.drawText = function (str, px, py, anchor, rotation, color) {
       const x = Math.floor(px);
@@ -172,6 +177,10 @@ export class TextRenderContext {
     }.bind(this);
   }
 
+  /**
+   * Sets the font for context
+   * @param {string} font "font-size font-family"
+   */
   setFont(font) {
     this.ctx2d.font = font;
     this.font = font;
@@ -187,6 +196,9 @@ export class TextRenderContext {
     body.removeChild(dummy);
   }
 
+  /**
+   * on-resize callback
+   */
   onResize() {
     if (this.offscreenRendering !== null) {
       this.textCanvas.width = this.offscreenRendering.width;
@@ -200,6 +212,11 @@ export class TextRenderContext {
     this.setFont(this.font); // Reset canvas font
   }
 
+  /**
+   * Enables rendering to an off-screen buffer of given size
+   * @param {number} width buffer width
+   * @param {number} height buffer height
+   */
   enableOffscreenRendering(width, height) {
     if (this.offscreenRendering !== null) {
       return;
@@ -216,6 +233,9 @@ export class TextRenderContext {
     this.onResize();
   }
 
+  /**
+   * Disables off-screen rendering
+   */
   disableOffscreenRendering() {
     if (this.offscreenRendering === null) {
       return;
@@ -227,7 +247,12 @@ export class TextRenderContext {
     // this.onResize();
   }
 
+  /**
+   * @returns {HTMLCanvasElement} current text canvas
+   */
   getCanvas() {
     return this.textCanvas;
   }
 }
+
+export default TextRenderContext;
